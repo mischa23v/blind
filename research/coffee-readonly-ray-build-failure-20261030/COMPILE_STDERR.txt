@@ -1,0 +1,48 @@
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp: In function 'bool safe_native_point(const Handle&, const octomap::point3d&)':
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:47:65: error: no match for 'operator[]' (operand types are 'const octomap::point3d' {aka 'const octomath::Vector3'} and 'int')
+   47 |   for(int a=0;a<3;++a) if(!safe_native_coordinate(h,double(point[a]))) return false;
+      |                                                                 ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp: In function 'bool terminal(const Handle&, const octomap::point3d&, RayResult&)':
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:61:43: error: no match for 'operator[]' (operand types are 'const octomap::point3d' {aka 'const octomath::Vector3'} and 'int')
+   61 |   for(int i=0;i<3;++i) out.center[i]=point[i];
+      |                                           ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp: In function 'int om_ro_rays(void*, const float*, const float*, const double*, uint64_t, RayResult*)':
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:113:35: error: no match for 'operator[]' (operand types are 'const octomath::Vector3' and 'int')
+  113 |       if(!std::isfinite(normalized[0]) || !std::isfinite(normalized[1]) ||
+      |                                   ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:113:68: error: no match for 'operator[]' (operand types are 'const octomath::Vector3' and 'int')
+  113 |       if(!std::isfinite(normalized[0]) || !std::isfinite(normalized[1]) ||
+      |                                                                    ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:114:35: error: no match for 'operator[]' (operand types are 'const octomath::Vector3' and 'int')
+  114 |          !std::isfinite(normalized[2]) || normalized.norm()==0) { out.status=RAY_INVALID; continue; }
+      |                                   ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:129:38: error: no match for 'operator[]' (operand types are 'octomap::point3d' {aka 'octomath::Vector3'} and 'int')
+  129 |         const double delta=double(end[a])-double(sensor[a]);
+      |                                      ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:129:56: error: no match for 'operator[]' (operand types are 'const octomap::point3d' {aka 'const octomath::Vector3'} and 'int')
+  129 |         const double delta=double(end[a])-double(sensor[a]);
+      |                                                        ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:131:32: error: no match for 'operator[]' (operand types are 'octomap::point3d' {aka 'octomath::Vector3'} and 'int')
+  131 |         nativeCenterNorm2+=(end[a]-sensor[a])*(end[a]-sensor[a]);
+      |                                ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:131:42: error: no match for 'operator[]' (operand types are 'const octomap::point3d' {aka 'const octomath::Vector3'} and 'int')
+  131 |         nativeCenterNorm2+=(end[a]-sensor[a])*(end[a]-sensor[a]);
+      |                                          ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:131:51: error: no match for 'operator[]' (operand types are 'octomap::point3d' {aka 'octomath::Vector3'} and 'int')
+  131 |         nativeCenterNorm2+=(end[a]-sensor[a])*(end[a]-sensor[a]);
+      |                                                   ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:131:61: error: no match for 'operator[]' (operand types are 'const octomap::point3d' {aka 'const octomath::Vector3'} and 'int')
+  131 |         nativeCenterNorm2+=(end[a]-sensor[a])*(end[a]-sensor[a]);
+      |                                                             ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:149:45: error: no match for 'operator[]' (operand types are 'octomap::point3d' {aka 'octomath::Vector3'} and 'int')
+  149 |         finite=finite && std::isfinite(entry[a]);
+      |                                             ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:150:39: error: no match for 'operator[]' (operand types are 'octomap::point3d' {aka 'octomath::Vector3'} and 'int')
+  150 |         entryProjection+=(double(entry[a])-double(sensor[a]))*double(d[a])/norm;
+      |                                       ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:150:57: error: no match for 'operator[]' (operand types are 'const octomap::point3d' {aka 'const octomath::Vector3'} and 'int')
+  150 |         entryProjection+=(double(entry[a])-double(sensor[a]))*double(d[a])/norm;
+      |                                                         ^
+/workspace/scratch/90f3f6703064/blind/research/coffee-octomap-readonly-rays-source-20261030/readonly_rays.cpp:155:46: error: no match for 'operator[]' (operand types are 'octomap::point3d' {aka 'octomath::Vector3'} and 'int')
+  155 |       for(int a=0;a<3;++a) out.entry[a]=entry[a];
+      |                                              ^
