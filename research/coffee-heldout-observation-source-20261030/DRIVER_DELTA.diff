@@ -1,0 +1,74 @@
+--- original/evaluate.py
++++ observation/evaluate.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""UNEXECUTED fixed two-view readonly diagnostic. No mesh, planner or physical authority."""
++"""UNEXECUTED separate observation-only fixed two-view diagnostic. No mesh, planner or physical authority."""
+ import os
+ for k in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS'):os.environ[k]='1'
+ import argparse,hashlib,importlib.util,io,json,math,pathlib,resource,signal,tarfile,time
+@@ -43,10 +43,11 @@
+   for name,digest in pins['inputs'].items():
+    f=W/name[12:] if name.startswith('@WORKSPACE@/') else R/name
+    check(f,digest,200*1024**2);pinned.append((f,digest))
+-  require(a.library_sha256==pins['admittedLibrarySHA256'] and a.controls_sha256==pins['admittedControlsReceiptSHA256'],'unadmitted runtime hashes');check(a.library,a.library_sha256,2*1024**2);check(a.controls_receipt,a.controls_sha256,65536)
+-  controls=json.loads(a.controls_receipt.read_text());require(controls['status']=='completed-controls-only' and controls['librarySHA256']==a.library_sha256,'native controls not passed for candidate')
+-  require([(x['name'],x['testsRun'],x['expected'],x['failures'],x['errors'],x['skipped'],x['success'])for x in controls['suites']]==[('original',16,16,0,0,0,True),('read-only-rays',22,22,0,0,0,True)],'all38controls required')
+-  raydir=R/'research/coffee-octomap-readonly-rays-v2-source-20261030';require(controls['sourceManifestSHA256']==sha(raydir/'MANIFEST.json'),'wrong ray control source')
++  require(isinstance(pins['admittedLibrarySHA256'],str) and len(pins['admittedLibrarySHA256'])==64,'new actual binary/control admission still pending');require(a.library_sha256==pins['admittedLibrarySHA256'] and a.controls_sha256==pins['admittedControlsReceiptSHA256'],'unadmitted runtime hashes');check(a.library,a.library_sha256,2*1024**2);check(a.controls_receipt,a.controls_sha256,65536)
++  controls=json.loads(a.controls_receipt.read_text());require(controls['status']=='completed-controls-only' and controls['librarySHA256']==a.library_sha256,'native controls not passed for candidate');require(controls['buildReceiptSHA256']==pins['admittedBuildReceiptSHA256'],'build receipt mismatch')
++  require([(x['name'],x['testsRun'],x['expected'],x['failures'],x['errors'],x['skipped'],x['success'])for x in controls['suites']]==[('original',16,16,0,0,0,True),('read-only-rays',22,22,0,0,0,True),('observation-only-rays',10,10,0,0,0,True)],'all48controls required')
++  raydir=R/'research/coffee-octomap-observation-rays-source-20261030';require(controls['sourceManifestSHA256']==sha(raydir/'MANIFEST.json'),'wrong ray control source')
++  primary=json.loads((R/'research/coffee-heldout-depth-result-20261030/RESULT.json').read_text());require(primary['status']=='completed-readonly-consistency-diagnostic' and primary['exactBaselineRecreated'],'original primary evidence missing');primary_rows={x['frame']:x for x in primary['frames']};result['primaryResultSHA256']=sha(R/'research/coffee-heldout-depth-result-20261030/RESULT.json');result['primaryResultsRetained']=primary['frames'];result['observationMode']='upstream ignoreUnknown=true; first observed occupied voxel, visibility unverified; never clearance';result['residualsAreObservedVoxelAgreementNotSurfaceTruth']=True
+   original=R/'research/coffee-shared-pose-occupancy-source-20261029';plan=R/'research/coffee-heldout-pose-overlap-plan-20261030'
+   selection=json.loads((plan/'HOLDOUT_SELECTION.json').read_text());frozen=json.loads((original/'FRAME_SELECTION.json').read_text());binding=json.loads((plan/'BASELINE_BINDING.json').read_text())
+   metadata=json.loads((W/'coffee-recovered-source/transformations.json').read_text());frames={pathlib.Path(f['file_path']).stem:f for f in metadata['frames']};require(len(frames)==len(metadata['frames']),'duplicate frame metadata')
+@@ -82,11 +83,11 @@
+     require(hashlib.sha256(world.tobytes()).hexdigest()==oldreceipt['frames'][scan]['worldFloat64SHA256'],'training world arithmetic drift')
+     ins=tree.insert(scan,world,origin);require(ins==oldreceipt['frames'][scan]['nativeInsertion'],'training insertion receipt drift');del d,points,rr,cc,world
+    baseline=payload();expected={x['member']:{'sha256':x['uncompressedNPYSHA256'],'bytes':x['uncompressedBytes']}for x in binding['uncompressedMembers']};require(baseline['payload']==expected,'exact baseline payload drift; no scoring')
+-   result['exactBaselineRecreated']=True;result['baseline']=baseline
++   require(baseline==primary['baseline'],'primary baseline state/default/payload drift');result['exactBaselineRecreated']=True;result['baseline']=baseline
+    # Heldout bytes are opened only after construction is frozen and exact baseline established.
+    candidates=selection['heldoutFrames']
+    members={x['frameID']:x['member']for x in candidates};require(tuple(members)==HOLD,'holdout order changed')
+-   archive=W/'coffee-semantic-coverage/coffee_room_iphone.tar.gz';check(archive,selection['archiveSHA256'],selection['archiveBytes']);result['extraction']=extract_two(archive,a.output/'depth',members);check(archive,selection['archiveSHA256'],selection['archiveBytes'])
++   archive=W/'coffee-semantic-coverage/coffee_room_iphone.tar.gz';check(archive,selection['archiveSHA256'],selection['archiveBytes']);result['extraction']=extract_two(archive,a.output/'depth',members);check(archive,selection['archiveSHA256'],selection['archiveBytes']);require(result['extraction']==primary['extraction'],'exact heldout bytes differ from primary')
+    for n in HOLD:
+     before=payload();require(before==baseline,'map changed before holdout')
+     f=frames[n];t,origin=transforms[n];inv=metric.inverse3([row[:3]for row in t[:3]]);d=readdepth(a.output/'depth'/(n+'.png'));points,rr,cc=projector.project(d,f);world=np.column_stack(pose.transform_coordinates(points[:,0],points[:,1],points[:,2],t));safe_world(world);keys=tree.keys(world)
+@@ -96,24 +97,28 @@
+     row={'frame':n,'rasterPixels':738*994,'zeroDepthPixels':int((d==0).sum()),'rangeExcludedPixels':int((d>=4000).sum()),'acceptedPixels':len(points),'endpointPixelWeighted':counts(keys),'endpointDistinctKeyWeighted':counts(np.unique(keys,axis=0))}
+     grid=(rr%8==0)&(cc%8==0);gr=rr[grid];gc=cc[grid];z=points[grid,2].copy();del points,world,keys,rr,cc
+     camera=np.column_stack(((gc-f['cx'])/f['fl_x'],(gr-f['cy'])/f['fl_y'],np.ones(len(gr))));rot=np.asarray([x[:3]for x in t[:3]]);directions=camera@rot.T;limits=4*np.linalg.norm(directions,axis=1);require(np.isfinite(limits).all()and(limits<=8).all(),'ray ABI range bound')
+-    statuses=[];entry_z=[];center_z=[];radial=[];ray_conflicts=0
++    statuses=[];primary_statuses=[];entry_z=[];center_z=[];radial=[];ray_conflicts=0
+     for first in range(0,len(z),256):
+-     batch=rays.cast(origin,directions[first:first+256],limits[first:first+256])
++     conservative=rays.cast(origin,directions[first:first+256],limits[first:first+256]);primary_statuses.extend(x['status']for x in conservative)
++     batch=rays.cast_observed(origin,directions[first:first+256],limits[first:first+256])
+      for j,out in enumerate(batch):
+       idx=first+j;statuses.append(out['status'])
+-      if out['status']!='hit-known-prefix':continue
++      if out['status']!='observed-hit-visibility-unverified':continue
+       require(out['terminalKnown']==1 and out['terminalOccupied']==1,'scored hit must be known occupied');ez=metric.axial(out['entry'],origin,inv);cz=metric.axial(out['center'],origin,inv)
+       require(math.isfinite(ez)and math.isfinite(cz)and ez>0,'invalid predicted axial point')
+       entry_z.append(ez-float(z[idx]));center_z.append(cz-float(z[idx]));native_origin=np.asarray(origin,dtype=np.float32).astype(np.float64);native_direction=directions[idx].astype(np.float32).astype(np.float64);measured_world=np.asarray(origin)+directions[idx]*float(z[idx]);measured_projected=float(np.dot(measured_world-native_origin,native_direction)/np.linalg.norm(native_direction));radial.append(float(out['entryProjectedRange'])-measured_projected)
+       ray_conflicts+=out['hitScans']>0 and out['freeScans']>0
+-    row.update(fixedGridCandidates=metric.GRID_COUNT,fixedGridZeroDepth=int((d[::8,::8]==0).sum()),fixedGridRangeExcluded=int((d[::8,::8]>=4000).sum()),fixedGridValid=len(z),rayStatuses=metric.partition(statuses,len(z)),hitTerminalConflicts=ray_conflicts,entryAxialResidualMetres=metric.distributions(entry_z),centerAxialResidualMetres=metric.distributions(center_z),entryAlongRayResidualMetres=metric.distributions(radial))
+-    require(row['fixedGridZeroDepth']+row['fixedGridRangeExcluded']+len(z)==metric.GRID_COUNT,'full grid denominator');require(len(entry_z)==row['rayStatuses']['hit-known-prefix'],'all valid hits scored')
++    row.update(fixedGridCandidates=metric.GRID_COUNT,fixedGridZeroDepth=int((d[::8,::8]==0).sum()),fixedGridRangeExcluded=int((d[::8,::8]>=4000).sum()),fixedGridValid=len(z),observationRayStatuses=metric.partition(statuses,len(z)),primaryRayStatuses=metric.primary_partition(primary_statuses,len(z)),hitTerminalConflicts=ray_conflicts,entryAxialResidualMetres=metric.distributions(entry_z),centerAxialResidualMetres=metric.distributions(center_z),entryAlongRayResidualMetres=metric.distributions(radial))
++    require(row['fixedGridZeroDepth']+row['fixedGridRangeExcluded']+len(z)==metric.GRID_COUNT,'full grid denominator');require(len(entry_z)==row['observationRayStatuses']['observed-hit-visibility-unverified'],'all valid hits scored')
++    require(row['primaryRayStatuses']==primary_rows[n]['rayStatuses'],'primary status counts changed')
++    for key in ('rasterPixels','zeroDepthPixels','rangeExcludedPixels','acceptedPixels','endpointPixelWeighted','endpointDistinctKeyWeighted','fixedGridCandidates','fixedGridZeroDepth','fixedGridRangeExcluded','fixedGridValid'):require(row[key]==primary_rows[n][key],'primary denominator/endpoint drift: '+key)
++    require(row['observationRayStatuses']['hit-known-prefix']==0,'observation must never claim known-prefix clearance')
+     del d,camera,directions,limits,z,gr,gc
+     after=payload();require(after==before==baseline,'heldout mutated map');row['beforeAfterPayloadEqual']=True;result['frames'].append(row)
+   finally:tree.close()
+   for f,digest in pinned:check(f,digest,200*1024**2)
+   check(a.library,a.library_sha256,2*1024**2);check(a.controls_receipt,a.controls_sha256,65536)
+-  result.update(status='completed-readonly-consistency-diagnostic',librarySHA256=a.library_sha256,controlsReceiptSHA256=a.controls_sha256,sourceManifestSHA256=sha(H/'MANIFEST.json'))
++  result.update(status='completed-observation-only-consistency-diagnostic',librarySHA256=a.library_sha256,controlsReceiptSHA256=a.controls_sha256,sourceManifestSHA256=sha(H/'MANIFEST.json'))
+  except Exception as e:result.update(status='failed',error=type(e).__name__+': '+str(e));raise
+  finally:
+   u=resource.getrusage(resource.RUSAGE_SELF);result.update(wallSeconds=time.monotonic()-start,cpuSeconds=u.ru_utime+u.ru_stime,peakRSSKiB=u.ru_maxrss)

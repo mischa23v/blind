@@ -1,0 +1,63 @@
+test_actual_hit_and_observed_ray (unchanged_original_octomap_controls.NativeOctomapTests.test_actual_hit_and_observed_ray) ... ok
+test_count_cap_precedes_array_conversion (unchanged_original_octomap_controls.NativeOctomapTests.test_count_cap_precedes_array_conversion) ... ok
+test_defaults_frozen (unchanged_original_octomap_controls.NativeOctomapTests.test_defaults_frozen) ... ok
+test_duplicate_frame_retires (unchanged_original_octomap_controls.NativeOctomapTests.test_duplicate_frame_retires) ... ok
+test_explicit_free_updates_not_absence (unchanged_original_octomap_controls.NativeOctomapTests.test_explicit_free_updates_not_absence) ... ok
+test_export_preserves_scores_not_max_likelihood (unchanged_original_octomap_controls.NativeOctomapTests.test_export_preserves_scores_not_max_likelihood) ... ok
+test_invalid_scan_retires_handle (unchanged_original_octomap_controls.NativeOctomapTests.test_invalid_scan_retires_handle) ... ok
+test_key_type_cannot_wrap (unchanged_original_octomap_controls.NativeOctomapTests.test_key_type_cannot_wrap) ... ok
+test_native_keys_and_occupied_decision (unchanged_original_octomap_controls.NativeOctomapTests.test_native_keys_and_occupied_decision) ... ok
+test_native_ray_capacity_refusal (unchanged_original_octomap_controls.NativeOctomapTests.test_native_ray_capacity_refusal) ... ok
+test_occupied_equivalence_negative_boundaries (unchanged_original_octomap_controls.NativeOctomapTests.test_occupied_equivalence_negative_boundaries) ... ok
+test_occupied_wins_within_scan (unchanged_original_octomap_controls.NativeOctomapTests.test_occupied_wins_within_scan) ... ok
+test_python_serialized_handle_queries (unchanged_original_octomap_controls.NativeOctomapTests.test_python_serialized_handle_queries) ... ok
+test_representative_is_actual_first_not_centre (unchanged_original_octomap_controls.NativeOctomapTests.test_representative_is_actual_first_not_centre) ... ok
+test_same_voxel_duplicates_do_not_count_as_frames (unchanged_original_octomap_controls.NativeOctomapTests.test_same_voxel_duplicates_do_not_count_as_frames) ... ok
+test_unknown_is_not_free (unchanged_original_octomap_controls.NativeOctomapTests.test_unknown_is_not_free) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.044s
+
+OK
+test_axis_aligned_hit_reports_center_and_voxel_entry_distinctly (new_readonly_ray_controls.ReadOnlyRayControls.test_axis_aligned_hit_reports_center_and_voxel_entry_distinctly) ... ok
+test_batch_cap_precedes_array_conversion (new_readonly_ray_controls.ReadOnlyRayControls.test_batch_cap_precedes_array_conversion) ... ok
+test_closed_owner_refuses_query_and_state (new_readonly_ray_controls.ReadOnlyRayControls.test_closed_owner_refuses_query_and_state) ... ok
+test_empty_typed_batch_is_read_only (new_readonly_ray_controls.ReadOnlyRayControls.test_empty_typed_batch_is_read_only) ... ok
+test_invalid_origin_and_native_bounds_are_distinct (new_readonly_ray_controls.ReadOnlyRayControls.test_invalid_origin_and_native_bounds_are_distinct) ... ok
+test_invalid_ray_does_not_retire_owner_or_add_scan (new_readonly_ray_controls.ReadOnlyRayControls.test_invalid_ray_does_not_retire_owner_or_add_scan) ... ok
+test_maximum_batch_preserves_owner_state (new_readonly_ray_controls.ReadOnlyRayControls.test_maximum_batch_preserves_owner_state) ... ok
+test_nonfinite_zero_and_unnormalizable_directions_are_invalid (new_readonly_ray_controls.ReadOnlyRayControls.test_nonfinite_zero_and_unnormalizable_directions_are_invalid) ... ok
+test_nonpositive_nonfinite_or_oversize_ranges_are_invalid_not_clamped (new_readonly_ray_controls.ReadOnlyRayControls.test_nonpositive_nonfinite_or_oversize_ranges_are_invalid_not_clamped) ... ok
+test_oblique_ray_uses_upstream_entry_not_off_ray_voxel_center (new_readonly_ray_controls.ReadOnlyRayControls.test_oblique_ray_uses_upstream_entry_not_off_ray_voxel_center) ... ok
+test_occupied_origin_is_not_a_zero_error_depth_hit (new_readonly_ray_controls.ReadOnlyRayControls.test_occupied_origin_is_not_a_zero_error_depth_hit) ... ok
+test_positive_and_negative_envelopes_refused_in_double_domain_without_clamping (new_readonly_ray_controls.ReadOnlyRayControls.test_positive_and_negative_envelopes_refused_in_double_domain_without_clamping) ... ok
+test_positive_and_negative_huge_finite_origins_refused_before_native_key_cast (new_readonly_ray_controls.ReadOnlyRayControls.test_positive_and_negative_huge_finite_origins_refused_before_native_key_cast) ... ok
+test_queries_and_invalid_rows_leave_every_map_payload_byte_unchanged (new_readonly_ray_controls.ReadOnlyRayControls.test_queries_and_invalid_rows_leave_every_map_payload_byte_unchanged) ... ok
+test_range_exhaustion_after_known_free_prefix (new_readonly_ray_controls.ReadOnlyRayControls.test_range_exhaustion_after_known_free_prefix) ... ok
+test_shape_rejections_do_not_mutate_or_retire_handle (new_readonly_ray_controls.ReadOnlyRayControls.test_shape_rejections_do_not_mutate_or_retire_handle) ... ok
+test_state_audit_matches_existing_export_evidence (new_readonly_ray_controls.ReadOnlyRayControls.test_state_audit_matches_existing_export_evidence) ... ok
+test_status_counts_partition_a_mixed_batch (new_readonly_ray_controls.ReadOnlyRayControls.test_status_counts_partition_a_mixed_batch) ... ok
+test_terminal_key_and_float32_boundary_agree_with_existing_query (new_readonly_ray_controls.ReadOnlyRayControls.test_terminal_key_and_float32_boundary_agree_with_existing_query) ... ok
+test_unknown_gap_stops_before_distant_known_hit (new_readonly_ray_controls.ReadOnlyRayControls.test_unknown_gap_stops_before_distant_known_hit) ... ok
+test_unknown_origin_is_not_a_free_prefix (new_readonly_ray_controls.ReadOnlyRayControls.test_unknown_origin_is_not_a_free_prefix) ... ok
+test_upstream_max_range_is_center_based_not_entry_based (new_readonly_ray_controls.ReadOnlyRayControls.test_upstream_max_range_is_center_based_not_entry_based) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.057s
+
+OK
+test_both_modes_and_errors_leave_payload_identical (observation_only_controls.ObservationControls.test_both_modes_and_errors_leave_payload_identical) ... ok
+test_center_based_range_censoring_unchanged (observation_only_controls.ObservationControls.test_center_based_range_censoring_unchanged) ... ok
+test_empty_unknown_map_range_exhaustion_is_not_clear (observation_only_controls.ObservationControls.test_empty_unknown_map_range_exhaustion_is_not_clear) ... ok
+test_invalid_and_huge_inputs_remain_refused (observation_only_controls.ObservationControls.test_invalid_and_huge_inputs_remain_refused) ... ok
+test_known_prefix_still_distinct_observation_status (observation_only_controls.ObservationControls.test_known_prefix_still_distinct_observation_status) ... ok
+test_maximum_batch_is_all_observed_status_without_mutation (observation_only_controls.ObservationControls.test_maximum_batch_is_all_observed_status_without_mutation) ... ok
+test_oblique_entry_same_as_primary_when_known_prefix (observation_only_controls.ObservationControls.test_oblique_entry_same_as_primary_when_known_prefix) ... ok
+test_occupied_origin_refused_even_in_observation_mode (observation_only_controls.ObservationControls.test_occupied_origin_refused_even_in_observation_mode) ... ok
+test_unknown_gap_is_preserved_in_primary_but_observed_surface_available (observation_only_controls.ObservationControls.test_unknown_gap_is_preserved_in_primary_but_observed_surface_available) ... ok
+test_unknown_origin_observes_recorded_hit_without_visibility_claim (observation_only_controls.ObservationControls.test_unknown_origin_observes_recorded_hit_without_visibility_claim) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.026s
+
+OK
