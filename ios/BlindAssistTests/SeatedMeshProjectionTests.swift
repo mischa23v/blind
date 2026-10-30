@@ -174,7 +174,8 @@ final class SeatedMeshProjectionTests: XCTestCase {
         for retireSource in [false,true] {
             let backend = try SeatedCandidateFixtureBackend()
             let ownerDrained=expectation(description:"seated rejection controller ownership drained")
-            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{ownerDrained.fulfill()})
+            var stopped=false
+            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{stopped=true;ownerDrained.fulfill()})
             addTeardownBlock {
                 let drained = XCTestExpectation(description: "seated rejection teardown drained")
                 await MainActor.run { controller.stop(); backend.stopAndDrain {
@@ -203,7 +204,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
             controller.stop(); XCTAssertNil(controller.scene)
             let drained = expectation(description: "rejection iteration native drain")
             backend.stopAndDrain { DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();drained.fulfill()} }
-            await fulfillment(of: [drained,ownerDrained], timeout: 10)
+            await fulfillment(of: [drained,XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)], timeout: 10)
         }
     }
 
@@ -253,7 +254,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         await fulfillment(of:[nativeDone],timeout:10)
         XCTAssertFalse(stopped,"Native drain alone cannot release exclusive ownership")
         hold.signal()
-        await fulfillment(of:[ownerDone],timeout:10)
+        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)],timeout:10)
         XCTAssertTrue(stopped);XCTAssertFalse(controller.hasPendingRenderForTesting)
     }
 

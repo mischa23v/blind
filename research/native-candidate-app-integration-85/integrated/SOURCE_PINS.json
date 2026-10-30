@@ -15,7 +15,7 @@
     "tools/ci/native-apple.sh": "85f2b3ca4b931cec2a7018b12bb770232492d55a2dc9e5b776f72fa5e8b880fd",
     ".github/workflows/native-apple.yml": "fe99a40983e8d217ce556ce8f1f11e53b187352627e526285b71620b93836c91",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "97766ed6305b2509c23fe868301ecf1d6b303bf8e14842d556a1ef304872601f",
+    "research/native-candidate-app-integration-85/integrated/check.py": "3cb521e79f3dd260d159ca1086ec8b639f693fee2470a1ccc4892a8e1273fdbe",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -70,7 +70,7 @@
     "ios/BlindAssist/SeatedMeshDiagnosticController.swift": "4a3b7f14806117c6357371e9079eb509ebf871ae169ddf9bd1ef0264000f45e1",
     "ios/BlindAssist/SeatedMeshDiagnosticView.swift": "86d0e8ed679c76a15f141aa4a6334ef513964dce8de27444e8e510e4a29fd86c",
     "ios/BlindAssist/SeatedMeshPresentationLease.swift": "f931ac9498ab7e18d08d8381f1f72184d7659e68d2e233579daf4a0a2e6d67da",
-    "ios/BlindAssistTests/SeatedMeshProjectionTests.swift": "3aa1a99d15714caa7e3446e808f24b52d0eb75889e07d9f8eab759c3574b2480",
+    "ios/BlindAssistTests/SeatedMeshProjectionTests.swift": "86e159105291609bad2b8651ab77bae41402714fdf2122ffdc5f59a3b782b359",
     "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift": "ba6da6878b47193b9635e6655f751fc070eb8fa7b918e85d7f5b84f08979f391",
     "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift": "009b9bb29dfff7d0496b792fadf1c7ab530d781bb725d53a96aa18f89ca49c3b",
     "research/live-mesh-classified-bench-20261028/Sources/MeshBenchReacquisition.swift": "245fc5522177807a46ed39891ed949f5b4deab160066ff8963441b5508cc8aae",
@@ -91,7 +91,7 @@
     "tools/ci/test-collect-seed-radius.py": "61b0478a5376deee60154d151bd871e48a37d750e49b9c184c45283d7d05bd04",
     "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657",
     "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d",
-    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "4394d3aca65d3709a2438768ccecddf39bc5c1c0cedf7f477ee28918d913aead",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "a98bedfeee0930aeb76e2dc0a345aa015071a2dd9ca811ff0821094c3b0fc6c3",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-ci-layer.patch": "15df8e9d41d0560c7d8bec363acb85eaa31d46f30edddfacbef8e431abddf5ad",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43",
     "tools/ci/export-seed-radius-diagnostics.py": "91600e8003140cafe936222d0721f9030af351c83e62a07ff983e31efcc0c760",
@@ -123,7 +123,8 @@
     ".github/workflows/native-room-mesh-package.yml": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f",
     "research/room-mesh-package-75/apple/native-room-mesh-package.yml": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f",
     "research/native-candidate-app-integration-85/integrated/roommesh-no-artifact-layer.patch": "f1249508a154bc09d2cfc9e11175acffa70625d6d791f2d062611563c34222ec",
-    "research/native-candidate-app-integration-85/integrated/seated-source-readiness-split.patch": "bc778280cb9363f0f16ea59a55ad51bb5a1089ca45af6c25cdda40764f3546a6"
+    "research/native-candidate-app-integration-85/integrated/seated-source-readiness-split.patch": "bc778280cb9363f0f16ea59a55ad51bb5a1089ca45af6c25cdda40764f3546a6",
+    "research/native-candidate-app-integration-85/integrated/seated-single-wait-fixture-repair.patch": "46c04dbd3d7916de8eab3a133ca1f98f970fdaa02c660c49d31e96e3a1dfa529"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -444,5 +445,9 @@
     "tools/ci/test-collect-seated-projection.py": "3ff739c5a31665322052ac3d5de664d81c42d8c34f098ddea2dcad71c9df89cb",
     "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "cd8cc665fa0ddb3025efa506dc253c205d0ffed970343cb11c5af75c092fa2a1"
   },
-  "sourceReadinessSplitNewFiles": []
+  "sourceReadinessSplitNewFiles": [],
+  "beforeSingleWaitFixtureRepair": {
+    "ios/BlindAssistTests/SeatedMeshProjectionTests.swift": "3aa1a99d15714caa7e3446e808f24b52d0eb75889e07d9f8eab759c3574b2480",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "4394d3aca65d3709a2438768ccecddf39bc5c1c0cedf7f477ee28918d913aead"
+  }
 }
