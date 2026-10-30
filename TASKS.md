@@ -1,3 +1,9 @@
+## Existing N00 checkpoint — 2026-10-30 06:18 UTC
+
+N00 remains **partial diagnostic source / Apple acceptance pending**, not complete. Published `e418290ac2a70f93c4250bb094091082408f7093` contains source-readiness and source-bound independent collision integration; evidence is in [PROGRESS](PROGRESS.md) and the existing [N00 row](research/tracker-reconciliation-20261028/TRACKER.json). The exact e418 selection ran all 18 hosted cases (14 passed, four controller methods failed with 12 issues), retaining the preceding 13; all four authored collider cases passed but controller/runtime acceptance remains open. The cleanup-expectation/timing-label repair is source-only; failed `7bb0532` preflight and actual SceneKit delay remain preserved. Physical authority is false. Continue existing R09/R15 association work after integration evidence; hierarchy/journeys, localization, current hazards, transitions/recovery and device gates remain open. No task ID or milestone is added or closed.
+
+---
+
 ## Height-following terminal audit — 2026-10-30 02:39 UTC
 
 - [x] Complete and independently audit compact attempt 002 (`0a1a59cd580239a52939f5cdc9642cc608ece425`): all 3,696 native events, 29,568 collision records, unchanged 101 inputs, three zero exits and retired process groups.

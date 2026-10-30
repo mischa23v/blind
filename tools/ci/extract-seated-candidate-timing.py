@@ -15,7 +15,7 @@ NUMBER = r'(?:-1|[0-9]{1,15})'
 STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired|sourceSnapshotEnqueued|sourceSnapshotWorkerStarted|sourceSnapshotWorkerFinished|sourceSnapshotDeliveryStarted|sourceSnapshotDeliveryFinished)'
 PHASE = re.compile(
     rf'SEATED_CANDIDATE_PHASE id=(?:{UUID}|none) '
-    r'event=(?:happy_wait_finished|rejection_wait_finished|drain_complete) '
+    r'event=(?P<event>happy_wait_finished|rejection_wait_finished|native_discard_acknowledged|controller_drain_wait_finished|drain_complete) '
     rf'elapsed_ms={NUMBER} native_callback_ms={NUMBER} main_held_ms={NUMBER} '
     rf'stages=(?:{STAGE}:[0-9]{{1,15}}(?:;{STAGE}:[0-9]{{1,15}}){{0,63}})?'
 )
@@ -36,6 +36,13 @@ SOURCE = re.compile(
     r'event=(?:source_requested|source_native_callback|source_main_callback|source_controller_callback|render_enqueued|render_begin|render_end|display_accepted|display_rejected|source_refused) '
     rf'elapsed_ms={NUMBER} main_thread=(?:true|false) outcome=(?:none|success|unavailable|stale|runtime_invalidLimits|runtime_budget|runtime_unavailable|runtime_stale|runtime_invalidRetainedState)'
 )
+# These are observation markers, not XCTest outcomes or complete owner-drain proof.
+# Older logs reused drain_complete for distinct callback/wait locations.
+PHASE_EVENT_SEMANTICS = {
+    'drain_complete': 'legacy_ambiguous_not_full_controller_drain',
+    'native_discard_acknowledged': 'native_backend_callback_not_full_controller_drain',
+    'controller_drain_wait_finished': 'wait_returned_not_successful_controller_drain_proof',
+}
 PREFIXES = {'phase': b'SEATED_CANDIDATE_PHASE ',
             'worker': b'SEATED_CANDIDATE_WORKER ',
             'source': b'SEATED_CANDIDATE_SOURCE '}
@@ -59,7 +66,7 @@ def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
             record_limit=RECORD_LIMIT, source_record_limit=SOURCE_RECORD_LIMIT):
     counts = {kind: 0 for kind in PREFIXES}
     dropped = {kind: 0 for kind in PREFIXES}
-    rejected = consumed = 0
+    rejected = consumed = legacy_emitted = 0
     oversized = unterminated = False
     while consumed < input_limit:
         raw = stream.readline(min(line_limit + 1, input_limit - consumed))
@@ -87,6 +94,8 @@ def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
         elif counts[kind] < (source_record_limit if kind == 'source' else record_limit):
             emit(line)
             counts[kind] += 1
+            if kind == 'phase' and PHASE.fullmatch(line)['event'] == 'drain_complete':
+                legacy_emitted += 1
         else:
             dropped[kind] += 1
     budget_reached = consumed >= input_limit
@@ -96,7 +105,10 @@ def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
             'scan_budget_reached': budget_reached, 'unterminated_input': unterminated,
             'status': ('unavailable' if not any(counts.values()) else
                        'partial' if incomplete else 'observed'),
-            'test_outcome': 'not_inferred', 'physical_authority': False}
+            'test_outcome': 'not_inferred', 'physical_authority': False,
+            'full_controller_drain': 'not_inferred',
+            'legacy_ambiguous_phase_records_emitted': legacy_emitted,
+            'phase_event_semantics': dict(PHASE_EVENT_SEMANTICS)}
 
 
 def main():
@@ -113,7 +125,8 @@ def main():
         # Never include an arbitrary OS/parser message or private path.
         summary = {'schema': 1, 'status': 'unavailable',
                    'error_type': type(error).__name__, 'test_outcome': 'not_inferred',
-                   'physical_authority': False}
+                   'physical_authority': False, 'full_controller_drain': 'not_inferred',
+                   'phase_event_semantics': dict(PHASE_EVENT_SEMANTICS)}
     print('SEATED_CANDIDATE_TIMING_SUMMARY=' + json.dumps(summary, separators=(',', ':'), sort_keys=True))
 
 

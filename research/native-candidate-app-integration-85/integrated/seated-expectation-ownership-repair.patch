@@ -1,0 +1,321 @@
+--- a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -123,7 +123,8 @@
+ 
+     @MainActor func testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding() async throws {
+         let backend = try SeatedCandidateFixtureBackend()
+-        let ownerDrained=expectation(description:"seated controller ownership drained")
++        let ownerDrained=XCTestExpectation(description:"seated controller ownership drained")
++        ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+         let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{ownerDrained.fulfill()})
+         addTeardownBlock {
+             let drained = XCTestExpectation(description: "seated native teardown drained")
+@@ -185,7 +186,8 @@
+     @MainActor func testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange() async throws {
+         for retireSource in [false,true] {
+             let backend = try SeatedCandidateFixtureBackend()
+-            let ownerDrained=expectation(description:"seated rejection controller ownership drained")
++            let ownerDrained=XCTestExpectation(description:"seated rejection controller ownership drained")
++            ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+             var stopped=false
+             let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{stopped=true;ownerDrained.fulfill()})
+             addTeardownBlock {
+@@ -222,7 +224,8 @@
+ 
+     @MainActor func testActualSourceAndStrictQueryCompleteWhileOptionalRenderIsHeld() async throws {
+         let backend=try SeatedCandidateFixtureBackend()
+-        let ownerDone=expectation(description:"held-render controller ownership drained")
++        let ownerDone=XCTestExpectation(description:"held-render controller ownership drained")
++        ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+         var stopped=false
+         let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
+         let hold=DispatchSemaphore(value:0)
+@@ -232,7 +235,7 @@
+                 DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}
+             }}
+             await self.fulfillment(of:[ownerDone],timeout:10)
+-            await MainActor.run {backend.printTiming(event:"drain_complete")}
++            await MainActor.run {backend.printTiming(event:"controller_drain_wait_finished")}
+         }
+         controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
+         let entered=expectation(description:"optional render worker held")
+@@ -275,7 +278,8 @@
+     @MainActor func testActualAuditRetirementAndDisposalAfterRealOracleProgress() async throws {
+         for retirement in ["source","capture","edit","stop"] {
+             let backend=try SeatedCandidateFixtureBackend(),gate=SeatedAuditProgressGate()
+-            let ownerDone=expectation(description:"audit owner drained \(retirement)")
++            let ownerDone=XCTestExpectation(description:"audit owner drained \(retirement)")
++            ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+             var stopped=false,progressed=false
+             let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
+             let renderHold=DispatchSemaphore(value:0)
+@@ -289,15 +293,6 @@
+             }
+             controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
+             controller.enqueueSyntheticDisplayWorkForTesting(work:{},afterEnqueue:{renderHold.wait()},delivered:{})
+-            let actualProgress=expectation(description:"real oracle raw sweep completed \(retirement)")
+-            let auditDone=expectation(description:"audit copies disposed \(retirement)")
+-            controller.onCollisionDrainedForTesting={auditDone.fulfill()}
+-            controller.collisionProgressForTesting={progress in
+-                if !progressed {
+-                    XCTAssertEqual(progress.envelope,"raw");progressed=true;actualProgress.fulfill()
+-                    await gate.wait()
+-                }
+-            }
+             try controller.activate()
+             await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.hasCurrentSourceForTesting},object:nil)],timeout:10)
+             guard controller.hasCurrentSourceForTesting else {XCTFail("No admitted source");return}
+@@ -307,6 +302,16 @@
+                 declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1")
+             await fulfillment(of:[nativeReady],timeout:10)
+             _=try XCTUnwrap(backend.heldResult).get()
++            let actualProgress=expectation(description:"real oracle raw sweep completed \(retirement)")
++            let auditDone=XCTestExpectation(description:"audit copies disposed \(retirement)")
++            auditDone.assertForOverFulfill=true
++            controller.onCollisionDrainedForTesting={auditDone.fulfill()}
++            controller.collisionProgressForTesting={progress in
++                if !progressed {
++                    XCTAssertEqual(progress.envelope,"raw");progressed=true;actualProgress.fulfill()
++                    await gate.wait()
++                }
++            }
+             backend.release()
+             await fulfillment(of:[actualProgress],timeout:10)
+             guard progressed else {XCTFail("Oracle progress unavailable; not a passing retirement test");return}
+@@ -396,7 +401,7 @@
+     func stopAndDrain(_ completion: @escaping () -> Void) {
+         stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
+         ingress.stopAndDiscard { [self] in
+-            printTiming(event: "drain_complete")
++            printTiming(event: "native_discard_acknowledged")
+             completion()
+         }
+     }
+--- a/tools/ci/extract-seated-candidate-timing.py
++++ b/tools/ci/extract-seated-candidate-timing.py
+@@ -15,7 +15,7 @@
+ STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired|sourceSnapshotEnqueued|sourceSnapshotWorkerStarted|sourceSnapshotWorkerFinished|sourceSnapshotDeliveryStarted|sourceSnapshotDeliveryFinished)'
+ PHASE = re.compile(
+     rf'SEATED_CANDIDATE_PHASE id=(?:{UUID}|none) '
+-    r'event=(?:happy_wait_finished|rejection_wait_finished|drain_complete) '
++    r'event=(?P<event>happy_wait_finished|rejection_wait_finished|native_discard_acknowledged|controller_drain_wait_finished|drain_complete) '
+     rf'elapsed_ms={NUMBER} native_callback_ms={NUMBER} main_held_ms={NUMBER} '
+     rf'stages=(?:{STAGE}:[0-9]{{1,15}}(?:;{STAGE}:[0-9]{{1,15}}){{0,63}})?'
+ )
+@@ -36,6 +36,13 @@
+     r'event=(?:source_requested|source_native_callback|source_main_callback|source_controller_callback|render_enqueued|render_begin|render_end|display_accepted|display_rejected|source_refused) '
+     rf'elapsed_ms={NUMBER} main_thread=(?:true|false) outcome=(?:none|success|unavailable|stale|runtime_invalidLimits|runtime_budget|runtime_unavailable|runtime_stale|runtime_invalidRetainedState)'
+ )
++# These are observation markers, not XCTest outcomes or complete owner-drain proof.
++# Older logs reused drain_complete for distinct callback/wait locations.
++PHASE_EVENT_SEMANTICS = {
++    'drain_complete': 'legacy_ambiguous_not_full_controller_drain',
++    'native_discard_acknowledged': 'native_backend_callback_not_full_controller_drain',
++    'controller_drain_wait_finished': 'wait_returned_not_successful_controller_drain_proof',
++}
+ PREFIXES = {'phase': b'SEATED_CANDIDATE_PHASE ',
+             'worker': b'SEATED_CANDIDATE_WORKER ',
+             'source': b'SEATED_CANDIDATE_SOURCE '}
+@@ -59,7 +66,7 @@
+             record_limit=RECORD_LIMIT, source_record_limit=SOURCE_RECORD_LIMIT):
+     counts = {kind: 0 for kind in PREFIXES}
+     dropped = {kind: 0 for kind in PREFIXES}
+-    rejected = consumed = 0
++    rejected = consumed = legacy_emitted = 0
+     oversized = unterminated = False
+     while consumed < input_limit:
+         raw = stream.readline(min(line_limit + 1, input_limit - consumed))
+@@ -87,6 +94,8 @@
+         elif counts[kind] < (source_record_limit if kind == 'source' else record_limit):
+             emit(line)
+             counts[kind] += 1
++            if kind == 'phase' and PHASE.fullmatch(line)['event'] == 'drain_complete':
++                legacy_emitted += 1
+         else:
+             dropped[kind] += 1
+     budget_reached = consumed >= input_limit
+@@ -96,7 +105,10 @@
+             'scan_budget_reached': budget_reached, 'unterminated_input': unterminated,
+             'status': ('unavailable' if not any(counts.values()) else
+                        'partial' if incomplete else 'observed'),
+-            'test_outcome': 'not_inferred', 'physical_authority': False}
++            'test_outcome': 'not_inferred', 'physical_authority': False,
++            'full_controller_drain': 'not_inferred',
++            'legacy_ambiguous_phase_records_emitted': legacy_emitted,
++            'phase_event_semantics': dict(PHASE_EVENT_SEMANTICS)}
+ 
+ 
+ def main():
+@@ -113,7 +125,8 @@
+         # Never include an arbitrary OS/parser message or private path.
+         summary = {'schema': 1, 'status': 'unavailable',
+                    'error_type': type(error).__name__, 'test_outcome': 'not_inferred',
+-                   'physical_authority': False}
++                   'physical_authority': False, 'full_controller_drain': 'not_inferred',
++                   'phase_event_semantics': dict(PHASE_EVENT_SEMANTICS)}
+     print('SEATED_CANDIDATE_TIMING_SUMMARY=' + json.dumps(summary, separators=(',', ':'), sort_keys=True))
+ 
+ 
+--- a/tools/ci/test_extract_seated_candidate_timing.py
++++ b/tools/ci/test_extract_seated_candidate_timing.py
+@@ -16,6 +16,9 @@
+ PHASE = (f'SEATED_CANDIDATE_PHASE id={ID} event=happy_wait_finished '
+          'elapsed_ms=10000 native_callback_ms=-1 main_held_ms=-1 '
+          'stages=requestEnqueued:0;workerStarted:14;nativeBuildBegin:15')
++NATIVE_ACK = PHASE.replace('happy_wait_finished', 'native_discard_acknowledged')
++CONTROLLER_WAIT = PHASE.replace('happy_wait_finished', 'controller_drain_wait_finished')
++LEGACY_DRAIN = PHASE.replace('happy_wait_finished', 'drain_complete')
+ WORKER = (f'SEATED_CANDIDATE_WORKER id={ID} worker_begin_ms=14 '
+           'worker_wall_ms=1 worker_cpu_us=-1 worker_pair_valid=false '
+           'build_wall_ms=0 build_cpu_us=0 build_pair_valid=true '
+@@ -44,8 +47,9 @@
+         self.assertEqual(summary['test_outcome'], 'not_inferred')
+         self.assertFalse(summary['physical_authority'])
+ 
+-    def test_all_three_closed_phase_events(self):
+-        for event in ['happy_wait_finished', 'rejection_wait_finished', 'drain_complete']:
++    def test_all_five_closed_phase_events(self):
++        for event in ['happy_wait_finished', 'rejection_wait_finished', 'drain_complete',
++                      'native_discard_acknowledged', 'controller_drain_wait_finished']:
+             line = PHASE.replace('happy_wait_finished', event)
+             self.assertEqual(self.collect(line + '\n')[0], [line])
+ 
+@@ -158,7 +162,7 @@
+                      'synthetic "$3" "$4" || status=$?\nexit "$status"\n')
+         with tempfile.TemporaryDirectory() as folder:
+             source = Path(folder) / 'synthetic-input.txt'
+-            source.write_text(PHASE + '\n' + WORKER + '\n' + SOURCE + '\n' + 'unrelated later output\n' * 200)
++            source.write_text(PHASE + '\n' + NATIVE_ACK + '\n' + CONTROLLER_WAIT + '\n' + LEGACY_DRAIN + '\n' + WORKER + '\n' + SOURCE + '\n' + 'unrelated later output\n' * 200)
+             return subprocess.run(['bash', '-c', wrapper, 'synthetic', folder, label, str(source), str(code)],
+                                   cwd=ROOT, capture_output=True, text=True, timeout=10)
+ 
+@@ -168,6 +172,9 @@
+         self.assertIn(PHASE, result.stdout)
+         self.assertIn(WORKER, result.stdout)
+         self.assertIn(SOURCE, result.stdout)
++        self.assertIn(NATIVE_ACK, result.stdout)
++        self.assertIn(CONTROLLER_WAIT, result.stdout)
++        self.assertIn('legacy_ambiguous_not_full_controller_drain', result.stdout)
+ 
+     def test_actual_shell_failure_preserves_nonzero_exit_and_records(self):
+         result = self.shell_result(65)
+@@ -175,6 +182,9 @@
+         self.assertIn(PHASE, result.stdout)
+         self.assertIn(WORKER, result.stdout)
+         self.assertIn(SOURCE, result.stdout)
++        self.assertIn(NATIVE_ACK, result.stdout)
++        self.assertIn(CONTROLLER_WAIT, result.stdout)
++        self.assertIn('legacy_ambiguous_not_full_controller_drain', result.stdout)
+ 
+     def test_extractor_failure_cannot_change_test_success_or_failure(self):
+         for code in [0, 65]:
+@@ -251,5 +261,68 @@
+         self.assertFalse(summary['physical_authority'])
+ 
+ 
++    def test_native_discard_callback_is_not_full_controller_drain(self):
++        output, summary = self.collect(NATIVE_ACK + '\n')
++        self.assertEqual(output, [NATIVE_ACK])
++        self.assertEqual(summary['phase_event_semantics']['native_discard_acknowledged'],
++                         'native_backend_callback_not_full_controller_drain')
++        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
++        self.assertEqual(summary['test_outcome'], 'not_inferred')
++
++    def test_controller_wait_return_does_not_assert_wait_success(self):
++        output, summary = self.collect(CONTROLLER_WAIT + '\n')
++        self.assertEqual(output, [CONTROLLER_WAIT])
++        self.assertEqual(summary['phase_event_semantics']['controller_drain_wait_finished'],
++                         'wait_returned_not_successful_controller_drain_proof')
++        self.assertEqual(summary['status'], 'observed')
++        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
++        self.assertEqual(summary['test_outcome'], 'not_inferred')
++
++    def test_legacy_drain_is_explicitly_ambiguous_not_complete(self):
++        output, summary = self.collect(LEGACY_DRAIN + '\n')
++        self.assertEqual(output, [LEGACY_DRAIN])
++        self.assertEqual(summary['legacy_ambiguous_phase_records_emitted'], 1)
++        self.assertEqual(summary['phase_event_semantics']['drain_complete'],
++                         'legacy_ambiguous_not_full_controller_drain')
++        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
++
++    def test_mixed_native_wait_legacy_markers_keep_values_and_distinct_meanings(self):
++        records = [NATIVE_ACK, CONTROLLER_WAIT, LEGACY_DRAIN]
++        output, summary = self.collect('\n'.join(records) + '\n')
++        self.assertEqual(output, records)
++        self.assertEqual(summary['records']['phase'], 3)
++        self.assertEqual(summary['legacy_ambiguous_phase_records_emitted'], 1)
++        self.assertEqual(len(summary['phase_event_semantics']), 3)
++
++    def test_new_event_spellings_and_case_are_closed(self):
++        for event in ['native_discard_complete', 'controller_drain_complete',
++                      'native_discard_acknowledged_success', 'Native_Discard_Acknowledged',
++                      'controller_drain_wait_finished_success']:
++            with self.subTest(event=event):self.reject(PHASE.replace('happy_wait_finished', event))
++
++    def test_new_events_reject_success_drain_geometry_or_error_fields(self):
++        for line in [NATIVE_ACK, CONTROLLER_WAIT]:
++            for field in [' controller_drained=true', ' success=true', ' geometry=1,2,3', ' error=private']:
++                with self.subTest(line=line, field=field):self.reject(line + field)
++
++    def test_new_phase_names_are_not_source_event_extensions(self):
++        for event in ['native_discard_acknowledged', 'controller_drain_wait_finished']:
++            with self.subTest(event=event):self.reject(SOURCE.replace('source_requested', event))
++
++    def test_new_markers_keep_missing_numeric_values_unknown(self):
++        line = CONTROLLER_WAIT.split('stages=')[0].replace(ID, 'none').replace('elapsed_ms=10000', 'elapsed_ms=-1') + 'stages='
++        output, summary = self.collect(line + '\n')
++        self.assertEqual(output, [line])
++        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
++        self.assertFalse(summary['physical_authority'])
++
++    def test_legacy_counter_counts_only_emitted_bounded_records(self):
++        output, summary = self.collect((LEGACY_DRAIN + '\n') * 33 + WORKER + '\n')
++        self.assertEqual(summary['records']['phase'], M.RECORD_LIMIT)
++        self.assertEqual(summary['legacy_ambiguous_phase_records_emitted'], M.RECORD_LIMIT)
++        self.assertEqual(summary['dropped_valid_records']['phase'], 1)
++        self.assertEqual(summary['records']['worker'], 1)
++        self.assertEqual(summary['status'], 'partial')
++
+ if __name__ == '__main__':
+     unittest.main()
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -475,8 +475,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+-      "bytes": 35056,
+-      "sha256": "e77513abc9c6dce969cd3024e86ce029ec52f1761df55a9e1df6f69a5727b008"
++      "bytes": 35593,
++      "sha256": "ff2de465ab6ec2b6ccbab11f548fac5ece5247c7f29e6237d23654c10d174657"
+     },
+     {
+       "path": ".github/workflows/native-apple.yml",
+@@ -717,6 +717,16 @@
+       "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
+       "bytes": 812,
+       "sha256": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
++    },
++    {
++      "path": "tools/ci/extract-seated-candidate-timing.py",
++      "bytes": 6818,
++      "sha256": "e66e9abfe3f7d8398430992785268f8711afdef2211d607dc8cb4fd26cee2866"
++    },
++    {
++      "path": "tools/ci/test_extract_seated_candidate_timing.py",
++      "bytes": 17921,
++      "sha256": "3cdc44c19bccf756c3025ffcfee74a902fc0e3006a9b77d5a9c2af4794a62e30"
+     }
+   ],
+   "changes": [
+@@ -928,5 +938,10 @@
+     "baseCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
+     "status": "source_only_native_unexecuted",
+     "scope": "exact unit-target-only default-project exception and separately labelled historical EDT source view; preserve7bb failures"
++  },
++  "seated_expectation_ownership_repair": {
++    "baseCommit": "e418290ac2a70f93c4250bb094091082408f7093",
++    "status": "source_only_native_unexecuted",
++    "scope": "standalone cleanup expectation ownership and admitted audit stages; preserve e418 real runtime failures"
+   }
+ }

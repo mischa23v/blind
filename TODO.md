@@ -1,3 +1,15 @@
+## Current N00 integration work — 2026-10-30 06:18 UTC
+
+Source readiness and the same-source independent collision bridge are implemented in the diagnostic-only app at `e418290ac2a70f93c4250bb094091082408f7093`; do not repeat these as unstarted source tasks. N00 remains open.
+
+1. Preserve the exact e418 **18-case result: 14 passed, four controller methods failed with 12 issues**, including real source/query/render/drain failures; all four authored collider cases passed. Review/publish and validate the narrow cleanup-expectation/timing-label repair, then diagnose the still-unresolved runtime delays. Keep all 13 preceding cases and failures/skips/non-execution separately; do not infer full-app acceptance. The actual SceneKit delay is unresolved; keep visual, source/query and full-drain checks separate.
+2. Continue existing **R09/R15 frame identities**, not a new hierarchy: connect a real selected catalog destination/artifact to the actual recovered or measured registered source and strict-query/audit consumer. Names, GPS or equal coordinates cannot invent that association.
+3. Keep support/current hazards, localization/heading, checked connectors, floor/door transitions, deviation/return/restart and device journeys open in their established order. No physical authority from diagnostic receipts; 400 journeys and participant acceptance remain unfinished.
+
+[Source evidence](research/seated-independent-collision-bridge-20261030/README.md), [preserved 7bb failure/repairs](research/apple-preflight-edt-repair-20261030/README.md), [existing N00 tracker](research/tracker-reconciliation-20261028/TRACKER.json). Earlier dated entries remain history; this supersedes older pending-source descriptions, not recorded failures.
+
+---
+
 ## Height-following terminal audit — 2026-10-30 02:39 UTC
 
 - [x] Complete and independently audit compact attempt 002 (`0a1a59cd580239a52939f5cdc9642cc608ece425`): all 3,696 native events, 29,568 collision records, unchanged 101 inputs, three zero exits and retired process groups.

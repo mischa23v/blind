@@ -16,6 +16,9 @@ ID = '12345678-1234-4ABC-8DEF-123456789ABC'
 PHASE = (f'SEATED_CANDIDATE_PHASE id={ID} event=happy_wait_finished '
          'elapsed_ms=10000 native_callback_ms=-1 main_held_ms=-1 '
          'stages=requestEnqueued:0;workerStarted:14;nativeBuildBegin:15')
+NATIVE_ACK = PHASE.replace('happy_wait_finished', 'native_discard_acknowledged')
+CONTROLLER_WAIT = PHASE.replace('happy_wait_finished', 'controller_drain_wait_finished')
+LEGACY_DRAIN = PHASE.replace('happy_wait_finished', 'drain_complete')
 WORKER = (f'SEATED_CANDIDATE_WORKER id={ID} worker_begin_ms=14 '
           'worker_wall_ms=1 worker_cpu_us=-1 worker_pair_valid=false '
           'build_wall_ms=0 build_cpu_us=0 build_pair_valid=true '
@@ -44,8 +47,9 @@ class ExtractorTests(unittest.TestCase):
         self.assertEqual(summary['test_outcome'], 'not_inferred')
         self.assertFalse(summary['physical_authority'])
 
-    def test_all_three_closed_phase_events(self):
-        for event in ['happy_wait_finished', 'rejection_wait_finished', 'drain_complete']:
+    def test_all_five_closed_phase_events(self):
+        for event in ['happy_wait_finished', 'rejection_wait_finished', 'drain_complete',
+                      'native_discard_acknowledged', 'controller_drain_wait_finished']:
             line = PHASE.replace('happy_wait_finished', event)
             self.assertEqual(self.collect(line + '\n')[0], [line])
 
@@ -158,7 +162,7 @@ class ExtractorTests(unittest.TestCase):
                      'synthetic "$3" "$4" || status=$?\nexit "$status"\n')
         with tempfile.TemporaryDirectory() as folder:
             source = Path(folder) / 'synthetic-input.txt'
-            source.write_text(PHASE + '\n' + WORKER + '\n' + SOURCE + '\n' + 'unrelated later output\n' * 200)
+            source.write_text(PHASE + '\n' + NATIVE_ACK + '\n' + CONTROLLER_WAIT + '\n' + LEGACY_DRAIN + '\n' + WORKER + '\n' + SOURCE + '\n' + 'unrelated later output\n' * 200)
             return subprocess.run(['bash', '-c', wrapper, 'synthetic', folder, label, str(source), str(code)],
                                   cwd=ROOT, capture_output=True, text=True, timeout=10)
 
@@ -168,6 +172,9 @@ class ExtractorTests(unittest.TestCase):
         self.assertIn(PHASE, result.stdout)
         self.assertIn(WORKER, result.stdout)
         self.assertIn(SOURCE, result.stdout)
+        self.assertIn(NATIVE_ACK, result.stdout)
+        self.assertIn(CONTROLLER_WAIT, result.stdout)
+        self.assertIn('legacy_ambiguous_not_full_controller_drain', result.stdout)
 
     def test_actual_shell_failure_preserves_nonzero_exit_and_records(self):
         result = self.shell_result(65)
@@ -175,6 +182,9 @@ class ExtractorTests(unittest.TestCase):
         self.assertIn(PHASE, result.stdout)
         self.assertIn(WORKER, result.stdout)
         self.assertIn(SOURCE, result.stdout)
+        self.assertIn(NATIVE_ACK, result.stdout)
+        self.assertIn(CONTROLLER_WAIT, result.stdout)
+        self.assertIn('legacy_ambiguous_not_full_controller_drain', result.stdout)
 
     def test_extractor_failure_cannot_change_test_success_or_failure(self):
         for code in [0, 65]:
@@ -250,6 +260,69 @@ class ExtractorTests(unittest.TestCase):
         self.assertEqual(summary['test_outcome'], 'not_inferred')
         self.assertFalse(summary['physical_authority'])
 
+
+    def test_native_discard_callback_is_not_full_controller_drain(self):
+        output, summary = self.collect(NATIVE_ACK + '\n')
+        self.assertEqual(output, [NATIVE_ACK])
+        self.assertEqual(summary['phase_event_semantics']['native_discard_acknowledged'],
+                         'native_backend_callback_not_full_controller_drain')
+        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
+        self.assertEqual(summary['test_outcome'], 'not_inferred')
+
+    def test_controller_wait_return_does_not_assert_wait_success(self):
+        output, summary = self.collect(CONTROLLER_WAIT + '\n')
+        self.assertEqual(output, [CONTROLLER_WAIT])
+        self.assertEqual(summary['phase_event_semantics']['controller_drain_wait_finished'],
+                         'wait_returned_not_successful_controller_drain_proof')
+        self.assertEqual(summary['status'], 'observed')
+        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
+        self.assertEqual(summary['test_outcome'], 'not_inferred')
+
+    def test_legacy_drain_is_explicitly_ambiguous_not_complete(self):
+        output, summary = self.collect(LEGACY_DRAIN + '\n')
+        self.assertEqual(output, [LEGACY_DRAIN])
+        self.assertEqual(summary['legacy_ambiguous_phase_records_emitted'], 1)
+        self.assertEqual(summary['phase_event_semantics']['drain_complete'],
+                         'legacy_ambiguous_not_full_controller_drain')
+        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
+
+    def test_mixed_native_wait_legacy_markers_keep_values_and_distinct_meanings(self):
+        records = [NATIVE_ACK, CONTROLLER_WAIT, LEGACY_DRAIN]
+        output, summary = self.collect('\n'.join(records) + '\n')
+        self.assertEqual(output, records)
+        self.assertEqual(summary['records']['phase'], 3)
+        self.assertEqual(summary['legacy_ambiguous_phase_records_emitted'], 1)
+        self.assertEqual(len(summary['phase_event_semantics']), 3)
+
+    def test_new_event_spellings_and_case_are_closed(self):
+        for event in ['native_discard_complete', 'controller_drain_complete',
+                      'native_discard_acknowledged_success', 'Native_Discard_Acknowledged',
+                      'controller_drain_wait_finished_success']:
+            with self.subTest(event=event):self.reject(PHASE.replace('happy_wait_finished', event))
+
+    def test_new_events_reject_success_drain_geometry_or_error_fields(self):
+        for line in [NATIVE_ACK, CONTROLLER_WAIT]:
+            for field in [' controller_drained=true', ' success=true', ' geometry=1,2,3', ' error=private']:
+                with self.subTest(line=line, field=field):self.reject(line + field)
+
+    def test_new_phase_names_are_not_source_event_extensions(self):
+        for event in ['native_discard_acknowledged', 'controller_drain_wait_finished']:
+            with self.subTest(event=event):self.reject(SOURCE.replace('source_requested', event))
+
+    def test_new_markers_keep_missing_numeric_values_unknown(self):
+        line = CONTROLLER_WAIT.split('stages=')[0].replace(ID, 'none').replace('elapsed_ms=10000', 'elapsed_ms=-1') + 'stages='
+        output, summary = self.collect(line + '\n')
+        self.assertEqual(output, [line])
+        self.assertEqual(summary['full_controller_drain'], 'not_inferred')
+        self.assertFalse(summary['physical_authority'])
+
+    def test_legacy_counter_counts_only_emitted_bounded_records(self):
+        output, summary = self.collect((LEGACY_DRAIN + '\n') * 33 + WORKER + '\n')
+        self.assertEqual(summary['records']['phase'], M.RECORD_LIMIT)
+        self.assertEqual(summary['legacy_ambiguous_phase_records_emitted'], M.RECORD_LIMIT)
+        self.assertEqual(summary['dropped_valid_records']['phase'], 1)
+        self.assertEqual(summary['records']['worker'], 1)
+        self.assertEqual(summary['status'], 'partial')
 
 if __name__ == '__main__':
     unittest.main()

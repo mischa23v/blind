@@ -16,20 +16,31 @@
     {
       "id": "N00",
       "title": "Connected recorded build/replay before live phone handoff",
-      "state": "NEXT_IMPLEMENTABLE_INTEGRATION",
+      "state": "PARTIAL_DIAGNOSTIC_SOURCE_APPLE_FAILED",
       "evidence": [
         "ios/BlindAssist/NavigationModel.swift",
         "ios/BlindAssist/NativeLocalizationIssuer.swift",
         "ios/BlindAssist/NativeLocalizationRouter.swift",
         "ios/BlindAssist/IndoorNavigator.swift",
         "ios/BlindAssist/ConnectedJourneyRuntime.swift",
-        "ios/BlindAssist/NativeMapping.swift"
+        "ios/BlindAssist/NativeMapping.swift",
+        "research/seated-body-foot-candidate-20261030/SOURCE_READINESS_SPLIT.md",
+        "research/seated-independent-collision-bridge-20261030/README.md",
+        "research/apple-preflight-edt-repair-20261030/README.md"
       ],
       "depends_on": [
         "N01"
       ],
-      "next_test": "One pinned room hierarchy and registered installation through real native owner/planner. Fixture-only supplied pose/support into separate bench sink, code-owned route/current hazard/output lifecycle. Wrong hierarchy/revision/session, tracking loss, return and blocked path negatives. No live speaker, no physical release, no new LLM directions. Do not wait for physical trials to finish this connected build.",
-      "current_owner": "root-next-integration-selection"
+      "next_test": "Preserve exact e418 18-case failure accounting; validate the cleanup-expectation/timing-label repair and diagnose/fix observed runtime integration failures without removing original visual/ownership assertions. Actual SceneKit delay remains unresolved. Then continue existing R09/R15 frame identities: bind a real catalog destination/artifact to the exact recovered/registered source and actual strict planner/audit. Missing association, changed revision/session, tracking loss, return and blocked paths must refuse. Map hierarchy/journeys, localization/support/hazards and device acceptance remain open; no live speaker or physical release.",
+      "current_owner": "root-integration-and-Apple-evidence",
+      "checkpoint": {
+        "as_of": "2026-10-30T06:18:00Z",
+        "source_commit": "e418290ac2a70f93c4250bb094091082408f7093",
+        "scope": "Diagnostic-only source readiness and same-source collision bridge implemented; N00 remains incomplete.",
+        "portable_evidence": "84 bridge controls and 68 later preflight/historical-comparator controls; not native app outcomes.",
+        "apple_acceptance": "Exact e418 focused selection: 18 methods executed, 14 passed, 4 controller methods failed with 12 issues; all 4 authored collider fixtures passed. All 13 prior methods retained. Cleanup expectation/timing-label repair is source-only; real runtime failures remain. Failed 7bb preflight and c1 non-execution preserved.",
+        "physical_authority": false
+      }
     },
     {
       "id": "N02",

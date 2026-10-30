@@ -1,0 +1,55 @@
+{
+  "official_archive_url": "https://developer.apple.com/tutorials/3e2b731b0ef7/MergingMultipleScansIntoASingleStructure.zip",
+  "official_archive_bytes": 2878214,
+  "official_archive_sha256": "135cf2ae9c415723f9f32c31a130b4ce9efced61b3e22f50858785a4323d66a1",
+  "official_page": "https://developer.apple.com/documentation/roomplan/merging-multiple-scans-into-a-single-structure",
+  "prescanned_room_provenance": "https://developer.apple.com/documentation/roomplan/scanning-the-rooms-of-a-single-structure",
+  "license": {
+    "file": "APPLE-LICENSE.txt",
+    "archive_member": "LICENSE.txt",
+    "copyright": "2025 Apple Inc.",
+    "sha256": "ef80d1c2ac05c7040c0ced9d603c2c359712f90fdb3ece8da70b976981a69e89",
+    "git_blob_sha1": "de2de43e470509bf758c4c02f621f6cf3c6f2c07",
+    "note": "MIT-style text. Official archive copyright year 2025 differs from pinned 2023 mirror; selected JSON bytes match mirror exactly."
+  },
+  "fixtures": [
+    {
+      "file": "Hallway2.capturedRoom.json",
+      "archive_member": "RoomPlanMultiscanMerging/MyHome/Hallway2/capturedRoom.json",
+      "bytes": 27575,
+      "sha256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "git_blob_sha1": "ed76e281c404b6c2353f9c2fcdb3ccb7cf5404ab",
+      "version": 2,
+      "story": 0,
+      "counts": {
+        "walls": 6,
+        "doors": 6,
+        "floors": 1,
+        "windows": 0,
+        "openings": 0,
+        "objects": 0
+      },
+      "mirror_commit": "cc5cb5fa1cd177b626a774f4b79846bc2fb00cb0",
+      "mirror_url": "https://github.com/gromb57/ios-wwdc23__MergingMultipleScansIntoASingleStructure/blob/cc5cb5fa1cd177b626a774f4b79846bc2fb00cb0/RoomPlanMultiscanMerging/MyHome/Hallway2/capturedRoom.json"
+    },
+    {
+      "file": "Bedroom3.capturedRoom.json",
+      "archive_member": "RoomPlanMultiscanMerging/MyHome/Bedroom3/capturedRoom.json",
+      "bytes": 69516,
+      "sha256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "git_blob_sha1": "73fe91cd708709707dc72c77dca293717d92ec38",
+      "version": 2,
+      "story": 0,
+      "counts": {
+        "walls": 4,
+        "doors": 2,
+        "floors": 1,
+        "windows": 1,
+        "openings": 0,
+        "objects": 3
+      },
+      "mirror_commit": "cc5cb5fa1cd177b626a774f4b79846bc2fb00cb0",
+      "mirror_url": "https://github.com/gromb57/ios-wwdc23__MergingMultipleScansIntoASingleStructure/blob/cc5cb5fa1cd177b626a774f4b79846bc2fb00cb0/RoomPlanMultiscanMerging/MyHome/Bedroom3/capturedRoom.json"
+    }
+  ]
+}

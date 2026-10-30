@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "runId": 41011080206,
+  "jobId": 123916858097,
+  "workflowCommit": "e418290ac2a70f93c4250bb094091082408f7093",
+  "conclusion": "success",
+  "provenance": {
+    "actualCheckoutAuthorizationPreserved": true,
+    "actualWorkflowCommit": "e418290ac2a70f93c4250bb094091082408f7093",
+    "allHistoricalInputsVerified": true,
+    "appActivation": false,
+    "candidateRequestsUnchanged": 25,
+    "checkoutMatchedInputCount": 55,
+    "compileFlagAdded": false,
+    "currentNativeSourceCompared": false,
+    "generatedRunnerSHA256": "b4ae96f522f4fac1ea3668c16e2da093d1a33a048e2d283ca597adc45dbe9c16",
+    "historicalInputCount": 58,
+    "historicalInputViewSHA256": "9bbccec88727a02b8971eccb92a4236822549f8cc579e65c1fa7ebbf6d06e727",
+    "historicalOverrideCount": 3,
+    "historicalPinManifestSHA256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b",
+    "historicalProtocolCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d",
+    "historicalRunnerSHA256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f",
+    "nativeHookChecksRequired": 51,
+    "originalControlsRequired": 50,
+    "physicalAuthority": false,
+    "runnerReverseByteIdentical": true,
+    "schema": 1,
+    "verifyAllInputsBeforeEveryCommand": true
+  },
+  "receipts": [
+    {
+      "availability": "present",
+      "bytes": 81271,
+      "metadata": {
+        "all50OriginalControlsReproduced": true,
+        "appActivation": false,
+        "candidateGoalsMet": true,
+        "nativeHookChecks": {
+          "checks": 51,
+          "passed": 51,
+          "physicalAuthority": false,
+          "schema": 1
+        },
+        "physicalAuthority": false,
+        "resultSHA256": "4debf8286fd2fc2892767fb3ded89e836909730f3f6cd2bc1806490505f1521a",
+        "schema": 1,
+        "sourceCommit": "e418290ac2a70f93c4250bb094091082408f7093",
+        "status": "fixed-public-fixture-edt-candidate-met-declared-goals"
+      },
+      "path": "blind-edt-navigation-probe/receipt.json",
+      "sha256": "fa274bdb1e8829767bd83fa475b210fda542faf6f93fab7992211342fca9ff99"
+    },
+    {
+      "availability": "present",
+      "bytes": 385447,
+      "metadata": {
+        "all50OriginalControlsReproduced": true,
+        "appActivation": false,
+        "candidateExecuted": true,
+        "candidateGoalsMet": true,
+        "candidateRequests": 25,
+        "physicalAuthority": false,
+        "schema": "blind.public-fixed-full-layer-edt-navigation.v1",
+        "status": "fixed-public-fixture-edt-candidate-met-declared-goals"
+      },
+      "path": "blind-edt-navigation-probe/RESULT.json",
+      "sha256": "4debf8286fd2fc2892767fb3ded89e836909730f3f6cd2bc1806490505f1521a"
+    }
+  ],
+  "artifacts": [],
+  "artifactUploadStep": "skipped",
+  "fullResultBytesRetrieved": false,
+  "fullReceiptBytesRetrieved": false,
+  "source": "GitHub terminal job log with bounded receipt metadata; terminal artifact API",
+  "interpretation": "Historical fixed public Apple saved parametric room comparator with supplied route requests/body profiles; not current optional veto/envelope source, device navigation or safety acceptance",
+  "nativeRerunPerformedByMonitor": false
+}

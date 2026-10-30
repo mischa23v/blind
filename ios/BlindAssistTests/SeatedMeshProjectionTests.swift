@@ -123,7 +123,8 @@ final class SeatedMeshProjectionTests: XCTestCase {
 
     @MainActor func testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding() async throws {
         let backend = try SeatedCandidateFixtureBackend()
-        let ownerDrained=expectation(description:"seated controller ownership drained")
+        let ownerDrained=XCTestExpectation(description:"seated controller ownership drained")
+        ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
         let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{ownerDrained.fulfill()})
         addTeardownBlock {
             let drained = XCTestExpectation(description: "seated native teardown drained")
@@ -185,7 +186,8 @@ final class SeatedMeshProjectionTests: XCTestCase {
     @MainActor func testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange() async throws {
         for retireSource in [false,true] {
             let backend = try SeatedCandidateFixtureBackend()
-            let ownerDrained=expectation(description:"seated rejection controller ownership drained")
+            let ownerDrained=XCTestExpectation(description:"seated rejection controller ownership drained")
+            ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
             var stopped=false
             let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{stopped=true;ownerDrained.fulfill()})
             addTeardownBlock {
@@ -222,7 +224,8 @@ final class SeatedMeshProjectionTests: XCTestCase {
 
     @MainActor func testActualSourceAndStrictQueryCompleteWhileOptionalRenderIsHeld() async throws {
         let backend=try SeatedCandidateFixtureBackend()
-        let ownerDone=expectation(description:"held-render controller ownership drained")
+        let ownerDone=XCTestExpectation(description:"held-render controller ownership drained")
+        ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
         var stopped=false
         let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
         let hold=DispatchSemaphore(value:0)
@@ -232,7 +235,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
                 DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}
             }}
             await self.fulfillment(of:[ownerDone],timeout:10)
-            await MainActor.run {backend.printTiming(event:"drain_complete")}
+            await MainActor.run {backend.printTiming(event:"controller_drain_wait_finished")}
         }
         controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
         let entered=expectation(description:"optional render worker held")
@@ -275,7 +278,8 @@ final class SeatedMeshProjectionTests: XCTestCase {
     @MainActor func testActualAuditRetirementAndDisposalAfterRealOracleProgress() async throws {
         for retirement in ["source","capture","edit","stop"] {
             let backend=try SeatedCandidateFixtureBackend(),gate=SeatedAuditProgressGate()
-            let ownerDone=expectation(description:"audit owner drained \(retirement)")
+            let ownerDone=XCTestExpectation(description:"audit owner drained \(retirement)")
+            ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
             var stopped=false,progressed=false
             let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
             let renderHold=DispatchSemaphore(value:0)
@@ -289,15 +293,6 @@ final class SeatedMeshProjectionTests: XCTestCase {
             }
             controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
             controller.enqueueSyntheticDisplayWorkForTesting(work:{},afterEnqueue:{renderHold.wait()},delivered:{})
-            let actualProgress=expectation(description:"real oracle raw sweep completed \(retirement)")
-            let auditDone=expectation(description:"audit copies disposed \(retirement)")
-            controller.onCollisionDrainedForTesting={auditDone.fulfill()}
-            controller.collisionProgressForTesting={progress in
-                if !progressed {
-                    XCTAssertEqual(progress.envelope,"raw");progressed=true;actualProgress.fulfill()
-                    await gate.wait()
-                }
-            }
             try controller.activate()
             await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.hasCurrentSourceForTesting},object:nil)],timeout:10)
             guard controller.hasCurrentSourceForTesting else {XCTFail("No admitted source");return}
@@ -307,6 +302,16 @@ final class SeatedMeshProjectionTests: XCTestCase {
                 declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1")
             await fulfillment(of:[nativeReady],timeout:10)
             _=try XCTUnwrap(backend.heldResult).get()
+            let actualProgress=expectation(description:"real oracle raw sweep completed \(retirement)")
+            let auditDone=XCTestExpectation(description:"audit copies disposed \(retirement)")
+            auditDone.assertForOverFulfill=true
+            controller.onCollisionDrainedForTesting={auditDone.fulfill()}
+            controller.collisionProgressForTesting={progress in
+                if !progressed {
+                    XCTAssertEqual(progress.envelope,"raw");progressed=true;actualProgress.fulfill()
+                    await gate.wait()
+                }
+            }
             backend.release()
             await fulfillment(of:[actualProgress],timeout:10)
             guard progressed else {XCTFail("Oracle progress unavailable; not a passing retirement test");return}
@@ -396,7 +401,7 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     func stopAndDrain(_ completion: @escaping () -> Void) {
         stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
         ingress.stopAndDiscard { [self] in
-            printTiming(event: "drain_complete")
+            printTiming(event: "native_discard_acknowledged")
             completion()
         }
     }

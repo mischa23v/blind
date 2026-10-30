@@ -475,8 +475,8 @@
     },
     {
       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
-      "bytes": 35056,
-      "sha256": "e77513abc9c6dce969cd3024e86ce029ec52f1761df55a9e1df6f69a5727b008"
+      "bytes": 35593,
+      "sha256": "ff2de465ab6ec2b6ccbab11f548fac5ece5247c7f29e6237d23654c10d174657"
     },
     {
       "path": ".github/workflows/native-apple.yml",
@@ -717,6 +717,16 @@
       "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
       "bytes": 812,
       "sha256": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
+    },
+    {
+      "path": "tools/ci/extract-seated-candidate-timing.py",
+      "bytes": 6818,
+      "sha256": "e66e9abfe3f7d8398430992785268f8711afdef2211d607dc8cb4fd26cee2866"
+    },
+    {
+      "path": "tools/ci/test_extract_seated_candidate_timing.py",
+      "bytes": 17921,
+      "sha256": "3cdc44c19bccf756c3025ffcfee74a902fc0e3006a9b77d5a9c2af4794a62e30"
     }
   ],
   "changes": [
@@ -928,5 +938,10 @@
     "baseCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
     "status": "source_only_native_unexecuted",
     "scope": "exact unit-target-only default-project exception and separately labelled historical EDT source view; preserve7bb failures"
+  },
+  "seated_expectation_ownership_repair": {
+    "baseCommit": "e418290ac2a70f93c4250bb094091082408f7093",
+    "status": "source_only_native_unexecuted",
+    "scope": "standalone cleanup expectation ownership and admitted audit stages; preserve e418 real runtime failures"
   }
 }
