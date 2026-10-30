@@ -1,3 +1,15 @@
+## Next navigation work — 2026-10-30 01:16 UTC
+
+1. Materialize the already selected Coffee/conference real-room Rapier probes with exact source poses, headings, registered mesh bytes and original VTK body/margin evidence. Use unchanged profiles and both flags as a diagnostic comparison. Preserve unknown support, the analytic down-step failure and unsupported turns. Do not apply depenetration or treat a controller proposal as clearance.
+2. Diagnose the frozen Coffee held-out result: both selected camera origins were unknown in the unchanged three-frame OctoMap, leaving all 18,904 valid rays unscored and zero depth residuals. Use endpoint/observation coverage to design the next independently frozen comparison without inventing free-space origins or claiming depth accuracy. Preserve this unsuccessful scoring outcome. Camera-to-Polycam-mesh alignment remains separately unknown.
+3. Diagnose near-foot contacts and higher margin obstacles using independent representations/evidence. Review the [proposed multi-representation map plan](research/multi-representation-map-plan-20261030/README.md) before implementation; it is not an implemented repair. Do not flatten observed hazards or fill unknown support merely to admit routes.
+4. Retain all seven conference objectives and meaningful Coffee goals, then repeat unchanged full-body/full-support route acceptance after a demonstrated representation correction. Five of seven simplified conference routes still have nominal overlaps; all seven have margin overlaps. Fewer authored turns do not close this gate.
+5. Complete current localization/heading, live sensor freshness/hazards, deviation/return/restart, floor/door transitions, chair/bed rise, phone integration and whole-journey validation. No research-only result substitutes for these tasks or the 400 end-to-end journeys.
+
+App source remains c210ca8 and its full hosted/UI suites still contain failures. No new live caller is activated. Publish reviewed checkpoints with failures and exact source identities, then verify the remote; retain older dated entries below as history.
+
+---
+
 ## Next navigation work — 2026-10-29 22:42 UTC
 
 1. Run full-body/support diagnostics on the actual new Coffee joint-centered chain, not only the old 20 path proposals. Retain initial refusals and all contacts. The 20-path native floor-policy comparison exhausted its fixed 120 CPU-second budget; partial records cannot be reported as20 completed trials.

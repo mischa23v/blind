@@ -1,3 +1,16 @@
+## Actual navigation research checkpoint — 2026-10-30 01:16 UTC
+
+This checkpoint is research/evidence only. App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main and live guidance are unchanged. Earlier dated entries remain historical evidence.
+
+- Conference: all seven fixed route proposals were compared before and after released GEOS simplification. The complete body result is published at `8cd2459`. Authored events fell from 13,704 to 7,470, but nominal overlaps remain on five of seven routes and margin overlaps on all seven. Complete nominal triangle bounds remain near the authored foot plane (about -38 to +40 mm); margin contacts include higher geometry. Reduced events are not a safety/arrival improvement. See [complete result](research/conference-simplified-body-result-20261030/README.md).
+- Coffee: the new centered route retains zero nominal modeled-body contacts but margin contacts and a ground-follow refusal remain. This is not a demonstrated usable journey. Mesh-to-camera calibration is still missing; the official dataset explicitly says its Polycam mesh is not aligned with camera poses.
+- Released OctoMap read-only ray adapter: fresh build and all 38 controls passed (16 original, 22 new). The preceding compile failure is preserved. These are authored adapter controls. The subsequent frozen real-data run at source `a40cbd0` completed with the baseline map unchanged, but both held-out camera origins were unknown: all 18,904 valid rays were unscored and no depth residuals were obtained. Endpoint coverage is diagnostic evidence; depth accuracy was not tested/passed. See [ray controls](research/coffee-readonly-ray-controls-result-20261030/README.md) and retained held-out execution evidence.
+- Released Rapier controller: the complete analytic comparison ran all 72 wrapper checks / 108 rows / 104 controller calls. Two unchanged assertions failed, both on the margin-envelope 1 cm down-step; the aggregate remains failed. Both mesh-flag arms gave identical movement/grounded outputs across all 54 paired probes. This is not room-navigation accuracy. See [complete analytic result](research/rapier-analytic-collectall-result-20261030/README.md).
+
+Next are source-bound real-room controller diagnostics and diagnosis of held-out observation coverage, alongside the [proposed multi-representation map design](research/multi-representation-map-plan-20261030/README.md). No new floor exemption, obstacle removal, body/margin reduction, applied controller correction or physical authority follows. Original failed attempts remain retained. Apple c210ca8 hosted: 283 passed / 12 failed / 2 skipped; UI: 14 passed / 1 failed / 3 skipped. No device or child readiness claim.
+
+---
+
 ## Actual navigation research checkpoints — 2026-10-29 22:42 UTC
 
 Published and verified on codex/recovery-hazard-order-20261027 through f4683841e164ba54a92d22c42f990705ddfb3a5d. Main unchanged.

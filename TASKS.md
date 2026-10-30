@@ -1,3 +1,17 @@
+## Navigation acceptance checkpoint — 2026-10-30 01:16 UTC
+
+- [x] Complete the seven-objective conference GEOS simplification/body diagnostic, preserving every objective, source geometry and profile. Published result `8cd2459`: nominal contacts on five of seven routes; margin contacts on all seven. This closes the experiment, not navigation acceptance.
+- [x] Build and verify the released OctoMap read-only ray adapter: 16 original plus 22 added controls passed. Preserve the preceding failed compile. The subsequent frozen held-out run completed but produced no depth residuals: both camera origins were unknown and all 18,904 valid rays were unscored. Depth accuracy remains unestablished.
+- [x] Run the released Rapier analytic comparison to completion without tuning expectations: all 72 wrappers / 108 rows / 104 calls recorded; two margin down-step failures retained; aggregate failed. Neither flag arm demonstrated better movement/grounding on these fixtures.
+- [ ] Source-bound Coffee/conference real-room controller comparison, with exact mesh/probe/frame bindings and independent VTK hazard evidence. No applied corrections, supported-turn claim or physical clearance inference.
+- [ ] Diagnose held-out Coffee origin/coverage gaps and pre-register a meaningful comparison. The frozen 232/370 run produced zero scored depth residuals; retain unknown origins and every unscored ray rather than fabricate coverage. Do not conflate supplied-pose mapping with Polycam mesh registration.
+- [ ] Review and implement only evidence-supported parts of the [proposed multi-representation map plan](research/multi-representation-map-plan-20261030/README.md). The plan is proposed, not an implemented geometry correction.
+- [ ] Reliable full-body collision, full-footprint support, live localization/heading and hazards, room/door/floor transitions, post-rise route connection, deviation/return/restart, phone performance, supervised adult acceptance, 400 complete journeys and final reproducible review package.
+
+App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`. Apple hosted: 283 passed / 12 failed / 2 skipped; UI: 14 passed / 1 failed / 3 skipped. Main and live guidance unchanged. No child trial or physical navigation release is validated. Earlier dated sections are preserved historical checkpoints.
+
+---
+
 ## Navigation acceptance checkpoint — 2026-10-29 22:42 UTC
 
 - [x] Bounded Coffee 2D manual-exclusion comparator: new centered chain increases minimum extra manual-window residual 3.85→129.58mm for 0.264 m extra native-grid length; endpoints/profile/cap unchanged. All 143 complete-chain segments have two saved window checks. Manual rectangles are not measured table outlines; 3D/body/support acceptance remains open.
