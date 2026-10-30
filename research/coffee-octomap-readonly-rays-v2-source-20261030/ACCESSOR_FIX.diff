@@ -1,0 +1,60 @@
+--- failed-v1/readonly_rays.cpp
++++ v2/readonly_rays.cpp
+@@ -44,7 +44,7 @@
+ }
+ 
+ static bool safe_native_point(const Handle& h, const octomap::point3d& point) {
+-  for(int a=0;a<3;++a) if(!safe_native_coordinate(h,double(point[a]))) return false;
++  for(int a=0;a<3;++a) if(!safe_native_coordinate(h,double(point(a)))) return false;
+   return true;
+ }
+ 
+@@ -58,7 +58,7 @@
+   if (node) { out.probability=node->getOccupancy(); out.logOdds=node->getLogOdds(); }
+   auto it=h.evidence.find(packed(key));
+   if (it!=h.evidence.end()) { out.hitScans=it->second.hits; out.freeScans=it->second.frees; }
+-  for(int i=0;i<3;++i) out.center[i]=point[i];
++  for(int i=0;i<3;++i) out.center[i]=point(i);
+   return true;
+ }
+ 
+@@ -110,8 +110,8 @@
+       const octomap::point3d sensor(origin[0],origin[1],origin[2]);
+       const octomap::point3d direction(d[0],d[1],d[2]);
+       const auto normalized=direction.normalized();
+-      if(!std::isfinite(normalized[0]) || !std::isfinite(normalized[1]) ||
+-         !std::isfinite(normalized[2]) || normalized.norm()==0) { out.status=RAY_INVALID; continue; }
++      if(!std::isfinite(normalized(0)) || !std::isfinite(normalized(1)) ||
++         !std::isfinite(normalized(2)) || normalized.norm()==0) { out.status=RAY_INVALID; continue; }
+       octomap::OcTreeKey originKey;
+       if(!h.tree.coordToKeyChecked(sensor,originKey)) { out.status=RAY_BOUNDS_REJECTED; continue; }
+       auto* start=h.tree.search(originKey);
+@@ -126,9 +126,9 @@
+       double nativeCenterNorm2=0,centerProjection=0;
+       const double norm=std::sqrt(norm2);
+       for(int a=0;a<3;++a) {
+-        const double delta=double(end[a])-double(sensor[a]);
++        const double delta=double(end(a))-double(sensor(a));
+         // Match upstream's float subtraction/product before double accumulation.
+-        nativeCenterNorm2+=(end[a]-sensor[a])*(end[a]-sensor[a]);
++        nativeCenterNorm2+=(end(a)-sensor(a))*(end(a)-sensor(a));
+         centerProjection+=delta*double(d[a])/norm;
+       }
+       out.centerProjectedRange=centerProjection;
+@@ -146,13 +146,13 @@
+       }
+       double entryProjection=0; bool finite=true;
+       for(int a=0;a<3;++a) {
+-        finite=finite && std::isfinite(entry[a]);
+-        entryProjection+=(double(entry[a])-double(sensor[a]))*double(d[a])/norm;
++        finite=finite && std::isfinite(entry(a));
++        entryProjection+=(double(entry(a))-double(sensor(a)))*double(d[a])/norm;
+       }
+       if(!finite || !std::isfinite(entryProjection) || entryProjection<0) {
+         out.status=RAY_INTERSECTION_FAILED; continue;
+       }
+-      for(int a=0;a<3;++a) out.entry[a]=entry[a];
++      for(int a=0;a<3;++a) out.entry[a]=entry(a);
+       out.entryProjectedRange=entryProjection; out.status=RAY_HIT;
+     }
+     error.clear(); return 1;
