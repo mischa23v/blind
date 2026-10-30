@@ -1,0 +1,84 @@
+{
+  "status": "SOURCE_WORKER_GUARD_FROZEN_AST_PARSED_NOT_EXECUTED",
+  "files": {
+    "candidate.py": {
+      "bytes": 14795,
+      "sha256": "5f2e3ba0b87b8fe93a81b1298f34fd79c93a51f31cb88407f369e60fa193dbe2",
+      "astParsed": true
+    },
+    "contracts.py": {
+      "bytes": 10797,
+      "sha256": "34bf459e0ef5fdd98883f63f7196607368986c7fae855189ef3e9d2dea021639",
+      "astParsed": true
+    },
+    "freeze.py": {
+      "bytes": 5016,
+      "sha256": "baaeac9f91caa64f61582397279293ae46ef6255f76e2efaaa6ea6bf834e7fef",
+      "astParsed": true
+    },
+    "run_aggregate.py": {
+      "bytes": 17213,
+      "sha256": "1398745c03ca6884191982ecdb7893985fd4272853aaf7ea5fc4ed29ee498ef6",
+      "astParsed": true
+    },
+    "run_controls.py": {
+      "bytes": 2072,
+      "sha256": "99b514d180342dd3afc4aad812300c4950a21c8d8a4630f0b26fa4611dc357cb",
+      "astParsed": true
+    },
+    "run_pair.py": {
+      "bytes": 9801,
+      "sha256": "15e0317898bbb0c3015742a3c71c333f2d21bb6456eafbde6130c2c3511534dc",
+      "astParsed": true
+    },
+    "runtime.py": {
+      "bytes": 6116,
+      "sha256": "f34bd6c6f7131be4be5c48841b21fda9ed1910a725adcd9dffb0ee9e47a2e276",
+      "astParsed": true
+    },
+    "test_candidate.py": {
+      "bytes": 11019,
+      "sha256": "e3176a2a5d4ddbff80af94ed279847d372dfcf6bd051a1ac3d31f8362a7ea2a3",
+      "astParsed": true
+    }
+  },
+  "manifest": {
+    "file": "SOURCE_PINS.json",
+    "sha256": "d44748a362013322f5ad11ad8f30995b29d7e7021a294ce639f63b0c74c18caf",
+    "inputCount": 42
+  },
+  "preFinalReviewManifest": {
+    "file": "SOURCE_PINS.pre-final-review.json",
+    "sha256": "e44a949110004b25c6121cf59b1e48fbe63ea10e80a1c0fb5afd1f021dd79071",
+    "admittedOrExecuted": false,
+    "reasonSuperseded": "Added exact terminal result-to-manifest provenance equality check before admission"
+  },
+  "authoredControlsPrepared": 17,
+  "authoredControlsExecuted": false,
+  "sourceFreezeExecuted": true,
+  "geosImportedOrCalled": false,
+  "nativeRoutingExecuted": false,
+  "realRoomReadByAdapter": false,
+  "realSimplifiedCandidatesGenerated": 0,
+  "allManifestInputsStillMatch": true,
+  "baselineBodyFilesModified": false,
+  "sourceBoundWorkerPrepared": true,
+  "aggregatePrepared": true,
+  "workDirectoryCreated": false,
+  "defaultEnabled": false,
+  "toleranceMetres": 0.025,
+  "limits": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "observedAggregateRSSBytes": 1073741824,
+    "outputBytes": 16777216
+  },
+  "workerLimits": {
+    "nativeSegmentCalls": 2348,
+    "maximumInputChainPoints": 1000,
+    "pairedOutputBytes": 15728640
+  },
+  "rootReviewPublicationAndExactCommitAdmissionRequired": true,
+  "physicalAuthority": false,
+  "movementExecuted": false
+}

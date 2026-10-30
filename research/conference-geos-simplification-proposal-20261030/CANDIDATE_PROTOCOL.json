@@ -1,0 +1,196 @@
+{
+  "status": "SOURCE_WORKER_GUARD_AND_AUTHORED_CONTROLS_PREPARED_NOT_EXECUTED",
+  "createdDateUTC": "2026-10-30",
+  "purpose": "Paired diagnostic of whether maintained GEOS simplification reduces grid zigzag/scheduled turns without relaxing any independent validation requirement",
+  "defaultEnabled": false,
+  "candidateGenerated": false,
+  "nativeRouteJobExecuted": false,
+  "geosLoadedOrCalled": false,
+  "installedAnything": false,
+  "baselineBodySourceModified": false,
+  "algorithm": {
+    "upstream": "GEOS",
+    "release": "3.13.1",
+    "entrypoint": "GEOSTopologyPreserveSimplify_r",
+    "horizontalToleranceMetres": 0.025,
+    "toleranceDeclaredBeforeAnySimplifiedResult": true,
+    "alternateToleranceAllowed": false,
+    "customSearchOrSimplifierAllowed": false,
+    "scope": "Each fixed clearanceGrid inner graph chain independently; preserve requested connectors plus first/last original graph edges",
+    "coordinatePolicy": "Input uses original XZ. Reattach exact original XYZ only after strict ordered-source-subsequence and endpoint equality checks. Ambiguous repeated XZ or generated/interpolated coordinate refuses the whole candidate.",
+    "repairOrFallbackOnRejection": false
+  },
+  "pairArms": [
+    "unchangedCentered",
+    "geos025CenteredCandidate"
+  ],
+  "objectives": [
+    "table_92_to_120",
+    "table_120_to_200",
+    "table_200_to_220",
+    "table_220_to_20",
+    "table_20_to_92",
+    "varpu_130_to_160",
+    "varpu_160_to_130"
+  ],
+  "baselineProposalSHA256": "0f50fbbd52df3fa4369c0784579a93a2461b6c765b052acb2daf51d15f5f290f",
+  "baselineSchedule": {
+    "totalEvents": 13704,
+    "turnEvents": 12049,
+    "perObjective": [
+      {
+        "name": "table_92_to_120",
+        "sourceChainVertices": 59,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1684,
+          "translate": 158,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      {
+        "name": "table_120_to_200",
+        "sourceChainVertices": 96,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1781,
+          "translate": 269,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      {
+        "name": "table_200_to_220",
+        "sourceChainVertices": 44,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1406,
+          "translate": 122,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      {
+        "name": "table_220_to_20",
+        "sourceChainVertices": 72,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1366,
+          "translate": 187,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      {
+        "name": "table_20_to_92",
+        "sourceChainVertices": 127,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 2506,
+          "translate": 355,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      {
+        "name": "varpu_130_to_160",
+        "sourceChainVertices": 98,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1646,
+          "translate": 275,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      {
+        "name": "varpu_160_to_130",
+        "sourceChainVertices": 98,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1660,
+          "translate": 275,
+          "stationary": 0,
+          "terminal": 1
+        }
+      }
+    ]
+  },
+  "requiredChecks": {
+    "nativeCorridor": "Reuse unchanged native.segment(a,b) AND native.segment(b,a) on every complete segment including original requested connectors; rejection/error/unknown cannot pass.",
+    "independent2D": "Reuse unchanged validator.validate; full segment distances to supplied obstacles and coverage boundary; radius hypot(.45,.30)/2 + .15 = .42041634565979924 m, guard 1e-8 m. Do not infer or borrow absent geometry.",
+    "full3D": "Still required for exact rectangular body, separate margin, swept rotations/translations, support/currentness and geometry association; fewer vertices is not acceptance.",
+    "sourceIntegrity": "Baseline proposals, endpoints, body schedules, mesh and native configuration remain immutable.",
+    "detourPolicy": "Recompute full-XYZ lengths and retain original unfiltered shortest-grid cap; no relaxation.",
+    "authority": "physicalAuthority false, movementExecuted false; no default/native app activation.",
+    "diagnosticEligibility": "Verified unchanged-native all-segment pass is required before later full-body diagnostic; missing independent coverage remains unknown and blocks acceptance, not the diagnostic. Explicit 2D rejection is retained and blocks diagnostic eligibility.",
+    "fullReconstructedTopology": "GEOS simple-line check on complete reconstructed XZ chain after locked-edge and connector reattachment; false blocks later-body diagnostic eligibility without moving coordinates."
+  },
+  "knownBlocker": "Conference has no admitted complete independent floor/body/head 2D projection/coverage contract. Existing validator clear status is authored-fixture-only; real candidate must remain unknown, never a physical pass.",
+  "proposedControlsNotExecuted": [
+    "fixed shallow staircase reduces vertices without moving original XYZ endpoints",
+    "sharp corner/choke shortcut rejects on full native segment",
+    "obstacle cut rejected by complete 2D segment despite endpoints clear",
+    "body-only or margin-only contact rejects unchanged profile",
+    "coverage hole/missing projection unknown",
+    "repeated XZ with distinct height refuses ambiguous source reconstruction",
+    "requested connectors and first/last original graph edges remain identical",
+    "simplification exception/invalid output/degenerate line retains original plus explicit rejected candidate",
+    "all seven objectives and both directions retained, no route-specific retries",
+    "full3D requirement remains after positive authored 2D fixture"
+  ],
+  "inputPinsForReviewOnly": {
+    "research/independent-2d-route-validator-20261029/validator.py": "7b86a1a5c38bc503d2f673434a158b7312713c0e20c177a03e6ef56c891c9619",
+    "research/conference-body-source-20261029/schedule_source.py": "eb6bee87b245d10fa7cb07d3a34e9dc4cc45a49e21f2b64440b6ec09bf83bdbd",
+    "research/conference-body-source-20261029/ROUTES.json": "8c576659086d346cfd08cc63cbb40d416b962bc6b4ca45b4cd12a6c9d26dee1e",
+    "research/conference-replay-source-20261029/run_comparison.py": "fd306b11c61375db792b42df3f33befc6b514394feac9f63102f595d64952bdc",
+    "research/clearance-first-coffee-source-20261029/selector.py": "0e94911d0244b9f5b11dd55d5f72b3c42d76077f2bcb66f107704ff51da41125",
+    "@WORKSPACE@/coffee-native-replay-prepared-002/blind-tabletop-exclusion-planner-66/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+    "@WORKSPACE@/coffee-native-replay-prepared-002/blind-tabletop-exclusion-planner-66/native_exclusion.py": "aa1da6fe3f4bc962fafa2bfc597d81675d7da61daab181d8e834e5bd3414d0bd",
+    "@WORKSPACE@/coffee-native-replay-prepared-002/blind-tabletop-exclusion-planner-66/libblind_detour.so": "a0b6c3d84d20b1396a3239918abfafcc1d6fa613c5c390847cba92502a634c4a",
+    "@WORKSPACE@/coffee-native-replay-prepared-002/blind-clearance-centered-loop-55/planner.py": "2bab104d9df3e68b6aa8c9ff8b555eff0fd959cf2c9739966c77283fd3754c81",
+    "@WORKSPACE@/conference-native-comparison-attempt-002/comparison/PROPOSALS.json": "0f50fbbd52df3fa4369c0784579a93a2461b6c765b052acb2daf51d15f5f290f",
+    "/usr/lib/x86_64-linux-gnu/libgeos.so.3.13.1": "6c45eaeaa14224a136814fde55a67de4d7ff030c77aa0dc147e9a34dcd0c9379",
+    "/usr/lib/x86_64-linux-gnu/libgeos_c.so.1.19.2": "50a74a5e45e18803ee2af907724cfc824add2294b9d273849e8f206bcf45591f"
+  },
+  "upstreamReferences": [
+    {
+      "url": "https://raw.githubusercontent.com/libgeos/geos/3.13.1/capi/geos_c.h.in",
+      "evidence": "Reentrant simplification C declarations and documented ownership/source algorithm inspected"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/libgeos/geos/3.13.1/include/geos/simplify/TopologyPreservingSimplifier.h",
+      "evidence": "Released topology-preserving simplifier contract inspected"
+    },
+    {
+      "url": "https://github.com/libgeos/geos/blob/3.13.1/src/simplify/DouglasPeuckerLineSimplifier.cpp",
+      "evidence": "Released upstream base simplifier source inspected; no new local implementation"
+    }
+  ],
+  "upstreamTestsExecuted": false,
+  "upstreamTestsInspection": "Requested exact unit-source pages returned tool cache misses; no inspected-test or upstream CI pass claim.",
+  "nextStep": "Independent root source review/publication, then exact-commit aggregate admission if approved; do not execute during source preparation or alter baseline body run.",
+  "implementationPrepared": true,
+  "authoredControlsPrepared": 17,
+  "authoredControlsExecuted": false,
+  "sourceBoundWorkerPrepared": true,
+  "aggregatePrepared": true,
+  "workerLimits": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "observedAggregateRSSBytes": 1073741824,
+    "outputBytes": 16777216,
+    "nativeSegmentCalls": 2348
+  },
+  "sourceLoaderPolicy": "Execute exact hash-checked bytes in fresh modules; no path reread/cached bytecode. Native wrappers and both binding aliases use cached pinned source bytes.",
+  "libraryLoaderPolicy": "Existing GEOS owner uses module-local pinned absolute C API resolver; version and actual C API/C++ Linux mappings/hashes verified. Sanitized aggregate child; remaining runtime closure explicitly non-hermetic.",
+  "reporting": [
+    "Per-objective full-XYZ connector-inclusive length",
+    "Cumulative absolute authored turn radians/degrees",
+    "Turn/translation/total authored event counts",
+    "Whole-route eligibility for separately admitted body diagnostic only",
+    "Totals always include includedRows; no partial-subset improvement claim",
+    "No contact-event percentage or safety improvement claim"
+  ]
+}
