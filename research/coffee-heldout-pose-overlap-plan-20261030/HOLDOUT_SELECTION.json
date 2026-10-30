@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "status": "metadata-only selection executed; no held-out depth/image/map read or native call",
+  "sourceSHA256": "aa5e0f01a7d1a57de6f6ed2c4b4249cf5c1f8e061048099dc7eab4e3df14a39a",
+  "originalPosesSHA256": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+  "poseContractSHA256": "64a89282d3aaa3667483c6fefa7fa6e0ddec9a26e4ed14b34d1dc40c8e5d2bfc",
+  "archiveSHA256": "591672a1c4afa50e5109fc78ff08d8f608d05756a9181cfdd7cef38a57a1623d",
+  "archiveBytes": 183080957,
+  "buildFrameIDsUnchanged": [
+    "frame_00290",
+    "frame_00357",
+    "frame_00391"
+  ],
+  "buildFrameZeroBasedIndices": [
+    286,
+    353,
+    387
+  ],
+  "anchorsInOrder": [
+    "frame_00290",
+    "frame_00391"
+  ],
+  "minimumCaptureIndexGapFromEveryBuildAndPreviousHoldout": 8,
+  "gapIsElapsedTimeOrAccuracyThreshold": false,
+  "virtualProbePixelFractions": [
+    0.1,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "virtualProbeAxialDepthsMetres": [
+    1.0,
+    2.0,
+    3.0
+  ],
+  "probesPerFrustum": 75,
+  "projectionBounds": "0 <= u < w; 0 <= v < h; 0 < projected axial z < 4 m",
+  "sortRule": [
+    "maximum minimum directional count",
+    "maximum total count",
+    "minimum optical-axis angle",
+    "minimum translation distance",
+    "minimum metadata index"
+  ],
+  "virtualProbesAreMeasuredGeometry": false,
+  "virtualContainmentGuaranteesActualSurfaceOverlap": false,
+  "heldoutFrames": [
+    {
+      "frameID": "frame_00232",
+      "originalMetadataZeroBasedIndex": 228,
+      "anchorFrame": "frame_00290",
+      "anchorVirtualProbesInsideCandidate": 40,
+      "candidateVirtualProbesInsideAnchor": 40,
+      "minimumDirectionalCount": 40,
+      "totalCount": 80,
+      "suppliedOpticalAxisAngleDegrees": 110.43072267739254,
+      "suppliedTranslationDistanceMetres": 2.859515078908572,
+      "member": "room_datasets/coffee_room/iphone/long_capture/depth/frame_00232.png",
+      "depthSHA256": null,
+      "depthHashState": "not extracted or inspected; member bound by archive hash"
+    },
+    {
+      "frameID": "frame_00370",
+      "originalMetadataZeroBasedIndex": 366,
+      "anchorFrame": "frame_00391",
+      "anchorVirtualProbesInsideCandidate": 54,
+      "candidateVirtualProbesInsideAnchor": 47,
+      "minimumDirectionalCount": 47,
+      "totalCount": 101,
+      "suppliedOpticalAxisAngleDegrees": 20.91861326402404,
+      "suppliedTranslationDistanceMetres": 0.3799576499051045,
+      "member": "room_datasets/coffee_room/iphone/long_capture/depth/frame_00370.png",
+      "depthSHA256": null,
+      "depthHashState": "not extracted or inspected; member bound by archive hash"
+    }
+  ],
+  "rankingDiagnostics": [
+    {
+      "anchorFrame": "frame_00290",
+      "eligibleCandidates": 350,
+      "topFive": [
+        {
+          "frameID": "frame_00232",
+          "originalMetadataZeroBasedIndex": 228,
+          "anchorFrame": "frame_00290",
+          "anchorVirtualProbesInsideCandidate": 40,
+          "candidateVirtualProbesInsideAnchor": 40,
+          "minimumDirectionalCount": 40,
+          "totalCount": 80,
+          "suppliedOpticalAxisAngleDegrees": 110.43072267739254,
+          "suppliedTranslationDistanceMetres": 2.859515078908572
+        },
+        {
+          "frameID": "frame_00094",
+          "originalMetadataZeroBasedIndex": 93,
+          "anchorFrame": "frame_00290",
+          "anchorVirtualProbesInsideCandidate": 71,
+          "candidateVirtualProbesInsideAnchor": 36,
+          "minimumDirectionalCount": 36,
+          "totalCount": 107,
+          "suppliedOpticalAxisAngleDegrees": 15.177810504540135,
+          "suppliedTranslationDistanceMetres": 0.8093532356397914
+        },
+        {
+          "frameID": "frame_00228",
+          "originalMetadataZeroBasedIndex": 224,
+          "anchorFrame": "frame_00290",
+          "anchorVirtualProbesInsideCandidate": 36,
+          "candidateVirtualProbesInsideAnchor": 57,
+          "minimumDirectionalCount": 36,
+          "totalCount": 93,
+          "suppliedOpticalAxisAngleDegrees": 90.77865374467812,
+          "suppliedTranslationDistanceMetres": 3.2165669175485534
+        },
+        {
+          "frameID": "frame_00229",
+          "originalMetadataZeroBasedIndex": 225,
+          "anchorFrame": "frame_00290",
+          "anchorVirtualProbesInsideCandidate": 35,
+          "candidateVirtualProbesInsideAnchor": 50,
+          "minimumDirectionalCount": 35,
+          "totalCount": 85,
+          "suppliedOpticalAxisAngleDegrees": 95.5567865696624,
+          "suppliedTranslationDistanceMetres": 3.21683818143785
+        },
+        {
+          "frameID": "frame_00231",
+          "originalMetadataZeroBasedIndex": 227,
+          "anchorFrame": "frame_00290",
+          "anchorVirtualProbesInsideCandidate": 47,
+          "candidateVirtualProbesInsideAnchor": 34,
+          "minimumDirectionalCount": 34,
+          "totalCount": 81,
+          "suppliedOpticalAxisAngleDegrees": 110.14593478328334,
+          "suppliedTranslationDistanceMetres": 3.099816525833584
+        }
+      ]
+    },
+    {
+      "anchorFrame": "frame_00391",
+      "eligibleCandidates": 335,
+      "topFive": [
+        {
+          "frameID": "frame_00370",
+          "originalMetadataZeroBasedIndex": 366,
+          "anchorFrame": "frame_00391",
+          "anchorVirtualProbesInsideCandidate": 54,
+          "candidateVirtualProbesInsideAnchor": 47,
+          "minimumDirectionalCount": 47,
+          "totalCount": 101,
+          "suppliedOpticalAxisAngleDegrees": 20.91861326402404,
+          "suppliedTranslationDistanceMetres": 0.3799576499051045
+        },
+        {
+          "frameID": "frame_00302",
+          "originalMetadataZeroBasedIndex": 298,
+          "anchorFrame": "frame_00391",
+          "anchorVirtualProbesInsideCandidate": 45,
+          "candidateVirtualProbesInsideAnchor": 42,
+          "minimumDirectionalCount": 42,
+          "totalCount": 87,
+          "suppliedOpticalAxisAngleDegrees": 38.288551291315464,
+          "suppliedTranslationDistanceMetres": 1.7337575263285774
+        },
+        {
+          "frameID": "frame_00301",
+          "originalMetadataZeroBasedIndex": 297,
+          "anchorFrame": "frame_00391",
+          "anchorVirtualProbesInsideCandidate": 44,
+          "candidateVirtualProbesInsideAnchor": 41,
+          "minimumDirectionalCount": 41,
+          "totalCount": 85,
+          "suppliedOpticalAxisAngleDegrees": 38.38567987550105,
+          "suppliedTranslationDistanceMetres": 1.7115581063986935
+        },
+        {
+          "frameID": "frame_00143",
+          "originalMetadataZeroBasedIndex": 139,
+          "anchorFrame": "frame_00391",
+          "anchorVirtualProbesInsideCandidate": 42,
+          "candidateVirtualProbesInsideAnchor": 41,
+          "minimumDirectionalCount": 41,
+          "totalCount": 83,
+          "suppliedOpticalAxisAngleDegrees": 128.92134949823972,
+          "suppliedTranslationDistanceMetres": 3.0278764267475395
+        },
+        {
+          "frameID": "frame_00303",
+          "originalMetadataZeroBasedIndex": 299,
+          "anchorFrame": "frame_00391",
+          "anchorVirtualProbesInsideCandidate": 41,
+          "candidateVirtualProbesInsideAnchor": 41,
+          "minimumDirectionalCount": 41,
+          "totalCount": 82,
+          "suppliedOpticalAxisAngleDegrees": 47.505486079793755,
+          "suppliedTranslationDistanceMetres": 1.9087138919074547
+        }
+      ]
+    }
+  ],
+  "frozenBeforeNewDepthInspection": true,
+  "noSwapsAfterResults": true,
+  "heldOutMeaning": "same-capture held-out depth; not independent calibration or globally unseen imagery",
+  "physicalAuthority": false
+}

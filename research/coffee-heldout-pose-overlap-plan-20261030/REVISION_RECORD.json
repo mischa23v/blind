@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "oldMidpointManifestSHA256": "cba703ece0a507aa53a1cbe688f6630fe9f1ca0d6543c0d19c93ad72a079f7bc",
+  "oldMidpointSelectionSHA256": "4638881a63bdd3db5a0e9b621d893eaae0151c41efc477d1c3d0ea573b171a46",
+  "revisionReason": "Root requested pose/frustum overlap selection after metadata-only low-overlap finding, before new depth access",
+  "newSelectionSHA256": "739c9c3fc7eeeb4a3598ce3e1a011222d6f415d2e47a335999e4f6be658fabfc",
+  "newSelectionIDs": [
+    "frame_00232",
+    "frame_00370"
+  ],
+  "selectedIDsInEarlierUniformRGBManifest": [],
+  "earlierUniformRGBSelectionSHA256": "c1795f5d7042404c62b19aa3c61a0cd2d14f25c25029086bf9428d2712b55e9d",
+  "selectedImagesOrDepthRead": false,
+  "archiveOpenedBySelection": false,
+  "nativeCalls": 0,
+  "evaluationExecuted": false,
+  "selectionScriptExecutedOnlyOnMetadata": true,
+  "selectionExecutionGuards": {
+    "wallTermSeconds": 18,
+    "wallKillAfterSeconds": 1,
+    "cpuSeconds": 10,
+    "addressSpaceBytes": 134217728,
+    "cpuAffinityCount": 1
+  }
+}
