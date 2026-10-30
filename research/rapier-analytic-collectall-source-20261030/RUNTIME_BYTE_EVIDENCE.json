@@ -1,0 +1,20 @@
+{
+  "method": "Byte-only read of pinned existing Node executable; no invocation or CLI/API test",
+  "nodeExecutable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+  "sha256": "61ab14cd750fc24d5db53490ec5fc40f756e4b6e136b78cf7004265471d9bd1d",
+  "embeddedVersionStrings": [
+    "v24.22.1"
+  ],
+  "flagByteCounts": {
+    "--permission": 22,
+    "--experimental-permission": 0,
+    "--allow-child-process": 7,
+    "--allow-worker": 7,
+    "--allow-addons": 7
+  },
+  "officialDocumentation": [
+    "https://nodejs.org/docs/latest-v24.x/api/permissions.html",
+    "https://nodejs.org/docs/latest-v24.x/api/process.html#processpermissionhasscope-reference"
+  ],
+  "executed": false
+}

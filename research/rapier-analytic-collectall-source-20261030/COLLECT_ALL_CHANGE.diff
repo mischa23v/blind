@@ -1,0 +1,148 @@
+--- v2/controls.mjs
++++ v3/controls.mjs
+@@ -113,8 +113,8 @@
+   return fixtures;
+ }
+ /** Explicit admitted execution only. onProbe preserves raw rows before any assertion. */
+-export function runPreparedControls(R,onResult=()=>{},budget=makeCallBudget(),onProbe=()=>{}) {
+-  const records=[];
++export function runPreparedControls(R,onResult=()=>{},budget=makeCallBudget(),onProbe=()=>{},onCheck=()=>{}) {
++  const records=[], assertionRecords=[];
+   for(const envelope of ENVELOPES) for(const fixture of preparedFixtures(envelope)) for(const arm of ARMS) {
+     const before=budget.count;
+     const result=runFrozenProbes(R,{...fixture.geometry,probes:fixture.probes,arm,envelope,budget,
+@@ -124,6 +124,12 @@
+       independentVTKOracleExecutedByThisModule:false,physicalAuthority:false,
+       recordPhase:"raw_before_assertions"};
+     onResult(record); // Retain the current failing fixture, not just earlier successes.
++    const failures=[];
++    function recordAssertion(stage,probeID,check) {
++      try { check(); } catch(error) {
++        failures.push({stage,probeID,error:String(error?.message??error).slice(0,2000)});
++      }
++    }
+     for(const row of result.results) {
+       assert(row.movementApplied===false && row.physicalAuthority===false,"movement authority leaked");
+       assert(row.support==="unknown" && row.semanticFloor==="unknown","grounded became support/floor truth");
+@@ -133,14 +139,19 @@
+         assert(row.proposalWasNotApplied===true && row.proposedMovement.every(Number.isFinite),"invalid proposal");
+         assert(row.computedGroundedIsNotSupportEvidence===true,"grounded promoted to support");
+         if(row.kind==="stationary") assert(Array.isArray(row.zeroInputDepenetrationProposal),"depenetration not separately recorded");
+-        fixture.check?.(row);
++        if(fixture.check) recordAssertion("fixture_geometry",row.id,()=>fixture.check(row));
+       }
+     }
+-    fixture.checkImport?.(result);
++    if(fixture.checkImport) recordAssertion("fixture_import",null,()=>fixture.checkImport(result));
+     if(fixture.id==="turn_unsupported") assert(budget.count===before,"unsupported turn called controller");
++    const assertionRecord={fixtureID:fixture.id,arm,envelope,status:failures.length?"failed":"passed",
++      failures,expectationsUnchanged:true,physicalAuthority:false};
++    assertionRecords.push(assertionRecord);onCheck(assertionRecord);
+     records.push(record);
+   }
+-  return {status:"adapter_controls_completed_only",records,wrapperRecordCount:records.length,
++  const failedWrapperCount=assertionRecords.filter(r=>r.status==="failed").length;
++  return {status:failedWrapperCount?"adapter_controls_completed_with_assertion_failures":"adapter_controls_completed_only",
++    records,assertionRecords,failedWrapperCount,assertionFailureCount:assertionRecords.reduce((s,r)=>s+r.failures.length,0),wrapperRecordCount:records.length,
+     nestedProbeRowCount:records.reduce((s,r)=>s+r.result.results.length,0),callCount:budget.count,
+     independentHazardOraclePassed:false,independentHazardOracleStatus:"not_run_by_this_module"};
+ }
+--- v2/controls_worker.mjs
++++ v3/controls_worker.mjs
+@@ -30,7 +30,8 @@
+ const fdFlags=fs.constants.O_WRONLY|fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_NOFOLLOW;
+ const wrapperFD=fs.openSync(path.join(out,"wrapper-records.jsonl"),fdFlags,0o600);
+ const probeFD=fs.openSync(path.join(out,"probe-rows.jsonl"),fdFlags,0o600);
+-let outputBytes=0,wrapperCount=0,probeCount=0,initialized=false,wrapperVersion=null;
++const checkFD=fs.openSync(path.join(out,"assertion-results.jsonl"),fdFlags,0o600);
++let outputBytes=0,wrapperCount=0,probeCount=0,checkCount=0,initialized=false,wrapperVersion=null;
+ const budget=makeCallBudget();
+ const encode=value=>JSON.stringify(value,(_key,v)=>ArrayBuffer.isView(v)?Array.from(v):v)+"\n";
+ function emit(fd,value){const b=Buffer.from(encode(value));
+@@ -45,16 +46,19 @@
+   const R=await loadForAdmittedExecution(options["--package-root"],{rootReviewed:true,aggregateSupervisorActive:true});
+   initialized=true;wrapperVersion=R.version();
+   const result=runPreparedControls(R,record=>{emit(wrapperFD,record);wrapperCount+=1;},budget,
+-    record=>{emit(probeFD,record);probeCount+=1;});
++    record=>{emit(probeFD,record);probeCount+=1;},record=>{emit(checkFD,record);checkCount+=1;});
+   assert(result.wrapperRecordCount===72&&result.nestedProbeRowCount===108&&result.callCount===104,
+     "frozen controls inventory mismatch");
+-  assert(wrapperCount===72&&probeCount===108,"streamed controls inventory mismatch");
+-  summary.status="controls_passed";
++  assert(wrapperCount===72&&probeCount===108&&checkCount===72,"streamed controls inventory mismatch");
++  summary.status=result.failedWrapperCount?"controls_failed_assertions":"controls_passed";
+   summary.adapterResultStatus=result.status;
++  summary.failedWrapperCount=result.failedWrapperCount;summary.assertionFailureCount=result.assertionFailureCount;
++  summary.allFixturesAttempted=true;summary.expectationsUnchanged=true;
++  if(result.failedWrapperCount) {failure=new Error("Original fixture assertions failed; full inventory retained");summary.error=failure.message;}
+ }catch(error){failure=error;summary.status="failed";summary.error=String(error?.message??error).slice(0,2000);}
+ finally{
+-  fs.closeSync(wrapperFD);fs.closeSync(probeFD);
+-  Object.assign(summary,{wrapperCount,probeCount,controllerCalls:budget.count,wasmInitialized:initialized,
++  fs.closeSync(wrapperFD);fs.closeSync(probeFD);fs.closeSync(checkFD);
++  Object.assign(summary,{wrapperCount,probeCount,checkCount,controllerCalls:budget.count,wasmInitialized:initialized,
+     wrapperVersion,nodeVersion:process.version,outputPayloadBytes:outputBytes,heapLimitFlagMiB:256,rlimitASApplied:false});
+   const fd=fs.openSync(path.join(out,"SUMMARY.json"),fdFlags,0o600);
+   try{const b=Buffer.from(encode(summary));assert(b.length<=65536,"summary reserve exceeded");fs.writeSync(fd,b);}
+--- v2/run_aggregate.py
++++ v3/run_aggregate.py
+@@ -18,7 +18,7 @@
+         signal.signal(sig,lambda s,_f: (_ for _ in ()).throw(SystemExit('Supervisor interrupted: '+str(s))))
+     manifestBytes=(H/'RUN_PINS.json').read_bytes();manifestSHA=hashlib.sha256(manifestBytes).hexdigest()
+     pins=json.loads(manifestBytes)
+-    if pins['protocol']!='rapier-analytic-controls-v2-managed-sandbox': raise RuntimeError('Wrong controls protocol')
++    if pins['protocol']!='rapier-analytic-controls-v3-collect-all-managed-sandbox': raise RuntimeError('Wrong controls protocol')
+     if pins['limits']!={'cpuSeconds':CPU,'wallSeconds':WALL,'observedRSSBytes':RSS,
+                        'outputBytes':OUTPUT,'nodeOldSpaceMiB':NODE_HEAP_MIB,'controllerCalls':104}:
+         raise RuntimeError('Frozen limits changed')
+@@ -124,9 +124,10 @@
+             terminal=stable_inventory(work)
+             if sum(v['bytes'] for v in terminal.values())>OUTPUT-262144:raise RuntimeError('Payload/receipt reserve breach')
+             row['terminalInventory']=terminal
+-            if row['exitCode']!=0:raise RuntimeError('Controls command nonzero; no retry or permission widening')
++            if row['exitCode'] not in (0,1):raise RuntimeError('Unexpected controls exit; no retry or permission widening')
+         summary=json.loads((work/'controls/SUMMARY.json').read_text())
+-        expected={'scope':'analytic_controls_only','status':'controls_passed','wrapperCount':72,'probeCount':108,
++        expected={'scope':'analytic_controls_only','wrapperCount':72,'probeCount':108,'checkCount':72,
++                  'allFixturesAttempted':True,'expectationsUnchanged':True,
+                   'controllerCalls':104,'wasmInitialized':True,'wrapperVersion':'0.21.0',
+                   'realRoomQueries':0,'physicalAuthority':False,'movementApplied':False,
+                   'runtimeContract':'managed_sandbox_trusted_official_source',
+@@ -139,6 +140,7 @@
+             raise RuntimeError('Worker manifest identity mismatch')
+         wrappers=[json.loads(x) for x in (work/'controls/wrapper-records.jsonl').read_text().splitlines()]
+         probes=[json.loads(x) for x in (work/'controls/probe-rows.jsonl').read_text().splitlines()]
++        checks=[json.loads(x) for x in (work/'controls/assertion-results.jsonl').read_text().splitlines()]
+         expectedWrappers=[];expectedProbes=[]
+         for envelope in ['body','horizontal_margin']:
+             for fixture,ids in pins['expectedFixtureProbeIDs'].items():
+@@ -149,6 +151,19 @@
+             raise RuntimeError('Wrapper inventory/order mismatch')
+         if [(x['fixtureID'],x['arm'],x['envelope'],x['row']['id']) for x in probes]!=expectedProbes:
+             raise RuntimeError('Probe inventory/order mismatch')
++        if [(x['fixtureID'],x['arm'],x['envelope']) for x in checks]!=expectedWrappers:
++            raise RuntimeError('Assertion inventory/order mismatch')
++        for x in checks:
++            if x.get('expectationsUnchanged') is not True or x.get('physicalAuthority') is not False:
++                raise RuntimeError('Assertion contract changed')
++            if not isinstance(x.get('failures'),list) or x['status']!=('failed' if x['failures'] else 'passed'):
++                raise RuntimeError('Assertion failure/status mismatch')
++        failedChecks=sum(bool(x['failures']) for x in checks);failedAssertions=sum(len(x['failures']) for x in checks)
++        expectedStatus='controls_failed_assertions' if failedChecks else 'controls_passed'
++        if summary.get('status')!=expectedStatus or row['exitCode']!=(1 if failedChecks else 0):
++            raise RuntimeError('Final assertion status/exit mismatch')
++        if summary.get('failedWrapperCount')!=failedChecks or summary.get('assertionFailureCount')!=failedAssertions:
++            raise RuntimeError('Assertion count mismatch')
+         if sum(x['row']['controllerCalled'] for x in probes)!=104:raise RuntimeError('Controller call count mismatch')
+         for x in probes:
+             r=x['row']
+@@ -165,6 +180,9 @@
+         receipt['controlsSummary']=summary
+         receipt['status']='completed-analytic-controls-only'
+         receipt['wrapperRecordsVerified']=72;receipt['nestedProbeRowsVerified']=108
++        receipt['assertionRecordsVerified']=72;receipt['failedWrapperCount']=failedChecks
++        receipt['assertionFailureCount']=failedAssertions;receipt['allFixturesAttempted']=True
++        if failedChecks:raise RuntimeError('Original fixture assertions failed; complete controls inventory verified')
+     except BaseException as error:
+         failure=error;receipt['status']='failed';receipt['error']=type(error).__name__+': '+str(error)
+     finally:
