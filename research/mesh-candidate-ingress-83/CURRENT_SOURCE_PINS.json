@@ -43,7 +43,7 @@
     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a"
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab"
   },
   "immutable_snapshot_layer": {
     "scope": "current source only; new native tests authored, not executed",
@@ -117,5 +117,17 @@
       "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
     },
     "scope": "optional atomic expectedSource admission; no change to legacy default or physical authority"
+  },
+  "source_delivery_diagnostic_layer": {
+    "status": "unexecuted_debug_metadata_only",
+    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+    "beforeManifestSHA256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a",
+    "changes": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
+        "before": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a",
+        "after": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab"
+      }
+    },
+    "runtimeAuthorityChanged": false
   }
 }

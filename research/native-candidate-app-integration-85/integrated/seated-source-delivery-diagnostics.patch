@@ -1,0 +1,493 @@
+--- a/ios/BlindAssist/SeatedMeshDiagnosticController.swift
++++ b/ios/BlindAssist/SeatedMeshDiagnosticController.swift
+@@ -57,6 +57,12 @@
+     private var onStopped: (() -> Void)?
+     private var nativeDrained = false
+     var onNativeDrainForTesting: (() -> Void)?
++    /// Synthetic fixture metadata only; no source values or authority escape.
++    enum SourcePhaseForTesting: String {
++        case source_controller_callback, source_refused, render_enqueued, render_begin, render_end
++        case display_accepted, display_rejected
++    }
++    var onSourcePhaseForTesting: ((SourcePhaseForTesting) -> Void)?
+ 
+     init(session: ARSession, expectedDelegate: any ARSessionDelegate, onStopped: @escaping () -> Void) throws {
+         dispatchPrecondition(condition: .onQueue(.main))
+@@ -171,25 +177,32 @@
+         bench.requestSourceSnapshot { [weak self] result in
+             guard let self else { return }
+             defer { self.scheduleDisplayDrainCheck() }
+-            guard self.epoch == token, !self.stopped else { self.snapshotPending = false; return }
++            self.onSourcePhaseForTesting?(.source_controller_callback)
++            guard self.epoch == token, !self.stopped else { self.onSourcePhaseForTesting?(.source_refused); self.snapshotPending = false; return }
+             switch result {
+             case .failure(let failure):
++                self.onSourcePhaseForTesting?(.source_refused)
+                 self.snapshotPending = false
+                 self.sourceReceipt = (self.scene == nil ? "" : "RETIRED historical wireframe remains for inspection only. ") + "Source snapshot withheld: \(failure). No missing area is treated as free."
+             case .success(let source):
+                 // One renderer task at a time. Source arrays are owned immutable
+                 // values; no ARFrame, ARMeshAnchor or Metal buffer enters this queue.
++                let phase = self.onSourcePhaseForTesting
++                phase?(.render_enqueued)
+                 self.renderQueue.async { [weak self] in
++                    phase?(.render_begin)
+                     let rendered = SeatedMeshRenderer.makeScene(source.geometry)
++                    phase?(.render_end)
+                     DispatchQueue.main.async { [weak self] in
+                         guard let self else { return }
+                         defer { self.finishRenderDelivery() }
+-                        guard self.epoch == token, !self.stopped, self.bench?.hasCurrentTrackedSession == true else { return }
+-                        guard let renderResult = rendered else { self.sourceReceipt = "Source geometry cannot be rendered within bounds. Whole snapshot withheld."; return }
++                        guard self.epoch == token, !self.stopped, self.bench?.hasCurrentTrackedSession == true else { phase?(.display_rejected); return }
++                        guard let renderResult = rendered else { phase?(.display_rejected); self.sourceReceipt = "Source geometry cannot be rendered within bounds. Whole snapshot withheld."; return }
+                         let rendered = renderResult.scene
+                         self.meshBoundsReceipt = renderResult.bounds
+                         let current = self.bench?.isCurrent(source) == true
+                         self.snapshot = current ? source : nil; self.scene = rendered
++                        phase?(current ? .display_accepted : .display_rejected)
+                         let g = source.geometry
+                         let triangles = g.anchors.reduce(0) { $0 + $1.triangleIndices.count / 3 }
+                         self.sourceReceipt = (current ? "CURRENT DELIVERY REVISION — " : "RETIRED SOURCE REVISION — historical wireframe only, not current. ") + "Session \(g.sessionID), generation \(g.generation), revision \(g.revision). \(g.anchors.count) anchors, \(triangles) actual source triangles; metres, ARKit +Y up. Source delivery complete: \(g.sourceDeliveryComplete). Mesh capture time unavailable; physical coverage unknown. Gaps: \(g.unknownCoverage.joined(separator: ", "))."
+--- a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -129,9 +129,11 @@
+             await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
+             await self.fulfillment(of: [drained], timeout: 10)
+         }
++        controller.onSourcePhaseForTesting = { [weak backend] in backend?.recordSource($0.rawValue) }
+         try controller.activate()
+         await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil }, object: nil)], timeout: 10)
+-        XCTAssertNotNil(controller.scene)
++        backend.printTiming(event: "happy_wait_finished")
++        _ = try XCTUnwrap(controller.scene, "No admitted source scene; do not submit a query after source failure")
+         let resultReady = expectation(description: "actual strict query held")
+         backend.onHeld = { resultReady.fulfill() }
+         controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
+@@ -174,8 +176,11 @@
+                 await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
+                 await self.fulfillment(of: [drained], timeout: 10)
+             }
++            controller.onSourcePhaseForTesting = { [weak backend] in backend?.recordSource($0.rawValue) }
+             try controller.activate()
+             await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil },object: nil)],timeout: 10)
++            backend.printTiming(event: "rejection_wait_finished")
++            _ = try XCTUnwrap(controller.scene, "No admitted source scene; do not submit a query after source failure")
+             let ready = expectation(description: "held real native result")
+             backend.onHeld = { ready.fulfill() }
+             controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
+@@ -207,6 +212,10 @@
+     private var active = true
+     private let timingLock = NSLock()
+     private var submittedAt: Double?, nativeCompletedAt: Double?, mainHeldAt: Double?
++    private var sourceSubmittedAt: Double?
++    private var sourceRequest = 0
++    private var sourceRows: [(Int,String,Int,Bool,String)] = []
++    private var sourceRecords = 0
+     var now = 10.0
+     var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
+     var hasCurrentTrackedSession: Bool { active }
+@@ -254,7 +263,31 @@
+     func reacquireTrackedFrameAnchors() { snapshots.retire() }
+     func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
+     func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot,MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
+-        ingress.requestSourceSnapshot(generation: ingress.generation) { result in DispatchQueue.main.async { completion(result) } }
++        timingLock.lock()
++        sourceRequest += 1; sourceSubmittedAt = ProcessInfo.processInfo.systemUptime
++        timingLock.unlock()
++        recordSource("source_requested")
++        ingress.requestSourceSnapshot(generation: ingress.generation) { [weak self] result in
++            let outcome: String
++            switch result {
++            case .success: outcome = "success"
++            case .failure(.unavailable): outcome = "unavailable"
++            case .failure(.stale): outcome = "stale"
++            case .failure(.runtime(let failure)):
++                switch failure {
++                case .invalidLimits: outcome = "runtime_invalidLimits"
++                case .budget: outcome = "runtime_budget"
++                case .unavailable: outcome = "runtime_unavailable"
++                case .stale: outcome = "runtime_stale"
++                case .invalidRetainedState: outcome = "runtime_invalidRetainedState"
++                }
++            }
++            self?.recordSource("source_native_callback", outcome: outcome)
++            DispatchQueue.main.async { [weak self] in
++                self?.recordSource("source_main_callback", outcome: outcome)
++                completion(result)
++            }
++        }
+     }
+     func isCurrent(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool { active && ingress.isCurrent(source,generation: ingress.generation) }
+     func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool { active && ingress.isCurrent(candidate,generation: ingress.generation) }
+@@ -280,9 +313,26 @@
+             }
+         }
+     }
++    /// Monotonic source-request-relative metadata. No logging on callback/render
++    /// critical paths; total capture is bounded even if source admission retries.
++    func recordSource(_ event: String, outcome: String = "none") {
++        let timestamp = ProcessInfo.processInfo.systemUptime, main = Thread.isMainThread
++        timingLock.lock(); defer { timingLock.unlock() }
++        guard sourceRecords < 64, sourceRequest > 0, sourceRequest <= 64 else { return }
++        let elapsed = sourceSubmittedAt.map { timestamp >= $0 ? Int((timestamp-$0)*1000) : -1 } ?? -1
++        sourceRows.append((sourceRequest,event,elapsed,main,outcome)); sourceRecords += 1
++    }
++    func printSourceTiming() {
++        timingLock.lock(); let rows = sourceRows; sourceRows.removeAll(keepingCapacity: true); timingLock.unlock()
++        let id = ingress.diagnosticReceiptID?.uuidString ?? "none"
++        for row in rows {
++            print("SEATED_CANDIDATE_SOURCE id=\(id) request=\(row.0) event=\(row.1) elapsed_ms=\(row.2) main_thread=\(row.3) outcome=\(row.4)")
++        }
++    }
+     /// Called after XCTest's bounded wait or drain, never in native completion's
+     /// critical path. Missing stages remain -1, not invented zero-time successes.
+     func printTiming(event: String) {
++        printSourceTiming()
+         timingLock.lock()
+         let submitted = submittedAt, native = nativeCompletedAt, main = mainHeldAt
+         timingLock.unlock()
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -322,6 +322,8 @@
+   case workerFinished, requestRetired
+   case routeBegin, routeEnd, nativeFailure, completionQueued, completionDelivered
+   case discardRequested, discardWorkerStarted, discardReleased, discardCompletionDelivered
++  case sourceSnapshotEnqueued, sourceSnapshotWorkerStarted, sourceSnapshotWorkerFinished
++  case sourceSnapshotDeliveryStarted, sourceSnapshotDeliveryFinished
+  }
+  public struct DiagnosticStageReceipt: Sendable {
+   public let stage: DiagnosticStage
+@@ -566,9 +568,16 @@
+    sourceSnapshotPending=true;pending+=1;return(session,generation,revision,lifecycle)
+   }
+   guard let (s,g,r,cycle)=token else{DispatchQueue.global(qos:.utility).async{completion(.failure(.unavailable))};return}
++#if DEBUG
++  recordDiagnosticStage(.sourceSnapshotEnqueued)
++#endif
+   let finish:(Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>)->Void={ [self] result in
+    let owned=SourceSnapshotDelivery(result)
+    Self.sourceSnapshotDeliveryWorker.async { [self] in
++#if DEBUG
++    recordDiagnosticStage(.sourceSnapshotDeliveryStarted)
++    defer { recordDiagnosticStage(.sourceSnapshotDeliveryFinished) }
++#endif
+     // Fence at delivery and release all owner-held payload references before drain.
+     deliverSourceSnapshot(owned,completion:completion)
+     owned.value=nil
+@@ -576,6 +585,10 @@
+    }
+   }
+   Self.worker.async { [self] in
++#if DEBUG
++   recordDiagnosticStage(.sourceSnapshotWorkerStarted)
++   defer { recordDiagnosticStage(.sourceSnapshotWorkerFinished) }
++#endif
+    defer{locked{pending-=1;scheduleDiscardIfDrained()}}
+    guard locked({matches(s,g,r) && lifecycle==cycle}) else{finish(.failure(.stale));return}
+    guard let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.unavailable));return}
+--- a/tools/ci/extract-seated-candidate-timing.py
++++ b/tools/ci/extract-seated-candidate-timing.py
+@@ -9,9 +9,10 @@
+ INPUT_LIMIT = 64 * 1024 * 1024
+ LINE_LIMIT = 4096
+ RECORD_LIMIT = 32  # Per prefix: one kind cannot evict the other kind.
++SOURCE_RECORD_LIMIT = 64  # Matches the fixture's separately bounded source capture.
+ UUID = r'[0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12}'
+ NUMBER = r'(?:-1|[0-9]{1,15})'
+-STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired)'
++STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired|sourceSnapshotEnqueued|sourceSnapshotWorkerStarted|sourceSnapshotWorkerFinished|sourceSnapshotDeliveryStarted|sourceSnapshotDeliveryFinished)'
+ PHASE = re.compile(
+     rf'SEATED_CANDIDATE_PHASE id=(?:{UUID}|none) '
+     r'event=(?:happy_wait_finished|rejection_wait_finished|drain_complete) '
+@@ -27,12 +28,21 @@
+                for name in ('worker', 'build', 'route'))
+     + r' records=(?:[0-9]|[1-5][0-9]|6[0-4])'
+ )
++# SOURCE elapsed_ms is source-request-relative, not the PHASE submission clock
++# or the native stages' owner-relative clock. Preserve the explicit request ordinal.
++SOURCE = re.compile(
++    rf'SEATED_CANDIDATE_SOURCE id=(?:{UUID}|none) '
++    r'request=(?:[1-9]|[1-5][0-9]|6[0-4]) '
++    r'event=(?:source_requested|source_native_callback|source_main_callback|source_controller_callback|render_enqueued|render_begin|render_end|display_accepted|display_rejected|source_refused) '
++    rf'elapsed_ms={NUMBER} main_thread=(?:true|false) outcome=(?:none|success|unavailable|stale|runtime_invalidLimits|runtime_budget|runtime_unavailable|runtime_stale|runtime_invalidRetainedState)'
++)
+ PREFIXES = {'phase': b'SEATED_CANDIDATE_PHASE ',
+-            'worker': b'SEATED_CANDIDATE_WORKER '}
++            'worker': b'SEATED_CANDIDATE_WORKER ',
++            'source': b'SEATED_CANDIDATE_SOURCE '}
+ 
+ 
+ def valid(kind, line):
+-    match = (PHASE if kind == 'phase' else WORKER).fullmatch(line)
++    match = {'phase': PHASE, 'worker': WORKER, 'source': SOURCE}[kind].fullmatch(line)
+     if not match:
+         return False
+     if kind == 'worker':
+@@ -46,7 +56,7 @@
+ 
+ 
+ def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
+-            record_limit=RECORD_LIMIT):
++            record_limit=RECORD_LIMIT, source_record_limit=SOURCE_RECORD_LIMIT):
+     counts = {kind: 0 for kind in PREFIXES}
+     dropped = {kind: 0 for kind in PREFIXES}
+     rejected = consumed = 0
+@@ -74,7 +84,7 @@
+             continue
+         if not valid(kind, line):
+             rejected += 1
+-        elif counts[kind] < record_limit:
++        elif counts[kind] < (source_record_limit if kind == 'source' else record_limit):
+             emit(line)
+             counts[kind] += 1
+         else:
+@@ -90,7 +100,8 @@
+ 
+ 
+ def main():
+-    print(f'SEATED_CANDIDATE_TIMING_BEGIN max_records_per_kind={RECORD_LIMIT} '
++    print(f'SEATED_CANDIDATE_TIMING_BEGIN max_phase_records={RECORD_LIMIT} '
++          f'max_worker_records={RECORD_LIMIT} max_source_records={SOURCE_RECORD_LIMIT} '
+           f'max_input_bytes={INPUT_LIMIT} max_line_bytes={LINE_LIMIT}')
+     try:
+         path = Path(sys.argv[1])
+--- a/tools/ci/test_extract_seated_candidate_timing.py
++++ b/tools/ci/test_extract_seated_candidate_timing.py
+@@ -20,6 +20,8 @@
+           'worker_wall_ms=1 worker_cpu_us=-1 worker_pair_valid=false '
+           'build_wall_ms=0 build_cpu_us=0 build_pair_valid=true '
+           'route_wall_ms=-1 route_cpu_us=-1 route_pair_valid=false records=4')
++SOURCE = (f'SEATED_CANDIDATE_SOURCE id={ID} request=1 event=source_requested '
++          'elapsed_ms=0 main_thread=true outcome=none')
+ 
+ 
+ class ExtractorTests(unittest.TestCase):
+@@ -38,7 +40,7 @@
+     def test_both_records_round_trip_without_value_rewriting(self):
+         output, summary = self.collect(PHASE + '\n' + WORKER + '\n')
+         self.assertEqual(output, [PHASE, WORKER])
+-        self.assertEqual(summary['records'], {'phase': 1, 'worker': 1})
++        self.assertEqual(summary['records'], {'phase': 1, 'worker': 1, 'source': 0})
+         self.assertEqual(summary['test_outcome'], 'not_inferred')
+         self.assertFalse(summary['physical_authority'])
+ 
+@@ -113,7 +115,7 @@
+     def test_each_prefix_has_independent_output_cap(self):
+         output, summary = self.collect((PHASE + '\n') * 3 + WORKER + '\n', record_limit=2)
+         self.assertEqual(output, [PHASE, PHASE, WORKER])
+-        self.assertEqual(summary['dropped_valid_records'], {'phase': 1, 'worker': 0})
++        self.assertEqual(summary['dropped_valid_records'], {'phase': 1, 'worker': 0, 'source': 0})
+         self.assertEqual(summary['status'], 'partial')
+ 
+     def test_input_cap_never_scans_or_prints_beyond_budget(self):
+@@ -156,7 +158,7 @@
+                      'synthetic "$3" "$4" || status=$?\nexit "$status"\n')
+         with tempfile.TemporaryDirectory() as folder:
+             source = Path(folder) / 'synthetic-input.txt'
+-            source.write_text(PHASE + '\n' + WORKER + '\n' + 'unrelated later output\n' * 200)
++            source.write_text(PHASE + '\n' + WORKER + '\n' + SOURCE + '\n' + 'unrelated later output\n' * 200)
+             return subprocess.run(['bash', '-c', wrapper, 'synthetic', folder, label, str(source), str(code)],
+                                   cwd=ROOT, capture_output=True, text=True, timeout=10)
+ 
+@@ -165,12 +167,14 @@
+         self.assertEqual(result.returncode, 0, result.stderr)
+         self.assertIn(PHASE, result.stdout)
+         self.assertIn(WORKER, result.stdout)
++        self.assertIn(SOURCE, result.stdout)
+ 
+     def test_actual_shell_failure_preserves_nonzero_exit_and_records(self):
+         result = self.shell_result(65)
+         self.assertEqual(result.returncode, 65, result.stderr)
+         self.assertIn(PHASE, result.stdout)
+         self.assertIn(WORKER, result.stdout)
++        self.assertIn(SOURCE, result.stdout)
+ 
+     def test_extractor_failure_cannot_change_test_success_or_failure(self):
+         for code in [0, 65]:
+@@ -182,6 +186,70 @@
+         self.assertNotIn('SEATED_CANDIDATE_TIMING_BEGIN', result.stdout)
+         self.assertNotIn(PHASE, result.stdout)
+ 
++    def test_all_ten_closed_source_events_round_trip(self):
++        events = ['source_requested', 'source_native_callback', 'source_main_callback',
++                  'source_controller_callback', 'render_enqueued', 'render_begin',
++                  'render_end', 'display_accepted', 'display_rejected', 'source_refused']
++        for event in events:
++            line = SOURCE.replace('source_requested', event)
++            self.assertEqual(self.collect(line + '\n')[0], [line])
++
++    def test_all_five_source_native_stages_are_allowlisted(self):
++        stages = ['sourceSnapshotEnqueued', 'sourceSnapshotWorkerStarted',
++                  'sourceSnapshotWorkerFinished', 'sourceSnapshotDeliveryStarted',
++                  'sourceSnapshotDeliveryFinished']
++        line = PHASE.split('stages=')[0] + 'stages=' + ';'.join(name + ':1' for name in stages)
++        self.assertEqual(self.collect(line + '\n')[0], [line])
++        self.reject(line.replace('sourceSnapshotEnqueued', 'sourceSnapshotGeometry'))
++
++    def test_source_outcome_and_main_thread_closed_scalars(self):
++        for outcome in ['none', 'success', 'unavailable', 'stale', 'runtime_invalidLimits',
++                        'runtime_budget', 'runtime_unavailable', 'runtime_stale',
++                        'runtime_invalidRetainedState']:
++            for main in ['true', 'false']:
++                line = SOURCE.replace('outcome=none', 'outcome=' + outcome).replace('main_thread=true', 'main_thread=' + main)
++                self.assertEqual(self.collect(line + '\n')[0], [line])
++        self.reject(SOURCE.replace('outcome=none', 'outcome=error_details'))
++        self.reject(SOURCE.replace('outcome=none', 'outcome=refused'))
++        self.reject(SOURCE.replace('main_thread=true', 'main_thread=1'))
++
++    def test_source_request_ordinal_strictly_bounded(self):
++        for request in [1, 64]:
++            line = SOURCE.replace('request=1', 'request=' + str(request))
++            self.assertEqual(self.collect(line + '\n')[0], [line])
++        for request in [0, -1, 65, '1.0']:
++            self.reject(SOURCE.replace('request=1', 'request=' + str(request)))
++
++    def test_source_missing_elapsed_and_id_remain_unknown(self):
++        line = SOURCE.replace(ID, 'none').replace('elapsed_ms=0', 'elapsed_ms=-1')
++        self.assertEqual(self.collect(line + '\n')[0], [line])
++        self.reject(SOURCE.replace('elapsed_ms=0', 'elapsed_ms=-2'))
++
++    def test_source_unknown_event_or_geometry_payload_is_rejected(self):
++        self.reject(SOURCE.replace('source_requested', 'source_private_geometry'))
++        self.reject(SOURCE + ' points=1,2,3')
++        self.reject(SOURCE.replace(ID, '-' * 36))
++
++    def test_source_retains_64_separate_from_phase_and_worker_caps(self):
++        output, summary = self.collect((SOURCE + '\n') * 65 + PHASE + '\n' + WORKER + '\n')
++        self.assertEqual(output, [SOURCE] * 64 + [PHASE, WORKER])
++        self.assertEqual(summary['records'], {'source': 64, 'phase': 1, 'worker': 1})
++        self.assertEqual(summary['dropped_valid_records'], {'source': 1, 'phase': 0, 'worker': 0})
++        self.assertEqual(summary['status'], 'partial')
++
++    def test_phase_and_worker_flood_cannot_evict_source_records(self):
++        output, summary = self.collect((PHASE + '\n') * 33 + (WORKER + '\n') * 33 + SOURCE + '\n')
++        self.assertEqual(output[-1], SOURCE)
++        self.assertEqual(summary['records'], {'phase': 32, 'worker': 32, 'source': 1})
++        self.assertEqual(summary['dropped_valid_records'], {'phase': 1, 'worker': 1, 'source': 0})
++
++    def test_source_observation_does_not_infer_worker_or_test_success(self):
++        output, summary = self.collect(SOURCE + '\n')
++        self.assertEqual(output, [SOURCE])
++        self.assertEqual(summary['records']['worker'], 0)
++        self.assertEqual(summary['test_outcome'], 'not_inferred')
++        self.assertFalse(summary['physical_authority'])
++
+ 
+ if __name__ == '__main__':
+     unittest.main()
+--- a/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
++++ b/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
+@@ -52,7 +52,7 @@
+     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
+-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e",
++    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90",
+     "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
+     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+     "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
+@@ -187,5 +187,17 @@
+     "defaultCallerActivation": false,
+     "nativeSwiftExecuted": false,
+     "scope": "DEBUG synthetic pre-lock timing and separately observed lock wait only"
++  },
++  "source_delivery_diagnostic_layer": {
++    "status": "unexecuted_debug_metadata_only",
++    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
++    "beforeManifestSHA256": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a",
++    "changes": {
++      "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
++        "before": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e",
++        "after": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90"
++      }
++    },
++    "runtimeAuthorityChanged": false
+   }
+ }
+--- a/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
+@@ -43,7 +43,7 @@
+     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
+     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
+     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
+-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a"
++    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab"
+   },
+   "immutable_snapshot_layer": {
+     "scope": "current source only; new native tests authored, not executed",
+@@ -117,5 +117,17 @@
+       "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
+     },
+     "scope": "optional atomic expectedSource admission; no change to legacy default or physical authority"
++  },
++  "source_delivery_diagnostic_layer": {
++    "status": "unexecuted_debug_metadata_only",
++    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
++    "beforeManifestSHA256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a",
++    "changes": {
++      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
++        "before": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a",
++        "after": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab"
++      }
++    },
++    "runtimeAuthorityChanged": false
+   }
+ }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -155,8 +155,8 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+-      "bytes": 40193,
+-      "sha256": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
++      "bytes": 40699,
++      "sha256": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+@@ -475,8 +475,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+-      "bytes": 21132,
+-      "sha256": "730ae3f7fcba5fb606f4ccc9a730855c29065158d5ac1c35b7d22c5980fa3520"
++      "bytes": 24007,
++      "sha256": "c83a9202f27817006f76ce8e3d38fc4c99aefa60bbe4e825f390cdfe86d480d3"
+     },
+     {
+       "path": ".github/workflows/native-apple.yml",
+@@ -490,8 +490,8 @@
+     },
+     {
+       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
+-      "bytes": 27514,
+-      "sha256": "f60a213b00b6a7186820f42d00fd4198c2f4318055893a61d4c23419e63fe6e2"
++      "bytes": 28351,
++      "sha256": "a358111bb67e9eb6318a512deb714afda2c4fd562d041214aa5f89411c6e3c98"
+     },
+     {
+       "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
+@@ -525,8 +525,8 @@
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+-      "bytes": 7036,
+-      "sha256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a"
++      "bytes": 7598,
++      "sha256": "3722e8ea7bd17f6d71d1c5a42c0f0be3bb2c684ab4dcdafd756480ae05c208ee"
+     },
+     {
+       "path": ".github/workflows/mesh-candidate-ingress.yml",
+@@ -733,5 +733,10 @@
+     "cause": "no-owner source request correctly unavailable; fixture must ingest actual owned classified geometry",
+     "productionUnchanged": true,
+     "seatedTimeout": "unresolved10s callback wait; metadata-only phase/workerCPU instrumented without deadline change"
++  },
++  "source_delivery_diagnostic_layer": {
++    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
++    "status": "unexecuted_debug_metadata_only",
++    "scope": "source-request, native worker/delivery and render checkpoints; fail-fast source test; same ten-second waits"
+   }
+ }

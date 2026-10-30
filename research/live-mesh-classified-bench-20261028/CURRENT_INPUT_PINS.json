@@ -155,8 +155,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
-      "bytes": 40193,
-      "sha256": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
+      "bytes": 40699,
+      "sha256": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
@@ -475,8 +475,8 @@
     },
     {
       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
-      "bytes": 21132,
-      "sha256": "730ae3f7fcba5fb606f4ccc9a730855c29065158d5ac1c35b7d22c5980fa3520"
+      "bytes": 24007,
+      "sha256": "c83a9202f27817006f76ce8e3d38fc4c99aefa60bbe4e825f390cdfe86d480d3"
     },
     {
       "path": ".github/workflows/native-apple.yml",
@@ -490,8 +490,8 @@
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
-      "bytes": 27514,
-      "sha256": "f60a213b00b6a7186820f42d00fd4198c2f4318055893a61d4c23419e63fe6e2"
+      "bytes": 28351,
+      "sha256": "a358111bb67e9eb6318a512deb714afda2c4fd562d041214aa5f89411c6e3c98"
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
@@ -525,8 +525,8 @@
     },
     {
       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
-      "bytes": 7036,
-      "sha256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a"
+      "bytes": 7598,
+      "sha256": "3722e8ea7bd17f6d71d1c5a42c0f0be3bb2c684ab4dcdafd756480ae05c208ee"
     },
     {
       "path": ".github/workflows/mesh-candidate-ingress.yml",
@@ -733,5 +733,10 @@
     "cause": "no-owner source request correctly unavailable; fixture must ingest actual owned classified geometry",
     "productionUnchanged": true,
     "seatedTimeout": "unresolved10s callback wait; metadata-only phase/workerCPU instrumented without deadline change"
+  },
+  "source_delivery_diagnostic_layer": {
+    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+    "status": "unexecuted_debug_metadata_only",
+    "scope": "source-request, native worker/delivery and render checkpoints; fail-fast source test; same ten-second waits"
   }
 }

@@ -9,9 +9,10 @@ import sys
 INPUT_LIMIT = 64 * 1024 * 1024
 LINE_LIMIT = 4096
 RECORD_LIMIT = 32  # Per prefix: one kind cannot evict the other kind.
+SOURCE_RECORD_LIMIT = 64  # Matches the fixture's separately bounded source capture.
 UUID = r'[0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12}'
 NUMBER = r'(?:-1|[0-9]{1,15})'
-STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired)'
+STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired|sourceSnapshotEnqueued|sourceSnapshotWorkerStarted|sourceSnapshotWorkerFinished|sourceSnapshotDeliveryStarted|sourceSnapshotDeliveryFinished)'
 PHASE = re.compile(
     rf'SEATED_CANDIDATE_PHASE id=(?:{UUID}|none) '
     r'event=(?:happy_wait_finished|rejection_wait_finished|drain_complete) '
@@ -27,12 +28,21 @@ WORKER = re.compile(
                for name in ('worker', 'build', 'route'))
     + r' records=(?:[0-9]|[1-5][0-9]|6[0-4])'
 )
+# SOURCE elapsed_ms is source-request-relative, not the PHASE submission clock
+# or the native stages' owner-relative clock. Preserve the explicit request ordinal.
+SOURCE = re.compile(
+    rf'SEATED_CANDIDATE_SOURCE id=(?:{UUID}|none) '
+    r'request=(?:[1-9]|[1-5][0-9]|6[0-4]) '
+    r'event=(?:source_requested|source_native_callback|source_main_callback|source_controller_callback|render_enqueued|render_begin|render_end|display_accepted|display_rejected|source_refused) '
+    rf'elapsed_ms={NUMBER} main_thread=(?:true|false) outcome=(?:none|success|unavailable|stale|runtime_invalidLimits|runtime_budget|runtime_unavailable|runtime_stale|runtime_invalidRetainedState)'
+)
 PREFIXES = {'phase': b'SEATED_CANDIDATE_PHASE ',
-            'worker': b'SEATED_CANDIDATE_WORKER '}
+            'worker': b'SEATED_CANDIDATE_WORKER ',
+            'source': b'SEATED_CANDIDATE_SOURCE '}
 
 
 def valid(kind, line):
-    match = (PHASE if kind == 'phase' else WORKER).fullmatch(line)
+    match = {'phase': PHASE, 'worker': WORKER, 'source': SOURCE}[kind].fullmatch(line)
     if not match:
         return False
     if kind == 'worker':
@@ -46,7 +56,7 @@ def valid(kind, line):
 
 
 def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
-            record_limit=RECORD_LIMIT):
+            record_limit=RECORD_LIMIT, source_record_limit=SOURCE_RECORD_LIMIT):
     counts = {kind: 0 for kind in PREFIXES}
     dropped = {kind: 0 for kind in PREFIXES}
     rejected = consumed = 0
@@ -74,7 +84,7 @@ def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
             continue
         if not valid(kind, line):
             rejected += 1
-        elif counts[kind] < record_limit:
+        elif counts[kind] < (source_record_limit if kind == 'source' else record_limit):
             emit(line)
             counts[kind] += 1
         else:
@@ -90,7 +100,8 @@ def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
 
 
 def main():
-    print(f'SEATED_CANDIDATE_TIMING_BEGIN max_records_per_kind={RECORD_LIMIT} '
+    print(f'SEATED_CANDIDATE_TIMING_BEGIN max_phase_records={RECORD_LIMIT} '
+          f'max_worker_records={RECORD_LIMIT} max_source_records={SOURCE_RECORD_LIMIT} '
           f'max_input_bytes={INPUT_LIMIT} max_line_bytes={LINE_LIMIT}')
     try:
         path = Path(sys.argv[1])

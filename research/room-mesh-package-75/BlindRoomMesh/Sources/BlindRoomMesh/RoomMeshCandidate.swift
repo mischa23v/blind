@@ -322,6 +322,8 @@ public final class RoomMeshCandidateRuntime {
   case workerFinished, requestRetired
   case routeBegin, routeEnd, nativeFailure, completionQueued, completionDelivered
   case discardRequested, discardWorkerStarted, discardReleased, discardCompletionDelivered
+  case sourceSnapshotEnqueued, sourceSnapshotWorkerStarted, sourceSnapshotWorkerFinished
+  case sourceSnapshotDeliveryStarted, sourceSnapshotDeliveryFinished
  }
  public struct DiagnosticStageReceipt: Sendable {
   public let stage: DiagnosticStage
@@ -566,9 +568,16 @@ public final class RoomMeshCandidateRuntime {
    sourceSnapshotPending=true;pending+=1;return(session,generation,revision,lifecycle)
   }
   guard let (s,g,r,cycle)=token else{DispatchQueue.global(qos:.utility).async{completion(.failure(.unavailable))};return}
+#if DEBUG
+  recordDiagnosticStage(.sourceSnapshotEnqueued)
+#endif
   let finish:(Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>)->Void={ [self] result in
    let owned=SourceSnapshotDelivery(result)
    Self.sourceSnapshotDeliveryWorker.async { [self] in
+#if DEBUG
+    recordDiagnosticStage(.sourceSnapshotDeliveryStarted)
+    defer { recordDiagnosticStage(.sourceSnapshotDeliveryFinished) }
+#endif
     // Fence at delivery and release all owner-held payload references before drain.
     deliverSourceSnapshot(owned,completion:completion)
     owned.value=nil
@@ -576,6 +585,10 @@ public final class RoomMeshCandidateRuntime {
    }
   }
   Self.worker.async { [self] in
+#if DEBUG
+   recordDiagnosticStage(.sourceSnapshotWorkerStarted)
+   defer { recordDiagnosticStage(.sourceSnapshotWorkerFinished) }
+#endif
    defer{locked{pending-=1;scheduleDiscardIfDrained()}}
    guard locked({matches(s,g,r) && lifecycle==cycle}) else{finish(.failure(.stale));return}
    guard let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.unavailable));return}

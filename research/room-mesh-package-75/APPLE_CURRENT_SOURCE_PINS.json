@@ -52,7 +52,7 @@
     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
     "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e",
+    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90",
     "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
     "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
@@ -187,5 +187,17 @@
     "defaultCallerActivation": false,
     "nativeSwiftExecuted": false,
     "scope": "DEBUG synthetic pre-lock timing and separately observed lock wait only"
+  },
+  "source_delivery_diagnostic_layer": {
+    "status": "unexecuted_debug_metadata_only",
+    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+    "beforeManifestSHA256": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a",
+    "changes": {
+      "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
+        "before": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e",
+        "after": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90"
+      }
+    },
+    "runtimeAuthorityChanged": false
   }
 }

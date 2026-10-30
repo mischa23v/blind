@@ -57,6 +57,12 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     private var onStopped: (() -> Void)?
     private var nativeDrained = false
     var onNativeDrainForTesting: (() -> Void)?
+    /// Synthetic fixture metadata only; no source values or authority escape.
+    enum SourcePhaseForTesting: String {
+        case source_controller_callback, source_refused, render_enqueued, render_begin, render_end
+        case display_accepted, display_rejected
+    }
+    var onSourcePhaseForTesting: ((SourcePhaseForTesting) -> Void)?
 
     init(session: ARSession, expectedDelegate: any ARSessionDelegate, onStopped: @escaping () -> Void) throws {
         dispatchPrecondition(condition: .onQueue(.main))
@@ -171,25 +177,32 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         bench.requestSourceSnapshot { [weak self] result in
             guard let self else { return }
             defer { self.scheduleDisplayDrainCheck() }
-            guard self.epoch == token, !self.stopped else { self.snapshotPending = false; return }
+            self.onSourcePhaseForTesting?(.source_controller_callback)
+            guard self.epoch == token, !self.stopped else { self.onSourcePhaseForTesting?(.source_refused); self.snapshotPending = false; return }
             switch result {
             case .failure(let failure):
+                self.onSourcePhaseForTesting?(.source_refused)
                 self.snapshotPending = false
                 self.sourceReceipt = (self.scene == nil ? "" : "RETIRED historical wireframe remains for inspection only. ") + "Source snapshot withheld: \(failure). No missing area is treated as free."
             case .success(let source):
                 // One renderer task at a time. Source arrays are owned immutable
                 // values; no ARFrame, ARMeshAnchor or Metal buffer enters this queue.
+                let phase = self.onSourcePhaseForTesting
+                phase?(.render_enqueued)
                 self.renderQueue.async { [weak self] in
+                    phase?(.render_begin)
                     let rendered = SeatedMeshRenderer.makeScene(source.geometry)
+                    phase?(.render_end)
                     DispatchQueue.main.async { [weak self] in
                         guard let self else { return }
                         defer { self.finishRenderDelivery() }
-                        guard self.epoch == token, !self.stopped, self.bench?.hasCurrentTrackedSession == true else { return }
-                        guard let renderResult = rendered else { self.sourceReceipt = "Source geometry cannot be rendered within bounds. Whole snapshot withheld."; return }
+                        guard self.epoch == token, !self.stopped, self.bench?.hasCurrentTrackedSession == true else { phase?(.display_rejected); return }
+                        guard let renderResult = rendered else { phase?(.display_rejected); self.sourceReceipt = "Source geometry cannot be rendered within bounds. Whole snapshot withheld."; return }
                         let rendered = renderResult.scene
                         self.meshBoundsReceipt = renderResult.bounds
                         let current = self.bench?.isCurrent(source) == true
                         self.snapshot = current ? source : nil; self.scene = rendered
+                        phase?(current ? .display_accepted : .display_rejected)
                         let g = source.geometry
                         let triangles = g.anchors.reduce(0) { $0 + $1.triangleIndices.count / 3 }
                         self.sourceReceipt = (current ? "CURRENT DELIVERY REVISION — " : "RETIRED SOURCE REVISION — historical wireframe only, not current. ") + "Session \(g.sessionID), generation \(g.generation), revision \(g.revision). \(g.anchors.count) anchors, \(triangles) actual source triangles; metres, ARKit +Y up. Source delivery complete: \(g.sourceDeliveryComplete). Mesh capture time unavailable; physical coverage unknown. Gaps: \(g.unknownCoverage.joined(separator: ", "))."

@@ -129,9 +129,11 @@ final class SeatedMeshProjectionTests: XCTestCase {
             await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
             await self.fulfillment(of: [drained], timeout: 10)
         }
+        controller.onSourcePhaseForTesting = { [weak backend] in backend?.recordSource($0.rawValue) }
         try controller.activate()
         await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil }, object: nil)], timeout: 10)
-        XCTAssertNotNil(controller.scene)
+        backend.printTiming(event: "happy_wait_finished")
+        _ = try XCTUnwrap(controller.scene, "No admitted source scene; do not submit a query after source failure")
         let resultReady = expectation(description: "actual strict query held")
         backend.onHeld = { resultReady.fulfill() }
         controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
@@ -174,8 +176,11 @@ final class SeatedMeshProjectionTests: XCTestCase {
                 await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
                 await self.fulfillment(of: [drained], timeout: 10)
             }
+            controller.onSourcePhaseForTesting = { [weak backend] in backend?.recordSource($0.rawValue) }
             try controller.activate()
             await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil },object: nil)],timeout: 10)
+            backend.printTiming(event: "rejection_wait_finished")
+            _ = try XCTUnwrap(controller.scene, "No admitted source scene; do not submit a query after source failure")
             let ready = expectation(description: "held real native result")
             backend.onHeld = { ready.fulfill() }
             controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
@@ -207,6 +212,10 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     private var active = true
     private let timingLock = NSLock()
     private var submittedAt: Double?, nativeCompletedAt: Double?, mainHeldAt: Double?
+    private var sourceSubmittedAt: Double?
+    private var sourceRequest = 0
+    private var sourceRows: [(Int,String,Int,Bool,String)] = []
+    private var sourceRecords = 0
     var now = 10.0
     var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
     var hasCurrentTrackedSession: Bool { active }
@@ -254,7 +263,31 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     func reacquireTrackedFrameAnchors() { snapshots.retire() }
     func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
     func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot,MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
-        ingress.requestSourceSnapshot(generation: ingress.generation) { result in DispatchQueue.main.async { completion(result) } }
+        timingLock.lock()
+        sourceRequest += 1; sourceSubmittedAt = ProcessInfo.processInfo.systemUptime
+        timingLock.unlock()
+        recordSource("source_requested")
+        ingress.requestSourceSnapshot(generation: ingress.generation) { [weak self] result in
+            let outcome: String
+            switch result {
+            case .success: outcome = "success"
+            case .failure(.unavailable): outcome = "unavailable"
+            case .failure(.stale): outcome = "stale"
+            case .failure(.runtime(let failure)):
+                switch failure {
+                case .invalidLimits: outcome = "runtime_invalidLimits"
+                case .budget: outcome = "runtime_budget"
+                case .unavailable: outcome = "runtime_unavailable"
+                case .stale: outcome = "runtime_stale"
+                case .invalidRetainedState: outcome = "runtime_invalidRetainedState"
+                }
+            }
+            self?.recordSource("source_native_callback", outcome: outcome)
+            DispatchQueue.main.async { [weak self] in
+                self?.recordSource("source_main_callback", outcome: outcome)
+                completion(result)
+            }
+        }
     }
     func isCurrent(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool { active && ingress.isCurrent(source,generation: ingress.generation) }
     func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool { active && ingress.isCurrent(candidate,generation: ingress.generation) }
@@ -280,9 +313,26 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
             }
         }
     }
+    /// Monotonic source-request-relative metadata. No logging on callback/render
+    /// critical paths; total capture is bounded even if source admission retries.
+    func recordSource(_ event: String, outcome: String = "none") {
+        let timestamp = ProcessInfo.processInfo.systemUptime, main = Thread.isMainThread
+        timingLock.lock(); defer { timingLock.unlock() }
+        guard sourceRecords < 64, sourceRequest > 0, sourceRequest <= 64 else { return }
+        let elapsed = sourceSubmittedAt.map { timestamp >= $0 ? Int((timestamp-$0)*1000) : -1 } ?? -1
+        sourceRows.append((sourceRequest,event,elapsed,main,outcome)); sourceRecords += 1
+    }
+    func printSourceTiming() {
+        timingLock.lock(); let rows = sourceRows; sourceRows.removeAll(keepingCapacity: true); timingLock.unlock()
+        let id = ingress.diagnosticReceiptID?.uuidString ?? "none"
+        for row in rows {
+            print("SEATED_CANDIDATE_SOURCE id=\(id) request=\(row.0) event=\(row.1) elapsed_ms=\(row.2) main_thread=\(row.3) outcome=\(row.4)")
+        }
+    }
     /// Called after XCTest's bounded wait or drain, never in native completion's
     /// critical path. Missing stages remain -1, not invented zero-time successes.
     func printTiming(event: String) {
+        printSourceTiming()
         timingLock.lock()
         let submitted = submittedAt, native = nativeCompletedAt, main = mainHeldAt
         timingLock.unlock()

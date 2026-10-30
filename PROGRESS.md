@@ -1,3 +1,11 @@
+## Published Apple saved-route failure audit — 2026-10-30 04:28 UTC
+
+Published `d8c6ece`: [read-only route-margin audit](research/apple-route-margin-audit-20261030/README.md) of candidate `457c3f3`, preserving its three failed test methods and every original schedule. Bedroom supplied starts overlap the declared margin around the bed; nominal hallway geometry supports an approximately 8.54 mm margin overlap. The 28 cm-profile hallway's approximately 1.43 mm arithmetic clearance versus SceneKit contact remains unresolved. Raw modeled-cylinder and margin contacts are separate; the approximately 25 mm source-floor/native-height difference is explicitly scored and is not established as the cause. No app, CI, geometry, path, profile or expectation was changed by the audit.
+
+The original failures remain failures. This audit closes no navigation milestone and changes no existing task ID, status, dependency order or physical-guidance authority.
+
+---
+
 ## Released height-following comparison completed and audited — 2026-10-30 02:39 UTC
 
 Actual compact attempt 002 from source `0a1a59cd580239a52939f5cdc9642cc608ece425` completed all three stages with zero exits: **3,696 native-height events and 29,568 full-body collision records**. Independent saved-data checks reproduced the old native event bytes exactly and all 29,069 saved attempt-001 records after lossless decoding. Runtime: 89.319 CPU / 89.361 wall seconds; observed peak RSS 193,658,880 B. All 101 input pins stayed unchanged. Attempt 001 remains failed and preserved.

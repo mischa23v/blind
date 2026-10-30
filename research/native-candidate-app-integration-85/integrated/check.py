@@ -18,14 +18,28 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Preserve the second Apple failure while layering synthetic source-delivery clocks.
+pre_source_delivery_source = {}
+with tempfile.TemporaryDirectory(prefix='stage85-source-delivery-metadata-') as temp:
+    root = Path(temp)
+    for name in manifest['beforeSourceDeliveryDiagnostics']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'seated-source-delivery-diagnostics.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeSourceDeliveryDiagnostics'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-source-delivery input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_source_delivery_source[name]=value
+
 # The first Apple run exposed a fixture setup failure, not a production defect.
 # Restore its published failing inputs before reversing the original candidate layer.
-pre_fixture_repair_source = {}
+pre_fixture_repair_source = dict(pre_source_delivery_source)
 with tempfile.TemporaryDirectory(prefix='stage85-source-fixture-repair-') as temp:
     root = Path(temp)
     for name in list(manifest['beforeExpectedSourceFixtureRepair']) + manifest['expectedSourceFixtureRepairNewFiles']:
         target = root/name; target.parent.mkdir(parents=True,exist_ok=True)
-        shutil.copyfile(R/name,target)
+        target.write_bytes(pre_source_delivery_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'seated-expected-source-fixture-repair.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeExpectedSourceFixtureRepair'].items():
