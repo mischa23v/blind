@@ -2,6 +2,11 @@
 import XCTest
 import SceneKit
 import ARKit
+import BlindCore
+import MeshCandidateIngress83
+import BlindRoomMesh
+@testable import MeshSnapshot82
+@testable import LiveMeshClassifiedBench
 @testable import BlindAssist
 
 final class SeatedMeshProjectionTests: XCTestCase {
@@ -116,5 +121,153 @@ final class SeatedMeshProjectionTests: XCTestCase {
         XCTAssertTrue(finished); XCTAssertNil(released)
     }
 
+    @MainActor func testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding() async throws {
+        let backend = try SeatedCandidateFixtureBackend()
+        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now })
+        addTeardownBlock {
+            let drained = XCTestExpectation(description: "seated native teardown drained")
+            await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
+            await self.fulfillment(of: [drained], timeout: 10)
+        }
+        try controller.activate()
+        await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil }, object: nil)], timeout: 10)
+        XCTAssertNotNil(controller.scene)
+        let resultReady = expectation(description: "actual strict query held")
+        backend.onHeld = { resultReady.fulfill() }
+        controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
+            declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
+        await fulfillment(of: [resultReady],timeout: 10)
+        let submitted = try XCTUnwrap(backend.submittedStart)
+        let captured = try XCTUnwrap(backend.submittedCapture)
+        XCTAssertEqual(submitted[0],0); XCTAssertEqual(submitted[1],0,accuracy: 1e-6); XCTAssertEqual(submitted[2],0)
+        XCTAssertNotNil(backend.submittedSource)
+        let result = try XCTUnwrap(backend.heldResult).get()
+        XCTAssertEqual(result.route.endpointPolicy,.requireSuppliedXZOverPolygon)
+        XCTAssertEqual(result.route.endpointAdmission?.start.requested,submitted)
+        XCTAssertFalse(result.physicalAuthority); XCTAssertFalse(result.route.authorizesPhysicalGuidance)
+        backend.now = 10.1
+        backend.ordinaryFrame() // Latest capture changes, but held request remains exact.
+        XCTAssertTrue(backend.isCurrent(captured))
+        backend.release()
+        await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in
+            controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false) != nil
+        },object: nil)],timeout: 10)
+        let marker = try XCTUnwrap(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
+        XCTAssertEqual(marker.position.x,submitted[0]); XCTAssertEqual(marker.position.y,submitted[1]); XCTAssertEqual(marker.position.z,submitted[2])
+        let expectedDelta = Double(result.route.projectedStart[1]) - Double(submitted[1])
+        XCTAssertTrue(controller.footReceipt.contains("delta Y \(expectedDelta)m"))
+        XCTAssertTrue(controller.footReceipt.contains(captured.frame.uuidString))
+        XCTAssertTrue(controller.footReceipt.contains("Historical preview lease"))
+        XCTAssertTrue(controller.sourceReceipt.contains("revision \(result.route.revision)"))
+        controller.retirePreview() // Same path invoked by mount/heading edits.
+        XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false))
+        XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
+    }
+
+    @MainActor func testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange() async throws {
+        for retireSource in [false,true] {
+            let backend = try SeatedCandidateFixtureBackend()
+            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now })
+            addTeardownBlock {
+                let drained = XCTestExpectation(description: "seated rejection teardown drained")
+                await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
+                await self.fulfillment(of: [drained], timeout: 10)
+            }
+            try controller.activate()
+            await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil },object: nil)],timeout: 10)
+            let ready = expectation(description: "held real native result")
+            backend.onHeld = { ready.fulfill() }
+            controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
+                declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
+            await fulfillment(of: [ready],timeout: 10)
+            _ = try XCTUnwrap(backend.heldResult).get() // A native refusal is not a passing retirement test.
+            if retireSource { backend.changeGeometry() }
+            else { _ = backend.freezeCameraCapture() } // Explicit request replacement within same frame.
+            backend.release()
+            XCTAssertTrue(controller.routeReceipt.hasPrefix("WITHHELD"))
+            XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false))
+            XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
+            controller.stop(); XCTAssertNil(controller.scene)
+            let drained = expectation(description: "rejection iteration native drain")
+            backend.stopAndDrain { drained.fulfill() }
+            await fulfillment(of: [drained], timeout: 10)
+        }
+    }
+
+}
+
+/// Copied synthetic frame scalars + an actual owned classified floor packet.
+/// No ARFrame/ARSession activation, forged route/snapshot, validator or guidance.
+private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
+    private let ingress: LiveMeshBenchIngress
+    private let snapshots = MeshBenchCameraSnapshot()
+    private let sessionID = UUID(), anchorID = UUID()
+    private var active = true
+    var now = 10.0
+    var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
+    var hasCurrentTrackedSession: Bool { active }
+    var submittedStart: [Float]?
+    var submittedCapture: LiveMeshBenchSession.CameraCapture?
+    var submittedSource: MeshCandidateIngress83.SourceSnapshot?
+    var heldResult: Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>?
+    var onHeld: (() -> Void)?
+    private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
+    init() throws {
+        let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
+        ingress = try LiveMeshBenchIngress(decodeQueue: decode)
+        let values: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
+        let bytes = values.flatMap { value in (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0*8)) } }
+        let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
+        let id = anchorID
+        let accepted = ingress.observe(anchorID: id,generation: ingress.generation,receiptUptime: now) { context in
+            do {
+                let plan = try MeshSnapshot82.preflight(context: context,
+                    vertices: .init(count: 4,offset: 0,stride: 12,bufferLength: bytes.count,format: .float3),
+                    indices: .init(count: 6,offset: 0,stride: 2,bufferLength: indices.count,format: .uint16),
+                    classification: .init(count: 2,offset: 0,stride: 1,bufferLength: 2,format: .uint8))
+                return .owned(.init(context: context,anchorID: id,plan: plan,vertexBytes: bytes,indexBytes: indices,
+                    classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
+            } catch { return .unknownGap(.init(context: context,anchorID: id,reason: .invalidDescriptor)) }
+        }
+        guard accepted else { throw LiveMeshBenchSession.Failure.unavailable }
+        decode.sync {}
+        ordinaryFrame()
+    }
+    func ordinaryFrame() {
+        snapshots.observe(.init(session: sessionID,frame: UUID(),capturedAt: now,
+            columnMajorCameraToWorld: [1,0,0,0,0,1,0,0,0,0,1,0,0,Double(Float(1.2)),0,1]))
+    }
+    func activateForSeatedBench() throws {}
+    func stop() { active = false; snapshots.retire(); ingress.stop() }
+    func stopAndDrain(_ completion: @escaping () -> Void) {
+        stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
+        ingress.stopAndDiscard(completion: completion)
+    }
+    func reacquireTrackedFrameAnchors() { snapshots.retire() }
+    func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
+    func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot,MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
+        ingress.requestSourceSnapshot(generation: ingress.generation) { result in DispatchQueue.main.async { completion(result) } }
+    }
+    func isCurrent(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool { active && ingress.isCurrent(source,generation: ingress.generation) }
+    func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool { active && ingress.isCurrent(candidate,generation: ingress.generation) }
+    func isCurrent(_ capture: LiveMeshBenchSession.CameraCapture) -> Bool { active && snapshots.isCurrent(capture,at: now) }
+    func freezeCameraCapture() -> LiveMeshBenchSession.CameraCapture? { snapshots.freeze(at: now) }
+    func retireCameraCapture() { snapshots.retire() }
+    func changeGeometry() { _ = ingress.remove(anchorID: anchorID,generation: ingress.generation,receiptUptime: now+0.01) }
+    func requestPreview(start: [Float],goal: [Float],body: MeshCandidateBody,
+                        capture: LiveMeshBenchSession.CameraCapture?,expectedSource: MeshCandidateIngress83.SourceSnapshot?,
+                        completion: @escaping (Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void) {
+        guard let capture, snapshots.canAdmit(capture,at: now), expectedSource != nil else { completion(.failure(.stale)); return }
+        submittedStart = start; submittedCapture = capture; submittedSource = expectedSource
+        ingress.request(generation: ingress.generation,start: start,goal: goal,body: body,expectedSource: expectedSource) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.heldResult = result; self?.heldCompletion = completion; self?.onHeld?()
+            }
+        }
+    }
+    func release() {
+        guard let heldResult, let completion = heldCompletion else { return }
+        heldCompletion = nil; completion(heldResult)
+    }
 }
 #endif

@@ -95,8 +95,8 @@
     },
     {
       "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
-      "bytes": 17752,
-      "sha256": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
+      "bytes": 18230,
+      "sha256": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
     },
     {
       "path": "research/mesh-candidate-ingress-83/apple/ci.py",
@@ -420,8 +420,8 @@
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
-      "bytes": 6295,
-      "sha256": "fbc76b115b10f5e033a90a05e9d064717885d8fc5501d9cfa3758448d425b1b3"
+      "bytes": 6397,
+      "sha256": "fd456244ad66ce0ee78be63f849c2a7408d992a2138994f9d0cf6903d5a87c8c"
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
@@ -430,8 +430,8 @@
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
-      "bytes": 23476,
-      "sha256": "9ec520430877c8d3975b59e9105510e309dae11fc23d9631ec9fdd3c1ef451e2"
+      "bytes": 25204,
+      "sha256": "ba6da6878b47193b9635e6655f751fc070eb8fa7b918e85d7f5b84f08979f391"
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift",
@@ -445,8 +445,8 @@
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
-      "bytes": 14703,
-      "sha256": "7b9c513c6e2219c6358b2561ebdb7dcee5eb9108fb8f089d30497c06b4e66300"
+      "bytes": 18543,
+      "sha256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
@@ -472,6 +472,86 @@
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h",
       "sha256": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf",
       "bytes": 5742
+    },
+    {
+      "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+      "bytes": 17862,
+      "sha256": "f4506d6363b0cb033f31fdae90193baa1c1ecddaecffc0bdb27981ab8c1f42b2"
+    },
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "bytes": 15949,
+      "sha256": "5faa2d067d0a3b39d5ef046f4a4d78aab2c5ae4ad638c65629f4b6301cf94db5"
+    },
+    {
+      "path": ".github/workflows/body-profile-current.yml",
+      "bytes": 2290,
+      "sha256": "6ae2cbbd53db447bc4a286d2d2c8f9378423dc1f2edea017fe0eb1081ef56476"
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
+      "bytes": 27514,
+      "sha256": "f60a213b00b6a7186820f42d00fd4198c2f4318055893a61d4c23419e63fe6e2"
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
+      "bytes": 7878,
+      "sha256": "fb0f858f5fc8793a4e203a81f0049d6c733b5dc21fb6c1b3dd04e8601906d568"
+    },
+    {
+      "path": "tools/ci/test_emit_ci_log_receipts.py",
+      "bytes": 7024,
+      "sha256": "a4c7c37fefec0571ddce173a7db335480be8259820ccb4eb52646c2280069b40"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift",
+      "bytes": 2464,
+      "sha256": "440eadb3ebc43ec1a47a6fa87fa8eaf9b96eceaaa250b8a643b3eb6e3131538d"
+    },
+    {
+      "path": "tools/ci/collect-seated-projection.py",
+      "bytes": 5154,
+      "sha256": "8a5154bf61af16ddde49739c98f9e90e82c8d0f55155d9d9679770e85887b40d"
+    },
+    {
+      "path": "tools/ci/test-collect-seated-projection.py",
+      "bytes": 4097,
+      "sha256": "3ff739c5a31665322052ac3d5de664d81c42d8c34f098ddea2dcad71c9df89cb"
+    },
+    {
+      "path": "tools/ci/emit-ci-log-receipts.py",
+      "bytes": 7740,
+      "sha256": "679f85f42b87bb4744373d083bd3ea2c9bc962f8f762234e6465a3468ad04ff1"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+      "bytes": 7036,
+      "sha256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a"
+    },
+    {
+      "path": ".github/workflows/mesh-candidate-ingress.yml",
+      "bytes": 2196,
+      "sha256": "b0c137ce1ced087b5b9967e6693b8473c4620742ad104620aeb75c4443c6ceb5"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/DiagnosticBodyFootCandidateTests.swift",
+      "bytes": 6987,
+      "sha256": "211386177b1b636b3eb5fdf391e5195d10344a58ab3fa760e62a16ae02d9819e"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/DiagnosticBodyFootCandidate.swift",
+      "bytes": 5360,
+      "sha256": "f1441ad17452626985470887f626d3f746031c98027831932357641bea18afa5"
+    },
+    {
+      "path": "tools/ci/collect-classified-bench.py",
+      "bytes": 10882,
+      "sha256": "9414db3241956d6d3dca55eed36ea6165660fc83a0f153717f5596991c4cbb0e"
+    },
+    {
+      "path": "tools/ci/test_collect_classified_bench.py",
+      "bytes": 9324,
+      "sha256": "8216b18db5bf3849ff55e6933f3d1bafad7faaa638678e7ef697991ec9e66f63"
     }
   ],
   "changes": [
@@ -639,5 +719,10 @@
     },
     "defaultCallerActivation": false,
     "nativeSwiftExecuted": false
+  },
+  "seated_body_foot_candidate_layer": {
+    "status": "unbuilt_source",
+    "beforeManifestSHA256": "fb45495a6c7045d52ef653baf88b2e2f5092210e93603a352e1e20f87ba7843e",
+    "scope": "explicit seated historical candidate plus executable fixtures and no-artifact CI; not device validation"
   }
 }

@@ -1,5 +1,7 @@
 import Foundation
 import XCTest
+import MeshCandidateIngress83
+import BlindRoomMesh
 @testable import LiveMeshClassifiedBench
 
 /// Pure ownership/freshness schedules. No ARSession is created or activated.
@@ -265,5 +267,65 @@ final class MeshBenchHelperTests: XCTestCase {
             XCTAssertTrue(invalid.isRetired())
             XCTAssertEqual(invalid.receipt().retirementReason, .invalidClock)
         }
+    }
+}
+
+final class MeshBenchCameraSnapshotTests: XCTestCase {
+    private let matrix: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1.2,0,1]
+    func testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes() throws {
+        let owner = MeshBenchCameraSnapshot(), session = UUID()
+        let a = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: matrix)
+        owner.observe(a); let frozenA = try XCTUnwrap(owner.freeze(at: 10))
+        XCTAssertEqual(frozenA.frame,a.frame); XCTAssertEqual(frozenA.columnMajorCameraToWorld,a.columnMajorCameraToWorld)
+        let b = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10.1,columnMajorCameraToWorld: matrix)
+        owner.observe(b)
+        XCTAssertTrue(owner.isCurrent(frozenA,at: 10.2)); XCTAssertFalse(owner.isCurrent(b,at: 10.2))
+        let frozenB = try XCTUnwrap(owner.freeze(at: 10.2))
+        XCTAssertEqual(frozenB.frame,b.frame)
+        XCTAssertFalse(owner.isCurrent(frozenA,at: 10.2)); XCTAssertTrue(owner.isCurrent(frozenB,at: 10.2))
+        // An explicit new request even within the SAME AR frame retires the old lease.
+        let sameFrameNewRequest = try XCTUnwrap(owner.freeze(at: 10.2))
+        XCTAssertEqual(sameFrameNewRequest.frame,frozenB.frame)
+        XCTAssertFalse(owner.isCurrent(frozenB,at: 10.2))
+        owner.retire(); XCTAssertFalse(owner.isCurrent(sameFrameNewRequest,at: 10.2))
+    }
+    func testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot() throws {
+        let owner = MeshBenchCameraSnapshot(), session = UUID()
+        let a = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: matrix)
+        owner.observe(a); XCTAssertNil(owner.freeze(at: 9.9)); XCTAssertNil(owner.freeze(at: 10.501))
+        let frozen = try XCTUnwrap(owner.freeze(at: 10))
+        XCTAssertTrue(owner.canAdmit(frozen,at: 10.5))
+        XCTAssertFalse(owner.canAdmit(frozen,at: 10.501))
+        XCTAssertTrue(owner.isCurrent(frozen,at: 11)) // Historical display, NOT new admission.
+        XCTAssertFalse(owner.isCurrent(frozen,at: 18.001))
+        owner.observe(.init(session: UUID(),frame: UUID(),capturedAt: 10.1,columnMajorCameraToWorld: matrix))
+        XCTAssertFalse(owner.isCurrent(frozen,at: 10.2))
+        owner.observe(nil); XCTAssertNil(owner.freeze(at: 10.2))
+        owner.observe(.init(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: []))
+        XCTAssertNil(owner.freeze(at: 10))
+    }
+}
+
+final class MeshBenchExpectedSourceTests: XCTestCase {
+    func testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan() throws {
+        let ingress = try LiveMeshBenchIngress()
+        let read = expectation(description: "empty source inspection")
+        var snapshot: MeshCandidateIngress83.SourceSnapshot?
+        ingress.requestSourceSnapshot(generation: ingress.generation) { result in
+            if case .success(let source) = result { snapshot = source }
+            read.fulfill()
+        }
+        wait(for: [read], timeout: 10)
+        let source = try XCTUnwrap(snapshot)
+        XCTAssertTrue(ingress.isCurrent(source,generation: ingress.generation))
+        _ = ingress.remove(anchorID: UUID(),generation: ingress.generation,receiptUptime: 1)
+        XCTAssertFalse(ingress.isCurrent(source,generation: ingress.generation))
+        var refused = false
+        ingress.request(generation: ingress.generation,start: [0,0,0],goal: [1,0,0],
+                        body: try MeshCandidateBody(radius: 0.3,height: 1.7),expectedSource: source) { result in
+            if case .failure(.unavailable) = result { refused = true }
+        }
+        XCTAssertTrue(refused) // Admission refusal is synchronous; no native query submitted.
+        ingress.stop()
     }
 }

@@ -11,6 +11,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+
+# No paid-storage assumption: uploads require a separately reviewed source opt-in.
+# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
 concurrency:
   group: candidate-mesh-candidate-ingress-${{ github.ref }}
   cancel-in-progress: false
@@ -29,10 +34,11 @@ jobs:
           lfs: false
           submodules: false
       - name: Run real package ingress fixtures and compile actual ARKit boundary
+        id: fixtures
         timeout-minutes: 23
         run: python3 research/mesh-candidate-ingress-83/apple/ci.py
       - name: Preserve bounded source-only proof receipts
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: candidate-mesh-candidate-ingress-83-receipts
@@ -41,3 +47,10 @@ jobs:
             ${{ runner.temp }}/blind-mesh-candidate-ingress-83/RESULT.json
           if-no-files-found: warn
           retention-days: 3
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py ingress

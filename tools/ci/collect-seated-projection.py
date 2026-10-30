@@ -4,18 +4,19 @@ from pathlib import Path
 sys.dont_write_bytecode=True
 H=Path(__file__).resolve().parent;ROOT=H.parents[1]
 spec=importlib.util.spec_from_file_location('native_status_reader',H/'export-native-unit-statuses.py');native=importlib.util.module_from_spec(spec);spec.loader.exec_module(native)
-EXPECTED=['SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres', 'SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce', 'SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution', 'SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection', 'SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow', 'SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection', 'SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision', 'SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement', 'SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain', 'SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns']
+EXPECTED=['SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres', 'SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce', 'SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution', 'SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection', 'SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow', 'SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection', 'SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision', 'SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement', 'SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain', 'SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns', 'SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding', 'SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange']
 
 def require(value,message):
     if not value:raise ValueError(message)
 
 def collect(cases,summary,log,command,source):
-    names=re.findall(r'^\s*(?:@MainActor\s+)?func (test\w+)\(',source,re.M)
-    require(['SeatedMeshProjectionTests/'+n for n in names]==EXPECTED,'exact reviewed10 fixture source required')
+    names=re.findall(r'^\s*(?:@MainActor\s+)?func\s+(test\w+)\s*\(',source,re.M)
+    require(['SeatedMeshProjectionTests/'+n for n in names]==EXPECTED,'exact reviewed12 fixture source required')
+    require(re.findall(r'^\s*(?:final\s+)?class\s+(\w+)\s*:\s*XCTestCase\s*\{',source,re.M)==['SeatedMeshProjectionTests'],'exact hosted XCTest class required')
     require(source.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n'),'fixture must remain flag-only')
     require(type(command.get('exit_code')) is int and command['exit_code']==0,'focused native command failed or unavailable')
     counts=native.reconcile(cases,summary)
-    require(len(cases)==10 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
+    require(len(cases)==12 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
     require(all(x['result']=='Passed' for x in cases),'failed/skipped focused fixture')
     require(len(log.encode())<=64*1024*1024,'bounded test log required')
     events={}
@@ -26,7 +27,7 @@ def collect(cases,summary,log,command,source):
         require(match is not None,'unexpected hosted test line/class')
         name,status=match.groups();events.setdefault('SeatedMeshProjectionTests/'+name,[]).append(status)
     require(events=={n:['started','passed'] for n in EXPECTED},'missing/extra/duplicate/failed/skipped exact log witnesses')
-    return {'status':'passed','scope':'10 flag-only synthetic hosted fixtures; no live sensing or physical authority','executed':10,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
+    return {'status':'passed','scope':'12 flag-only synthetic hosted fixtures (original10 plus2); no live sensing or physical authority','executed':12,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
 
 def main():
     out=Path(sys.argv[1]);result={'status':'unavailable','complete':False,'source_verified':False,'expected_commit':os.environ.get('GITHUB_SHA')}

@@ -18,12 +18,29 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Restore the exact prior source before checking historical layers. This new
+# candidate/CI layer is reversible provenance, not execution or safety evidence.
+pre_candidate_source = {}
+with tempfile.TemporaryDirectory(prefix='stage85-body-foot-source-') as temp:
+    root = Path(temp)
+    for name in list(manifest['beforeBodyFootCandidate']) + manifest['bodyFootCandidateNewFiles']:
+        target = root / name; target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(R / name, target)
+    subprocess.run(['git','apply','-R',str(H/'seated-body-foot-candidate-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name,digest in manifest['beforeBodyFootCandidate'].items():
+        value = (root/name).read_bytes()
+        check('exact pre-body-foot source recovered '+name, hashlib.sha256(value).hexdigest()==digest)
+        pre_candidate_source[name] = value
+    for name in manifest['bodyFootCandidateNewFiles']:
+        check('new body-foot source absent in historical layer '+name, not (root/name).exists())
+
 # Recover the exact pre-diagnostics source in scratch before every historical layer.
-pre_diagnostics_source={}
+pre_diagnostics_source=dict(pre_candidate_source)
 with tempfile.TemporaryDirectory(prefix='stage85-diagnostics-source-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeSyntheticDiagnostics'])+manifest['syntheticDiagnosticsNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_candidate_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'synthetic-diagnostics-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeSyntheticDiagnostics'].items():
         check('exact pre-synthetic-diagnostics source recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
@@ -50,7 +67,7 @@ with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
     for name in manifest['beforeImmutableSnapshot']:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(R / name, target)
+        target.write_bytes(pre_candidate_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git', 'apply', '-R', str(H / 'seated-viewer-collector-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeSeatedViewerCollector'].items():
@@ -137,7 +154,7 @@ with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
     for name in dict.fromkeys(manifest['appFiles'] + list(manifest['beforeGuidanceAuthority']) + manifest['guidanceAuthorityNewFiles'] + list(manifest['beforeSeatedViewerApp']) + manifest['seatedViewerAppNewFiles']):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(R / name, target)
+        target.write_bytes(pre_candidate_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git', 'apply', '-R', str(H / 'seated-viewer-app-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeSeatedViewerApp'].items():

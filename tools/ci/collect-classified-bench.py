@@ -16,16 +16,37 @@ RECOVERY_CASES = ['test01LatestOwnedReplacementRecoversOnlyLogicalDelivery', 'te
 
 HELPER_CASES = ['testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce', 'testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved', 'testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates', 'testMaximumRequestIssuesExactly192AttemptsThenStops', 'testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused', 'testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap', 'testSchedulerClockFailuresAreTerminalWithinRequest', 'testStartupGraceIsNotCurrentButCanBecomeHealthy', 'testStartupExpiryAndFrameExpiryCannotRevive', 'testTrackingLossAndStopAreTerminalAndDoNotChangeReason', 'testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture', 'testIndependentWatchdogRetiresWhileProducerDoesNoWork', 'testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins', 'testLeaseBackwardsAndNonfiniteClockAreTerminal']
 
+CAMERA_CASES = ['testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes', 'testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot']
+EXPECTED_SOURCE_CASES = ['testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan']
+
+
+def test_declarations(source):
+    return re.findall(r'^\s*(?:@MainActor\s+)?func\s+(test\w+)\s*\(', source, re.M)
+
+
+def helper_classes(source):
+    # These reviewed source files have top-level XCTestCase classes; private
+    # non-XCTest helper classes are not independent suites. Whitespace may span lines.
+    declarations=list(re.finditer(r'^\s*(?:final\s+)?class\s+(\w+)\s*:\s*XCTestCase\s*\{', source, re.M))
+    result={}
+    for index, declaration in enumerate(declarations):
+        name=declaration.group(1)
+        require(name not in result, 'duplicate helper XCTest class')
+        end=declarations[index+1].start() if index+1<len(declarations) else len(source)
+        result[name]=test_declarations(source[declaration.end():end])
+    return result
+
 def collect(source, log, command, before, after, snapshot_source, recovery_source, helper_source):
-    expected=re.findall(r'^\s*func (test\w+)\(', source, re.M)
+    expected=test_declarations(source)
     require(expected==EXPECTED_CASES and len(set(expected))==18, 'expected exact reviewed 18-fixture XCTest source')
-    snapshot_expected=re.findall(r'^\s*func (test\w+)\(', snapshot_source, re.M)
+    snapshot_expected=test_declarations(snapshot_source)
     require(snapshot_expected==SNAPSHOT_CASES and len(set(snapshot_expected))==16, 'expected exact reviewed16 snapshot XCTest source')
-    recovery_expected=re.findall(r'^\s*func (test\w+)\(', recovery_source, re.M)
+    recovery_expected=test_declarations(recovery_source)
     require(recovery_expected==RECOVERY_CASES and len(set(recovery_expected))==14, 'expected exact reviewed14 recovery XCTest source')
-    helper_expected=re.findall(r'^\s*func (test\w+)\(', helper_source, re.M)
-    require(helper_expected==HELPER_CASES and len(set(helper_expected))==14, 'expected exact reviewed14 helper XCTest source')
-    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchHelperTests':HELPER_CASES}
+    helper_expected=test_declarations(helper_source)
+    require(helper_expected==HELPER_CASES+CAMERA_CASES+EXPECTED_SOURCE_CASES and len(set(helper_expected))==17, 'expected exact reviewed14 helper plus3 camera/source XCTest declarations')
+    require(helper_classes(helper_source)=={'MeshBenchHelperTests':HELPER_CASES, 'MeshBenchCameraSnapshotTests':CAMERA_CASES, 'MeshBenchExpectedSourceTests':EXPECTED_SOURCE_CASES}, 'expected exact reviewed helper class membership')
+    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchHelperTests':HELPER_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchCameraSnapshotTests':CAMERA_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchExpectedSourceTests':EXPECTED_SOURCE_CASES}
     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
     pattern=r"Test Case '-\[([^ ]+) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([^\n]*\)\.)"
     observed={}
@@ -42,11 +63,11 @@ def collect(source, log, command, before, after, snapshot_source, recovery_sourc
         match=re.fullmatch(r"Test Suite '([^']+)' (started|passed|failed) at .+\.",line)
         require(match is not None, 'unrecognized XCTest suite record')
         name,status=match.groups();suites.setdefault(name,[]).append(status)
-    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests','MeshBenchHelperTests']}, 'missing, extra, contradictory or failed XCTest suite')
+    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests','MeshBenchHelperTests','MeshBenchCameraSnapshotTests','MeshBenchExpectedSourceTests']}, 'missing, extra, contradictory or failed XCTest suite')
     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
-    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('62','0','0'):2}), 'missing or contradictory XCTest totals')
+    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('2','0','0'):1,('1','0','0'):1,('65','0','0'):2}), 'missing or contradictory XCTest totals')
     # Bind each total to its immediately preceding passed suite; swapped counts fail.
-    expected_totals={'All tests':62,'LiveMeshClassifiedBenchPackageTests.xctest':62,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14}
+    expected_totals={'All tests':65,'LiveMeshClassifiedBenchPackageTests.xctest':65,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14,'MeshBenchCameraSnapshotTests':2,'MeshBenchExpectedSourceTests':1}
     suite_totals={}; last_passed=None
     for line in log.splitlines():
         matched=re.fullmatch(r"Test Suite '([^']+)' passed at .+\.",line)
@@ -59,7 +80,7 @@ def collect(source, log, command, before, after, snapshot_source, recovery_sourc
     require(suite_totals==expected_totals, 'missing suite-bound totals')
     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
     require(before==after=='', 'source not clean before and after test')
-    return {'status':'passed','scope':'62 macOS synthetic XCTest fixtures, not live sensing','executed':62,'passed':62,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+    return {'status':'passed','scope':'65 macOS synthetic XCTest fixtures (original62 plus3), not live sensing','executed':65,'passed':65,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir

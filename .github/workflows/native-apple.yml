@@ -21,6 +21,11 @@ on:
 permissions:
   contents: read
 
+# No paid-storage assumption: uploads require a separately reviewed source opt-in.
+# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
+
 concurrency:
   group: native-apple-${{ github.ref }}
   cancel-in-progress: false
@@ -81,7 +86,7 @@ jobs:
           python3 tools/ci/export-native-unit-statuses.py "$out/unit.xcresult" "$out/unit.log" "$out/unit-case-statuses.json" || true
           python3 tools/ci/export-public-apple-same-export.py "$out/unit.xcresult" "$out/unit-case-statuses.json" "$out/public-apple-same-export" || true
       - name: Preserve bounded hosted-unit case statuses
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
@@ -89,7 +94,7 @@ jobs:
           if-no-files-found: error
           retention-days: 3
       - name: Preserve bounded public Apple same-export comparison assets
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: public-apple-same-export-${{ github.run_id }}-${{ github.run_attempt }}
@@ -117,7 +122,7 @@ jobs:
         timeout-minutes: 3
         run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
       - name: Preserve bounded optional-policy hosted receipt
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: seed-radius-${{ github.run_id }}-${{ github.run_attempt }}
@@ -138,7 +143,7 @@ jobs:
         timeout-minutes: 3
         run: python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-main-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
       - name: Preserve bounded synthetic main UI audit evidence
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: main-ui-audit-callback-evidence
@@ -152,7 +157,7 @@ jobs:
         timeout-minutes: 2
         run: python3 tools/ci/export-ui-test-device-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-native-ci/simulator-id" "$RUNNER_TEMP/blind-ui-devices-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
       - name: Preserve bounded synthetic UI device identity evidence
-        if: always() && steps.preflight.outcome == 'success'
+        if: always() && steps.preflight.outcome == 'success' && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ui-test-device-evidence-${{ github.run_id }}-${{ github.run_attempt }}
@@ -167,7 +172,7 @@ jobs:
         timeout-minutes: 2
         run: python3 tools/ci/export-practice-runtime-evidence.py "$RUNNER_TEMP/blind-native-ci/simulator-id" "$RUNNER_TEMP/blind-native-ci/ui.log" "$RUNNER_TEMP/blind-practice-runtime-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
       - name: Preserve bounded synthetic Practice runtime evidence
-        if: always() && steps.preflight.outcome == 'success'
+        if: always() && steps.preflight.outcome == 'success' && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: practice-runtime-evidence-${{ github.run_id }}-${{ github.run_attempt }}
@@ -184,6 +189,13 @@ jobs:
           UNIT_OUTCOME: ${{ steps.unit.outcome }}
           UI_OUTCOME: ${{ steps.ui.outcome }}
         run: bash tools/ci/native-apple.sh summary
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py native
 
   mesh-diagnostics-compile:
     # Separate runner/derived data: cannot change the default app test configuration.
@@ -200,22 +212,26 @@ jobs:
           lfs: false
           submodules: false
       - name: Verify integrated no-copy source and toolchain
+        id: preflight
         timeout-minutes: 3
         run: |
           python3 research/native-candidate-app-integration-85/integrated/check.py
           bash tools/ci/native-apple.sh preflight
       - name: Compile diagnostics flag present only
+        id: build
         timeout-minutes: 20
         run: bash tools/ci/native-apple.sh diagnostics-build
       - name: Run exact flag-only seated projection and ownership fixtures
+        id: unit
         timeout-minutes: 10
         run: bash tools/ci/native-apple.sh diagnostics-unit
-      - name: Verify exact ten synthetic hosted cases and source identity
+      - name: Verify exact twelve synthetic hosted cases and source identity
+        id: collect
         if: always()
         timeout-minutes: 3
         run: python3 tools/ci/collect-seated-projection.py "$RUNNER_TEMP/blind-native-ci"
       - name: Preserve bounded flag-only synthetic fixture receipt
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: seated-projection-${{ github.run_id }}-${{ github.run_attempt }}
@@ -224,7 +240,13 @@ jobs:
             ${{ runner.temp }}/blind-native-ci/diagnostics-unit-exit.json
           if-no-files-found: error
           retention-days: 3
-
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py mesh-diagnostics-compile
 
   classified-mesh-bench:
     # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.
@@ -244,6 +266,7 @@ jobs:
           lfs: false
           submodules: false
       - name: Verify source and installed Apple toolchain
+        id: preflight
         timeout-minutes: 3
         run: |
           bash tools/ci/native-apple.sh preflight
@@ -256,6 +279,7 @@ jobs:
           grep -q -- '--build-system' "$out/swift-test-help.txt"
           grep -q -- '--xunit-output' "$out/swift-test-help.txt"
       - name: Run isolated classified-mesh package fixtures on macOS
+        id: fixtures
         timeout-minutes: 20
         run: |
           set -euo pipefail
@@ -273,7 +297,7 @@ jobs:
           python3 tools/ci/collect-classified-bench.py research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift "$out"
           diff -u "$out/source-before.txt" "$out/source-after.txt"
       - name: Preserve classified-mesh synthetic test results
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: classified-mesh-bench-${{ github.run_id }}-${{ github.run_attempt }}
@@ -284,3 +308,10 @@ jobs:
             ${{ runner.temp }}/classified-mesh-bench/*.log
           if-no-files-found: error
           retention-days: 3
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py classified-mesh-bench

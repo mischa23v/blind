@@ -51,6 +51,10 @@ private struct SeatedMeshDiagnosticDisplay: View {
     @State private var goal = ""
     @State private var radius = "0.3"
     @State private var height = "1.7"
+    @State private var useDeclaredFoot = false
+    @State private var mount = ""
+    @State private var yaw = ""
+    @State private var confirmed = false
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Button("Stop diagnostic and erase geometry", role: .destructive) { controller.stop() }
@@ -68,12 +72,20 @@ private struct SeatedMeshDiagnosticDisplay: View {
                 Text("Actual source wireframe. Purple: normalized floor role, not verified support. Orange: obstacle role. Gray: unavailable role. Cyan: source-only preview, never a safe walking route. Raw ARKit class labels are unavailable. Drag to inspect the model, not to select a location.")
             }
             Text("Supplied test coordinates only — session-local X Y Z, metres. No camera-to-body assumption. Radius and height are declared query parameters, not measured clearance.").font(.headline)
+            Toggle("Use UNVALIDATED camera + declared mount candidate", isOn: $useDeclaredFoot)
+            if useDeclaredFoot {
+                Text("Seated diagnostic only. Declare camera offset from floor below body centre: right, up, forward in metres. Body yaw is session-world: 0 faces -Z, +90 faces -X. Camera yaw is NOT body yaw. Yellow dot is the requested candidate, not verified feet.")
+                TextField("Camera right up forward offsets (metres)", text: $mount).textFieldStyle(.roundedBorder)
+                TextField("Declared body yaw (-180 to 180 degrees)", text: $yaw).textFieldStyle(.roundedBorder)
+                Toggle("Helper reviewed these unvalidated declarations", isOn: $confirmed)
+            }
             TextField("Start X Y Z (metres)", text: $start).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-start-point")
             TextField("Goal X Y Z (metres)", text: $goal).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-goal-point")
             TextField("Declared radius (metres)", text: $radius).textFieldStyle(.roundedBorder)
             TextField("Declared height (metres)", text: $height).textFieldStyle(.roundedBorder)
-            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height) }
+            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height, declaredMountText: useDeclaredFoot ? mount : nil, declaredYawText: useDeclaredFoot ? yaw : nil, confirmed: confirmed) }
                 .frame(minHeight: 44).disabled(controller.stopped).accessibilityIdentifier("seated-mesh-preview")
+            Text(controller.footReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-foot-candidate")
             Text(controller.routeReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-route-receipt")
             DisclosureGroup("Diagnostic path coordinates — up to first 256 points, not walking instructions") {
                 ForEach(Array(controller.routePointReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
@@ -82,6 +94,10 @@ private struct SeatedMeshDiagnosticDisplay: View {
                 ForEach(Array(controller.anchorReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
             }
         }
+        .onChange(of: useDeclaredFoot) { _ in confirmed = false; controller.retirePreview() }
+        .onChange(of: mount) { _ in confirmed = false; controller.retirePreview() }
+        .onChange(of: yaw) { _ in confirmed = false; controller.retirePreview() }
+        .onChange(of: confirmed) { _ in controller.retirePreview() }
         .onChange(of: start) { _ in controller.retirePreview() }
         .onChange(of: goal) { _ in controller.retirePreview() }
         .onChange(of: radius) { _ in controller.retirePreview() }

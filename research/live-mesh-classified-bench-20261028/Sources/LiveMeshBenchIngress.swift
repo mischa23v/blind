@@ -74,9 +74,10 @@ public final class LiveMeshBenchIngress {
     /// Explicit supplied test points, never current body pose or a movement request.
     /// Delivery/coverage authority remains false in the existing candidate type.
     public func request(generation: UUID, start: [Float], goal: [Float], body: MeshCandidateBody,
+        expectedSource: MeshCandidateIngress83.SourceSnapshot? = nil,
         completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void) {
         guard active(generation) else { completion(.failure(.unavailable)); return }
-        ingress.request(start: start, goal: goal, body: body) { [weak self] result in
+        ingress.request(start: start, goal: goal, body: body, expectedSource: expectedSource) { [weak self] result in
             guard let self, self.active(generation) else { completion(.failure(.stale)); return }
             if case .success(let candidate) = result {
                 //83/75 may retain earlier tiles after a rejected/omitted revision.

@@ -7,6 +7,28 @@ import simd
 import LiveMeshClassifiedBench
 import MeshCandidateIngress83
 import BlindRoomMesh
+import BlindCore
+
+/// Internal injection seam for synthetic hosted integration tests. Production is
+/// the existing exclusive AR owner; tests still use actual ingress/native routes.
+protocol SeatedMeshDiagnosticBackend: AnyObject {
+    var state: LiveMeshBenchSession.State { get }
+    var hasCurrentTrackedSession: Bool { get }
+    func activateForSeatedBench() throws
+    func stop()
+    func reacquireTrackedFrameAnchors()
+    func requestStatus(completion: @escaping (String) -> Void)
+    func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot, MeshCandidateIngress83.SourceSnapshotFailure>) -> Void)
+    func isCurrent(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool
+    func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool
+    func isCurrent(_ capture: LiveMeshBenchSession.CameraCapture) -> Bool
+    func freezeCameraCapture() -> LiveMeshBenchSession.CameraCapture?
+    func retireCameraCapture()
+    func requestPreview(start: [Float], goal: [Float], body: MeshCandidateBody,
+        capture: LiveMeshBenchSession.CameraCapture?, expectedSource: MeshCandidateIngress83.SourceSnapshot?,
+        completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void)
+}
+extension LiveMeshBenchSession: SeatedMeshDiagnosticBackend {}
 
 /// Helper display owner only. No model context, persistence, speech, haptics or
 /// mobility ticket is produced here. Camera pose is deliberately not a body pose.
@@ -19,11 +41,16 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     @Published private(set) var routePointReceipts: [String] = []
     @Published private(set) var meshBoundsReceipt = "No source bounds."
     @Published private(set) var stopped = false
-    private var bench: LiveMeshBenchSession?
+    private var bench: (any SeatedMeshDiagnosticBackend)?
+    private var clock: () -> Double = { ProcessInfo.processInfo.systemUptime }
     private var snapshot: MeshCandidateIngress83.SourceSnapshot?
     private var candidate: MeshCandidateIngress83.Candidate?
     private var epoch = UUID(), previewEpoch = UUID()
     private var previewParameters = ""
+    @Published private(set) var footReceipt = "No declared body-foot candidate."
+    private var footCandidate: DiagnosticBodyFootCandidate?
+    private var cameraCapture: LiveMeshBenchSession.CameraCapture?
+    private var footDeclaration: DiagnosticBodyFootCandidate.Declaration?
     private var snapshotPending = false, statusPending = false, routePending = false
     private var timer: Timer?
     private let renderQueue = DispatchQueue(label: "blind.seated-mesh.render", qos: .utility)
@@ -42,6 +69,12 @@ final class SeatedMeshDiagnosticController: ObservableObject {
             self.onNativeDrainForTesting?()
             self.finishStopIfDrained()
         }
+    }
+    /// No ARSession, permissions or native-result fabrication. A test backend must
+    /// produce its snapshots/routes through the real ingress; this adds no caller
+    /// in the normal app and no physical authority.
+    init(testBackend: any SeatedMeshDiagnosticBackend, clock: @escaping () -> Double) {
+        self.bench = testBackend; self.clock = clock
     }
     private func finishStopIfDrained() {
         guard stopped, nativeDrained, !snapshotPending, !statusPending, !routePending else { return }
@@ -93,12 +126,16 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     private func retireAll() {
         epoch = UUID(); stopped = true
         timer?.invalidate(); timer = nil
+        footCandidate = nil; cameraCapture = nil; footDeclaration = nil; footReceipt = "Candidate erased."
         snapshot = nil; candidate = nil; scene = nil; anchorReceipts = []; routePointReceipts = []; meshBoundsReceipt = "Source bounds erased."
         routeReceipt = "WITHHELD — diagnostic stopped or session lost."
     }
     func retirePreview() {
+        bench?.retireCameraCapture()
+        footCandidate = nil; cameraCapture = nil; footDeclaration = nil; footReceipt = "Candidate retired; request a new capture-bound preview."
         previewEpoch = UUID(); candidate = nil; routePointReceipts = []
         scene?.rootNode.childNode(withName: "diagnostic-route", recursively: false)?.removeFromParentNode()
+        scene?.rootNode.childNode(withName: "diagnostic-foot-candidate", recursively: false)?.removeFromParentNode()
         routeReceipt = "WITHHELD — test endpoints or body parameters changed. Request a new preview."
     }
     func reacquire() {
@@ -114,6 +151,9 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         if let snapshot, !bench.isCurrent(snapshot) {
             self.snapshot = nil
             sourceReceipt = "RETIRED SOURCE REVISION — wireframe is historical inspection only, not current. Waiting for newer immutable source. " + sourceReceipt
+        }
+        if cameraCapture != nil && !footIsCurrent() {
+            retirePreview(); routeReceipt = "WITHHELD — frozen diagnostic capture or declared inputs retired. No newer frame was substituted."
         }
         if let candidate, !bench.isCurrent(candidate) { retirePreview(); routeReceipt = "WITHHELD — route retired by newer source, tracking or ownership." }
         if !statusPending {
@@ -160,8 +200,16 @@ final class SeatedMeshDiagnosticController: ObservableObject {
                            SeatedMeshProjection.matches(source: .init(session: g.sessionID, generation: g.generation, revision: g.revision),
                              route: .init(session: candidate.route.sessionID, generation: candidate.route.generation, revision: candidate.route.revision),
                              sourceCurrent: current, routeCurrent: self.bench?.isCurrent(candidate) == true),
+                           self.cameraCapture == nil || self.footIsCurrent(),
                            let line = SeatedMeshRenderer.route(candidate.route.points) {
                             rendered.rootNode.addChildNode(line)
+                            if let foot = self.footCandidate {
+                                let marker = SCNNode(geometry: SCNSphere(radius: 0.025))
+                                marker.name = "diagnostic-foot-candidate"
+                                marker.geometry?.firstMaterial?.diffuse.contents = UIColor.systemYellow
+                                let p = foot.requestedFoot; marker.position = SCNVector3(Float(p.x),Float(p.y),Float(p.z))
+                                rendered.rootNode.addChildNode(marker)
+                            }
                             self.routePointReceipts = candidate.route.points.prefix(256).enumerated().map { index, p in
                                 "Diagnostic point \(index): X \(p[0]), Y \(p[1]), Z \(p[2]) metres."
                             }
@@ -175,11 +223,40 @@ final class SeatedMeshDiagnosticController: ObservableObject {
             }
         }
     }
-    func requestPreview(startText: String, goalText: String, radiusText: String, heightText: String) {
+    private func footIsCurrent() -> Bool {
+        guard let footCandidate, let cameraCapture, let footDeclaration,
+              bench?.isCurrent(cameraCapture) == true else { return false }
+        return footCandidate.isCurrent(capture: Self.coreCapture(cameraCapture), source: footCandidate.source,
+            declaration: footDeclaration, now: clock())
+    }
+    private static func coreCapture(_ c: LiveMeshBenchSession.CameraCapture) -> DiagnosticBodyFootCandidate.Capture {
+        .init(session: c.session, frame: c.frame, request: c.snapshot, capturedAt: c.capturedAt,
+              cameraToWorld: NativeCameraTransform(columns: c.columnMajorCameraToWorld))
+    }
+    func requestPreview(startText: String, goalText: String, radiusText: String, heightText: String,
+                        declaredMountText: String? = nil, declaredYawText: String? = nil, confirmed: Bool = false) {
         guard !stopped, !routePending, let bench, let snapshot, bench.isCurrent(snapshot) else {
             routeReceipt = "WITHHELD — no current source snapshot."; return
         }
-        guard let start = Self.point(startText), let goal = Self.point(goalText),
+        retirePreview()
+        var proposedFoot: DiagnosticBodyFootCandidate?
+        var copiedCamera: LiveMeshBenchSession.CameraCapture?
+        if let declaredMountText {
+            guard confirmed, let mount = Self.point(declaredMountText), let declaredYawText,
+                  let degrees = Double(declaredYawText), degrees.isFinite, (-180...180).contains(degrees),
+                  let profile = try? LocalBodyProfile(mount: .init(right: Double(mount[0]), up: Double(mount[1]), forward: Double(mount[2]))),
+                  let capture = bench.freezeCameraCapture() else {
+                routeReceipt = "WITHHELD — explicitly confirm all mount offsets and session-world body yaw; fresh camera capture required."; return
+            }
+            let geometry = snapshot.geometry
+            let declaration = DiagnosticBodyFootCandidate.Declaration(profile: profile, bodyYaw: degrees * .pi / 180, confirmed: confirmed)
+            proposedFoot = DiagnosticBodyFootCandidate(capture: Self.coreCapture(capture),
+                source: .init(captureSession: capture.session, session: geometry.sessionID, generation: geometry.generation, revision: geometry.revision),
+                declaration: declaration, now: clock())
+            guard proposedFoot != nil else { routeReceipt = "WITHHELD — invalid or stale UNVALIDATED body-foot inputs."; return }
+            copiedCamera = capture
+        }
+        guard let start = proposedFoot?.queryPoint ?? Self.point(startText), let goal = Self.point(goalText),
               let radius = Float(radiusText), let height = Float(heightText),
               let body = try? MeshCandidateBody(radius: radius, height: height) else {
             routeReceipt = "WITHHELD — enter finite X Y Z coordinates in metres and valid declared radius/height."; return
@@ -187,19 +264,37 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         guard snapshot.geometry.sourceDeliveryComplete, snapshot.geometry.unknownCoverage.isEmpty else {
             routeReceipt = "WITHHELD — \(Self.coverageReason(snapshot.geometry)). Inspect anchor receipts and explicitly refresh. Missing source is not free space."; return
         }
-        retirePreview(); routePending = true; let token = epoch, previewToken = previewEpoch
+        routePending = true; let token = epoch, previewToken = previewEpoch
+        footCandidate = proposedFoot; cameraCapture = copiedCamera; footDeclaration = proposedFoot?.declaration
+        if let foot = proposedFoot {
+            footReceipt = "\(foot.status). Frame \(foot.capture.frame), capture uptime \(foot.capture.capturedAt), source \(foot.source.session)/\(foot.source.generation)/\(foot.source.revision). Camera XYZ \(foot.cameraOrigin). Requested foot XYZ \(foot.requestedFoot). Historical preview lease ≤8 seconds; no current wearer location claim. Native association pending."
+        }
         previewParameters = "declared radius \(body.radius)m, height \(body.height)m"
         routeReceipt = "WITHHELD — source-only strict query pending."
-        bench.requestPreview(start: start, goal: goal, body: body) { [weak self] result in
+        bench.requestPreview(start: start, goal: goal, body: body, capture: copiedCamera, expectedSource: snapshot) { [weak self] result in
             guard let self else { return }
             self.routePending = false
             defer { self.scheduleDisplayDrainCheck() }
             guard self.epoch == token, self.previewEpoch == previewToken, !self.stopped else { return }
+            guard self.cameraCapture == nil || self.footIsCurrent() else {
+                self.retirePreview(); self.routeReceipt = "WITHHELD — frozen capture explicitly replaced or expired before native delivery."; return
+            }
             switch result {
             case .failure(let failure): self.routeReceipt = "WITHHELD — strict source query: \(failure). No physical route authority."
             case .success(let candidate):
                 guard self.bench?.isCurrent(candidate) == true else {
                     self.routeReceipt = "WITHHELD — route retired by newer source."; return
+                }
+                if let foot = self.footCandidate {
+                    guard candidate.route.sessionID == foot.source.session,
+                          candidate.route.generation == foot.source.generation,
+                          let admission = candidate.route.endpointAdmission,
+                          let endpoint = foot.associatedEndpoint(requested: admission.start.requested,
+                            associated: admission.start.projected, found: admission.start.found, isOverPolygon: admission.start.isOverPolygon),
+                          admission.start.projected == candidate.route.projectedStart else {
+                        self.retirePreview(); self.routeReceipt = "WITHHELD — native endpoint did not match the requested candidate."; return
+                    }
+                    self.footReceipt += " Native associated start XYZ \(endpoint.associated); delta Y \(endpoint.deltaY)m; XZ residual \(endpoint.horizontalResidual)m; found \(endpoint.found), over polygon \(endpoint.isOverPolygon). Requested goal \(goal), native associated goal \(candidate.route.projectedGoal). No relocation, support or physical-start claim."
                 }
                 // A query intentionally advances ingress/runtime revision, retiring
                 // the pre-query snapshot. Fetch a fresh matching inspection before

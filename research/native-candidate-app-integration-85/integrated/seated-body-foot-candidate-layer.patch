@@ -1,0 +1,1757 @@
+--- /dev/null
++++ b/BlindCore/Sources/BlindCore/DiagnosticBodyFootCandidate.swift
+@@ -0,0 +1,80 @@
++import Foundation
++
++/// Seated diagnostic arithmetic only. No measured support, registration or speech authority.
++public struct DiagnosticBodyFootCandidate: Equatable, Sendable {
++    public struct Capture: Equatable, Sendable {
++        public let session: UUID, frame: UUID, request: UUID
++        public let capturedAt: Double
++        public let cameraToWorld: NativeCameraTransform
++        public init(session: UUID, frame: UUID, request: UUID = UUID(), capturedAt: Double, cameraToWorld: NativeCameraTransform) {
++            self.session = session; self.frame = frame; self.request = request; self.capturedAt = capturedAt; self.cameraToWorld = cameraToWorld
++        }
++        public func isFresh(at now: Double, maximumAge: Double = 0.5) -> Bool {
++            now.isFinite && capturedAt.isFinite && capturedAt >= 0 && now >= capturedAt && maximumAge.isFinite && (0...8).contains(maximumAge) && now - capturedAt <= maximumAge && cameraToWorld.valid
++        }
++    }
++    public struct Source: Equatable, Sendable {
++        public let captureSession: UUID
++        public let session: String, generation: Int, revision: UInt64
++        public init(captureSession: UUID, session: String, generation: Int, revision: UInt64) {
++            self.captureSession = captureSession
++            self.session = session; self.generation = generation; self.revision = revision
++        }
++    }
++    public struct Declaration: Equatable, Sendable {
++        public let revision: UUID
++        public let profile: LocalBodyProfile
++        /// Explicit helper-declared session-world yaw: zero faces -Z, positive turns left.
++        /// Camera orientation is NOT substituted for this declaration.
++        public let bodyYaw: Double?
++        public let confirmed: Bool
++        public init(revision: UUID = UUID(), profile: LocalBodyProfile, bodyYaw: Double?, confirmed: Bool) {
++            self.revision = revision; self.profile = profile; self.bodyYaw = bodyYaw; self.confirmed = confirmed
++        }
++    }
++    public let capture: Capture, source: Source, declaration: Declaration
++    public let cameraOrigin: Point3, requestedFoot: Point3
++    public var authorizesPhysicalGuidance: Bool { false }
++    public var independentlyValidated: Bool { false }
++    public let status = "UNVALIDATED — declared mount and heading; support and pose error unknown"
++
++    public init?(capture: Capture?, source: Source, declaration: Declaration, now: Double) {
++        guard let capture, capture.isFresh(at: now), capture.session == source.captureSession, !source.session.isEmpty, source.session.utf8.count <= 128, source.generation >= 0,
++              declaration.confirmed, declaration.profile.valid, declaration.profile.mount.complete,
++              let yaw = declaration.bodyYaw, yaw.isFinite, (-Double.pi...Double.pi).contains(yaw),
++              let right = declaration.profile.mount.right, let up = declaration.profile.mount.up,
++              let forward = declaration.profile.mount.forward,
++              let origin = try? capture.cameraToWorld.applying(to: Point3(0,0,0)),
++              let offset = try? SpatialRigidTransform(translation: Point3(0,0,0), yaw: yaw)
++                .applying(to: Point3(right, up, -forward)) else { return nil }
++        let foot = Point3(origin.x-offset.x, origin.y-offset.y, origin.z-offset.z)
++        guard foot.isFinite, [foot.x,foot.y,foot.z].allSatisfy({ Float($0).isFinite }) else { return nil }
++        self.capture = capture; self.source = source; self.declaration = declaration
++        cameraOrigin = origin; requestedFoot = foot
++    }
++    /// Exact frozen request capture and declaration identity, not the newest frame.
++    /// Eight-second historical display lease is NOT physical-guidance freshness.
++    public func isCurrent(capture current: Capture?, source: Source, declaration: Declaration, now: Double) -> Bool {
++        current == capture && source == self.source && declaration == self.declaration && capture.isFresh(at: now, maximumAge: 8)
++    }
++    public var queryPoint: [Float] { [Float(requestedFoot.x), Float(requestedFoot.y), Float(requestedFoot.z)] }
++
++    /// Native association is diagnostic output, never an overwrite of the proposed foot.
++    public struct Endpoint: Equatable, Sendable {
++        public let requested: Point3, associated: Point3
++        public var deltaY: Double { associated.y - requested.y }
++        public var horizontalResidual: Double { hypot(associated.x-requested.x, associated.z-requested.z) }
++        public let found: Bool, isOverPolygon: Bool
++        public init?(requested: [Float], associated: [Float], found: Bool, isOverPolygon: Bool) {
++            guard requested.count == 3, associated.count == 3,
++                  requested.allSatisfy(\.isFinite), associated.allSatisfy(\.isFinite) else { return nil }
++            self.requested = Point3(Double(requested[0]),Double(requested[1]),Double(requested[2]))
++            self.associated = Point3(Double(associated[0]),Double(associated[1]),Double(associated[2]))
++            self.found = found; self.isOverPolygon = isOverPolygon
++        }
++    }
++    public func associatedEndpoint(requested: [Float], associated: [Float], found: Bool, isOverPolygon: Bool) -> Endpoint? {
++        guard requested == queryPoint else { return nil }
++        return Endpoint(requested: requested, associated: associated, found: found, isOverPolygon: isOverPolygon)
++    }
++}
+--- /dev/null
++++ b/BlindCore/Tests/BlindCoreTests/DiagnosticBodyFootCandidateTests.swift
+@@ -0,0 +1,97 @@
++import XCTest
++@testable import BlindCore
++
++final class DiagnosticBodyFootCandidateTests: XCTestCase {
++    typealias Candidate = DiagnosticBodyFootCandidate
++    private let session = UUID(), frame = UUID()
++    private func capture(_ matrix: NativeCameraTransform = .identity, time: Double = 10) -> Candidate.Capture {
++        .init(session: session, frame: frame, capturedAt: time, cameraToWorld: matrix)
++    }
++    private func source(revision: UInt64 = 3) -> Candidate.Source {
++        .init(captureSession: session, session: "mesh", generation: 1, revision: revision)
++    }
++    private func declaration(mount: ChestMountMetadata = .init(right: 0.1, up: 1.2, forward: 0.2),
++                             yaw: Double? = 0, confirmed: Bool = true) throws -> Candidate.Declaration {
++        .init(profile: try LocalBodyProfile(mount: mount), bodyYaw: yaw, confirmed: confirmed)
++    }
++    func testIdentityAndDeclaredForwardSignAreMetres() throws {
++        let c = try XCTUnwrap(Candidate(capture: capture(), source: source(), declaration: declaration(), now: 10))
++        XCTAssertEqual(c.requestedFoot.x, -0.1, accuracy: 1e-12)
++        XCTAssertEqual(c.requestedFoot.y, -1.2, accuracy: 1e-12)
++        XCTAssertEqual(c.requestedFoot.z, 0.2, accuracy: 1e-12)
++        XCTAssertFalse(c.authorizesPhysicalGuidance); XCTAssertFalse(c.independentlyValidated)
++    }
++    func testTiltedCameraDoesNotTiltDeclaredWorldUpOrSupplyBodyYaw() throws {
++        // +90 around X, with translation(10,20,30). Optical pitch must not rotate the body mount.
++        let matrix = NativeCameraTransform(columns: [1,0,0,0, 0,0,1,0, 0,-1,0,0, 10,20,30,1])
++        let c = try XCTUnwrap(Candidate(capture: capture(matrix), source: source(), declaration: declaration(yaw: .pi/2), now: 10))
++        XCTAssertEqual(c.capture.cameraToWorld, matrix)
++        XCTAssertEqual(c.cameraOrigin, Point3(10,20,30))
++        XCTAssertEqual(c.requestedFoot.x, 10.2, accuracy: 1e-10)
++        XCTAssertEqual(c.requestedFoot.y, 18.8, accuracy: 1e-10)
++        XCTAssertEqual(c.requestedFoot.z, 30.1, accuracy: 1e-10)
++    }
++    func testMissingMountIsNotZeroAndStatureCannotReplaceMount() throws {
++        let stature = try LocalBodyProfile(input: .init(heightMetres: 1.8))
++        XCTAssertNil(Candidate(capture: capture(), source: source(), declaration: .init(profile: stature, bodyYaw: 0, confirmed: true), now: 10))
++        for mount in [ChestMountMetadata(right: nil, up: 1, forward: 0), .init(right: 0, up: nil, forward: 0), .init(right: 0, up: 1, forward: nil)] {
++            XCTAssertNil(Candidate(capture: capture(), source: source(), declaration: try declaration(mount: mount), now: 10))
++        }
++        XCTAssertNotNil(Candidate(capture: capture(), source: source(), declaration: try declaration(mount: .init(right: 0,up: 0,forward: 0)), now: 10))
++        XCTAssertThrowsError(try LocalBodyProfile(mount: .init(right: .nan,up: 1,forward: 0)))
++        XCTAssertThrowsError(try LocalBodyProfile(mount: .init(right: 0,up: 3,forward: 0)))
++    }
++    func testMissingInvalidUnconfirmedHeadingAndCaptureRefuse() throws {
++        let invalidYaws: [Double?] = [nil, .nan, .infinity, 4]
++        for yaw in invalidYaws {
++            XCTAssertNil(Candidate(capture: capture(), source: source(), declaration: try declaration(yaw: yaw), now: 10))
++        }
++        XCTAssertNil(Candidate(capture: capture(), source: source(), declaration: try declaration(confirmed: false), now: 10))
++        XCTAssertNil(Candidate(capture: nil, source: source(), declaration: try declaration(), now: 10))
++    }
++    func testStaleFutureNonfiniteAndBadMatrixRefuse() throws {
++        let d = try declaration()
++        for time in [9.49, 10.01, -.infinity, .nan, -1] {
++            XCTAssertNil(Candidate(capture: capture(time: time), source: source(), declaration: d, now: 10))
++        }
++        XCTAssertNil(Candidate(capture: capture(), source: source(), declaration: d, now: .nan))
++        for columns in [[], [Double](repeating: 0,count: 16), [Double](repeating: .nan,count: 16)] {
++            XCTAssertNil(Candidate(capture: capture(.init(columns: columns)), source: source(), declaration: d, now: 10))
++        }
++        var scaled = NativeCameraTransform.identity.columns; scaled[0] = 2
++        XCTAssertNil(Candidate(capture: capture(.init(columns: scaled)), source: source(), declaration: d, now: 10))
++    }
++    func testCaptureSessionMismatchRefuses() throws {
++        let other = Candidate.Source(captureSession: UUID(),session: "mesh",generation: 1,revision: 3)
++        XCTAssertNil(Candidate(capture: capture(),source: other,declaration: try declaration(),now: 10))
++    }
++    func testHeldDeliveryRejectsChangedCaptureSourceMountHeadingAndDeclaration() throws {
++        let d = try declaration(), s = source(), camera = capture()
++        let c = try XCTUnwrap(Candidate(capture: camera,source: s,declaration: d,now: 10))
++        XCTAssertTrue(c.isCurrent(capture: camera,source: s,declaration: d,now: 10.1))
++        XCTAssertFalse(c.isCurrent(capture: nil,source: s,declaration: d,now: 10.1))
++        let next = Candidate.Capture(session: session,frame: UUID(),capturedAt: 10.1,cameraToWorld: .identity)
++        XCTAssertFalse(c.isCurrent(capture: next,source: s,declaration: d,now: 10.1))
++        XCTAssertFalse(c.isCurrent(capture: camera,source: source(revision: 4),declaration: d,now: 10.1))
++        XCTAssertFalse(c.isCurrent(capture: camera,source: s,declaration: try declaration(yaw: 1),now: 10.1))
++        var profile = d.profile
++        try profile.update(input: profile.input,mount: .init(right: 0,up: 1.3,forward: 0),equipment: profile.equipment)
++        let moved = Candidate.Declaration(revision: d.revision,profile: profile,bodyYaw: d.bodyYaw,confirmed: true)
++        XCTAssertFalse(c.isCurrent(capture: camera,source: s,declaration: moved,now: 10.1))
++        XCTAssertFalse(c.isCurrent(capture: camera,source: s,declaration: d,now: 18.001))
++    }
++    func testNativeAssociatedFootNeverOverwritesRequestedFoot() throws {
++        let c = try XCTUnwrap(Candidate(capture: capture(),source: source(),declaration: declaration(),now: 10))
++        let original = c.requestedFoot
++        var projected = c.queryPoint; projected[1] += 0.026
++        let e = try XCTUnwrap(c.associatedEndpoint(requested: c.queryPoint,associated: projected,found: true,isOverPolygon: true))
++        XCTAssertEqual(e.deltaY, 0.026, accuracy: 1e-6)
++        XCTAssertEqual(e.horizontalResidual, 0)
++        XCTAssertEqual(c.requestedFoot, original)
++        var different = c.queryPoint; different[0] += 0.1
++        XCTAssertNil(c.associatedEndpoint(requested: different,associated: projected,found: true,isOverPolygon: true))
++        XCTAssertNil(c.associatedEndpoint(requested: c.queryPoint,associated: [],found: true,isOverPolygon: true))
++        let refused = try XCTUnwrap(c.associatedEndpoint(requested: c.queryPoint,associated: projected,found: false,isOverPolygon: false))
++        XCTAssertFalse(refused.found); XCTAssertFalse(refused.isOverPolygon)
++    }
++}
+--- a/ios/BlindAssist/SeatedMeshDiagnosticController.swift
++++ b/ios/BlindAssist/SeatedMeshDiagnosticController.swift
+@@ -7,6 +7,28 @@
+ import LiveMeshClassifiedBench
+ import MeshCandidateIngress83
+ import BlindRoomMesh
++import BlindCore
++
++/// Internal injection seam for synthetic hosted integration tests. Production is
++/// the existing exclusive AR owner; tests still use actual ingress/native routes.
++protocol SeatedMeshDiagnosticBackend: AnyObject {
++    var state: LiveMeshBenchSession.State { get }
++    var hasCurrentTrackedSession: Bool { get }
++    func activateForSeatedBench() throws
++    func stop()
++    func reacquireTrackedFrameAnchors()
++    func requestStatus(completion: @escaping (String) -> Void)
++    func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot, MeshCandidateIngress83.SourceSnapshotFailure>) -> Void)
++    func isCurrent(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool
++    func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool
++    func isCurrent(_ capture: LiveMeshBenchSession.CameraCapture) -> Bool
++    func freezeCameraCapture() -> LiveMeshBenchSession.CameraCapture?
++    func retireCameraCapture()
++    func requestPreview(start: [Float], goal: [Float], body: MeshCandidateBody,
++        capture: LiveMeshBenchSession.CameraCapture?, expectedSource: MeshCandidateIngress83.SourceSnapshot?,
++        completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void)
++}
++extension LiveMeshBenchSession: SeatedMeshDiagnosticBackend {}
+ 
+ /// Helper display owner only. No model context, persistence, speech, haptics or
+ /// mobility ticket is produced here. Camera pose is deliberately not a body pose.
+@@ -19,11 +41,16 @@
+     @Published private(set) var routePointReceipts: [String] = []
+     @Published private(set) var meshBoundsReceipt = "No source bounds."
+     @Published private(set) var stopped = false
+-    private var bench: LiveMeshBenchSession?
++    private var bench: (any SeatedMeshDiagnosticBackend)?
++    private var clock: () -> Double = { ProcessInfo.processInfo.systemUptime }
+     private var snapshot: MeshCandidateIngress83.SourceSnapshot?
+     private var candidate: MeshCandidateIngress83.Candidate?
+     private var epoch = UUID(), previewEpoch = UUID()
+     private var previewParameters = ""
++    @Published private(set) var footReceipt = "No declared body-foot candidate."
++    private var footCandidate: DiagnosticBodyFootCandidate?
++    private var cameraCapture: LiveMeshBenchSession.CameraCapture?
++    private var footDeclaration: DiagnosticBodyFootCandidate.Declaration?
+     private var snapshotPending = false, statusPending = false, routePending = false
+     private var timer: Timer?
+     private let renderQueue = DispatchQueue(label: "blind.seated-mesh.render", qos: .utility)
+@@ -43,6 +70,12 @@
+             self.finishStopIfDrained()
+         }
+     }
++    /// No ARSession, permissions or native-result fabrication. A test backend must
++    /// produce its snapshots/routes through the real ingress; this adds no caller
++    /// in the normal app and no physical authority.
++    init(testBackend: any SeatedMeshDiagnosticBackend, clock: @escaping () -> Double) {
++        self.bench = testBackend; self.clock = clock
++    }
+     private func finishStopIfDrained() {
+         guard stopped, nativeDrained, !snapshotPending, !statusPending, !routePending else { return }
+         let completion = onStopped; onStopped = nil; completion?()
+@@ -93,12 +126,16 @@
+     private func retireAll() {
+         epoch = UUID(); stopped = true
+         timer?.invalidate(); timer = nil
++        footCandidate = nil; cameraCapture = nil; footDeclaration = nil; footReceipt = "Candidate erased."
+         snapshot = nil; candidate = nil; scene = nil; anchorReceipts = []; routePointReceipts = []; meshBoundsReceipt = "Source bounds erased."
+         routeReceipt = "WITHHELD — diagnostic stopped or session lost."
+     }
+     func retirePreview() {
++        bench?.retireCameraCapture()
++        footCandidate = nil; cameraCapture = nil; footDeclaration = nil; footReceipt = "Candidate retired; request a new capture-bound preview."
+         previewEpoch = UUID(); candidate = nil; routePointReceipts = []
+         scene?.rootNode.childNode(withName: "diagnostic-route", recursively: false)?.removeFromParentNode()
++        scene?.rootNode.childNode(withName: "diagnostic-foot-candidate", recursively: false)?.removeFromParentNode()
+         routeReceipt = "WITHHELD — test endpoints or body parameters changed. Request a new preview."
+     }
+     func reacquire() {
+@@ -114,6 +151,9 @@
+         if let snapshot, !bench.isCurrent(snapshot) {
+             self.snapshot = nil
+             sourceReceipt = "RETIRED SOURCE REVISION — wireframe is historical inspection only, not current. Waiting for newer immutable source. " + sourceReceipt
++        }
++        if cameraCapture != nil && !footIsCurrent() {
++            retirePreview(); routeReceipt = "WITHHELD — frozen diagnostic capture or declared inputs retired. No newer frame was substituted."
+         }
+         if let candidate, !bench.isCurrent(candidate) { retirePreview(); routeReceipt = "WITHHELD — route retired by newer source, tracking or ownership." }
+         if !statusPending {
+@@ -160,8 +200,16 @@
+                            SeatedMeshProjection.matches(source: .init(session: g.sessionID, generation: g.generation, revision: g.revision),
+                              route: .init(session: candidate.route.sessionID, generation: candidate.route.generation, revision: candidate.route.revision),
+                              sourceCurrent: current, routeCurrent: self.bench?.isCurrent(candidate) == true),
++                           self.cameraCapture == nil || self.footIsCurrent(),
+                            let line = SeatedMeshRenderer.route(candidate.route.points) {
+                             rendered.rootNode.addChildNode(line)
++                            if let foot = self.footCandidate {
++                                let marker = SCNNode(geometry: SCNSphere(radius: 0.025))
++                                marker.name = "diagnostic-foot-candidate"
++                                marker.geometry?.firstMaterial?.diffuse.contents = UIColor.systemYellow
++                                let p = foot.requestedFoot; marker.position = SCNVector3(Float(p.x),Float(p.y),Float(p.z))
++                                rendered.rootNode.addChildNode(marker)
++                            }
+                             self.routePointReceipts = candidate.route.points.prefix(256).enumerated().map { index, p in
+                                 "Diagnostic point \(index): X \(p[0]), Y \(p[1]), Z \(p[2]) metres."
+                             }
+@@ -175,11 +223,40 @@
+             }
+         }
+     }
+-    func requestPreview(startText: String, goalText: String, radiusText: String, heightText: String) {
++    private func footIsCurrent() -> Bool {
++        guard let footCandidate, let cameraCapture, let footDeclaration,
++              bench?.isCurrent(cameraCapture) == true else { return false }
++        return footCandidate.isCurrent(capture: Self.coreCapture(cameraCapture), source: footCandidate.source,
++            declaration: footDeclaration, now: clock())
++    }
++    private static func coreCapture(_ c: LiveMeshBenchSession.CameraCapture) -> DiagnosticBodyFootCandidate.Capture {
++        .init(session: c.session, frame: c.frame, request: c.snapshot, capturedAt: c.capturedAt,
++              cameraToWorld: NativeCameraTransform(columns: c.columnMajorCameraToWorld))
++    }
++    func requestPreview(startText: String, goalText: String, radiusText: String, heightText: String,
++                        declaredMountText: String? = nil, declaredYawText: String? = nil, confirmed: Bool = false) {
+         guard !stopped, !routePending, let bench, let snapshot, bench.isCurrent(snapshot) else {
+             routeReceipt = "WITHHELD — no current source snapshot."; return
+         }
+-        guard let start = Self.point(startText), let goal = Self.point(goalText),
++        retirePreview()
++        var proposedFoot: DiagnosticBodyFootCandidate?
++        var copiedCamera: LiveMeshBenchSession.CameraCapture?
++        if let declaredMountText {
++            guard confirmed, let mount = Self.point(declaredMountText), let declaredYawText,
++                  let degrees = Double(declaredYawText), degrees.isFinite, (-180...180).contains(degrees),
++                  let profile = try? LocalBodyProfile(mount: .init(right: Double(mount[0]), up: Double(mount[1]), forward: Double(mount[2]))),
++                  let capture = bench.freezeCameraCapture() else {
++                routeReceipt = "WITHHELD — explicitly confirm all mount offsets and session-world body yaw; fresh camera capture required."; return
++            }
++            let geometry = snapshot.geometry
++            let declaration = DiagnosticBodyFootCandidate.Declaration(profile: profile, bodyYaw: degrees * .pi / 180, confirmed: confirmed)
++            proposedFoot = DiagnosticBodyFootCandidate(capture: Self.coreCapture(capture),
++                source: .init(captureSession: capture.session, session: geometry.sessionID, generation: geometry.generation, revision: geometry.revision),
++                declaration: declaration, now: clock())
++            guard proposedFoot != nil else { routeReceipt = "WITHHELD — invalid or stale UNVALIDATED body-foot inputs."; return }
++            copiedCamera = capture
++        }
++        guard let start = proposedFoot?.queryPoint ?? Self.point(startText), let goal = Self.point(goalText),
+               let radius = Float(radiusText), let height = Float(heightText),
+               let body = try? MeshCandidateBody(radius: radius, height: height) else {
+             routeReceipt = "WITHHELD — enter finite X Y Z coordinates in metres and valid declared radius/height."; return
+@@ -187,19 +264,37 @@
+         guard snapshot.geometry.sourceDeliveryComplete, snapshot.geometry.unknownCoverage.isEmpty else {
+             routeReceipt = "WITHHELD — \(Self.coverageReason(snapshot.geometry)). Inspect anchor receipts and explicitly refresh. Missing source is not free space."; return
+         }
+-        retirePreview(); routePending = true; let token = epoch, previewToken = previewEpoch
++        routePending = true; let token = epoch, previewToken = previewEpoch
++        footCandidate = proposedFoot; cameraCapture = copiedCamera; footDeclaration = proposedFoot?.declaration
++        if let foot = proposedFoot {
++            footReceipt = "\(foot.status). Frame \(foot.capture.frame), capture uptime \(foot.capture.capturedAt), source \(foot.source.session)/\(foot.source.generation)/\(foot.source.revision). Camera XYZ \(foot.cameraOrigin). Requested foot XYZ \(foot.requestedFoot). Historical preview lease ≤8 seconds; no current wearer location claim. Native association pending."
++        }
+         previewParameters = "declared radius \(body.radius)m, height \(body.height)m"
+         routeReceipt = "WITHHELD — source-only strict query pending."
+-        bench.requestPreview(start: start, goal: goal, body: body) { [weak self] result in
++        bench.requestPreview(start: start, goal: goal, body: body, capture: copiedCamera, expectedSource: snapshot) { [weak self] result in
+             guard let self else { return }
+             self.routePending = false
+             defer { self.scheduleDisplayDrainCheck() }
+             guard self.epoch == token, self.previewEpoch == previewToken, !self.stopped else { return }
++            guard self.cameraCapture == nil || self.footIsCurrent() else {
++                self.retirePreview(); self.routeReceipt = "WITHHELD — frozen capture explicitly replaced or expired before native delivery."; return
++            }
+             switch result {
+             case .failure(let failure): self.routeReceipt = "WITHHELD — strict source query: \(failure). No physical route authority."
+             case .success(let candidate):
+                 guard self.bench?.isCurrent(candidate) == true else {
+                     self.routeReceipt = "WITHHELD — route retired by newer source."; return
++                }
++                if let foot = self.footCandidate {
++                    guard candidate.route.sessionID == foot.source.session,
++                          candidate.route.generation == foot.source.generation,
++                          let admission = candidate.route.endpointAdmission,
++                          let endpoint = foot.associatedEndpoint(requested: admission.start.requested,
++                            associated: admission.start.projected, found: admission.start.found, isOverPolygon: admission.start.isOverPolygon),
++                          admission.start.projected == candidate.route.projectedStart else {
++                        self.retirePreview(); self.routeReceipt = "WITHHELD — native endpoint did not match the requested candidate."; return
++                    }
++                    self.footReceipt += " Native associated start XYZ \(endpoint.associated); delta Y \(endpoint.deltaY)m; XZ residual \(endpoint.horizontalResidual)m; found \(endpoint.found), over polygon \(endpoint.isOverPolygon). Requested goal \(goal), native associated goal \(candidate.route.projectedGoal). No relocation, support or physical-start claim."
+                 }
+                 // A query intentionally advances ingress/runtime revision, retiring
+                 // the pre-query snapshot. Fetch a fresh matching inspection before
+--- a/ios/BlindAssist/SeatedMeshDiagnosticView.swift
++++ b/ios/BlindAssist/SeatedMeshDiagnosticView.swift
+@@ -51,6 +51,10 @@
+     @State private var goal = ""
+     @State private var radius = "0.3"
+     @State private var height = "1.7"
++    @State private var useDeclaredFoot = false
++    @State private var mount = ""
++    @State private var yaw = ""
++    @State private var confirmed = false
+     var body: some View {
+         VStack(alignment: .leading, spacing: 12) {
+             Button("Stop diagnostic and erase geometry", role: .destructive) { controller.stop() }
+@@ -68,12 +72,20 @@
+                 Text("Actual source wireframe. Purple: normalized floor role, not verified support. Orange: obstacle role. Gray: unavailable role. Cyan: source-only preview, never a safe walking route. Raw ARKit class labels are unavailable. Drag to inspect the model, not to select a location.")
+             }
+             Text("Supplied test coordinates only — session-local X Y Z, metres. No camera-to-body assumption. Radius and height are declared query parameters, not measured clearance.").font(.headline)
++            Toggle("Use UNVALIDATED camera + declared mount candidate", isOn: $useDeclaredFoot)
++            if useDeclaredFoot {
++                Text("Seated diagnostic only. Declare camera offset from floor below body centre: right, up, forward in metres. Body yaw is session-world: 0 faces -Z, +90 faces -X. Camera yaw is NOT body yaw. Yellow dot is the requested candidate, not verified feet.")
++                TextField("Camera right up forward offsets (metres)", text: $mount).textFieldStyle(.roundedBorder)
++                TextField("Declared body yaw (-180 to 180 degrees)", text: $yaw).textFieldStyle(.roundedBorder)
++                Toggle("Helper reviewed these unvalidated declarations", isOn: $confirmed)
++            }
+             TextField("Start X Y Z (metres)", text: $start).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-start-point")
+             TextField("Goal X Y Z (metres)", text: $goal).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-goal-point")
+             TextField("Declared radius (metres)", text: $radius).textFieldStyle(.roundedBorder)
+             TextField("Declared height (metres)", text: $height).textFieldStyle(.roundedBorder)
+-            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height) }
++            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height, declaredMountText: useDeclaredFoot ? mount : nil, declaredYawText: useDeclaredFoot ? yaw : nil, confirmed: confirmed) }
+                 .frame(minHeight: 44).disabled(controller.stopped).accessibilityIdentifier("seated-mesh-preview")
++            Text(controller.footReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-foot-candidate")
+             Text(controller.routeReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-route-receipt")
+             DisclosureGroup("Diagnostic path coordinates — up to first 256 points, not walking instructions") {
+                 ForEach(Array(controller.routePointReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
+@@ -82,6 +94,10 @@
+                 ForEach(Array(controller.anchorReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
+             }
+         }
++        .onChange(of: useDeclaredFoot) { _ in confirmed = false; controller.retirePreview() }
++        .onChange(of: mount) { _ in confirmed = false; controller.retirePreview() }
++        .onChange(of: yaw) { _ in confirmed = false; controller.retirePreview() }
++        .onChange(of: confirmed) { _ in controller.retirePreview() }
+         .onChange(of: start) { _ in controller.retirePreview() }
+         .onChange(of: goal) { _ in controller.retirePreview() }
+         .onChange(of: radius) { _ in controller.retirePreview() }
+--- a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -2,6 +2,11 @@
+ import XCTest
+ import SceneKit
+ import ARKit
++import BlindCore
++import MeshCandidateIngress83
++import BlindRoomMesh
++@testable import MeshSnapshot82
++@testable import LiveMeshClassifiedBench
+ @testable import BlindAssist
+ 
+ final class SeatedMeshProjectionTests: XCTestCase {
+@@ -116,5 +121,153 @@
+         XCTAssertTrue(finished); XCTAssertNil(released)
+     }
+ 
++    @MainActor func testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding() async throws {
++        let backend = try SeatedCandidateFixtureBackend()
++        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now })
++        addTeardownBlock {
++            let drained = XCTestExpectation(description: "seated native teardown drained")
++            await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
++            await self.fulfillment(of: [drained], timeout: 10)
++        }
++        try controller.activate()
++        await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil }, object: nil)], timeout: 10)
++        XCTAssertNotNil(controller.scene)
++        let resultReady = expectation(description: "actual strict query held")
++        backend.onHeld = { resultReady.fulfill() }
++        controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
++            declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
++        await fulfillment(of: [resultReady],timeout: 10)
++        let submitted = try XCTUnwrap(backend.submittedStart)
++        let captured = try XCTUnwrap(backend.submittedCapture)
++        XCTAssertEqual(submitted[0],0); XCTAssertEqual(submitted[1],0,accuracy: 1e-6); XCTAssertEqual(submitted[2],0)
++        XCTAssertNotNil(backend.submittedSource)
++        let result = try XCTUnwrap(backend.heldResult).get()
++        XCTAssertEqual(result.route.endpointPolicy,.requireSuppliedXZOverPolygon)
++        XCTAssertEqual(result.route.endpointAdmission?.start.requested,submitted)
++        XCTAssertFalse(result.physicalAuthority); XCTAssertFalse(result.route.authorizesPhysicalGuidance)
++        backend.now = 10.1
++        backend.ordinaryFrame() // Latest capture changes, but held request remains exact.
++        XCTAssertTrue(backend.isCurrent(captured))
++        backend.release()
++        await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in
++            controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false) != nil
++        },object: nil)],timeout: 10)
++        let marker = try XCTUnwrap(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
++        XCTAssertEqual(marker.position.x,submitted[0]); XCTAssertEqual(marker.position.y,submitted[1]); XCTAssertEqual(marker.position.z,submitted[2])
++        let expectedDelta = Double(result.route.projectedStart[1]) - Double(submitted[1])
++        XCTAssertTrue(controller.footReceipt.contains("delta Y \(expectedDelta)m"))
++        XCTAssertTrue(controller.footReceipt.contains(captured.frame.uuidString))
++        XCTAssertTrue(controller.footReceipt.contains("Historical preview lease"))
++        XCTAssertTrue(controller.sourceReceipt.contains("revision \(result.route.revision)"))
++        controller.retirePreview() // Same path invoked by mount/heading edits.
++        XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false))
++        XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
++    }
++
++    @MainActor func testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange() async throws {
++        for retireSource in [false,true] {
++            let backend = try SeatedCandidateFixtureBackend()
++            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now })
++            addTeardownBlock {
++                let drained = XCTestExpectation(description: "seated rejection teardown drained")
++                await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
++                await self.fulfillment(of: [drained], timeout: 10)
++            }
++            try controller.activate()
++            await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil },object: nil)],timeout: 10)
++            let ready = expectation(description: "held real native result")
++            backend.onHeld = { ready.fulfill() }
++            controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
++                declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
++            await fulfillment(of: [ready],timeout: 10)
++            _ = try XCTUnwrap(backend.heldResult).get() // A native refusal is not a passing retirement test.
++            if retireSource { backend.changeGeometry() }
++            else { _ = backend.freezeCameraCapture() } // Explicit request replacement within same frame.
++            backend.release()
++            XCTAssertTrue(controller.routeReceipt.hasPrefix("WITHHELD"))
++            XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false))
++            XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
++            controller.stop(); XCTAssertNil(controller.scene)
++            let drained = expectation(description: "rejection iteration native drain")
++            backend.stopAndDrain { drained.fulfill() }
++            await fulfillment(of: [drained], timeout: 10)
++        }
++    }
++
++}
++
++/// Copied synthetic frame scalars + an actual owned classified floor packet.
++/// No ARFrame/ARSession activation, forged route/snapshot, validator or guidance.
++private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
++    private let ingress: LiveMeshBenchIngress
++    private let snapshots = MeshBenchCameraSnapshot()
++    private let sessionID = UUID(), anchorID = UUID()
++    private var active = true
++    var now = 10.0
++    var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
++    var hasCurrentTrackedSession: Bool { active }
++    var submittedStart: [Float]?
++    var submittedCapture: LiveMeshBenchSession.CameraCapture?
++    var submittedSource: MeshCandidateIngress83.SourceSnapshot?
++    var heldResult: Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>?
++    var onHeld: (() -> Void)?
++    private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
++    init() throws {
++        let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
++        ingress = try LiveMeshBenchIngress(decodeQueue: decode)
++        let values: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
++        let bytes = values.flatMap { value in (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0*8)) } }
++        let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
++        let id = anchorID
++        let accepted = ingress.observe(anchorID: id,generation: ingress.generation,receiptUptime: now) { context in
++            do {
++                let plan = try MeshSnapshot82.preflight(context: context,
++                    vertices: .init(count: 4,offset: 0,stride: 12,bufferLength: bytes.count,format: .float3),
++                    indices: .init(count: 6,offset: 0,stride: 2,bufferLength: indices.count,format: .uint16),
++                    classification: .init(count: 2,offset: 0,stride: 1,bufferLength: 2,format: .uint8))
++                return .owned(.init(context: context,anchorID: id,plan: plan,vertexBytes: bytes,indexBytes: indices,
++                    classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
++            } catch { return .unknownGap(.init(context: context,anchorID: id,reason: .invalidDescriptor)) }
++        }
++        guard accepted else { throw LiveMeshBenchSession.Failure.unavailable }
++        decode.sync {}
++        ordinaryFrame()
++    }
++    func ordinaryFrame() {
++        snapshots.observe(.init(session: sessionID,frame: UUID(),capturedAt: now,
++            columnMajorCameraToWorld: [1,0,0,0,0,1,0,0,0,0,1,0,0,Double(Float(1.2)),0,1]))
++    }
++    func activateForSeatedBench() throws {}
++    func stop() { active = false; snapshots.retire(); ingress.stop() }
++    func stopAndDrain(_ completion: @escaping () -> Void) {
++        stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
++        ingress.stopAndDiscard(completion: completion)
++    }
++    func reacquireTrackedFrameAnchors() { snapshots.retire() }
++    func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
++    func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot,MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
++        ingress.requestSourceSnapshot(generation: ingress.generation) { result in DispatchQueue.main.async { completion(result) } }
++    }
++    func isCurrent(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool { active && ingress.isCurrent(source,generation: ingress.generation) }
++    func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool { active && ingress.isCurrent(candidate,generation: ingress.generation) }
++    func isCurrent(_ capture: LiveMeshBenchSession.CameraCapture) -> Bool { active && snapshots.isCurrent(capture,at: now) }
++    func freezeCameraCapture() -> LiveMeshBenchSession.CameraCapture? { snapshots.freeze(at: now) }
++    func retireCameraCapture() { snapshots.retire() }
++    func changeGeometry() { _ = ingress.remove(anchorID: anchorID,generation: ingress.generation,receiptUptime: now+0.01) }
++    func requestPreview(start: [Float],goal: [Float],body: MeshCandidateBody,
++                        capture: LiveMeshBenchSession.CameraCapture?,expectedSource: MeshCandidateIngress83.SourceSnapshot?,
++                        completion: @escaping (Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void) {
++        guard let capture, snapshots.canAdmit(capture,at: now), expectedSource != nil else { completion(.failure(.stale)); return }
++        submittedStart = start; submittedCapture = capture; submittedSource = expectedSource
++        ingress.request(generation: ingress.generation,start: start,goal: goal,body: body,expectedSource: expectedSource) { [weak self] result in
++            DispatchQueue.main.async {
++                self?.heldResult = result; self?.heldCompletion = completion; self?.onHeld?()
++            }
++        }
++    }
++    func release() {
++        guard let heldResult, let completion = heldCompletion else { return }
++        heldCompletion = nil; completion(heldResult)
++    }
+ }
+ #endif
+--- a/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift
++++ b/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift
+@@ -20,6 +20,21 @@
+     public var state: State {
+         dispatchPrecondition(condition: .onQueue(.main)); return lifecycle
+     }
++    public typealias CameraCapture = MeshBenchCameraCapture
++    /// Explicit request snapshot, not a claim that the wearer has remained still.
++    public func freezeCameraCapture() -> CameraCapture? {
++        dispatchPrecondition(condition: .onQueue(.main))
++        guard hasCurrentTrackedSession else { return nil }
++        return producer.cameraSnapshots.freeze(at: ProcessInfo.processInfo.systemUptime)
++    }
++    public func retireCameraCapture() {
++        dispatchPrecondition(condition: .onQueue(.main))
++        producer.cameraSnapshots.retire()
++    }
++    public func isCurrent(_ capture: CameraCapture) -> Bool {
++        dispatchPrecondition(condition: .onQueue(.main))
++        return hasCurrentTrackedSession && producer.cameraSnapshots.isCurrent(capture, at: ProcessInfo.processInfo.systemUptime)
++    }
+     public let phoneMonitoringAvailable = false
+     public let authorizesPhysicalGuidance = false
+     private let session: ARSession
+@@ -70,17 +85,21 @@
+     /// Explicit supplied session-local test points only. Result delivery remains on
+     /// main and rechecks native ownership as well as83's generation/revision token.
+     public func requestPreview(start: [Float], goal: [Float], body: MeshCandidateBody,
++        capture: CameraCapture? = nil, expectedSource: MeshCandidateIngress83.SourceSnapshot? = nil,
+         completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void) {
+         dispatchPrecondition(condition: .onQueue(.main))
+         guard lifecycle == .capturing, producer.frameLease.isCurrent(), session.delegate === producer, session.delegateQueue === producerQueue else {
+             stop(); completion(.failure(.unavailable)); return
+         }
+-        producer.ingress.request(generation: producer.ingress.generation, start: start, goal: goal, body: body) { [weak self] result in
++        if capture != nil && expectedSource == nil { completion(.failure(.unavailable)); return }
++        if let capture, !producer.cameraSnapshots.canAdmit(capture, at: ProcessInfo.processInfo.systemUptime) { completion(.failure(.stale)); return }
++        producer.ingress.request(generation: producer.ingress.generation, start: start, goal: goal, body: body, expectedSource: expectedSource) { [weak self] result in
+             DispatchQueue.main.async { [weak self] in
+                 guard let self, self.lifecycle == .capturing, self.producer.frameLease.isCurrent(),
+                       self.session.delegate === self.producer, self.session.delegateQueue === self.producerQueue else {
+                     self?.stop(); completion(.failure(.stale)); return
+                 }
++                if let capture, !self.isCurrent(capture) { completion(.failure(.stale)); return }
+                 if case .success(let candidate) = result, !self.isCurrent(candidate) {
+                     completion(.failure(.stale)); return
+                 }
+@@ -131,6 +150,7 @@
+         dispatchPrecondition(condition: .onQueue(.main))
+         guard lifecycle == .capturing, session.delegate === producer, session.delegateQueue === producerQueue else { stop(); return }
+         guard !reacquisitionRequestPending else { return }
++        producer.cameraSnapshots.retire()
+         reacquisitionRequestPending = true
+         let requestedAt = ProcessInfo.processInfo.systemUptime
+         producerQueue.async { [weak self, producer] in
+@@ -211,6 +231,7 @@
+     private final class Producer: NSObject, ARSessionDelegate {
+         let ingress: LiveMeshBenchIngress
+         let frameLease = MeshBenchFrameLease()
++        let cameraSnapshots = MeshBenchCameraSnapshot()
+         private var reacquisition = MeshBenchReacquisition()
+         private var reacquisitionRequestedAt: Double?
+         private weak var expectedSession: ARSession?
+@@ -250,7 +271,7 @@
+         }
+         func end() {
+             dispatchPrecondition(condition: .onQueue(queue))
+-            ended = true; frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
++            ended = true; cameraSnapshots.observe(nil); frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
+             watchdog?.cancel(); watchdog = nil; ingress.stop()
+         }
+         private func accepts(_ session: ARSession) -> Bool {
+@@ -273,6 +294,9 @@
+                   now >= frame.timestamp, now - frame.timestamp <= 0.5,
+                   lastFrameCapture.map({ frame.timestamp > $0 }) ?? true else { failClosed(); return }
+             lastFrameReceipt = now; lastFrameCapture = frame.timestamp
++            let matrix = frame.camera.transform
++            cameraSnapshots.observe(normal ? CameraCapture(session: ingress.generation, frame: UUID(), capturedAt: frame.timestamp,
++                columnMajorCameraToWorld: (0..<4).flatMap { c in (0..<4).map { r in Double(matrix[c][r]) } }) : nil)
+             let firstNormalFrame = normal && !sawNormalTracking
+             if case .normal = frame.camera.trackingState { sawNormalTracking = true }
+             else if sawNormalTracking { failClosed() }
+@@ -285,7 +309,7 @@
+                 for anchor in meshes { offer(anchor, copyAllowed: false) }
+             }
+             if normal { reacquire(frame: frame, now: now) }
+-            // No image/ARFrame escapes this callback and no camera pose becomes body pose.
++            // Only copied scalars escape; camera remains explicitly unvalidated, never body authority.
+         }
+         func session(_ session: ARSession, didAdd anchors: [ARAnchor]) { observe(session, anchors: anchors) }
+         func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) { observe(session, anchors: anchors) }
+--- a/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift
++++ b/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift
+@@ -74,9 +74,10 @@
+     /// Explicit supplied test points, never current body pose or a movement request.
+     /// Delivery/coverage authority remains false in the existing candidate type.
+     public func request(generation: UUID, start: [Float], goal: [Float], body: MeshCandidateBody,
++        expectedSource: MeshCandidateIngress83.SourceSnapshot? = nil,
+         completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void) {
+         guard active(generation) else { completion(.failure(.unavailable)); return }
+-        ingress.request(start: start, goal: goal, body: body) { [weak self] result in
++        ingress.request(start: start, goal: goal, body: body, expectedSource: expectedSource) { [weak self] result in
+             guard let self, self.active(generation) else { completion(.failure(.stale)); return }
+             if case .success(let candidate) = result {
+                 //83/75 may retain earlier tiles after a rejected/omitted revision.
+--- /dev/null
++++ b/research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift
+@@ -0,0 +1,45 @@
++import Foundation
++
++/// Scalar-only capture; no image or ARFrame. Session is the exclusive bench owner.
++public struct MeshBenchCameraCapture: Equatable, Sendable {
++    public let session: UUID, frame: UUID, snapshot: UUID
++    public let capturedAt: Double
++    public let columnMajorCameraToWorld: [Double]
++    public init(session: UUID, frame: UUID, snapshot: UUID = UUID(), capturedAt: Double, columnMajorCameraToWorld: [Double]) {
++        self.session = session; self.frame = frame; self.snapshot = snapshot; self.capturedAt = capturedAt
++        self.columnMajorCameraToWorld = columnMajorCameraToWorld
++    }
++}
++/// Separate latest-cache and explicit diagnostic-snapshot identities. A routine
++/// frame never substitutes for or retires a frozen request. Historical lifetime
++/// is bounded to eight seconds, NOT a physical-guidance freshness allowance.
++final class MeshBenchCameraSnapshot {
++    private let lock = NSLock()
++    private var latest: MeshBenchCameraCapture?, frozen: MeshBenchCameraCapture?
++    func observe(_ value: MeshBenchCameraCapture?) {
++        lock.lock(); defer { lock.unlock() }
++        if latest?.session != value?.session { frozen = nil }
++        latest = value
++    }
++    func freeze(at now: Double) -> MeshBenchCameraCapture? {
++        lock.lock(); defer { lock.unlock() }
++        frozen = nil
++        guard let latest, valid(latest, now: now, age: 0.5) else { return nil }
++        frozen = .init(session: latest.session, frame: latest.frame, capturedAt: latest.capturedAt, columnMajorCameraToWorld: latest.columnMajorCameraToWorld)
++        return frozen
++    }
++    func canAdmit(_ value: MeshBenchCameraCapture, at now: Double) -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        return frozen == value && latest?.session == value.session && valid(value, now: now, age: 0.5)
++    }
++    func isCurrent(_ value: MeshBenchCameraCapture, at now: Double) -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        return frozen == value && latest?.session == value.session && valid(value, now: now, age: 8)
++    }
++    func retire() { lock.lock(); frozen = nil; lock.unlock() }
++    private func valid(_ value: MeshBenchCameraCapture, now: Double, age: Double) -> Bool {
++        now.isFinite && value.capturedAt.isFinite && value.capturedAt >= 0 &&
++        now >= value.capturedAt && now - value.capturedAt <= age &&
++        value.columnMajorCameraToWorld.count == 16 && value.columnMajorCameraToWorld.allSatisfy(\.isFinite)
++    }
++}
+--- a/research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift
++++ b/research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift
+@@ -1,5 +1,7 @@
+ import Foundation
+ import XCTest
++import MeshCandidateIngress83
++import BlindRoomMesh
+ @testable import LiveMeshClassifiedBench
+ 
+ /// Pure ownership/freshness schedules. No ARSession is created or activated.
+@@ -267,3 +269,63 @@
+         }
+     }
+ }
++
++final class MeshBenchCameraSnapshotTests: XCTestCase {
++    private let matrix: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1.2,0,1]
++    func testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes() throws {
++        let owner = MeshBenchCameraSnapshot(), session = UUID()
++        let a = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: matrix)
++        owner.observe(a); let frozenA = try XCTUnwrap(owner.freeze(at: 10))
++        XCTAssertEqual(frozenA.frame,a.frame); XCTAssertEqual(frozenA.columnMajorCameraToWorld,a.columnMajorCameraToWorld)
++        let b = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10.1,columnMajorCameraToWorld: matrix)
++        owner.observe(b)
++        XCTAssertTrue(owner.isCurrent(frozenA,at: 10.2)); XCTAssertFalse(owner.isCurrent(b,at: 10.2))
++        let frozenB = try XCTUnwrap(owner.freeze(at: 10.2))
++        XCTAssertEqual(frozenB.frame,b.frame)
++        XCTAssertFalse(owner.isCurrent(frozenA,at: 10.2)); XCTAssertTrue(owner.isCurrent(frozenB,at: 10.2))
++        // An explicit new request even within the SAME AR frame retires the old lease.
++        let sameFrameNewRequest = try XCTUnwrap(owner.freeze(at: 10.2))
++        XCTAssertEqual(sameFrameNewRequest.frame,frozenB.frame)
++        XCTAssertFalse(owner.isCurrent(frozenB,at: 10.2))
++        owner.retire(); XCTAssertFalse(owner.isCurrent(sameFrameNewRequest,at: 10.2))
++    }
++    func testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot() throws {
++        let owner = MeshBenchCameraSnapshot(), session = UUID()
++        let a = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: matrix)
++        owner.observe(a); XCTAssertNil(owner.freeze(at: 9.9)); XCTAssertNil(owner.freeze(at: 10.501))
++        let frozen = try XCTUnwrap(owner.freeze(at: 10))
++        XCTAssertTrue(owner.canAdmit(frozen,at: 10.5))
++        XCTAssertFalse(owner.canAdmit(frozen,at: 10.501))
++        XCTAssertTrue(owner.isCurrent(frozen,at: 11)) // Historical display, NOT new admission.
++        XCTAssertFalse(owner.isCurrent(frozen,at: 18.001))
++        owner.observe(.init(session: UUID(),frame: UUID(),capturedAt: 10.1,columnMajorCameraToWorld: matrix))
++        XCTAssertFalse(owner.isCurrent(frozen,at: 10.2))
++        owner.observe(nil); XCTAssertNil(owner.freeze(at: 10.2))
++        owner.observe(.init(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: []))
++        XCTAssertNil(owner.freeze(at: 10))
++    }
++}
++
++final class MeshBenchExpectedSourceTests: XCTestCase {
++    func testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan() throws {
++        let ingress = try LiveMeshBenchIngress()
++        let read = expectation(description: "empty source inspection")
++        var snapshot: MeshCandidateIngress83.SourceSnapshot?
++        ingress.requestSourceSnapshot(generation: ingress.generation) { result in
++            if case .success(let source) = result { snapshot = source }
++            read.fulfill()
++        }
++        wait(for: [read], timeout: 10)
++        let source = try XCTUnwrap(snapshot)
++        XCTAssertTrue(ingress.isCurrent(source,generation: ingress.generation))
++        _ = ingress.remove(anchorID: UUID(),generation: ingress.generation,receiptUptime: 1)
++        XCTAssertFalse(ingress.isCurrent(source,generation: ingress.generation))
++        var refused = false
++        ingress.request(generation: ingress.generation,start: [0,0,0],goal: [1,0,0],
++                        body: try MeshCandidateBody(radius: 0.3,height: 1.7),expectedSource: source) { result in
++            if case .failure(.unavailable) = result { refused = true }
++        }
++        XCTAssertTrue(refused) // Admission refusal is synchronous; no native query submitted.
++        ingress.stop()
++    }
++}
+--- a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
++++ b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+@@ -258,8 +258,15 @@
+         locked { !stopped && copies == 0 && epoch == snapshot.epoch && token == snapshot.token && runtime.isCurrent(snapshot.geometry) }
+     }
+     public func request(start: [Float], goal: [Float], body: MeshCandidateBody,
++                        expectedSource: SourceSnapshot? = nil,
+                         completion: @escaping (Result<Candidate, Failure>) -> Void) {
+         let accepted: Bool = locked {
++            // Atomic source-to-query admission: do not race a main-thread snapshot
++            // check against a newer anchor revision before advancing the query token.
++            if let expectedSource {
++                guard !stopped, copies == 0, epoch == expectedSource.epoch,
++                      token == expectedSource.token, runtime.isCurrent(expectedSource.geometry) else { return false }
++            }
+             guard advance(), !stopped, copies == 0 else { return false }
+             let e = epoch, t = token
+             runtime.request(start: start, goal: goal, body: body) { [self] result in
+--- a/.github/workflows/native-apple.yml
++++ b/.github/workflows/native-apple.yml
+@@ -20,6 +20,11 @@
+ 
+ permissions:
+   contents: read
++
++# No paid-storage assumption: uploads require a separately reviewed source opt-in.
++# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
+ 
+ concurrency:
+   group: native-apple-${{ github.ref }}
+@@ -81,7 +86,7 @@
+           python3 tools/ci/export-native-unit-statuses.py "$out/unit.xcresult" "$out/unit.log" "$out/unit-case-statuses.json" || true
+           python3 tools/ci/export-public-apple-same-export.py "$out/unit.xcresult" "$out/unit-case-statuses.json" "$out/public-apple-same-export" || true
+       - name: Preserve bounded hosted-unit case statuses
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -89,7 +94,7 @@
+           if-no-files-found: error
+           retention-days: 3
+       - name: Preserve bounded public Apple same-export comparison assets
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: public-apple-same-export-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -117,7 +122,7 @@
+         timeout-minutes: 3
+         run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
+       - name: Preserve bounded optional-policy hosted receipt
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+         with:
+           name: seed-radius-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -138,7 +143,7 @@
+         timeout-minutes: 3
+         run: python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-main-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+       - name: Preserve bounded synthetic main UI audit evidence
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: main-ui-audit-callback-evidence
+@@ -152,7 +157,7 @@
+         timeout-minutes: 2
+         run: python3 tools/ci/export-ui-test-device-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-native-ci/simulator-id" "$RUNNER_TEMP/blind-ui-devices-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+       - name: Preserve bounded synthetic UI device identity evidence
+-        if: always() && steps.preflight.outcome == 'success'
++        if: always() && steps.preflight.outcome == 'success' && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: ui-test-device-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -167,7 +172,7 @@
+         timeout-minutes: 2
+         run: python3 tools/ci/export-practice-runtime-evidence.py "$RUNNER_TEMP/blind-native-ci/simulator-id" "$RUNNER_TEMP/blind-native-ci/ui.log" "$RUNNER_TEMP/blind-practice-runtime-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+       - name: Preserve bounded synthetic Practice runtime evidence
+-        if: always() && steps.preflight.outcome == 'success'
++        if: always() && steps.preflight.outcome == 'success' && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: practice-runtime-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -184,6 +189,13 @@
+           UNIT_OUTCOME: ${{ steps.unit.outcome }}
+           UI_OUTCOME: ${{ steps.ui.outcome }}
+         run: bash tools/ci/native-apple.sh summary
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py native
+ 
+   mesh-diagnostics-compile:
+     # Separate runner/derived data: cannot change the default app test configuration.
+@@ -200,22 +212,26 @@
+           lfs: false
+           submodules: false
+       - name: Verify integrated no-copy source and toolchain
++        id: preflight
+         timeout-minutes: 3
+         run: |
+           python3 research/native-candidate-app-integration-85/integrated/check.py
+           bash tools/ci/native-apple.sh preflight
+       - name: Compile diagnostics flag present only
++        id: build
+         timeout-minutes: 20
+         run: bash tools/ci/native-apple.sh diagnostics-build
+       - name: Run exact flag-only seated projection and ownership fixtures
++        id: unit
+         timeout-minutes: 10
+         run: bash tools/ci/native-apple.sh diagnostics-unit
+-      - name: Verify exact ten synthetic hosted cases and source identity
++      - name: Verify exact twelve synthetic hosted cases and source identity
++        id: collect
+         if: always()
+         timeout-minutes: 3
+         run: python3 tools/ci/collect-seated-projection.py "$RUNNER_TEMP/blind-native-ci"
+       - name: Preserve bounded flag-only synthetic fixture receipt
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+         with:
+           name: seated-projection-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -224,7 +240,13 @@
+             ${{ runner.temp }}/blind-native-ci/diagnostics-unit-exit.json
+           if-no-files-found: error
+           retention-days: 3
+-
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py mesh-diagnostics-compile
+ 
+   classified-mesh-bench:
+     # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.
+@@ -244,6 +266,7 @@
+           lfs: false
+           submodules: false
+       - name: Verify source and installed Apple toolchain
++        id: preflight
+         timeout-minutes: 3
+         run: |
+           bash tools/ci/native-apple.sh preflight
+@@ -256,6 +279,7 @@
+           grep -q -- '--build-system' "$out/swift-test-help.txt"
+           grep -q -- '--xunit-output' "$out/swift-test-help.txt"
+       - name: Run isolated classified-mesh package fixtures on macOS
++        id: fixtures
+         timeout-minutes: 20
+         run: |
+           set -euo pipefail
+@@ -273,7 +297,7 @@
+           python3 tools/ci/collect-classified-bench.py research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift "$out"
+           diff -u "$out/source-before.txt" "$out/source-after.txt"
+       - name: Preserve classified-mesh synthetic test results
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+         with:
+           name: classified-mesh-bench-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -284,3 +308,10 @@
+             ${{ runner.temp }}/classified-mesh-bench/*.log
+           if-no-files-found: error
+           retention-days: 3
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py classified-mesh-bench
+--- a/.github/workflows/body-profile-current.yml
++++ b/.github/workflows/body-profile-current.yml
+@@ -13,6 +13,11 @@
+   workflow_dispatch:
+ permissions:
+   contents: read
++
++# No paid-storage assumption: uploads require a separately reviewed source opt-in.
++# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
+ concurrency:
+   group: body-profile-current-${{ github.ref }}
+   cancel-in-progress: false
+@@ -32,13 +37,21 @@
+           lfs: false
+           submodules: false
+       - name: Run unchanged extracted tests against current checkout
++        id: fixtures
+         timeout-minutes: 12
+         run: python3 research/indoor-io-qos-proposal/run-current-body-profile.py
+       - name: Preserve current compiled inputs and result
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: body-profile-current-${{ github.run_id }}-${{ github.run_attempt }}
+           path: ${{ runner.temp }}/body-profile-current-evidence/
+           if-no-files-found: error
+           retention-days: 3
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py body-profile
+--- a/.github/workflows/mesh-candidate-ingress.yml
++++ b/.github/workflows/mesh-candidate-ingress.yml
+@@ -11,6 +11,11 @@
+   workflow_dispatch:
+ permissions:
+   contents: read
++
++# No paid-storage assumption: uploads require a separately reviewed source opt-in.
++# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
+ concurrency:
+   group: candidate-mesh-candidate-ingress-${{ github.ref }}
+   cancel-in-progress: false
+@@ -29,10 +34,11 @@
+           lfs: false
+           submodules: false
+       - name: Run real package ingress fixtures and compile actual ARKit boundary
++        id: fixtures
+         timeout-minutes: 23
+         run: python3 research/mesh-candidate-ingress-83/apple/ci.py
+       - name: Preserve bounded source-only proof receipts
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+         with:
+           name: candidate-mesh-candidate-ingress-83-receipts
+@@ -41,3 +47,10 @@
+             ${{ runner.temp }}/blind-mesh-candidate-ingress-83/RESULT.json
+           if-no-files-found: warn
+           retention-days: 3
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py ingress
+--- a/tools/ci/collect-classified-bench.py
++++ b/tools/ci/collect-classified-bench.py
+@@ -16,16 +16,37 @@
+ 
+ HELPER_CASES = ['testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce', 'testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved', 'testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates', 'testMaximumRequestIssuesExactly192AttemptsThenStops', 'testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused', 'testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap', 'testSchedulerClockFailuresAreTerminalWithinRequest', 'testStartupGraceIsNotCurrentButCanBecomeHealthy', 'testStartupExpiryAndFrameExpiryCannotRevive', 'testTrackingLossAndStopAreTerminalAndDoNotChangeReason', 'testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture', 'testIndependentWatchdogRetiresWhileProducerDoesNoWork', 'testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins', 'testLeaseBackwardsAndNonfiniteClockAreTerminal']
+ 
++CAMERA_CASES = ['testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes', 'testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot']
++EXPECTED_SOURCE_CASES = ['testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan']
++
++
++def test_declarations(source):
++    return re.findall(r'^\s*(?:@MainActor\s+)?func\s+(test\w+)\s*\(', source, re.M)
++
++
++def helper_classes(source):
++    # These reviewed source files have top-level XCTestCase classes; private
++    # non-XCTest helper classes are not independent suites. Whitespace may span lines.
++    declarations=list(re.finditer(r'^\s*(?:final\s+)?class\s+(\w+)\s*:\s*XCTestCase\s*\{', source, re.M))
++    result={}
++    for index, declaration in enumerate(declarations):
++        name=declaration.group(1)
++        require(name not in result, 'duplicate helper XCTest class')
++        end=declarations[index+1].start() if index+1<len(declarations) else len(source)
++        result[name]=test_declarations(source[declaration.end():end])
++    return result
++
+ def collect(source, log, command, before, after, snapshot_source, recovery_source, helper_source):
+-    expected=re.findall(r'^\s*func (test\w+)\(', source, re.M)
++    expected=test_declarations(source)
+     require(expected==EXPECTED_CASES and len(set(expected))==18, 'expected exact reviewed 18-fixture XCTest source')
+-    snapshot_expected=re.findall(r'^\s*func (test\w+)\(', snapshot_source, re.M)
++    snapshot_expected=test_declarations(snapshot_source)
+     require(snapshot_expected==SNAPSHOT_CASES and len(set(snapshot_expected))==16, 'expected exact reviewed16 snapshot XCTest source')
+-    recovery_expected=re.findall(r'^\s*func (test\w+)\(', recovery_source, re.M)
++    recovery_expected=test_declarations(recovery_source)
+     require(recovery_expected==RECOVERY_CASES and len(set(recovery_expected))==14, 'expected exact reviewed14 recovery XCTest source')
+-    helper_expected=re.findall(r'^\s*func (test\w+)\(', helper_source, re.M)
+-    require(helper_expected==HELPER_CASES and len(set(helper_expected))==14, 'expected exact reviewed14 helper XCTest source')
+-    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchHelperTests':HELPER_CASES}
++    helper_expected=test_declarations(helper_source)
++    require(helper_expected==HELPER_CASES+CAMERA_CASES+EXPECTED_SOURCE_CASES and len(set(helper_expected))==17, 'expected exact reviewed14 helper plus3 camera/source XCTest declarations')
++    require(helper_classes(helper_source)=={'MeshBenchHelperTests':HELPER_CASES, 'MeshBenchCameraSnapshotTests':CAMERA_CASES, 'MeshBenchExpectedSourceTests':EXPECTED_SOURCE_CASES}, 'expected exact reviewed helper class membership')
++    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchHelperTests':HELPER_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchCameraSnapshotTests':CAMERA_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchExpectedSourceTests':EXPECTED_SOURCE_CASES}
+     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
+     pattern=r"Test Case '-\[([^ ]+) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([^\n]*\)\.)"
+     observed={}
+@@ -42,11 +63,11 @@
+         match=re.fullmatch(r"Test Suite '([^']+)' (started|passed|failed) at .+\.",line)
+         require(match is not None, 'unrecognized XCTest suite record')
+         name,status=match.groups();suites.setdefault(name,[]).append(status)
+-    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests','MeshBenchHelperTests']}, 'missing, extra, contradictory or failed XCTest suite')
++    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests','MeshBenchHelperTests','MeshBenchCameraSnapshotTests','MeshBenchExpectedSourceTests']}, 'missing, extra, contradictory or failed XCTest suite')
+     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
+-    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('62','0','0'):2}), 'missing or contradictory XCTest totals')
++    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('2','0','0'):1,('1','0','0'):1,('65','0','0'):2}), 'missing or contradictory XCTest totals')
+     # Bind each total to its immediately preceding passed suite; swapped counts fail.
+-    expected_totals={'All tests':62,'LiveMeshClassifiedBenchPackageTests.xctest':62,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14}
++    expected_totals={'All tests':65,'LiveMeshClassifiedBenchPackageTests.xctest':65,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14,'MeshBenchCameraSnapshotTests':2,'MeshBenchExpectedSourceTests':1}
+     suite_totals={}; last_passed=None
+     for line in log.splitlines():
+         matched=re.fullmatch(r"Test Suite '([^']+)' passed at .+\.",line)
+@@ -59,7 +80,7 @@
+     require(suite_totals==expected_totals, 'missing suite-bound totals')
+     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
+     require(before==after=='', 'source not clean before and after test')
+-    return {'status':'passed','scope':'62 macOS synthetic XCTest fixtures, not live sensing','executed':62,'passed':62,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
++    return {'status':'passed','scope':'65 macOS synthetic XCTest fixtures (original62 plus3), not live sensing','executed':65,'passed':65,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+ 
+ if __name__=='__main__':
+     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir
+--- a/tools/ci/test_collect_classified_bench.py
++++ b/tools/ci/test_collect_classified_bench.py
+@@ -1,4 +1,4 @@
+-"""Synthetic parser tests for exact reviewed62-case four-class current contract, not native execution."""
++"""Synthetic parser tests for exact reviewed65-case six-class current contract, not native execution."""
+ import importlib.util,json,unittest
+ from pathlib import Path
+ P=Path(__file__).parent
+@@ -11,17 +11,17 @@
+ CLS='LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'
+ OUTER=['All tests','LiveMeshClassifiedBenchPackageTests.xctest']
+ lines=[f"Test Suite '{s}' started at synthetic." for s in OUTER]
+-for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES),('LiveMeshClassifiedBenchTests.MeshBenchHelperTests',m.HELPER_CASES)]:
++for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES),('LiveMeshClassifiedBenchTests.MeshBenchHelperTests',m.HELPER_CASES),('LiveMeshClassifiedBenchTests.MeshBenchCameraSnapshotTests',m.CAMERA_CASES),('LiveMeshClassifiedBenchTests.MeshBenchExpectedSourceTests',m.EXPECTED_SOURCE_CASES)]:
+  suite=cls.split('.')[-1];lines.append(f"Test Suite '{suite}' started at synthetic.")
+  for name in names:lines += [f"Test Case '-[{cls} {name}]' started.",f"Test Case '-[{cls} {name}]' passed (0.001 seconds)."]
+  lines += [f"Test Suite '{suite}' passed at synthetic.",f'Executed {len(names)} tests, with 0 failures (0 unexpected)']
+-for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 62 tests, with 0 failures (0 unexpected)']
++for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 65 tests, with 0 failures (0 unexpected)']
+ LOG='\n'.join(lines)+'\n'
+ COMMAND={'swift_test_exit_code':0,'log_writer_exit_code':0}
+ class CollectorTests(unittest.TestCase):
+  def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE,recovery_source=RECOVERY_SOURCE,helper_source=HELPER_SOURCE):
+   with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source,recovery_source,helper_source)
+- def test_exact_synthetic62_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE,HELPER_SOURCE)['executed'],62)
++ def test_exact_synthetic65_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE,HELPER_SOURCE)['executed'],65)
+  def test_missing_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] not in l))
+  def test_failed_case(self):self.reject(LOG.replace(m.EXPECTED_CASES[0]+"]' passed",m.EXPECTED_CASES[0]+"]' failed"))
+  def test_duplicate_case(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] in l and 'passed' in l)+'\n')
+@@ -41,11 +41,11 @@
+  def test_renamed_snapshot_source(self):self.reject(snapshot_source=SNAPSHOT_SOURCE.replace('func '+m.SNAPSHOT_CASES[0]+'(', 'func testOther('))
+  def test_snapshot_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests','LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'))
+  def test_skipped_snapshot_case(self):self.reject(LOG.replace(m.SNAPSHOT_CASES[0]+"]' passed",m.SNAPSHOT_CASES[0]+"]' skipped"))
+- def test_wrong_62_total(self):self.reject(LOG.replace('Executed 62 tests','Executed 33 tests'))
++ def test_wrong_65_total(self):self.reject(LOG.replace('Executed 65 tests','Executed 33 tests'))
+  def test_missing_snapshot_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'SourceGeometrySnapshotTests'" not in l))
+  def test_swapped_class_totals(self):self.reject(LOG.replace('Executed 18 tests','Executed XX tests').replace('Executed 16 tests','Executed 18 tests').replace('Executed XX tests','Executed 16 tests'))
+  def test_duplicate_snapshot_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.SNAPSHOT_CASES[0] in l and 'passed' in l)+'\n')
+- def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 62 tests','Executed 34 tests'))
++ def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 65 tests','Executed 34 tests'))
+  def test_missing_recovery_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] not in l))
+  def test_renamed_recovery_source(self):self.reject(recovery_source=RECOVERY_SOURCE.replace('func '+m.RECOVERY_CASES[0]+'(', 'func testOther('))
+  def test_recovery_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests','LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests'))
+@@ -53,7 +53,7 @@
+  def test_missing_recovery_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'AnchorDeliveryRecoveryTests'" not in l))
+  def test_duplicate_recovery_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] in l and 'passed' in l)+'\n')
+  def test_swapped_recovery_totals(self):self.reject(LOG.replace('Executed 14 tests','Executed XX tests').replace('Executed 16 tests','Executed 14 tests').replace('Executed XX tests','Executed 16 tests'))
+- def test_old48_total_rejected(self):self.reject(LOG.replace('Executed 62 tests','Executed 48 tests'))
++ def test_old48_total_rejected(self):self.reject(LOG.replace('Executed 65 tests','Executed 48 tests'))
+  def test_missing_helper_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.HELPER_CASES[0] not in l))
+  def test_renamed_helper_source(self):self.reject(helper_source=HELPER_SOURCE.replace('func '+m.HELPER_CASES[0]+'(', 'func testOther('))
+  def test_helper_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.MeshBenchHelperTests','LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests'))
+@@ -61,4 +61,17 @@
+  def test_missing_helper_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'MeshBenchHelperTests'" not in l))
+  def test_duplicate_helper_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.HELPER_CASES[0] in l and 'passed' in l)+'\n')
+  def test_wrong_helper_suite_total(self):self.reject(LOG.replace("Test Suite 'MeshBenchHelperTests' passed at synthetic.\nExecuted 14", "Test Suite 'MeshBenchHelperTests' passed at synthetic.\nExecuted 16"))
++ def test_old62_total_rejected(self):self.reject(LOG.replace('Executed 65 tests','Executed 62 tests'))
++ def test_missing_camera_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.CAMERA_CASES[0] not in l))
++ def test_failed_camera_case(self):self.reject(LOG.replace(m.CAMERA_CASES[0]+"]' passed",m.CAMERA_CASES[0]+"]' failed"))
++ def test_skipped_expected_source_case(self):self.reject(LOG.replace(m.EXPECTED_SOURCE_CASES[0]+"]' passed",m.EXPECTED_SOURCE_CASES[0]+"]' skipped"))
++ def test_missing_expected_source_class(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.MeshBenchExpectedSourceTests','LiveMeshClassifiedBenchTests.MeshBenchCameraSnapshotTests'))
++ def test_new_case_source_removed(self):self.reject(helper_source=HELPER_SOURCE.replace('func '+m.CAMERA_CASES[0]+'(', 'func helper('))
++ def test_new_case_source_wrong_class(self):self.reject(helper_source=HELPER_SOURCE.replace('class MeshBenchCameraSnapshotTests:', 'class WrongCameraTests:'))
++ def test_duplicate_source_class(self):self.reject(helper_source=HELPER_SOURCE+'\nfinal class MeshBenchCameraSnapshotTests: XCTestCase {}\n')
++ def test_original62_contract_retained(self):
++  self.assertEqual(len(m.EXPECTED_CASES)+len(m.SNAPSHOT_CASES)+len(m.RECOVERY_CASES)+len(m.HELPER_CASES),62)
++ def test_multiline_declarations_accepted(self):
++  source=HELPER_SOURCE.replace('final class MeshBenchCameraSnapshotTests: XCTestCase {','final class\nMeshBenchCameraSnapshotTests:\nXCTestCase\n{').replace('func '+m.CAMERA_CASES[0]+'(', 'func\n'+m.CAMERA_CASES[0]+'\n(')
++  self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE,source)['executed'],65)
+ if __name__=='__main__':unittest.main()
+--- a/tools/ci/collect-seated-projection.py
++++ b/tools/ci/collect-seated-projection.py
+@@ -4,18 +4,19 @@
+ sys.dont_write_bytecode=True
+ H=Path(__file__).resolve().parent;ROOT=H.parents[1]
+ spec=importlib.util.spec_from_file_location('native_status_reader',H/'export-native-unit-statuses.py');native=importlib.util.module_from_spec(spec);spec.loader.exec_module(native)
+-EXPECTED=['SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres', 'SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce', 'SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution', 'SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection', 'SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow', 'SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection', 'SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision', 'SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement', 'SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain', 'SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns']
++EXPECTED=['SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres', 'SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce', 'SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution', 'SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection', 'SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow', 'SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection', 'SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision', 'SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement', 'SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain', 'SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns', 'SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding', 'SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange']
+ 
+ def require(value,message):
+     if not value:raise ValueError(message)
+ 
+ def collect(cases,summary,log,command,source):
+-    names=re.findall(r'^\s*(?:@MainActor\s+)?func (test\w+)\(',source,re.M)
+-    require(['SeatedMeshProjectionTests/'+n for n in names]==EXPECTED,'exact reviewed10 fixture source required')
++    names=re.findall(r'^\s*(?:@MainActor\s+)?func\s+(test\w+)\s*\(',source,re.M)
++    require(['SeatedMeshProjectionTests/'+n for n in names]==EXPECTED,'exact reviewed12 fixture source required')
++    require(re.findall(r'^\s*(?:final\s+)?class\s+(\w+)\s*:\s*XCTestCase\s*\{',source,re.M)==['SeatedMeshProjectionTests'],'exact hosted XCTest class required')
+     require(source.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n'),'fixture must remain flag-only')
+     require(type(command.get('exit_code')) is int and command['exit_code']==0,'focused native command failed or unavailable')
+     counts=native.reconcile(cases,summary)
+-    require(len(cases)==10 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
++    require(len(cases)==12 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
+     require(all(x['result']=='Passed' for x in cases),'failed/skipped focused fixture')
+     require(len(log.encode())<=64*1024*1024,'bounded test log required')
+     events={}
+@@ -26,7 +27,7 @@
+         require(match is not None,'unexpected hosted test line/class')
+         name,status=match.groups();events.setdefault('SeatedMeshProjectionTests/'+name,[]).append(status)
+     require(events=={n:['started','passed'] for n in EXPECTED},'missing/extra/duplicate/failed/skipped exact log witnesses')
+-    return {'status':'passed','scope':'10 flag-only synthetic hosted fixtures; no live sensing or physical authority','executed':10,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
++    return {'status':'passed','scope':'12 flag-only synthetic hosted fixtures (original10 plus2); no live sensing or physical authority','executed':12,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
+ 
+ def main():
+     out=Path(sys.argv[1]);result={'status':'unavailable','complete':False,'source_verified':False,'expected_commit':os.environ.get('GITHUB_SHA')}
+--- a/tools/ci/test-collect-seated-projection.py
++++ b/tools/ci/test-collect-seated-projection.py
+@@ -4,12 +4,12 @@
+ P=Path(__file__).parent;s=importlib.util.spec_from_file_location('seated',P/'collect-seated-projection.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+ SOURCE=(P.parents[1]/'ios/BlindAssistTests/SeatedMeshProjectionTests.swift').read_text()
+ CASES=[{'identifier':x+'()','result':'Passed'} for x in m.EXPECTED]
+-SUMMARY={'totalTestCount':10,'passedTests':10,'failedTests':0,'skippedTests':0,'expectedFailures':0}
++SUMMARY={'totalTestCount':12,'passedTests':12,'failedTests':0,'skippedTests':0,'expectedFailures':0}
+ LOG='\n'.join(f"Test Case '-[BlindAssistTests.SeatedMeshProjectionTests {x.split('/')[1]}]' "+('started.' if event=='started' else 'passed (0.001 seconds).') for x in m.EXPECTED for event in ['started','passed'])+'\n'
+ class Tests(unittest.TestCase):
+  def reject(self,cases=CASES,summary=SUMMARY,log=LOG,command={'exit_code':0},source=SOURCE):
+   with self.assertRaises((ValueError,KeyError)):m.collect(cases,summary,log,command,source)
+- def test_exact10(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE)['executed'],10)
++ def test_exact12(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE)['executed'],12)
+  def test_missing_case(self):self.reject(cases=CASES[:-1])
+  def test_duplicate_case(self):self.reject(cases=CASES[:-1]+CASES[:1])
+  def test_failed_case(self):self.reject(cases=[dict(CASES[0],result='Failed')]+CASES[1:])
+@@ -28,5 +28,14 @@
+  def test_source_rename(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[0].split('/')[1]+'(', 'func testUnexpected('))
+  def test_source_flag_removal(self):self.reject(source=SOURCE.replace('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n','',1))
+  def test_empty_log(self):self.reject(log='')
+- def test_unqualified_hosted_class(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE)['executed'],10)
++ def test_unqualified_hosted_class(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE)['executed'],12)
++ def test_original10_alone_rejected(self):self.reject(cases=CASES[:10],summary=dict(SUMMARY,totalTestCount=10,passedTests=10),log='\n'.join(LOG.splitlines()[:20])+'\n')
++ def test_original10_still_required(self):self.assertEqual(len(m.EXPECTED[:10]),10);self.reject(cases=CASES[1:])
++ def test_new_case_source_missing(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[-1].split('/')[1]+'(', 'func helper('))
++ def test_new_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:-1]+[dict(CASES[-1],result='Failed')],summary=dict(SUMMARY,passedTests=11,failedTests=1))
++ def test_new_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:-1]+[dict(CASES[-1],result='Skipped')],summary=dict(SUMMARY,passedTests=11,skippedTests=1))
++ def test_class_renamed(self):self.reject(source=SOURCE.replace('class SeatedMeshProjectionTests:', 'class OtherTests:'))
++ def test_multiline_declarations(self):
++  source=SOURCE.replace('final class SeatedMeshProjectionTests: XCTestCase {','final class\nSeatedMeshProjectionTests:\nXCTestCase\n{').replace('func '+m.EXPECTED[-1].split('/')[1]+'(', 'func\n'+m.EXPECTED[-1].split('/')[1]+'\n(')
++  self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},source)['executed'],12)
+ if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/tools/ci/emit-ci-log-receipts.py
+@@ -0,0 +1,168 @@
++#!/usr/bin/env python3
++"""Metadata-only CI receipts in ordinary logs/summary; no network, artifacts or tests.
++
++Missing/invalid evidence stays unavailable. This observer never converts an earlier
++test failure, skip or unexecuted stage into a pass. Inputs are fixed public/synthetic
++CI outputs, not device files. Raw logs, geometry, images and arbitrary errors are
++not read or emitted. Native exporters retain their existing detailed log records.
++"""
++import argparse
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import stat
++
++INPUT_LIMIT = 1024 * 1024
++OUTPUT_LIMIT = 128 * 1024
++STEP_STATES = {'success', 'failure', 'cancelled', 'skipped'}
++RECEIPTS = {
++    'native': [
++        'blind-native-ci/unit-summary.json',
++        'blind-native-ci/unit-case-statuses.json',
++        'blind-native-ci/ui-summary.json',
++        'blind-native-ci/seed-radius-results.json',
++        'blind-native-ci/seed-radius-unit-exit.json',
++        'blind-native-ci/seed-radius-diagnostics.json',
++    ],
++    'mesh-diagnostics-compile': [
++        'blind-native-ci/seated-projection-results.json',
++        'blind-native-ci/diagnostics-unit-exit.json',
++    ],
++    'classified-mesh-bench': [
++        'classified-mesh-bench/result.json',
++        'classified-mesh-bench/xctest-results.json',
++    ],
++    'body-profile': [
++        'body-profile-current-evidence/result.json',
++        'body-profile-current-evidence/body-profile-coverage.json',
++    ],
++    'ingress': ['blind-mesh-candidate-ingress-83/RESULT.json'],
++}
++SCALARS = {
++    'schema', 'status', 'result', 'complete', 'source_verified',
++    'source_commit', 'expected_commit', 'commit', 'target_pass_verified',
++    'aggregate_counts_match', 'case_count', 'totalTestCount', 'passedTests',
++    'failedTests', 'skippedTests', 'expectedFailures', 'executed', 'passed',
++    'failed', 'skipped', 'commandExit', 'exit_code', 'swift_test_exit_code',
++    'log_writer_exit_code', 'ios_session_fixtures_excluded',
++    'source_clean_before_and_after', 'swift_testing_zero_suite_not_counted',
++    'compiled_inputs_verified', 'body_profile_coverage_verified', 'verified',
++    'log_truncated', 'log_bytes_seen', 'hostRealPackageFixtures',
++    'actualARKitSimulatorCompile', 'defaultSwiftBuildBackendPassed',
++    'appActivation', 'simulatorExecution', 'deviceExecution',
++    'copyLatencyMeasured', 'physicalAuthority', 'unexpectedCaseCount',
++    'unparsedFailureRecordCount',
++}
++TOKEN = re.compile(r'[A-Za-z0-9_./ ()\[\]-]{1,512}\Z')
++
++
++def scalar(value):
++    return (value is None or type(value) in (bool, int)
++            or isinstance(value, str) and TOKEN.fullmatch(value) is not None)
++
++
++def metadata(value):
++    if not isinstance(value, dict):
++        raise ValueError('receipt must be an object')
++    result = {k: v for k, v in value.items() if k in SCALARS and scalar(v)}
++    if isinstance(value.get('counts'), dict):
++        result['counts'] = {k: v for k, v in value['counts'].items()
++                            if k in {'Passed', 'Failed', 'Skipped', 'Expected Failure'}
++                            and type(v) is int and v >= 0}
++    cases = value.get('cases')
++    if isinstance(cases, list):
++        result['case_records_in_input'] = len(cases)
++        projected = []
++        if len(cases) <= 2048:
++            for case in cases:
++                if not isinstance(case, dict):
++                    raise ValueError('invalid case record')
++                projected.append({k: v for k, v in case.items()
++                                  if k in {'identifier', 'class', 'name', 'status', 'result'}
++                                  and scalar(v)})
++        if len(projected) == len(cases):
++            result['cases'] = projected
++        else:
++            result['case_projection'] = 'omitted_over_budget'
++    events = value.get('events')
++    if isinstance(events, dict) and len(events) <= 256:
++        result['events'] = {k: v for k, v in events.items()
++                            if isinstance(k, str) and TOKEN.fullmatch(k)
++                            and isinstance(v, list) and len(v) <= 3
++                            and all(x in {'started', 'passed', 'failed', 'skipped'} for x in v)}
++    return result
++
++
++def read_receipt(root, relative):
++    record = {'path': relative, 'availability': 'unavailable'}
++    path = root / relative
++    try:
++        # Fixed paths only; refuse symlinks rather than following an unexpected source.
++        if path.is_symlink() or path.parent.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
++            raise ValueError('unexpected receipt path')
++        if not stat.S_ISREG(path.stat().st_mode):
++            raise ValueError('receipt must be a regular file')
++        with path.open('rb') as handle:
++            raw = handle.read(INPUT_LIMIT + 1)
++        if len(raw) > INPUT_LIMIT:
++            raise ValueError('receipt input budget exceeded')
++        value = metadata(json.loads(raw))
++        record.update(availability='present', sha256=hashlib.sha256(raw).hexdigest(),
++                      bytes=len(raw), metadata=value)
++        if len(encode(record).encode()) > OUTPUT_LIMIT:
++            value.pop('cases', None)
++            value['case_projection'] = 'omitted_over_budget'
++        if len(encode(record).encode()) > OUTPUT_LIMIT:
++            raise ValueError('receipt output budget exceeded')
++    except (OSError, ValueError, TypeError, RecursionError) as error:
++        record = {'path': relative, 'availability': 'unavailable',
++                  'error_type': type(error).__name__}
++    return record
++
++
++def encode(value):
++    # Escape markup even inside the summary fence; one prefixed JSON line per record.
++    return json.dumps(value, separators=(',', ':'), sort_keys=True, allow_nan=False).replace('`', '\\u0060')
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('job', choices=RECEIPTS)
++    args = parser.parse_args()
++    raw_steps = os.environ.get('CI_STEP_OUTCOMES', '{}')
++    if len(raw_steps.encode()) > INPUT_LIMIT:
++        raise ValueError('step metadata budget exceeded')
++    steps = json.loads(raw_steps)
++    if not isinstance(steps, dict) or len(steps) > 128:
++        raise ValueError('invalid step metadata')
++    outcomes = {name: {k: v for k, v in data.items()
++                       if k in {'outcome', 'conclusion'} and v in STEP_STATES}
++                for name, data in steps.items()
++                if TOKEN.fullmatch(name) and isinstance(data, dict)}
++    status = os.environ.get('CI_JOB_STATUS')
++    receipt = {'schema': 1, 'job': args.job,
++               'job_status_before_receipt': status if status in STEP_STATES else 'unknown',
++               'steps': outcomes, 'physical_authority': False,
++               'artifact_uploads_enabled': os.environ.get('BLIND_UPLOAD_ARTIFACTS') == 'true'}
++    for key, env, pattern in [('workflow_commit', 'GITHUB_SHA', r'[0-9a-f]{40}'),
++                              ('run_id', 'GITHUB_RUN_ID', r'[0-9]+'),
++                              ('run_attempt', 'GITHUB_RUN_ATTEMPT', r'[0-9]+')]:
++        value = os.environ.get(env, '')
++        receipt[key] = value if re.fullmatch(pattern, value) else None
++    lines = ['BLIND_CI_JOB=' + encode(receipt)]
++    root = Path(os.environ['RUNNER_TEMP'])
++    for relative in RECEIPTS[args.job]:
++        lines.append('BLIND_CI_RECEIPT=' + encode(read_receipt(root, relative)))
++    for line in lines:
++        print(line)
++    # Under 1 MiB even for the six-record native job; summary is optional locally.
++    if os.environ.get('GITHUB_STEP_SUMMARY'):
++        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
++            handle.write('\n### Log-only CI receipts (not device acceptance)\n\n```text\n'
++                         + '\n'.join(lines) + '\n```\n')
++
++
++if __name__ == '__main__':
++    main()
+--- /dev/null
++++ b/tools/ci/test_emit_ci_log_receipts.py
+@@ -0,0 +1,135 @@
++"""Small synthetic receipt tests; no Apple commands, network or CI dispatch."""
++import contextlib
++import importlib.util
++import io
++import json
++import os
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++HERE = Path(__file__).parent
++SPEC = importlib.util.spec_from_file_location('receipts', HERE / 'emit-ci-log-receipts.py')
++M = importlib.util.module_from_spec(SPEC)
++SPEC.loader.exec_module(M)
++
++
++class ReceiptTests(unittest.TestCase):
++    def receipt(self, value):
++        with tempfile.TemporaryDirectory() as folder:
++            path = Path(folder) / 'receipt.json'
++            path.write_text(json.dumps(value))
++            return M.read_receipt(Path(folder), 'receipt.json')
++
++    def test_failure_counts_and_skips_are_not_changed(self):
++        source = {'status': 'failed', 'counts': {'Passed': 3, 'Failed': 2, 'Skipped': 1},
++                  'exit_code': 65, 'complete': False}
++        self.assertEqual(self.receipt(source)['metadata'], source)
++
++    def test_case_statuses_survive_without_raw_geometry_or_errors(self):
++        source = {'cases': [{'identifier': 'Tests/testOwned()', 'result': 'Failed',
++                             'private_capture': 'excluded'}],
++                  'error': 'excluded', 'routeDiagnosticEvidence': {'geometry': 'excluded'}}
++        result = self.receipt(source)['metadata']
++        self.assertEqual(result['cases'], [{'identifier': 'Tests/testOwned()', 'result': 'Failed'}])
++        self.assertNotIn('excluded', json.dumps(result))
++
++    def test_missing_is_unavailable_not_zero_tests_or_passed(self):
++        with tempfile.TemporaryDirectory() as folder:
++            result = M.read_receipt(Path(folder), 'absent.json')
++        self.assertEqual(result['availability'], 'unavailable')
++        self.assertNotIn('metadata', result)
++
++    def test_invalid_json_is_unavailable(self):
++        with tempfile.TemporaryDirectory() as folder:
++            (Path(folder) / 'a.json').write_text('{')
++            self.assertEqual(M.read_receipt(Path(folder), 'a.json')['availability'], 'unavailable')
++
++    def test_non_object_is_unavailable(self):
++        self.assertEqual(self.receipt([])['availability'], 'unavailable')
++
++    def test_oversized_input_is_unavailable(self):
++        with tempfile.TemporaryDirectory() as folder:
++            (Path(folder) / 'a.json').write_bytes(b' ' * (M.INPUT_LIMIT + 1))
++            self.assertEqual(M.read_receipt(Path(folder), 'a.json')['availability'], 'unavailable')
++
++    def test_symlink_is_not_followed(self):
++        with tempfile.TemporaryDirectory() as folder:
++            root = Path(folder)
++            (root / 'real.json').write_text('{}')
++            (root / 'link.json').symlink_to(root / 'real.json')
++            self.assertEqual(M.read_receipt(root, 'link.json')['availability'], 'unavailable')
++
++    def test_parent_symlink_is_not_followed(self):
++        with tempfile.TemporaryDirectory() as folder:
++            root = Path(folder)
++            (root / 'real').mkdir()
++            (root / 'real/a.json').write_text('{}')
++            (root / 'link').symlink_to(root / 'real', target_is_directory=True)
++            self.assertEqual(M.read_receipt(root, 'link/a.json')['availability'], 'unavailable')
++
++    def test_fifo_is_not_read(self):
++        with tempfile.TemporaryDirectory() as folder:
++            os.mkfifo(Path(folder) / 'pipe')
++            self.assertEqual(M.read_receipt(Path(folder), 'pipe')['availability'], 'unavailable')
++
++    def test_cases_over_output_budget_are_explicit_and_counts_retained(self):
++        source = {'counts': {'Failed': 2048},
++                  'cases': [{'identifier': 'A' * 500, 'result': 'Failed'}] * 1600}
++        result = self.receipt(source)
++        self.assertEqual(result['metadata']['case_projection'], 'omitted_over_budget')
++        self.assertEqual(result['metadata']['case_records_in_input'], 1600)
++        self.assertEqual(result['metadata']['counts']['Failed'], 2048)
++        self.assertLess(len(M.encode(result).encode()), M.OUTPUT_LIMIT)
++
++    def test_injected_markup_and_commands_are_not_emitted_as_values(self):
++        result = self.receipt({'status': '```\n::warning::payload',
++                               'error': 'private'})['metadata']
++        self.assertEqual(result, {})
++
++    def test_incomplete_body_coverage_events_retained(self):
++        result = self.receipt({'verified': False, 'events': {'testA': ['started', 'failed'],
++                                                          'testB': []}})['metadata']
++        self.assertFalse(result['verified'])
++        self.assertEqual(result['events']['testB'], [])
++
++    def test_failed_job_and_skipped_steps_in_log_and_summary(self):
++        with tempfile.TemporaryDirectory() as folder:
++            summary = Path(folder) / 'summary'
++            env = {'RUNNER_TEMP': folder, 'GITHUB_STEP_SUMMARY': str(summary),
++                   'GITHUB_SHA': 'a' * 40, 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '1',
++                   'CI_JOB_STATUS': 'failure', 'BLIND_UPLOAD_ARTIFACTS': 'false',
++                   'CI_STEP_OUTCOMES': json.dumps({'fixtures': {'outcome': 'failure',
++                                                              'conclusion': 'failure',
++                                                              'outputs': {'secret': 'never print'}},
++                                                  'later': {'outcome': 'skipped'}})}
++            output = io.StringIO()
++            with patch.dict(os.environ, env, clear=True), patch('sys.argv', ['emit', 'ingress']), contextlib.redirect_stdout(output):
++                M.main()
++            lines = output.getvalue().splitlines()
++            job = json.loads(lines[0].split('=', 1)[1])
++            self.assertEqual(job['job_status_before_receipt'], 'failure')
++            self.assertEqual(job['steps']['later']['outcome'], 'skipped')
++            self.assertFalse(job['artifact_uploads_enabled'])
++            self.assertNotIn('never print', output.getvalue())
++            self.assertIn(output.getvalue().strip(), summary.read_text())
++            self.assertEqual(json.loads(lines[1].split('=', 1)[1])['availability'], 'unavailable')
++
++    def test_only_three_scoped_workflows_disable_uploads_and_emit_receipts(self):
++        root = HERE.parents[1]
++        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress']:
++            text = (root / '.github/workflows' / (name + '.yml')).read_text()
++            self.assertIn("BLIND_UPLOAD_ARTIFACTS: 'false'", text)
++            lines = text.splitlines()
++            for index, line in enumerate(lines):
++                if 'uses: actions/upload-artifact@' in line:
++                    self.assertIn("env.BLIND_UPLOAD_ARTIFACTS == 'true'", lines[index - 1])
++            self.assertIn('if: always()\n        timeout-minutes: 1\n', text)
++            self.assertIn('run: python3 -B tools/ci/emit-ci-log-receipts.py ', text)
++            self.assertNotIn('actions/cache@', text)
++            self.assertNotIn('continue-on-error', text)
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- a/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
+@@ -35,7 +35,7 @@
+     "research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift": "73c26289773688db28c6caaeb0d84430dd81c78df5a4fa8718b50f332da4687f",
+     "research/room-mesh-package-75/apple/ci.py": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0",
+     "research/room-mesh-package-75/APPLE_SOURCE_PINS.json": "d96e7e5ecf2f1bfdfe42e95e1717119ffccb7e306bfd54aa4815b2f5f40b8530",
+-    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d",
++    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6",
+     "research/mesh-candidate-ingress-83/Sources/ARKitIngress.swift": "b67267f1079a6f14e289ad8b795ead282973e662a7a18774bc2c842211225b2e",
+     "research/mesh-candidate-ingress-83/tests/main.swift": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20",
+     "research/mesh-candidate-ingress-83/apple/ci.py": "615d816abcf85013f3d4d35eba806eba25a53101ac9f58e26d3b7cbc771e5c91",
+@@ -106,5 +106,16 @@
+     },
+     "defaultCallerActivation": false,
+     "nativeSwiftExecuted": false
++  },
++  "seated_body_foot_candidate_layer": {
++    "status": "unbuilt_source",
++    "beforeManifestSHA256": "a232849250c51fc936b1c135be6bdf083a65c3668911ba98190009005e5a8744",
++    "before": {
++      "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
++    },
++    "after": {
++      "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
++    },
++    "scope": "optional atomic expectedSource admission; no change to legacy default or physical authority"
+   }
+ }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -95,8 +95,8 @@
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+-      "bytes": 17752,
+-      "sha256": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
++      "bytes": 18230,
++      "sha256": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+@@ -420,8 +420,8 @@
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+-      "bytes": 6295,
+-      "sha256": "fbc76b115b10f5e033a90a05e9d064717885d8fc5501d9cfa3758448d425b1b3"
++      "bytes": 6397,
++      "sha256": "fd456244ad66ce0ee78be63f849c2a7408d992a2138994f9d0cf6903d5a87c8c"
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
+@@ -430,8 +430,8 @@
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+-      "bytes": 23476,
+-      "sha256": "9ec520430877c8d3975b59e9105510e309dae11fc23d9631ec9fdd3c1ef451e2"
++      "bytes": 25204,
++      "sha256": "ba6da6878b47193b9635e6655f751fc070eb8fa7b918e85d7f5b84f08979f391"
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift",
+@@ -445,8 +445,8 @@
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
+-      "bytes": 14703,
+-      "sha256": "7b9c513c6e2219c6358b2561ebdb7dcee5eb9108fb8f089d30497c06b4e66300"
++      "bytes": 18543,
++      "sha256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+@@ -472,6 +472,86 @@
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h",
+       "sha256": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf",
+       "bytes": 5742
++    },
++    {
++      "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
++      "bytes": 17862,
++      "sha256": "f4506d6363b0cb033f31fdae90193baa1c1ecddaecffc0bdb27981ab8c1f42b2"
++    },
++    {
++      "path": ".github/workflows/native-apple.yml",
++      "bytes": 15949,
++      "sha256": "5faa2d067d0a3b39d5ef046f4a4d78aab2c5ae4ad638c65629f4b6301cf94db5"
++    },
++    {
++      "path": ".github/workflows/body-profile-current.yml",
++      "bytes": 2290,
++      "sha256": "6ae2cbbd53db447bc4a286d2d2c8f9378423dc1f2edea017fe0eb1081ef56476"
++    },
++    {
++      "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
++      "bytes": 27514,
++      "sha256": "f60a213b00b6a7186820f42d00fd4198c2f4318055893a61d4c23419e63fe6e2"
++    },
++    {
++      "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
++      "bytes": 7878,
++      "sha256": "fb0f858f5fc8793a4e203a81f0049d6c733b5dc21fb6c1b3dd04e8601906d568"
++    },
++    {
++      "path": "tools/ci/test_emit_ci_log_receipts.py",
++      "bytes": 7024,
++      "sha256": "a4c7c37fefec0571ddce173a7db335480be8259820ccb4eb52646c2280069b40"
++    },
++    {
++      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift",
++      "bytes": 2464,
++      "sha256": "440eadb3ebc43ec1a47a6fa87fa8eaf9b96eceaaa250b8a643b3eb6e3131538d"
++    },
++    {
++      "path": "tools/ci/collect-seated-projection.py",
++      "bytes": 5154,
++      "sha256": "8a5154bf61af16ddde49739c98f9e90e82c8d0f55155d9d9679770e85887b40d"
++    },
++    {
++      "path": "tools/ci/test-collect-seated-projection.py",
++      "bytes": 4097,
++      "sha256": "3ff739c5a31665322052ac3d5de664d81c42d8c34f098ddea2dcad71c9df89cb"
++    },
++    {
++      "path": "tools/ci/emit-ci-log-receipts.py",
++      "bytes": 7740,
++      "sha256": "679f85f42b87bb4744373d083bd3ea2c9bc962f8f762234e6465a3468ad04ff1"
++    },
++    {
++      "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
++      "bytes": 7036,
++      "sha256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a"
++    },
++    {
++      "path": ".github/workflows/mesh-candidate-ingress.yml",
++      "bytes": 2196,
++      "sha256": "b0c137ce1ced087b5b9967e6693b8473c4620742ad104620aeb75c4443c6ceb5"
++    },
++    {
++      "path": "BlindCore/Tests/BlindCoreTests/DiagnosticBodyFootCandidateTests.swift",
++      "bytes": 6987,
++      "sha256": "211386177b1b636b3eb5fdf391e5195d10344a58ab3fa760e62a16ae02d9819e"
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/DiagnosticBodyFootCandidate.swift",
++      "bytes": 5360,
++      "sha256": "f1441ad17452626985470887f626d3f746031c98027831932357641bea18afa5"
++    },
++    {
++      "path": "tools/ci/collect-classified-bench.py",
++      "bytes": 10882,
++      "sha256": "9414db3241956d6d3dca55eed36ea6165660fc83a0f153717f5596991c4cbb0e"
++    },
++    {
++      "path": "tools/ci/test_collect_classified_bench.py",
++      "bytes": 9324,
++      "sha256": "8216b18db5bf3849ff55e6933f3d1bafad7faaa638678e7ef697991ec9e66f63"
+     }
+   ],
+   "changes": [
+@@ -639,5 +719,10 @@
+     },
+     "defaultCallerActivation": false,
+     "nativeSwiftExecuted": false
++  },
++  "seated_body_foot_candidate_layer": {
++    "status": "unbuilt_source",
++    "beforeManifestSHA256": "fb45495a6c7045d52ef653baf88b2e2f5092210e93603a352e1e20f87ba7843e",
++    "scope": "explicit seated historical candidate plus executable fixtures and no-artifact CI; not device validation"
+   }
+ }

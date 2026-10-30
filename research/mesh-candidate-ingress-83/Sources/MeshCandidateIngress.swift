@@ -258,8 +258,15 @@ public final class MeshCandidateIngress83 {
         locked { !stopped && copies == 0 && epoch == snapshot.epoch && token == snapshot.token && runtime.isCurrent(snapshot.geometry) }
     }
     public func request(start: [Float], goal: [Float], body: MeshCandidateBody,
+                        expectedSource: SourceSnapshot? = nil,
                         completion: @escaping (Result<Candidate, Failure>) -> Void) {
         let accepted: Bool = locked {
+            // Atomic source-to-query admission: do not race a main-thread snapshot
+            // check against a newer anchor revision before advancing the query token.
+            if let expectedSource {
+                guard !stopped, copies == 0, epoch == expectedSource.epoch,
+                      token == expectedSource.token, runtime.isCurrent(expectedSource.geometry) else { return false }
+            }
             guard advance(), !stopped, copies == 0 else { return false }
             let e = epoch, t = token
             runtime.request(start: start, goal: goal, body: body) { [self] result in

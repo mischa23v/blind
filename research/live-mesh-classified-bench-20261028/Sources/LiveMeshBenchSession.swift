@@ -20,6 +20,21 @@ public final class LiveMeshBenchSession {
     public var state: State {
         dispatchPrecondition(condition: .onQueue(.main)); return lifecycle
     }
+    public typealias CameraCapture = MeshBenchCameraCapture
+    /// Explicit request snapshot, not a claim that the wearer has remained still.
+    public func freezeCameraCapture() -> CameraCapture? {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard hasCurrentTrackedSession else { return nil }
+        return producer.cameraSnapshots.freeze(at: ProcessInfo.processInfo.systemUptime)
+    }
+    public func retireCameraCapture() {
+        dispatchPrecondition(condition: .onQueue(.main))
+        producer.cameraSnapshots.retire()
+    }
+    public func isCurrent(_ capture: CameraCapture) -> Bool {
+        dispatchPrecondition(condition: .onQueue(.main))
+        return hasCurrentTrackedSession && producer.cameraSnapshots.isCurrent(capture, at: ProcessInfo.processInfo.systemUptime)
+    }
     public let phoneMonitoringAvailable = false
     public let authorizesPhysicalGuidance = false
     private let session: ARSession
@@ -70,17 +85,21 @@ public final class LiveMeshBenchSession {
     /// Explicit supplied session-local test points only. Result delivery remains on
     /// main and rechecks native ownership as well as83's generation/revision token.
     public func requestPreview(start: [Float], goal: [Float], body: MeshCandidateBody,
+        capture: CameraCapture? = nil, expectedSource: MeshCandidateIngress83.SourceSnapshot? = nil,
         completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void) {
         dispatchPrecondition(condition: .onQueue(.main))
         guard lifecycle == .capturing, producer.frameLease.isCurrent(), session.delegate === producer, session.delegateQueue === producerQueue else {
             stop(); completion(.failure(.unavailable)); return
         }
-        producer.ingress.request(generation: producer.ingress.generation, start: start, goal: goal, body: body) { [weak self] result in
+        if capture != nil && expectedSource == nil { completion(.failure(.unavailable)); return }
+        if let capture, !producer.cameraSnapshots.canAdmit(capture, at: ProcessInfo.processInfo.systemUptime) { completion(.failure(.stale)); return }
+        producer.ingress.request(generation: producer.ingress.generation, start: start, goal: goal, body: body, expectedSource: expectedSource) { [weak self] result in
             DispatchQueue.main.async { [weak self] in
                 guard let self, self.lifecycle == .capturing, self.producer.frameLease.isCurrent(),
                       self.session.delegate === self.producer, self.session.delegateQueue === self.producerQueue else {
                     self?.stop(); completion(.failure(.stale)); return
                 }
+                if let capture, !self.isCurrent(capture) { completion(.failure(.stale)); return }
                 if case .success(let candidate) = result, !self.isCurrent(candidate) {
                     completion(.failure(.stale)); return
                 }
@@ -131,6 +150,7 @@ public final class LiveMeshBenchSession {
         dispatchPrecondition(condition: .onQueue(.main))
         guard lifecycle == .capturing, session.delegate === producer, session.delegateQueue === producerQueue else { stop(); return }
         guard !reacquisitionRequestPending else { return }
+        producer.cameraSnapshots.retire()
         reacquisitionRequestPending = true
         let requestedAt = ProcessInfo.processInfo.systemUptime
         producerQueue.async { [weak self, producer] in
@@ -211,6 +231,7 @@ public final class LiveMeshBenchSession {
     private final class Producer: NSObject, ARSessionDelegate {
         let ingress: LiveMeshBenchIngress
         let frameLease = MeshBenchFrameLease()
+        let cameraSnapshots = MeshBenchCameraSnapshot()
         private var reacquisition = MeshBenchReacquisition()
         private var reacquisitionRequestedAt: Double?
         private weak var expectedSession: ARSession?
@@ -250,7 +271,7 @@ public final class LiveMeshBenchSession {
         }
         func end() {
             dispatchPrecondition(condition: .onQueue(queue))
-            ended = true; frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
+            ended = true; cameraSnapshots.observe(nil); frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
             watchdog?.cancel(); watchdog = nil; ingress.stop()
         }
         private func accepts(_ session: ARSession) -> Bool {
@@ -273,6 +294,9 @@ public final class LiveMeshBenchSession {
                   now >= frame.timestamp, now - frame.timestamp <= 0.5,
                   lastFrameCapture.map({ frame.timestamp > $0 }) ?? true else { failClosed(); return }
             lastFrameReceipt = now; lastFrameCapture = frame.timestamp
+            let matrix = frame.camera.transform
+            cameraSnapshots.observe(normal ? CameraCapture(session: ingress.generation, frame: UUID(), capturedAt: frame.timestamp,
+                columnMajorCameraToWorld: (0..<4).flatMap { c in (0..<4).map { r in Double(matrix[c][r]) } }) : nil)
             let firstNormalFrame = normal && !sawNormalTracking
             if case .normal = frame.camera.trackingState { sawNormalTracking = true }
             else if sawNormalTracking { failClosed() }
@@ -285,7 +309,7 @@ public final class LiveMeshBenchSession {
                 for anchor in meshes { offer(anchor, copyAllowed: false) }
             }
             if normal { reacquire(frame: frame, now: now) }
-            // No image/ARFrame escapes this callback and no camera pose becomes body pose.
+            // Only copied scalars escape; camera remains explicitly unvalidated, never body authority.
         }
         func session(_ session: ARSession, didAdd anchors: [ARAnchor]) { observe(session, anchors: anchors) }
         func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) { observe(session, anchors: anchors) }
