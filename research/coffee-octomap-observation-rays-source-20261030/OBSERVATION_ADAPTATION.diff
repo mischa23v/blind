@@ -1,0 +1,135 @@
+--- passed-v2/readonly_rays.cpp
++++ observation-candidate/readonly_rays.cpp
+@@ -9,7 +9,7 @@
+   RAY_UNRESOLVED = 0, RAY_HIT = 1, RAY_ORIGIN_UNKNOWN = 2,
+   RAY_ORIGIN_OCCUPIED = 3, RAY_UNKNOWN_BEFORE_HIT = 4,
+   RAY_RANGE_EXHAUSTED = 5, RAY_INVALID = 6, RAY_BOUNDS_REJECTED = 7,
+-  RAY_INTERSECTION_FAILED = 8
++  RAY_INTERSECTION_FAILED = 8, RAY_OBSERVED_HIT_VISIBILITY_UNVERIFIED = 9
+ };
+ 
+ struct RayResult {
+@@ -78,12 +78,14 @@
+   } catch(const std::exception& e) { error=e.what(); return 0; }
+ }
+ 
+-// Every ray uses official castRay(ignoreUnknown=false) and getRayIntersection.
++// Both entry points reuse official castRay and getRayIntersection.
++// Original om_ro_rays keeps ignoreUnknown=false. The separate observation-only
++// function uses ignoreUnknown=true and NEVER returns a known-prefix hit status.
+ // No insertion/update, replacement traversal, guessed Handle layout, or map load.
+ // Query-only input bounds: <=256 rays/batch and 0<maxRange<=8m. Reject, do not clamp.
+-extern "C" int om_ro_rays(void* handle, const float* origin,
++static int ray_queries(void* handle, const float* origin,
+                           const float* directions, const double* maxRanges,
+-                          uint64_t count, RayResult* output) {
++                          uint64_t count, RayResult* output, bool observed_only) {
+   try {
+     const auto& h=checked(handle);
+     if(count>256 || !origin || (count && (!directions || !maxRanges || !output)))
+@@ -115,13 +117,13 @@
+       octomap::OcTreeKey originKey;
+       if(!h.tree.coordToKeyChecked(sensor,originKey)) { out.status=RAY_BOUNDS_REJECTED; continue; }
+       auto* start=h.tree.search(originKey);
+-      if(!start || h.tree.isNodeOccupied(start)) {
++      if((!start && !observed_only) || (start && h.tree.isNodeOccupied(start))) {
+         terminal(h,h.tree.keyToCoord(originKey),out);
+         out.status=start ? RAY_ORIGIN_OCCUPIED : RAY_ORIGIN_UNKNOWN;
+         continue;
+       }
+       octomap::point3d end(0,0,0); // defined even if an unexpected upstream error returns
+-      const bool hit=h.tree.castRay(sensor,direction,end,false,range);
++      const bool hit=h.tree.castRay(sensor,direction,end,observed_only,range);
+       if(!terminal(h,end,out)) { out.status=RAY_UNRESOLVED; continue; }
+       double nativeCenterNorm2=0,centerProjection=0;
+       const double norm=std::sqrt(norm2);
+@@ -153,8 +155,23 @@
+         out.status=RAY_INTERSECTION_FAILED; continue;
+       }
+       for(int a=0;a<3;++a) out.entry[a]=entry(a);
+-      out.entryProjectedRange=entryProjection; out.status=RAY_HIT;
++      out.entryProjectedRange=entryProjection; out.status=observed_only ? RAY_OBSERVED_HIT_VISIBILITY_UNVERIFIED : RAY_HIT;
+     }
+     error.clear(); return 1;
+   } catch(const std::exception& e) { error=e.what(); return 0; }
+ }
++
++// Original conservative ABI/default retained: unknown origin/gaps stop scoring.
++extern "C" int om_ro_rays(void* handle, const float* origin,
++                          const float* directions, const double* maxRanges,
++                          uint64_t count, RayResult* output) {
++  return ray_queries(handle,origin,directions,maxRanges,count,output,false);
++}
++
++// Offline observed-map consistency only. Does NOT establish traversed visibility,
++// free space or movement authority. Occupied origins remain refused.
++extern "C" int om_ro_observed_rays(void* handle, const float* origin,
++                                   const float* directions, const double* maxRanges,
++                                   uint64_t count, RayResult* output) {
++  return ray_queries(handle,origin,directions,maxRanges,count,output,true);
++}
+--- passed-v2/ray_binding.py
++++ observation-candidate/ray_binding.py
+@@ -17,7 +17,7 @@
+ BASE_SHA='09645bd4065ccef13d28353d5a05e54c75f5ea284ca8e5c4439c58cc45aa4621'
+ STATUS=('unresolved','hit-known-prefix','origin-unknown','origin-occupied',
+         'unknown-before-hit','range-exhausted','invalid-input','bounds-rejected',
+-        'intersection-failed')
++        'intersection-failed','observed-hit-visibility-unverified')
+ 
+ 
+ class RayResult(C.Structure):
+@@ -62,6 +62,8 @@
+         lib.om_ro_rays.argtypes=[C.c_void_p,C.POINTER(C.c_float),C.POINTER(C.c_float),
+                                 C.POINTER(C.c_double),C.c_uint64,C.POINTER(RayResult)]
+         lib.om_ro_rays.restype=C.c_int
++        lib.om_ro_observed_rays.argtypes=list(lib.om_ro_rays.argtypes)
++        lib.om_ro_observed_rays.restype=C.c_int
+ 
+     def state(self):
+         with self.tree._lock:
+@@ -70,6 +72,13 @@
+             return dict(zip(('scans','treeNodes','leaves','evidenceKeys','hitVotes','freeVotes'),map(int,out)))
+ 
+     def cast(self,origin,directions,max_ranges):
++        return self._cast(origin,directions,max_ranges,False)
++
++    def cast_observed(self,origin,directions,max_ranges):
++        """Offline observed surfaces only; unknown visibility is never clearance."""
++        return self._cast(origin,directions,max_ranges,True)
++
++    def _cast(self,origin,directions,max_ranges,observed_only):
+         # Count guards precede ndarray conversion, including adversarial __array__.
+         count=len(directions)
+         if count>256 or len(max_ranges)!=count:raise ValueError('ray batch count/shape')
+@@ -82,7 +91,8 @@
+         output=(RayResult*count)()
+         with self.tree._lock:
+             if not self.tree.handle:raise RuntimeError('closed handle')
+-            self.tree.check(self.tree.lib.om_ro_rays(self.tree.handle,
++            fn=self.tree.lib.om_ro_observed_rays if observed_only else self.tree.lib.om_ro_rays
++            self.tree.check(fn(self.tree.handle,
+                 o.ctypes.data_as(C.POINTER(C.c_float)),d.ctypes.data_as(C.POINTER(C.c_float)),
+                 ranges.ctypes.data_as(C.POINTER(C.c_double)),count,output))
+         def number(x):return float(x) if math.isfinite(x) else None
+--- passed-v2/run_controls.py
++++ observation-candidate/run_controls.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Prepared guarded runner: unchanged original 16 + new 22 native controls.
++"""Prepared guarded runner: unchanged original 16 + conservative 22 + observation-only 10 controls.
+ 
+ NOT EXECUTED. A separately reviewed build receipt and external source manifest
+ check are required. This runner is not a build or held-out-data evaluator.
+@@ -79,8 +79,10 @@
+         old_tests=load(OLD/'test_octomap_engine.py','unchanged_original_octomap_controls')
+         new_tests=load(ROOT/'test_readonly_rays.py','new_readonly_ray_controls')
+         new_tests.REVIEWED_LIBRARY=a.library;new_tests.REVIEWED_SHA256=a.expected_library_sha256
++        observed_tests=load(ROOT/'test_observation_rays.py','observation_only_controls')
++        observed_tests.REVIEWED_LIBRARY=a.library;observed_tests.REVIEWED_SHA256=a.expected_library_sha256
+         with (a.output/'controls.log').open('x') as log:
+-            for name,module,count in [('original',old_tests,16),('read-only-rays',new_tests,22)]:
++            for name,module,count in [('original',old_tests,16),('read-only-rays',new_tests,22),('observation-only-rays',observed_tests,10)]:
+                 suite=unittest.defaultTestLoader.loadTestsFromModule(module)
+                 require(suite.countTestCases()==count,'control inventory changed: '+name)
+                 result=unittest.TextTestRunner(stream=log,verbosity=2).run(suite)

@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "status": "ROW_SELECTION_FIXED_SOURCE_ONLY_NOT_RAPIER_SCORED",
+  "selectionRule": "Each path: initial, first/middle/last translation, first turn, terminal; Coffee additionally known refused turn event10. No selection by future Rapier outcomes.",
+  "sources": {
+    "blind/research/coffee-room-journey-recovery-20261029/collision-protocol/joint-route-body-candidate/SCHEDULE_0_8.json": "19bc3032e46b7218e62c1481d54be9a978c3233cbf19c19d1400ba4234d44d40",
+    "coffee-joint-route-body-attempt-001/comparison/RECEIPT.json": "f3e0881536a80d2222d33e5f54617efc38914b532a6c644a2a327c8f7643ab2f",
+    "coffee-joint-route-body-attempt-001/comparison/CONTACTS.jsonl.gz": "8cbcb6fbc5fd87c4dd22cba1d82d03131e2ce3eb394ce54f425adc290298534e",
+    "conference-body-comparison-attempt-001/comparison/CONTACTS.jsonl.gz": "f1b930185ee94b4b61fd8dbd2b85815ebe1d22148e34bbc3e796b010d91395be",
+    "conference-body-comparison-attempt-001/comparison/RECEIPT.json": "1f772214cbf62fa9c78f5a6891d17d4794abdc57d0fb9351809153cd99075b3f",
+    "blind/research/conference-body-source-20261029/ROUTES.json": "8c576659086d346cfd08cc63cbb40d416b962bc6b4ca45b4cd12a6c9d26dee1e"
+  },
+  "coffeeRawSourcePath0To8": [
+    {
+      "eventIndex": 0,
+      "kind": "initial"
+    },
+    {
+      "eventIndex": 1,
+      "kind": "translate"
+    },
+    {
+      "eventIndex": 2,
+      "kind": "turn"
+    },
+    {
+      "eventIndex": 10,
+      "kind": "turn"
+    },
+    {
+      "eventIndex": 630,
+      "kind": "translate"
+    },
+    {
+      "eventIndex": 1642,
+      "kind": "translate"
+    },
+    {
+      "eventIndex": 1643,
+      "kind": "terminal"
+    }
+  ],
+  "conferenceAllSevenFrozenRequests": {
+    "table_92_to_120": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 960,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1842,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1843,
+        "kind": "terminal"
+      }
+    ],
+    "table_120_to_200": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 3,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 1216,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2050,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2051,
+        "kind": "terminal"
+      }
+    ],
+    "table_200_to_220": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 3,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 868,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1528,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1529,
+        "kind": "terminal"
+      }
+    ],
+    "table_220_to_20": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 912,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1553,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1554,
+        "kind": "terminal"
+      }
+    ],
+    "table_20_to_92": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 1057,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2861,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2862,
+        "kind": "terminal"
+      }
+    ],
+    "varpu_130_to_160": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 961,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1921,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1922,
+        "kind": "terminal"
+      }
+    ],
+    "varpu_160_to_130": [
+      {
+        "eventIndex": 0,
+        "kind": "initial"
+      },
+      {
+        "eventIndex": 1,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 2,
+        "kind": "turn"
+      },
+      {
+        "eventIndex": 966,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1935,
+        "kind": "translate"
+      },
+      {
+        "eventIndex": 1936,
+        "kind": "terminal"
+      }
+    ]
+  },
+  "coffeeGroundFollowAdditionalCases": [
+    "last accepted saved state before rejected event10: zero input, proposal only",
+    "rejected event10 at that unchanged saved start pose/heading: unsupported rotation, no controller call"
+  ],
+  "groundFollowPoseMappingStatus": "Must separately bind saved accepted state and existing rigid normalization; unknown if unavailable, no extrapolation or proposed pose applied",
+  "bodyWidthDepthHeightMetres": [
+    0.45,
+    0.3,
+    1.6
+  ],
+  "horizontalMarginMetres": 0.15,
+  "vtkLowerQueryBandExclusionMetres": 0.002,
+  "rapierLowerQueryBandExclusionMetres": 0.0,
+  "shapeDifferenceLabel": "Full unshrunk KCC cuboid includes lower2mm slice omitted by unchanged VTK query; numerical offset is additional and not an exclusion",
+  "requiredInputArms": [
+    "exact_xyz",
+    "horizontal_projection"
+  ],
+  "requiredFlagArms": [
+    "raw_trimesh",
+    "two_sided_internal_edges"
+  ],
+  "requiredEnvelopes": [
+    "body",
+    "horizontal_margin"
+  ],
+  "allOriginalPosesRetained": true,
+  "stateResetForEachProbe": true,
+  "correctionsApplied": false,
+  "turnsUnsupported": true,
+  "realRoomExecutionAuthorizedByThisFile": false,
+  "physicalAuthority": false,
+  "selectedScheduleRows": 49,
+  "maximumRowsAfterTwoAdditionalGroundCasesAndAllArms": 408
+}
