@@ -1,0 +1,21 @@
+{
+  "status": "audited-saved-result-not-native-rerun",
+  "sourceResult": "coffee-heldout-observation-attempt-001/RESULT.json",
+  "sourceResultSHA256": "37ff241ed42a3e0a637c6e0629803dc745a49a9b62f878282edba493eaafcc3d",
+  "sourceManifestSHA256": "479da47b81278835c8427783b9fe6214fdff797e60bcd663caf20c7269f835bd",
+  "librarySHA256": "82afb6c94b3e0234ee371395b6f7ba17ae159987293ac357463bde43605ebc26",
+  "controlsReceiptSHA256": "51624c3c11456971709fd41ef6bd2b63f303e7f0df1b58bec5403d73d607f3e4",
+  "primaryResultSHA256": "98083741d69b4d034e65d4f7d75bc779a2231e575f5b5c2e19252fedf0b57ecb",
+  "checks": [
+    "status completed",
+    "exact baseline and extraction equal primary",
+    "primary frame records retained verbatim",
+    "all conservative partitions equal primary",
+    "all observation status counts equal valid grid denominator",
+    "every observed hit scored in each residual definition",
+    "endpoint primary classes sum to denominators",
+    "endpoint counts identical primary",
+    "before-after map equality on both views"
+  ],
+  "physicalAuthority": false
+}
