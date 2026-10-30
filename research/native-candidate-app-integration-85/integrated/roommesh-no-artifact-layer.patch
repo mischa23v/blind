@@ -1,0 +1,241 @@
+--- a/.github/workflows/native-room-mesh-package.yml
++++ b/.github/workflows/native-room-mesh-package.yml
+@@ -8,6 +8,11 @@
+   workflow_dispatch:
+ permissions:
+   contents: read
++
++# No paid-storage assumption: uploads require a separately reviewed source opt-in.
++# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
+ concurrency:
+   group: candidate-room-mesh-${{ github.ref }}
+   cancel-in-progress: false
+@@ -26,10 +31,11 @@
+           lfs: false
+           submodules: false
+       - name: Build isolated SwiftPM product and public client; compile simulator only
++        id: fixtures
+         timeout-minutes: 16
+         run: python3 research/room-mesh-package-75/apple/ci.py
+       - name: Preserve bounded public proof receipts
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+         with:
+           name: candidate-room-mesh-75-receipts
+@@ -41,3 +47,10 @@
+             ${{ runner.temp }}/blind-room-mesh-75/SUMMARY.json
+           if-no-files-found: warn
+           retention-days: 3
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py room-mesh
+--- a/tools/ci/emit-ci-log-receipts.py
++++ b/tools/ci/emit-ci-log-receipts.py
+@@ -39,6 +39,11 @@
+         'body-profile-current-evidence/body-profile-coverage.json',
+     ],
+     'ingress': ['blind-mesh-candidate-ingress-83/RESULT.json'],
++    'room-mesh': [
++        'blind-room-mesh-75/SUMMARY.json',
++        'blind-room-mesh-75/RESULT.json',
++        'blind-room-mesh-75/RUNTIME_RESULT.json',
++    ],
+ }
+ SCALARS = {
+     'schema', 'status', 'result', 'complete', 'source_verified',
+@@ -54,6 +59,11 @@
+     'appActivation', 'simulatorExecution', 'deviceExecution',
+     'copyLatencyMeasured', 'physicalAuthority', 'unexpectedCaseCount',
+     'unparsedFailureRecordCount',
++    'sourceCommit', 'swiftPMBuildSystem', 'macOSSwiftPMPackageBuilt',
++    'publicImportedClientExecuted', 'legacyChecks', 'runtimeChecks',
++    'failureCommitChecks', 'discardChecks', 'iOSSimulatorPackageAndClientLinked',
++    'iOSSimulatorExecuted', 'appProjectBuilt', 'ARKitExecuted',
++    'publicExclusionUpdatesImplemented',
+ }
+ TOKEN = re.compile(r'[A-Za-z0-9_./ ()\[\]-]{1,512}\Z')
+ 
+--- a/tools/ci/test_emit_ci_log_receipts.py
++++ b/tools/ci/test_emit_ci_log_receipts.py
+@@ -116,9 +116,9 @@
+             self.assertIn(output.getvalue().strip(), summary.read_text())
+             self.assertEqual(json.loads(lines[1].split('=', 1)[1])['availability'], 'unavailable')
+ 
+-    def test_only_three_scoped_workflows_disable_uploads_and_emit_receipts(self):
++    def test_four_scoped_workflows_disable_uploads_and_emit_receipts(self):
+         root = HERE.parents[1]
+-        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress']:
++        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress', 'native-room-mesh-package']:
+             text = (root / '.github/workflows' / (name + '.yml')).read_text()
+             self.assertIn("BLIND_UPLOAD_ARTIFACTS: 'false'", text)
+             lines = text.splitlines()
+@@ -130,6 +130,24 @@
+             self.assertNotIn('actions/cache@', text)
+             self.assertNotIn('continue-on-error', text)
+ 
++    def test_room_mesh_summary_retains_counts_and_compile_only_limits(self):
++        source = {'sourceCommit': 'a' * 40, 'swiftPMBuildSystem': 'native',
++                  'defaultSwiftBuildBackendPassed': False, 'macOSSwiftPMPackageBuilt': True,
++                  'publicImportedClientExecuted': True, 'legacyChecks': 55, 'runtimeChecks': 32,
++                  'failureCommitChecks': 5, 'discardChecks': 19,
++                  'iOSSimulatorPackageAndClientLinked': True, 'iOSSimulatorExecuted': False,
++                  'appProjectBuilt': False, 'ARKitExecuted': False, 'physicalAuthority': False,
++                  'publicExclusionUpdatesImplemented': False}
++        self.assertEqual(self.receipt(source)['metadata'], source)
++
++    def test_room_mesh_receipt_never_reads_route_geometry(self):
++        self.assertEqual(M.RECEIPTS['room-mesh'], ['blind-room-mesh-75/SUMMARY.json',
++                         'blind-room-mesh-75/RESULT.json', 'blind-room-mesh-75/RUNTIME_RESULT.json'])
++        self.assertNotIn('ROUTE_DIAGNOSTIC', str(M.RECEIPTS['room-mesh']))
++        result = self.receipt({'passed': False, 'geometry': [1,2,3], 'error': 'private',
++                               'receipts': [{'command': 'secret'}]})['metadata']
++        self.assertEqual(result, {'passed': False})
++
+ 
+ if __name__ == '__main__':
+     unittest.main()
+--- a/research/room-mesh-package-75/apple/native-room-mesh-package.yml
++++ b/research/room-mesh-package-75/apple/native-room-mesh-package.yml
+@@ -8,6 +8,11 @@
+   workflow_dispatch:
+ permissions:
+   contents: read
++
++# No paid-storage assumption: uploads require a separately reviewed source opt-in.
++# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
+ concurrency:
+   group: candidate-room-mesh-${{ github.ref }}
+   cancel-in-progress: false
+@@ -26,10 +31,11 @@
+           lfs: false
+           submodules: false
+       - name: Build isolated SwiftPM product and public client; compile simulator only
++        id: fixtures
+         timeout-minutes: 16
+         run: python3 research/room-mesh-package-75/apple/ci.py
+       - name: Preserve bounded public proof receipts
+-        if: always()
++        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+         with:
+           name: candidate-room-mesh-75-receipts
+@@ -41,3 +47,10 @@
+             ${{ runner.temp }}/blind-room-mesh-75/SUMMARY.json
+           if-no-files-found: warn
+           retention-days: 3
++      - name: Emit bounded log-only CI receipts
++        if: always()
++        timeout-minutes: 1
++        env:
++          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
++          CI_JOB_STATUS: ${{ job.status }}
++        run: python3 -B tools/ci/emit-ci-log-receipts.py room-mesh
+--- a/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
++++ b/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
+@@ -102,7 +102,7 @@
+     "tests/main.swift": "2f55a2e829516e71c0e3a6203a376f3333db82b16bb24234bf2e9e618b8e03fa",
+     "apple/ci.py": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0",
+     "apple/public-client.swift": "91fcd5f0d92d8c9b11de3b6cf9517d0fd23d37cf94c83eeea0c55902eb210b12",
+-    "apple/native-room-mesh-package.yml": "a654db0c4fcd3215213d048e14fc7820a13a752deb4e5e406f3daaac8736ba5d",
++    "apple/native-room-mesh-package.yml": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f",
+     "BlindRoomMesh/Sources/CEarcut/LICENSE": "828f2aed51b6526881a236758ec9b08cd69928fbfc70346d9d44a0b3a3444fe1",
+     "BlindRoomMesh/Sources/CEarcut/earcut_adapter.cpp": "fcb8a65d9ca65bbe92109ffe65107e0ef65a0b64e0ce9b261362966b46a5f90f",
+     "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h": "42febc3208e25671a7eab5a8d3d1b26168ad4038b02de4eaae118654d42d54dd",
+@@ -199,5 +199,17 @@
+       }
+     },
+     "runtimeAuthorityChanged": false
++  },
++  "roommesh_no_artifact_layer": {
++    "status": "source_only_no_artifact_default",
++    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
++    "beforeManifestSHA256": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab",
++    "changes": {
++      "apple/native-room-mesh-package.yml": {
++        "before": "a654db0c4fcd3215213d048e14fc7820a13a752deb4e5e406f3daaac8736ba5d",
++        "after": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f"
++      }
++    },
++    "runtimeAuthorityChanged": false
+   }
+ }
+--- a/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
+@@ -43,7 +43,7 @@
+     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
+     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
+     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
+-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab"
++    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657"
+   },
+   "immutable_snapshot_layer": {
+     "scope": "current source only; new native tests authored, not executed",
+@@ -129,5 +129,17 @@
+       }
+     },
+     "runtimeAuthorityChanged": false
++  },
++  "roommesh_no_artifact_layer": {
++    "status": "source_only_no_artifact_default",
++    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
++    "beforeManifestSHA256": "3722e8ea7bd17f6d71d1c5a42c0f0be3bb2c684ab4dcdafd756480ae05c208ee",
++    "changes": {
++      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
++        "before": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab",
++        "after": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657"
++      }
++    },
++    "runtimeAuthorityChanged": false
+   }
+ }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -500,8 +500,8 @@
+     },
+     {
+       "path": "tools/ci/test_emit_ci_log_receipts.py",
+-      "bytes": 7024,
+-      "sha256": "a4c7c37fefec0571ddce173a7db335480be8259820ccb4eb52646c2280069b40"
++      "bytes": 8324,
++      "sha256": "b025fcb4a4e4f58548696123115b0d8af9d5f985b53427e9015a34053ab73efd"
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift",
+@@ -520,13 +520,13 @@
+     },
+     {
+       "path": "tools/ci/emit-ci-log-receipts.py",
+-      "bytes": 7740,
+-      "sha256": "679f85f42b87bb4744373d083bd3ea2c9bc962f8f762234e6465a3468ad04ff1"
++      "bytes": 8227,
++      "sha256": "9a54934f4deb83edc7f248601e2c9224d5dd213ec30f4d5664030bbdab95ffd2"
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+-      "bytes": 7598,
+-      "sha256": "3722e8ea7bd17f6d71d1c5a42c0f0be3bb2c684ab4dcdafd756480ae05c208ee"
++      "bytes": 8155,
++      "sha256": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d"
+     },
+     {
+       "path": ".github/workflows/mesh-candidate-ingress.yml",
+@@ -738,5 +738,10 @@
+     "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+     "status": "unexecuted_debug_metadata_only",
+     "scope": "source-request, native worker/delivery and render checkpoints; fail-fast source test; same ten-second waits"
++  },
++  "roommesh_no_artifact_layer": {
++    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
++    "status": "source_only_no_artifact_default",
++    "scope": "default-off room-mesh artifact action plus bounded metadata-only log receipts; native commands unchanged"
+   }
+ }

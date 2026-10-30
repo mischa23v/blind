@@ -102,7 +102,7 @@
     "tests/main.swift": "2f55a2e829516e71c0e3a6203a376f3333db82b16bb24234bf2e9e618b8e03fa",
     "apple/ci.py": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0",
     "apple/public-client.swift": "91fcd5f0d92d8c9b11de3b6cf9517d0fd23d37cf94c83eeea0c55902eb210b12",
-    "apple/native-room-mesh-package.yml": "a654db0c4fcd3215213d048e14fc7820a13a752deb4e5e406f3daaac8736ba5d",
+    "apple/native-room-mesh-package.yml": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f",
     "BlindRoomMesh/Sources/CEarcut/LICENSE": "828f2aed51b6526881a236758ec9b08cd69928fbfc70346d9d44a0b3a3444fe1",
     "BlindRoomMesh/Sources/CEarcut/earcut_adapter.cpp": "fcb8a65d9ca65bbe92109ffe65107e0ef65a0b64e0ce9b261362966b46a5f90f",
     "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h": "42febc3208e25671a7eab5a8d3d1b26168ad4038b02de4eaae118654d42d54dd",
@@ -196,6 +196,18 @@
       "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
         "before": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e",
         "after": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90"
+      }
+    },
+    "runtimeAuthorityChanged": false
+  },
+  "roommesh_no_artifact_layer": {
+    "status": "source_only_no_artifact_default",
+    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+    "beforeManifestSHA256": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab",
+    "changes": {
+      "apple/native-room-mesh-package.yml": {
+        "before": "a654db0c4fcd3215213d048e14fc7820a13a752deb4e5e406f3daaac8736ba5d",
+        "after": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f"
       }
     },
     "runtimeAuthorityChanged": false

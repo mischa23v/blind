@@ -18,13 +18,26 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Room-mesh defaults to log receipts without remote artifact storage.
+pre_roommesh_storage_source = {}
+with tempfile.TemporaryDirectory(prefix='stage85-roommesh-storage-') as temp:
+    root=Path(temp)
+    for name in manifest['beforeRoommeshNoArtifact']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'roommesh-no-artifact-layer.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeRoommeshNoArtifact'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-roommesh-storage source '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_roommesh_storage_source[name]=value
+
 # Preserve the second Apple failure while layering synthetic source-delivery clocks.
-pre_source_delivery_source = {}
+pre_source_delivery_source = dict(pre_roommesh_storage_source)
 with tempfile.TemporaryDirectory(prefix='stage85-source-delivery-metadata-') as temp:
     root = Path(temp)
     for name in manifest['beforeSourceDeliveryDiagnostics']:
         target=root/name;target.parent.mkdir(parents=True,exist_ok=True)
-        shutil.copyfile(R/name,target)
+        target.write_bytes(pre_roommesh_storage_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'seated-source-delivery-diagnostics.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeSourceDeliveryDiagnostics'].items():

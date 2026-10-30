@@ -39,6 +39,11 @@ RECEIPTS = {
         'body-profile-current-evidence/body-profile-coverage.json',
     ],
     'ingress': ['blind-mesh-candidate-ingress-83/RESULT.json'],
+    'room-mesh': [
+        'blind-room-mesh-75/SUMMARY.json',
+        'blind-room-mesh-75/RESULT.json',
+        'blind-room-mesh-75/RUNTIME_RESULT.json',
+    ],
 }
 SCALARS = {
     'schema', 'status', 'result', 'complete', 'source_verified',
@@ -54,6 +59,11 @@ SCALARS = {
     'appActivation', 'simulatorExecution', 'deviceExecution',
     'copyLatencyMeasured', 'physicalAuthority', 'unexpectedCaseCount',
     'unparsedFailureRecordCount',
+    'sourceCommit', 'swiftPMBuildSystem', 'macOSSwiftPMPackageBuilt',
+    'publicImportedClientExecuted', 'legacyChecks', 'runtimeChecks',
+    'failureCommitChecks', 'discardChecks', 'iOSSimulatorPackageAndClientLinked',
+    'iOSSimulatorExecuted', 'appProjectBuilt', 'ARKitExecuted',
+    'publicExclusionUpdatesImplemented',
 }
 TOKEN = re.compile(r'[A-Za-z0-9_./ ()\[\]-]{1,512}\Z')
 

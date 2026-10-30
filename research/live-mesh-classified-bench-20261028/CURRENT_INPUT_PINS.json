@@ -500,8 +500,8 @@
     },
     {
       "path": "tools/ci/test_emit_ci_log_receipts.py",
-      "bytes": 7024,
-      "sha256": "a4c7c37fefec0571ddce173a7db335480be8259820ccb4eb52646c2280069b40"
+      "bytes": 8324,
+      "sha256": "b025fcb4a4e4f58548696123115b0d8af9d5f985b53427e9015a34053ab73efd"
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift",
@@ -520,13 +520,13 @@
     },
     {
       "path": "tools/ci/emit-ci-log-receipts.py",
-      "bytes": 7740,
-      "sha256": "679f85f42b87bb4744373d083bd3ea2c9bc962f8f762234e6465a3468ad04ff1"
+      "bytes": 8227,
+      "sha256": "9a54934f4deb83edc7f248601e2c9224d5dd213ec30f4d5664030bbdab95ffd2"
     },
     {
       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
-      "bytes": 7598,
-      "sha256": "3722e8ea7bd17f6d71d1c5a42c0f0be3bb2c684ab4dcdafd756480ae05c208ee"
+      "bytes": 8155,
+      "sha256": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d"
     },
     {
       "path": ".github/workflows/mesh-candidate-ingress.yml",
@@ -738,5 +738,10 @@
     "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
     "status": "unexecuted_debug_metadata_only",
     "scope": "source-request, native worker/delivery and render checkpoints; fail-fast source test; same ten-second waits"
+  },
+  "roommesh_no_artifact_layer": {
+    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+    "status": "source_only_no_artifact_default",
+    "scope": "default-off room-mesh artifact action plus bounded metadata-only log receipts; native commands unchanged"
   }
 }

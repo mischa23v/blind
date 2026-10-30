@@ -116,9 +116,9 @@ class ReceiptTests(unittest.TestCase):
             self.assertIn(output.getvalue().strip(), summary.read_text())
             self.assertEqual(json.loads(lines[1].split('=', 1)[1])['availability'], 'unavailable')
 
-    def test_only_three_scoped_workflows_disable_uploads_and_emit_receipts(self):
+    def test_four_scoped_workflows_disable_uploads_and_emit_receipts(self):
         root = HERE.parents[1]
-        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress']:
+        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress', 'native-room-mesh-package']:
             text = (root / '.github/workflows' / (name + '.yml')).read_text()
             self.assertIn("BLIND_UPLOAD_ARTIFACTS: 'false'", text)
             lines = text.splitlines()
@@ -129,6 +129,24 @@ class ReceiptTests(unittest.TestCase):
             self.assertIn('run: python3 -B tools/ci/emit-ci-log-receipts.py ', text)
             self.assertNotIn('actions/cache@', text)
             self.assertNotIn('continue-on-error', text)
+
+    def test_room_mesh_summary_retains_counts_and_compile_only_limits(self):
+        source = {'sourceCommit': 'a' * 40, 'swiftPMBuildSystem': 'native',
+                  'defaultSwiftBuildBackendPassed': False, 'macOSSwiftPMPackageBuilt': True,
+                  'publicImportedClientExecuted': True, 'legacyChecks': 55, 'runtimeChecks': 32,
+                  'failureCommitChecks': 5, 'discardChecks': 19,
+                  'iOSSimulatorPackageAndClientLinked': True, 'iOSSimulatorExecuted': False,
+                  'appProjectBuilt': False, 'ARKitExecuted': False, 'physicalAuthority': False,
+                  'publicExclusionUpdatesImplemented': False}
+        self.assertEqual(self.receipt(source)['metadata'], source)
+
+    def test_room_mesh_receipt_never_reads_route_geometry(self):
+        self.assertEqual(M.RECEIPTS['room-mesh'], ['blind-room-mesh-75/SUMMARY.json',
+                         'blind-room-mesh-75/RESULT.json', 'blind-room-mesh-75/RUNTIME_RESULT.json'])
+        self.assertNotIn('ROUTE_DIAGNOSTIC', str(M.RECEIPTS['room-mesh']))
+        result = self.receipt({'passed': False, 'geometry': [1,2,3], 'error': 'private',
+                               'receipts': [{'command': 'secret'}]})['metadata']
+        self.assertEqual(result, {'passed': False})
 
 
 if __name__ == '__main__':
