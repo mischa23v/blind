@@ -1,0 +1,425 @@
+{
+  "status": "savedResultIndependentlyRecountedNotPhysicalAcceptance",
+  "sourceCommit": "dad87dcc75d86e3b170201e778ccef69c76ccca4",
+  "manifestSHA256": "d44748a362013322f5ad11ad8f30995b29d7e7021a294ce639f63b0c74c18caf",
+  "pairsSHA256": "3b47960077f817b627b2868748204174020378832b50c3459c8bcdf35d73be47",
+  "guardReceiptSHA256": "9cd5e45a6b435f7d79a94ef56938d21b8da6739a115ed9cf9fdc942f0f7ae662",
+  "reviewSourceSHA256": "da08c0cb1b721bbb70a3f6c2635c38df51e53eb9a7b11ee8a73f6a82698a67fe",
+  "matchedInputPins": 42,
+  "matchedBeforeAfterPins": true,
+  "matchedFinalPayloadFiles": 5,
+  "fixedToleranceMetres": 0.025,
+  "retainedObjectives": 7,
+  "includedRowsPerArm": 7,
+  "authoredControlsActuallyPassed": 17,
+  "guard": {
+    "status": "completed-zero-exit",
+    "aggregateCPUSeconds": 1.7885769999999999,
+    "wallSeconds": 1.804426553997473,
+    "peakObservedAggregateRSS": 65929216,
+    "limits": {
+      "cpuSeconds": 120,
+      "wallSeconds": 180,
+      "observedRSSBytes": 1073741824,
+      "outputBytes": 16777216
+    }
+  },
+  "summary": {
+    "status": "sevenPairedDiagnosticsReviewedNotAcceptance",
+    "baselineRows": 7,
+    "baselineWholeCorridorPass": 7,
+    "candidateRows": 7,
+    "candidateWithChain": 7,
+    "candidateWholeCorridorPass": 7,
+    "candidateEligibleForLaterBodyDiagnostic": 7,
+    "candidateRejectedSimplification": 0,
+    "candidateRejectedFullXZTopology": 0,
+    "independentCoverageUnknown": 7,
+    "totals": {
+      "unchangedCentered": {
+        "lengthMetres": 33.432190042412294,
+        "totalAuthoredTurnDegrees": 11846.671645607526,
+        "eventCount": 13704,
+        "turnEventCount": 12049,
+        "includedRows": 7
+      },
+      "geos025CenteredCandidate": {
+        "lengthMetres": 32.74147064517052,
+        "totalAuthoredTurnDegrees": 6012.861262983938,
+        "eventCount": 7470,
+        "turnEventCount": 6070,
+        "includedRows": 7
+      }
+    },
+    "nativeSegmentCalls": 1472,
+    "reportedSegmentCalls": 1472,
+    "unattributedCallsOnRejectedCandidates": 0,
+    "physicalAuthority": false,
+    "bodyComparisonExecuted": false,
+    "interpretation": "Length, cumulative authored turn, event counts and whole-route diagnostic eligibility only. No contact-event percentage or safety improvement claim."
+  },
+  "reductionsInDiagnosticMetricsOnly": {
+    "lengthMetres": {
+      "absolute": 0.6907193972417716,
+      "percent": 2.0660309610753047
+    },
+    "totalAuthoredTurnDegrees": {
+      "absolute": 5833.810382623588,
+      "percent": 49.244298796671984
+    },
+    "eventCount": {
+      "absolute": 6234,
+      "percent": 45.49036777583188
+    },
+    "turnEventCount": {
+      "absolute": 5979,
+      "percent": 49.622375300854834
+    }
+  },
+  "rows": [
+    {
+      "name": "table_92_to_120",
+      "sourcePoseIndices": [
+        92,
+        120
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 59,
+        "lengthMetres": 3.4031843853381676,
+        "eventCount": 1844,
+        "totalAuthoredTurnRadians": 29.036103399381137,
+        "totalAuthoredTurnDegrees": 1663.6461782900017,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1684,
+          "translate": 158,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 18,
+        "lengthMetres": 3.2800078998875173,
+        "eventCount": 796,
+        "totalAuthoredTurnRadians": 11.309920990403684,
+        "totalAuthoredTurnDegrees": 648.0107393765511,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 654,
+          "translate": 140,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 58,
+      "candidateNativeSegments": 17,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    },
+    {
+      "name": "table_120_to_200",
+      "sourcePoseIndices": [
+        120,
+        200
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 96,
+        "lengthMetres": 5.217547378564026,
+        "eventCount": 2052,
+        "totalAuthoredTurnRadians": 30.619313422522353,
+        "totalAuthoredTurnDegrees": 1754.3574306988028,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1781,
+          "translate": 269,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 23,
+        "lengthMetres": 5.113641691609597,
+        "eventCount": 1101,
+        "totalAuthoredTurnRadians": 15.203268851054949,
+        "totalAuthoredTurnDegrees": 871.0831399681567,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 882,
+          "translate": 217,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 95,
+      "candidateNativeSegments": 22,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    },
+    {
+      "name": "table_200_to_220",
+      "sourcePoseIndices": [
+        200,
+        220
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 44,
+        "lengthMetres": 2.4805594737218652,
+        "eventCount": 1530,
+        "totalAuthoredTurnRadians": 24.323637692762798,
+        "totalAuthoredTurnDegrees": 1393.6417822006356,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1406,
+          "translate": 122,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 15,
+        "lengthMetres": 2.3787184866950657,
+        "eventCount": 653,
+        "totalAuthoredTurnRadians": 9.43943783820817,
+        "totalAuthoredTurnDegrees": 540.8399491054217,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 547,
+          "translate": 104,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 43,
+      "candidateNativeSegments": 14,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    },
+    {
+      "name": "table_220_to_20",
+      "sourcePoseIndices": [
+        220,
+        20
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 72,
+        "lengthMetres": 4.11477909101065,
+        "eventCount": 1555,
+        "totalAuthoredTurnRadians": 23.387516829590002,
+        "totalAuthoredTurnDegrees": 1340.006007626691,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1366,
+          "translate": 187,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 20,
+        "lengthMetres": 4.049420138689105,
+        "eventCount": 889,
+        "totalAuthoredTurnRadians": 12.391925778230817,
+        "totalAuthoredTurnDegrees": 710.0050471319939,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 716,
+          "translate": 171,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 71,
+      "candidateNativeSegments": 19,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    },
+    {
+      "name": "table_20_to_92",
+      "sourcePoseIndices": [
+        20,
+        92
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 127,
+        "lengthMetres": 7.130918848333366,
+        "eventCount": 2863,
+        "totalAuthoredTurnRadians": 42.992478306331485,
+        "totalAuthoredTurnDegrees": 2463.2875577605437,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 2506,
+          "translate": 355,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 34,
+        "lengthMetres": 7.00867006127057,
+        "eventCount": 1740,
+        "totalAuthoredTurnRadians": 24.935964699856342,
+        "totalAuthoredTurnDegrees": 1428.725535388973,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1442,
+          "translate": 296,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 126,
+      "candidateNativeSegments": 33,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    },
+    {
+      "name": "varpu_130_to_160",
+      "sourcePoseIndices": [
+        130,
+        160
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 98,
+        "lengthMetres": 5.542600432722109,
+        "eventCount": 1923,
+        "totalAuthoredTurnRadians": 28.202187983959178,
+        "totalAuthoredTurnDegrees": 1615.8663445154248,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1646,
+          "translate": 275,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 23,
+        "lengthMetres": 5.4555061835093355,
+        "eventCount": 1145,
+        "totalAuthoredTurnRadians": 15.831854173470196,
+        "totalAuthoredTurnDegrees": 907.0984260064206,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 914,
+          "translate": 229,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 97,
+      "candidateNativeSegments": 22,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    },
+    {
+      "name": "varpu_160_to_130",
+      "sourcePoseIndices": [
+        160,
+        130
+      ],
+      "baselineUnchanged": true,
+      "exactRequestedEndpoints": true,
+      "orderedOriginalXYZSubsequence": true,
+      "connectorsAndFirstLastGraphEdgesUnchanged": true,
+      "savedGEOSFullXZSimple": true,
+      "independentSavedXZExactIntersectionAuditSimple": true,
+      "originalGraphLengthCapRetained": true,
+      "unchangedCentered": {
+        "vertices": 98,
+        "lengthMetres": 5.542600432722109,
+        "eventCount": 1937,
+        "totalAuthoredTurnRadians": 28.202187983959202,
+        "totalAuthoredTurnDegrees": 1615.8663445154261,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 1660,
+          "translate": 275,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "geos025CenteredCandidate": {
+        "vertices": 23,
+        "lengthMetres": 5.4555061835093355,
+        "eventCount": 1146,
+        "totalAuthoredTurnRadians": 15.831854173470195,
+        "totalAuthoredTurnDegrees": 907.0984260064205,
+        "eventCounts": {
+          "initial": 1,
+          "turn": 915,
+          "translate": 229,
+          "stationary": 0,
+          "terminal": 1
+        }
+      },
+      "baselineNativeSegments": 97,
+      "candidateNativeSegments": 22,
+      "bothArmsWholeNativeCorridorPass": true,
+      "candidateEligibleForSeparateFullBodyDiagnostic": true,
+      "independentCoverage": "unknown",
+      "accepted": false
+    }
+  ],
+  "reverseCandidateExactlyReversed": true,
+  "reviewMethod": "Stdlib hash/inventory/commit checks; exact-byte math-only scheduler and terminal contract readback; independent event-count/length/total-turn arithmetic; exact rational intersections of saved candidate XZ chains. No native, GEOS, scientific library or body-engine import/call in this review.",
+  "interpretation": "Seven paired geometry/scheduling diagnostics, not seven independent scenes or physical journeys. All candidates provisional; native corridor and simple topology do not establish obstacle clearance, independent coverage, body/margin/support acceptance or calibrated alignment.",
+  "geosOrNativeCallsByReview": 0,
+  "bodyComparisonExecutedByThisAttempt": false,
+  "independentCoverageEstablished": false,
+  "physicalAuthority": false,
+  "movementExecuted": false
+}
