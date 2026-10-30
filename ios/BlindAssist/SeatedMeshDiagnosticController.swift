@@ -45,6 +45,14 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     private var clock: () -> Double = { ProcessInfo.processInfo.systemUptime }
     private var snapshot: MeshCandidateIngress83.SourceSnapshot?
     private var candidate: MeshCandidateIngress83.Candidate?
+    private var collisionRequest: SeatedMeshRouteAudit.Request?
+    private var collisionTask: Task<Void,Never>?
+    private var collisionPending=false
+    @Published private(set) var collisionAudit: SeatedMeshRouteAudit.Receipt?
+    @Published private(set) var collisionReceipt="Independent collision audit not requested. No clearance claim."
+    var collisionProgressForTesting: ((SeatedMeshRouteAudit.Progress) async -> Void)?
+    var onCollisionDrainedForTesting: (() -> Void)?
+    var hasPendingCollisionForTesting: Bool {collisionPending}
     private var epoch = UUID(), previewEpoch = UUID()
     private var previewParameters = ""
     @Published private(set) var footReceipt = "No declared body-foot candidate."
@@ -106,7 +114,7 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         nativeDrained=true;bench=nil;finishStopIfDrained()
     }
     private func finishStopIfDrained() {
-        guard stopped, nativeDrained, !sourceRequestPending, !renderPending, !statusPending, !routePending else { return }
+        guard stopped, nativeDrained, !sourceRequestPending, !renderPending, !statusPending, !routePending, !collisionPending else { return }
         let completion = onStopped; onStopped = nil; completion?()
     }
     /// Run after the current callback stack releases its owned source/render values.
@@ -154,6 +162,8 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         bench?.stop()
     }
     private func retireAll() {
+        collisionTask?.cancel();collisionRequest=nil;collisionAudit=nil
+        collisionReceipt="RETIRED — independent collision receipt erased."
         epoch = UUID(); stopped = true
         timer?.invalidate(); timer = nil
         queuedRender=nil;renderReceipt="Optional visualization retired; waiting for active display work to drain."
@@ -162,6 +172,8 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         routeReceipt = "WITHHELD — diagnostic stopped or session lost."
     }
     func retirePreview() {
+        collisionTask?.cancel();collisionRequest=nil;collisionAudit=nil
+        collisionReceipt="RETIRED — independent collision receipt erased."
         bench?.retireCameraCapture()
         footCandidate = nil; cameraCapture = nil; footDeclaration = nil; footReceipt = "Candidate retired; request a new capture-bound preview."
         previewEpoch = UUID(); candidate = nil; routePointReceipts = []
@@ -250,6 +262,7 @@ final class SeatedMeshDiagnosticController: ObservableObject {
             routeReceipt="WITHHELD — no current same-source route association. Supplied test endpoints required. No safe-path claim."
             return
         }
+        startCollisionAudit(source:source,candidate:candidate)
         routePointReceipts=candidate.route.points.prefix(256).enumerated().map {index,p in
             "Diagnostic point \(index): X \(p[0]), Y \(p[1]), Z \(p[2]) metres."
         }
@@ -283,6 +296,7 @@ final class SeatedMeshDiagnosticController: ObservableObject {
                 phase?(.display_accepted)
                 // Render consumers never overwrite authoritative snapshot or route metadata.
                 if self.routeMatches(source),let candidate=self.candidate,let line=SeatedMeshRenderer.route(candidate.route.points) {
+                    self.applyCollisionStyle(line,source:source)
                     rendered.scene.rootNode.addChildNode(line)
                     if let foot=self.footCandidate {
                         let marker=SCNNode(geometry:SCNSphere(radius:0.025));marker.name="diagnostic-foot-candidate"
@@ -293,6 +307,75 @@ final class SeatedMeshDiagnosticController: ObservableObject {
                 }
             }
         }
+    }
+    private final class CollisionWork {
+        var source: MeshCandidateIngress83.SourceSnapshot?
+        var candidate: MeshCandidateIngress83.Candidate?
+        init(source: MeshCandidateIngress83.SourceSnapshot,candidate: MeshCandidateIngress83.Candidate) {
+            self.source=source;self.candidate=candidate
+        }
+        func clear() {source=nil;candidate=nil}
+    }
+    @MainActor private func performCollisionAudit(_ work: CollisionWork,request: SeatedMeshRouteAudit.Request,
+                                                  epoch: UUID,preview: UUID) async -> Result<SeatedMeshRouteAudit.Receipt,Error> {
+        guard let source=work.source,let candidate=work.candidate else {return .failure(SeatedMeshRouteAudit.Failure.retired)}
+        let current: () -> Bool = { [weak self] in
+            guard let self else {return false}
+            return !self.stopped && self.epoch == epoch && self.previewEpoch == preview
+                && self.collisionRequest == request && self.bench?.isCurrent(source) == true
+                && self.bench?.isCurrent(candidate) == true
+                && (self.cameraCapture == nil || self.footIsCurrent())
+        }
+        do {return .success(try await SeatedMeshRouteAudit.run(source:source.geometry,route:candidate.route,request:request,isCurrent:current,progress:collisionProgressForTesting))}
+        catch {return .failure(error)}
+        // This scope, its source-copy locals and currentness closure end before
+        // the caller clears the work box and acknowledges ownership drain.
+    }
+    private func startCollisionAudit(source: MeshCandidateIngress83.SourceSnapshot, candidate: MeshCandidateIngress83.Candidate) {
+        guard !collisionPending, let request=collisionRequest else {
+            collisionReceipt = "UNAVAILABLE — no explicit body/margin request or prior audit still draining."; return
+        }
+        let epoch=self.epoch,preview=self.previewEpoch,work=CollisionWork(source:source,candidate:candidate)
+        collisionPending=true
+        collisionReceipt="PENDING — original-source body and margin sweeps; no clearance claim."
+        collisionTask=Task { @MainActor [weak self,work] in
+            guard let self else {work.clear();return}
+            defer {
+                work.clear();self.collisionPending=false;self.collisionTask=nil
+                self.onCollisionDrainedForTesting?()
+                self.scheduleDisplayDrainCheck()
+            }
+            let answer=await self.performCollisionAudit(work,request:request,epoch:epoch,preview:preview)
+            let sourceCurrent=work.source.map {self.bench?.isCurrent($0) == true} ?? false
+            let routeCurrent=work.candidate.map {self.bench?.isCurrent($0) == true} ?? false
+            work.clear() // No raw source or query world retained by final delivery.
+            guard !Task.isCancelled,!self.stopped,self.epoch == epoch,self.previewEpoch == preview,
+                  self.collisionRequest == request,sourceCurrent,routeCurrent,
+                  self.cameraCapture == nil || self.footIsCurrent() else {
+                if !self.stopped,self.epoch == epoch,self.previewEpoch == preview,self.collisionRequest == request {
+                    self.collisionAudit=nil;self.collisionReceipt="RETIRED — source or capture changed before audit delivery."
+                }
+                return
+            }
+            switch answer {
+            case .success(let result):
+                self.collisionAudit=result;self.collisionReceipt=result.text
+                if let line=self.scene?.rootNode.childNode(withName:"diagnostic-route",recursively:false),let source=self.snapshot {
+                    self.applyCollisionStyle(line,source:source)
+                }
+            case .failure:
+                self.collisionAudit=nil
+                self.collisionReceipt="UNAVAILABLE — independent collision backend, budget or source check failed. Not clear."
+            }
+        }
+    }
+    private func applyCollisionStyle(_ line:SCNNode,source:MeshCandidateIngress83.SourceSnapshot) {
+        guard let audit=collisionAudit,audit.request == collisionRequest,
+              audit.session == source.geometry.sessionID,audit.generation == source.geometry.generation,
+              audit.revision == source.geometry.revision else {return}
+        if audit.raw.contains(where:{$0.blocked}) {line.geometry?.firstMaterial?.diffuse.contents=UIColor.systemRed}
+        else if audit.margin.contains(where:{$0.blocked}) {line.geometry?.firstMaterial?.diffuse.contents=UIColor.systemOrange}
+        // No green/safe styling; absence of surface contact is not clearance.
     }
     private func footIsCurrent() -> Bool {
         guard let footCandidate, let cameraCapture, let footDeclaration,
@@ -305,8 +388,8 @@ final class SeatedMeshDiagnosticController: ObservableObject {
               cameraToWorld: NativeCameraTransform(columns: c.columnMajorCameraToWorld))
     }
     func requestPreview(startText: String, goalText: String, radiusText: String, heightText: String,
-                        declaredMountText: String? = nil, declaredYawText: String? = nil, confirmed: Bool = false) {
-        guard !stopped, !routePending, let bench, let snapshot, bench.isCurrent(snapshot) else {
+                        declaredMountText: String? = nil, declaredYawText: String? = nil, confirmed: Bool = false, marginText: String? = nil) {
+        guard !stopped, !routePending, !collisionPending, let bench, let snapshot, bench.isCurrent(snapshot) else {
             routeReceipt = "WITHHELD — no current source snapshot."; return
         }
         retirePreview()
@@ -335,6 +418,10 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         guard snapshot.geometry.sourceDeliveryComplete, snapshot.geometry.unknownCoverage.isEmpty else {
             routeReceipt = "WITHHELD — \(Self.coverageReason(snapshot.geometry)). Inspect anchor receipts and explicitly refresh. Missing source is not free space."; return
         }
+        guard let marginText,let margin=Float(marginText) else {routeReceipt="WITHHELD — explicit diagnostic margin required (zero allowed).";return}
+        let auditRequest=SeatedMeshRouteAudit.Request(id:UUID(),start:start,goal:goal,radius:radius,height:height,margin:margin)
+        guard auditRequest.valid else {routeReceipt="WITHHELD — invalid raw/margin envelope.";return}
+        collisionRequest=auditRequest
         routePending = true; let token = epoch, previewToken = previewEpoch
         footCandidate = proposedFoot; cameraCapture = copiedCamera; footDeclaration = proposedFoot?.declaration
         if let foot = proposedFoot {

@@ -18,12 +18,27 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Isolated collision-adapter adoption retains every earlier source/evidence layer.
+pre_collision_bridge_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-independent-collision-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeIndependentCollisionBridge'])+manifest['independentCollisionBridgeNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'seated-independent-collision-bridge.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeIndependentCollisionBridge'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-independent-collision input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_collision_bridge_source[name]=value
+    for name in manifest['independentCollisionBridgeNewFiles']:
+        check('new collision adapter absent from earlier layer '+name,not (root/name).exists())
+
 # Preserve the published readiness fixture while fixing XCTest single-wait ownership.
-pre_single_wait_source={}
+pre_single_wait_source=dict(pre_collision_bridge_source)
 with tempfile.TemporaryDirectory(prefix='stage85-single-wait-') as temp:
     root=Path(temp)
     for name in manifest['beforeSingleWaitFixtureRepair']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_collision_bridge_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'seated-single-wait-fixture-repair.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeSingleWaitFixtureRepair'].items():

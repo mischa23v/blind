@@ -1,9 +1,11 @@
+#if (DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS) || BLIND_COLLISION_ORACLE_TESTS
 import Foundation
 import SceneKit
 import simd
 
-/// Test-only, independently queried Apple physics shapes. Not a planner, sensor,
-/// support verifier or physical-output owner. The app target must not include it.
+/// Shared independent Apple diagnostic kernel. App compilation is DEBUG + explicit
+/// diagnostic flag only; tests compile this same source with their dedicated flag.
+/// Not a planner, sensor, support verifier or physical-output owner.
 ///
 /// Static concave shapes retain the exported triangle surfaces. Original RoomPlan
 /// furniture bounds are separate solid SCNBox shapes so a contained start is not
@@ -569,3 +571,5 @@ final class SavedRoomRouteCollisionOracle {
             initial: ContactWitness(result.initial), swept: ContactWitness(result.swept), terminal: ContactWitness(result.terminal))
     }
 }
+
+#endif

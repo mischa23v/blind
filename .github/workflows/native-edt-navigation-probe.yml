@@ -5,6 +5,7 @@ on:
     branches: [master, codex/recovery-hazard-order-20261027]
     paths:
       - '.github/workflows/native-edt-navigation-probe.yml'
+      - 'research/native-edt-oracle-bridge-20261030/**'
       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/main.swift'
       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py'
       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/edt_probe.h'
@@ -25,6 +26,11 @@ on:
 
 permissions:
   contents: read
+
+# No paid-storage assumption: uploads require a separately reviewed source opt-in.
+# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
 
 concurrency:
   group: native-edt-navigation-probe-${{ github.ref }}
@@ -47,13 +53,14 @@ jobs:
           lfs: false
           submodules: false
       - name: Verify50 original controls then run one fixed EDT candidate
+        id: fixtures
         timeout-minutes: 6
         shell: bash
         run: |
           set -euo pipefail
-          python3 research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py
+          python3 research/native-edt-oracle-bridge-20261030/run_bridge.py
       - name: Preserve bounded positive and negative evidence, never build products
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: native-edt-navigation-probe-${{ github.run_id }}-${{ github.run_attempt }}
@@ -62,3 +69,10 @@ jobs:
             ${{ runner.temp }}/blind-edt-navigation-probe/*.txt
           if-no-files-found: error
           retention-days: 3
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py edt-navigation-probe

@@ -475,13 +475,13 @@
     },
     {
       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
-      "bytes": 28938,
-      "sha256": "86e159105291609bad2b8651ab77bae41402714fdf2122ffdc5f59a3b782b359"
+      "bytes": 35056,
+      "sha256": "e77513abc9c6dce969cd3024e86ce029ec52f1761df55a9e1df6f69a5727b008"
     },
     {
       "path": ".github/workflows/native-apple.yml",
-      "bytes": 15951,
-      "sha256": "fe99a40983e8d217ce556ce8f1f11e53b187352627e526285b71620b93836c91"
+      "bytes": 15962,
+      "sha256": "5a624086db1b72cb04912b334e0c6a5d856498dbcd897fa659b2cbc9f955b960"
     },
     {
       "path": ".github/workflows/body-profile-current.yml",
@@ -490,18 +490,18 @@
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
-      "bytes": 31297,
-      "sha256": "4a3b7f14806117c6357371e9079eb509ebf871ae169ddf9bd1ef0264000f45e1"
+      "bytes": 37405,
+      "sha256": "4b7226a847d923a0431b61df17ef9e8214b3070d033e710e7c9bcf9adf1c67d5"
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
-      "bytes": 7999,
-      "sha256": "86d0e8ed679c76a15f141aa4a6334ef513964dce8de27444e8e510e4a29fd86c"
+      "bytes": 8678,
+      "sha256": "adb0d1f8adfcaf721235c4f1e1ace691515a4059a45ada36c62ad8cd70ef6a62"
     },
     {
       "path": "tools/ci/test_emit_ci_log_receipts.py",
-      "bytes": 8324,
-      "sha256": "b025fcb4a4e4f58548696123115b0d8af9d5f985b53427e9015a34053ab73efd"
+      "bytes": 13235,
+      "sha256": "4b4aa20be261004c7ab7d894848d5079dbfb4b397f00529271f75b6b80ede57e"
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift",
@@ -510,18 +510,18 @@
     },
     {
       "path": "tools/ci/collect-seated-projection.py",
-      "bytes": 5264,
-      "sha256": "78e122fc9b6aaf536d0943cd7d27d8c89ab714b0c7806a436ab21354b462019a"
+      "bytes": 6263,
+      "sha256": "eaeca8bfbdcd491f362b9740c55840d7cef7d58575d5b2e63bcd2e999b64b358"
     },
     {
       "path": "tools/ci/test-collect-seated-projection.py",
-      "bytes": 5495,
-      "sha256": "b82f7c6541efe63aa90e0442c4f19149311f593c60b0ac5c880efd99eadcc0fb"
+      "bytes": 9277,
+      "sha256": "2a6ef43f1eacaf69767588ae2b007a00f5dec7defb4fdb167260583135c4b316"
     },
     {
       "path": "tools/ci/emit-ci-log-receipts.py",
-      "bytes": 8227,
-      "sha256": "9a54934f4deb83edc7f248601e2c9224d5dd213ec30f4d5664030bbdab95ffd2"
+      "bytes": 9529,
+      "sha256": "b54850f860b017041283d22cdc6c653dd2e50296a530f0a1d099ab07c2ea58e1"
     },
     {
       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
@@ -552,6 +552,91 @@
       "path": "tools/ci/test_collect_classified_bench.py",
       "bytes": 9324,
       "sha256": "8216b18db5bf3849ff55e6933f3d1bafad7faaa638678e7ef697991ec9e66f63"
+    },
+    {
+      "path": ".github/workflows/native-edt-navigation-probe.yml",
+      "bytes": 3799,
+      "sha256": "d1eb09211bc8338a8358ae4714311b9faf573b74bab585bd8f05f2f330e0b0bb"
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "bytes": 43995,
+      "sha256": "8e3790105c8bae534682d6ea5b434390e8a25680f4ee84eea3cefcb12643224b"
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshRouteAudit.swift",
+      "bytes": 12193,
+      "sha256": "35ee974196cbe7544d73fab18e1fc301e1bfb3a0b77cd67de64262501fba2ba5"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
+      "bytes": 33197,
+      "sha256": "9581e63244f89a5183d752124d306e6808bf114dfc5cb3eecf809b03183e9b53"
+    },
+    {
+      "path": "ios/BlindAssistTests/SeatedCollisionBridgeTests.swift",
+      "bytes": 5195,
+      "sha256": "822e368e110da4c436fb1bf1768be30668ff85db1e980e5eede01112ca82455f"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/MANIFEST.json",
+      "bytes": 1002,
+      "sha256": "a830d8e5ab5f81c0dac4736171da46442d202dbe6f88c090d417ab928674f7c2"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/ORACLE_GUARD.diff",
+      "bytes": 1002,
+      "sha256": "ba564965a2dce787d5469183c67f9bdb3c444bb2bafa7948566ad63d4b252c1b"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/README.md",
+      "bytes": 5271,
+      "sha256": "95e2e18136b9ca9d5b844d49446f24d14772a4ca382ae908ba9849afa454dc31"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/RUNNER_ADAPTER.diff",
+      "bytes": 1764,
+      "sha256": "1b70a626368a171ce109fe05eadc859c60013e42fb816910547cf6bdd5471873"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/SOURCE_REVERSAL_RECEIPT.json",
+      "bytes": 812,
+      "sha256": "961e23c7ae3133c45575a084a2577d86abfbf46eae4399041de2ccd9770414a6"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/baseline/NATIVE_SOURCE_PINS.json",
+      "bytes": 10218,
+      "sha256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/baseline/SavedRoomRouteCollisionOracle.swift.txt",
+      "bytes": 33036,
+      "sha256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/baseline/run_native.py.txt",
+      "bytes": 11994,
+      "sha256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/run_bridge.py",
+      "bytes": 6278,
+      "sha256": "3a623f00db8fbda1a5dfe19b3d5bce425c74a79f6d484986f7d2f9b542ddcc69"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/test_bridge.py",
+      "bytes": 2728,
+      "sha256": "759d8d29961081af13279569b3b6bc06a565a5d6f45a55f0b89d71dde23e51de"
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "bytes": 12903,
+      "sha256": "e9010c09f9e096f8e3ef6178b1219c3ff85ab28b7424454b68d403961353090e"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "bytes": 51483,
+      "sha256": "edd50e8c8fb05415c2c47c6c872a621ede2fdd2be664c52f50e4ac8ade32a73d"
     }
   ],
   "changes": [
@@ -753,5 +838,10 @@
     "baseCommit": "74dd3e6f71da19a5df7c522384281eec88d2157a",
     "status": "source_review_only_native_not_executed",
     "scope": "teardown owns one expectation wait; body uses new stopped predicate from actual full controller drain"
+  },
+  "independent_collision_bridge": {
+    "baseCommit": "c1fc5de6499f84f94f2c5d62adf3fcbf2666db00",
+    "status": "isolated_unexecuted_proposal",
+    "scope": "same original source, distinct Apple collision algorithm; no independent observation or physical clearance"
   }
 }

@@ -51,6 +51,7 @@ private struct SeatedMeshDiagnosticDisplay: View {
     @State private var goal = ""
     @State private var radius = "0.3"
     @State private var height = "1.7"
+    @State private var margin = ""
     @State private var useDeclaredFoot = false
     @State private var mount = ""
     @State private var yaw = ""
@@ -84,9 +85,16 @@ private struct SeatedMeshDiagnosticDisplay: View {
             TextField("Goal X Y Z (metres)", text: $goal).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-goal-point")
             TextField("Declared radius (metres)", text: $radius).textFieldStyle(.roundedBorder)
             TextField("Declared height (metres)", text: $height).textFieldStyle(.roundedBorder)
-            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height, declaredMountText: useDeclaredFoot ? mount : nil, declaredYawText: useDeclaredFoot ? yaw : nil, confirmed: confirmed) }
+            TextField("Explicit diagnostic margin (metres; zero allowed)",text:$margin).textFieldStyle(.roundedBorder)
+            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height, declaredMountText: useDeclaredFoot ? mount : nil, declaredYawText: useDeclaredFoot ? yaw : nil, confirmed: confirmed,marginText:margin) }
                 .frame(minHeight: 44).disabled(controller.stopped).accessibilityIdentifier("seated-mesh-preview")
             Text(controller.footReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-foot-candidate")
+            Text(controller.collisionReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-collision-receipt")
+            if let audit=controller.collisionAudit {
+                DisclosureGroup("Raw and margin contact phases — bounded summary, not clearance") {
+                    ForEach(Array(audit.detailLines.enumerated()),id: \.offset) {_,line in Text(line).textSelection(.enabled)}
+                }
+            }
             Text(controller.routeReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-route-receipt")
             DisclosureGroup("Diagnostic path coordinates — up to first 256 points, not walking instructions") {
                 ForEach(Array(controller.routePointReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
@@ -103,6 +111,7 @@ private struct SeatedMeshDiagnosticDisplay: View {
         .onChange(of: goal) { _ in controller.retirePreview() }
         .onChange(of: radius) { _ in controller.retirePreview() }
         .onChange(of: height) { _ in controller.retirePreview() }
+        .onChange(of: margin) { _ in controller.retirePreview() }
     }
 }
 #endif

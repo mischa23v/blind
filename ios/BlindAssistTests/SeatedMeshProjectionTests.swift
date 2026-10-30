@@ -140,7 +140,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         let resultReady = expectation(description: "actual strict query held")
         backend.onHeld = { resultReady.fulfill() }
         controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
-            declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
+            declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true,marginText:"0.1")
         await fulfillment(of: [resultReady],timeout: 10)
         backend.printTiming(event: "happy_wait_finished")
         let submitted = try XCTUnwrap(backend.submittedStart)
@@ -158,6 +158,18 @@ final class SeatedMeshProjectionTests: XCTestCase {
         await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in
             controller.scene?.rootNode.childNode(withName: "diagnostic-route",recursively: false) != nil
         },object: nil)],timeout: 10)
+        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.collisionAudit != nil},object:nil)],timeout:10)
+        let audit=try XCTUnwrap(controller.collisionAudit)
+        XCTAssertFalse(audit.physicalAuthority)
+        XCTAssertFalse(audit.raw.isEmpty);XCTAssertEqual(audit.raw.count,audit.margin.count)
+        XCTAssertEqual(audit.revision,result.route.revision)
+        XCTAssertEqual(audit.session,result.route.sessionID);XCTAssertEqual(audit.generation,result.route.generation)
+        XCTAssertEqual(audit.request.start,submitted);XCTAssertEqual(audit.request.goal,result.route.endpointAdmission?.goal.requested)
+        let details=audit.detailLines.joined(separator:"\n")
+        for label in ["raw:","margin:"," initial:"," swept:"," terminal:","showing first","full bounded receipt retained"] {
+            XCTAssertTrue(details.contains(label),"Missing retained receipt presentation: \(label)")
+        }
+        XCTAssertTrue(controller.collisionReceipt.contains("NOT clear space"))
         let marker = try XCTUnwrap(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
         XCTAssertEqual(marker.position.x,submitted[0]); XCTAssertEqual(marker.position.y,submitted[1]); XCTAssertEqual(marker.position.z,submitted[2])
         let expectedDelta = Double(result.route.projectedStart[1]) - Double(submitted[1])
@@ -191,7 +203,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
             let ready = expectation(description: "held real native result")
             backend.onHeld = { ready.fulfill() }
             controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
-                declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
+                declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true,marginText:"0.1")
             await fulfillment(of: [ready],timeout: 10)
             backend.printTiming(event: "rejection_wait_finished")
             _ = try XCTUnwrap(backend.heldResult).get() // A native refusal is not a passing retirement test.
@@ -233,7 +245,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         let ready=expectation(description:"real strict query while render held")
         backend.onHeld={ready.fulfill()}
         controller.requestPreview(startText:"",goalText:"1 0 0",radiusText:"0.3",heightText:"1.7",
-            declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true)
+            declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1")
         await fulfillment(of:[ready],timeout:10)
         backend.printTiming(event:"happy_wait_finished")
         let result=try XCTUnwrap(backend.heldResult).get()
@@ -247,6 +259,8 @@ final class SeatedMeshProjectionTests: XCTestCase {
         XCTAssertTrue(controller.sourceReceipt.contains("revision \(result.route.revision)"))
         XCTAssertFalse(controller.routePointReceipts.isEmpty)
         XCTAssertTrue(controller.footReceipt.contains("Native associated start"))
+        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.collisionAudit != nil},object:nil)],timeout:10)
+        XCTAssertFalse(try XCTUnwrap(controller.collisionAudit).physicalAuthority)
         XCTAssertNil(controller.scene);XCTAssertTrue(controller.hasPendingRenderForTesting)
         controller.stop()
         let nativeDone=expectation(description:"actual native drain while renderer held")
@@ -256,6 +270,74 @@ final class SeatedMeshProjectionTests: XCTestCase {
         hold.signal()
         await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)],timeout:10)
         XCTAssertTrue(stopped);XCTAssertFalse(controller.hasPendingRenderForTesting)
+    }
+
+    @MainActor func testActualAuditRetirementAndDisposalAfterRealOracleProgress() async throws {
+        for retirement in ["source","capture","edit","stop"] {
+            let backend=try SeatedCandidateFixtureBackend(),gate=SeatedAuditProgressGate()
+            let ownerDone=expectation(description:"audit owner drained \(retirement)")
+            var stopped=false,progressed=false
+            let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
+            let renderHold=DispatchSemaphore(value:0)
+            defer {renderHold.signal();gate.release()}
+            addTeardownBlock {
+                await MainActor.run {
+                    gate.release();renderHold.signal();controller.stop()
+                    backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}}
+                }
+                await self.fulfillment(of:[ownerDone],timeout:10)
+            }
+            controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
+            controller.enqueueSyntheticDisplayWorkForTesting(work:{},afterEnqueue:{renderHold.wait()},delivered:{})
+            let actualProgress=expectation(description:"real oracle raw sweep completed \(retirement)")
+            let auditDone=expectation(description:"audit copies disposed \(retirement)")
+            controller.onCollisionDrainedForTesting={auditDone.fulfill()}
+            controller.collisionProgressForTesting={progress in
+                if !progressed {
+                    XCTAssertEqual(progress.envelope,"raw");progressed=true;actualProgress.fulfill()
+                    await gate.wait()
+                }
+            }
+            try controller.activate()
+            await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.hasCurrentSourceForTesting},object:nil)],timeout:10)
+            guard controller.hasCurrentSourceForTesting else {XCTFail("No admitted source");return}
+            let nativeReady=expectation(description:"real native candidate \(retirement)")
+            backend.onHeld={nativeReady.fulfill()}
+            controller.requestPreview(startText:"",goalText:"1 0 0",radiusText:"0.3",heightText:"1.7",
+                declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1")
+            await fulfillment(of:[nativeReady],timeout:10)
+            _=try XCTUnwrap(backend.heldResult).get()
+            backend.release()
+            await fulfillment(of:[actualProgress],timeout:10)
+            guard progressed else {XCTFail("Oracle progress unavailable; not a passing retirement test");return}
+            XCTAssertTrue(controller.hasPendingCollisionForTesting);XCTAssertNil(controller.collisionAudit)
+            switch retirement {
+            case "source":backend.changeGeometry()
+            case "capture":_ = backend.freezeCameraCapture()
+            case "edit":controller.retirePreview()
+            default:controller.stop()
+            }
+            if retirement == "stop" {
+                let nativeDone=expectation(description:"native before held audit")
+                backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();nativeDone.fulfill()}}
+                await fulfillment(of:[nativeDone],timeout:10)
+                XCTAssertFalse(stopped,"Held audit/render still own data")
+            }
+            gate.release()
+            await fulfillment(of:[auditDone],timeout:10)
+            XCTAssertFalse(controller.hasPendingCollisionForTesting)
+            XCTAssertNil(controller.collisionAudit,"Retired audit must never publish its partial contact receipt")
+            if retirement != "stop" {
+                controller.stop()
+                let nativeDone=expectation(description:"native after retired audit")
+                backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();nativeDone.fulfill()}}
+                await fulfillment(of:[nativeDone],timeout:10)
+            }
+            XCTAssertFalse(stopped,"Renderer must drain too, not only native and collision tasks")
+            renderHold.signal()
+            await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)],timeout:10)
+            XCTAssertTrue(stopped)
+        }
     }
 
 }
@@ -431,5 +513,14 @@ private final class SeatedSourceTimingRecorder {
         lock.lock();let copy=rows;rows.removeAll(keepingCapacity:true);lock.unlock()
         for row in copy {print("SEATED_CANDIDATE_SOURCE id=\(id) request=\(row.0) event=\(row.1) elapsed_ms=\(row.2) main_thread=\(row.3) outcome=\(row.4)")}
     }
+}
+@MainActor private final class SeatedAuditProgressGate {
+    private var released=false
+    private var waiter:CheckedContinuation<Void,Never>?
+    func wait() async {
+        if released {return}
+        await withCheckedContinuation {continuation in waiter=continuation}
+    }
+    func release() {released=true;let current=waiter;waiter=nil;current?.resume()}
 }
 #endif

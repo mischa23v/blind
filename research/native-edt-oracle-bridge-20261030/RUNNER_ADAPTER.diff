@@ -1,0 +1,27 @@
+--- historical/run_native.py
++++ in-memory/current-provenance-runner.py
+@@ -90,11 +90,12 @@
+         relative=pathlib.PurePosixPath(name)
+         assert not relative.is_absolute() and '..' not in relative.parts
+         path=ROOT/name
+-        assert path.is_file() and sha(path)==digest,('source pin mismatch',name)
+-    receipt['sourcePins']=pins;save()
++        _bridge_verify_pin(path,digest) # explicit reversible oracle provenance
++    receipt['sourcePins']=pins;receipt['sourcePinInterpretation']='historical expectations; current oracle verified by exact reversal';receipt['oracleBridgeProvenance']=_bridge_provenance;save()
+     def require_pin(path):
+         name=str(path.relative_to(ROOT))
+-        assert name in pins and sha(path)==pins[name],('unreviewed runtime input',name)
++        assert name in pins,('unreviewed runtime input',name)
++        _bridge_verify_pin(path,pins[name])
+ 
+     geometry=REPAIR/'strict-endpoint-probe/PACKED_ROUTING_GEOMETRY.json'
+     requests=REPAIR/'strict-endpoint-probe/REQUESTS_49A.json'
+@@ -175,7 +176,7 @@
+     assert hook_result=={'schema':1,'scope':'scratch-edt-hook','checks':51,'passed':51,'physicalAuthority':False}
+     receipt['nativeHookChecks']=hook_result;save()
+     binary=OUT/'edt-navigation-probe'
+-    command(['xcrun','swiftc','-j','1','-num-threads','1','-swift-version','5','-parse-as-library',
++    command(['xcrun','swiftc','-D','BLIND_COLLISION_ORACLE_TESTS','-j','1','-num-threads','1','-swift-version','5','-parse-as-library',
+              '-sdk',sdk,'-target','arm64-apple-macosx14.0','-I',include,HERE/'main.swift',
+              oracle,library,'-lc++','-o',binary],'swift-probe-compile',120)
+     command([binary,geometry,requests,masks,reference,OUT/'RESULT.json'],'probe-run',120)

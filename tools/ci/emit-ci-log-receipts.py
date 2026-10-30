@@ -39,6 +39,10 @@ RECEIPTS = {
         'body-profile-current-evidence/body-profile-coverage.json',
     ],
     'ingress': ['blind-mesh-candidate-ingress-83/RESULT.json'],
+    'edt-navigation-probe': [
+        'blind-edt-navigation-probe/receipt.json',
+        'blind-edt-navigation-probe/RESULT.json',
+    ],
     'room-mesh': [
         'blind-room-mesh-75/SUMMARY.json',
         'blind-room-mesh-75/RESULT.json',
@@ -64,6 +68,8 @@ SCALARS = {
     'failureCommitChecks', 'discardChecks', 'iOSSimulatorPackageAndClientLinked',
     'iOSSimulatorExecuted', 'appProjectBuilt', 'ARKitExecuted',
     'publicExclusionUpdatesImplemented',
+    'all50OriginalControlsReproduced', 'candidateGoalsMet',
+    'candidateExecuted', 'candidateRequests', 'resultSHA256',
 }
 TOKEN = re.compile(r'[A-Za-z0-9_./ ()\[\]-]{1,512}\Z')
 
@@ -96,6 +102,21 @@ def metadata(value):
             result['cases'] = projected
         else:
             result['case_projection'] = 'omitted_over_budget'
+    hook = value.get('nativeHookChecks')
+    if isinstance(hook, dict):
+        result['nativeHookChecks'] = {k: v for k, v in hook.items()
+                                      if k in {'schema', 'checks', 'passed', 'physicalAuthority'}
+                                      and scalar(v)}
+    bridge = value.get('oracleBridgeProvenance')
+    if isinstance(bridge, dict):
+        allowed = {'schema', 'historicalRunnerSHA256', 'historicalPinManifestSHA256',
+                   'historicalOracleSHA256', 'currentOracleSHA256', 'reversedOracleSHA256',
+                   'oracleKernelByteIdentical', 'generatedRunnerSHA256',
+                   'runnerReverseByteIdentical', 'compileFlagAdded', 'physicalAuthority',
+                   'algorithmChanged', 'originalControlsRequired', 'nativeHookChecksRequired',
+                   'candidateRequestsUnchanged', 'historicalSourceFilesModified'}
+        result['oracleBridgeProvenance'] = {k: v for k, v in bridge.items()
+                                            if k in allowed and scalar(v)}
     events = value.get('events')
     if isinstance(events, dict) and len(events) <= 256:
         result['events'] = {k: v for k, v in events.items()

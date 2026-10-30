@@ -116,9 +116,9 @@ class ReceiptTests(unittest.TestCase):
             self.assertIn(output.getvalue().strip(), summary.read_text())
             self.assertEqual(json.loads(lines[1].split('=', 1)[1])['availability'], 'unavailable')
 
-    def test_four_scoped_workflows_disable_uploads_and_emit_receipts(self):
+    def test_five_scoped_workflows_disable_uploads_and_emit_receipts(self):
         root = HERE.parents[1]
-        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress', 'native-room-mesh-package']:
+        for name in ['native-apple', 'body-profile-current', 'mesh-candidate-ingress', 'native-room-mesh-package', 'native-edt-navigation-probe']:
             text = (root / '.github/workflows' / (name + '.yml')).read_text()
             self.assertIn("BLIND_UPLOAD_ARTIFACTS: 'false'", text)
             lines = text.splitlines()
@@ -148,6 +148,74 @@ class ReceiptTests(unittest.TestCase):
                                'receipts': [{'command': 'secret'}]})['metadata']
         self.assertEqual(result, {'passed': False})
 
+
+    def test_edt_refusal_preserves_failure_without_error_or_geometry(self):
+        source = {'status': 'failed-or-inconclusive-diagnostic', 'sourceCommit': 'a' * 40,
+                  'appActivation': False, 'physicalAuthority': False,
+                  'error': 'private failure details', 'sourcePins': {'private': 'never'},
+                  'commands': [{'command': 'never'}], 'rows': [{'geometry': [1, 2, 3]}]}
+        result = self.receipt(source)['metadata']
+        self.assertEqual(result, {k: source[k] for k in ('status', 'sourceCommit', 'appActivation', 'physicalAuthority')})
+        self.assertNotIn('candidateExecuted', result)
+        self.assertNotIn('all50OriginalControlsReproduced', result)
+
+    def test_edt_candidate_failure_and_original_control_counts_are_retained(self):
+        source = {'status': 'candidate-goals-not-met', 'all50OriginalControlsReproduced': True,
+                  'candidateExecuted': True, 'candidateRequests': 25, 'candidateGoalsMet': False,
+                  'physicalAuthority': False, 'appActivation': False, 'resultSHA256': 'b' * 64,
+                  'nativeHookChecks': {'schema': 1, 'checks': 51, 'passed': 51, 'physicalAuthority': False}}
+        self.assertEqual(self.receipt(source)['metadata'], source)
+
+    def test_edt_hook_projection_omits_arbitrary_payload(self):
+        result = self.receipt({'nativeHookChecks': {'checks': 51, 'passed': 50,
+                                                   'error': 'private', 'geometry': [1, 2, 3]}})['metadata']
+        self.assertEqual(result, {'nativeHookChecks': {'checks': 51, 'passed': 50}})
+
+    def test_edt_receipts_are_fixed_json_not_raw_logs(self):
+        self.assertEqual(M.RECEIPTS['edt-navigation-probe'], ['blind-edt-navigation-probe/receipt.json',
+                         'blind-edt-navigation-probe/RESULT.json'])
+
+    def test_edt_early_failure_logs_unavailable_result_and_original_step_failure(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'blind-edt-navigation-probe').mkdir()
+            (root / 'blind-edt-navigation-probe/receipt.json').write_text(json.dumps({
+                'status': 'failed-or-inconclusive-diagnostic', 'error': 'private pin mismatch',
+                'physicalAuthority': False, 'appActivation': False}))
+            summary = root / 'summary'
+            env = {'RUNNER_TEMP': folder, 'GITHUB_STEP_SUMMARY': str(summary),
+                   'CI_JOB_STATUS': 'failure', 'BLIND_UPLOAD_ARTIFACTS': 'false',
+                   'CI_STEP_OUTCOMES': json.dumps({'fixtures': {'outcome': 'failure', 'conclusion': 'failure'}})}
+            output = io.StringIO()
+            with patch.dict(os.environ, env, clear=True), patch('sys.argv', ['emit', 'edt-navigation-probe']), contextlib.redirect_stdout(output):
+                M.main()
+            values = [json.loads(line.split('=', 1)[1]) for line in output.getvalue().splitlines()]
+            self.assertEqual(len(values), 3)
+            self.assertEqual(values[0]['steps']['fixtures']['outcome'], 'failure')
+            self.assertFalse(values[0]['artifact_uploads_enabled'])
+            self.assertEqual(values[1]['metadata']['status'], 'failed-or-inconclusive-diagnostic')
+            self.assertEqual(values[2]['availability'], 'unavailable')
+            self.assertNotIn('private', output.getvalue())
+            self.assertIn(output.getvalue().strip(), summary.read_text())
+
+    def test_edt_current_versus_historical_oracle_provenance_is_preserved(self):
+        bridge = {'schema': 1, 'historicalRunnerSHA256': 'a' * 64,
+                  'historicalPinManifestSHA256': 'b' * 64, 'historicalOracleSHA256': 'c' * 64,
+                  'currentOracleSHA256': 'd' * 64, 'reversedOracleSHA256': 'c' * 64,
+                  'oracleKernelByteIdentical': True, 'generatedRunnerSHA256': 'e' * 64,
+                  'runnerReverseByteIdentical': True, 'compileFlagAdded': 'BLIND_COLLISION_ORACLE_TESTS',
+                  'physicalAuthority': False, 'algorithmChanged': False, 'originalControlsRequired': 50,
+                  'nativeHookChecksRequired': 51, 'candidateRequestsUnchanged': 25,
+                  'historicalSourceFilesModified': False}
+        self.assertEqual(self.receipt({'oracleBridgeProvenance': bridge})['metadata'],
+                         {'oracleBridgeProvenance': bridge})
+
+    def test_edt_adapter_provenance_cannot_emit_error_or_geometry(self):
+        source = {'oracleBridgeProvenance': {'oracleKernelByteIdentical': False,
+                  'algorithmChanged': True, 'error': 'private', 'geometry': [1, 2, 3],
+                  'sourcePins': {'private': 'value'}, 'compileFlagAdded': '```\n::warning::private'}}
+        self.assertEqual(self.receipt(source)['metadata'], {'oracleBridgeProvenance': {
+                         'oracleKernelByteIdentical': False, 'algorithmChanged': True}})
 
 if __name__ == '__main__':
     unittest.main()
