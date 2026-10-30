@@ -27,6 +27,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     /// Ephemeral RoomPlan observations for the sighted helper, never saved as a finished room.
     @Published private(set) var liveScanLayout: RoomLayout?
     @Published private(set) var needsDeletionCleanup = false
+    // Independent room-import lane: one app-owned transfer/decode across view recreation.
+    @MainActor private var referencePhotoImportLease: UUID?
     private var directory: URL
     private(set) var memory: MemoryStore?
     private var capture: RoomCaptureSession?
@@ -663,6 +665,16 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             try JSONEncoder().encode(layout).write(to: prefix.appendingPathExtension("layout.json"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
             try Data(layout.svg().utf8).write(to: prefix.appendingPathExtension("svg"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         } catch { message = t("The room was saved; its export could not be refreshed.", "حُفظت الغرفة؛ تعذر تحديث ملف التصدير.") }
+    }
+    /// Claim synchronously on MainActor before starting any transfer. Cancellation
+    /// retires publication, not native work: release only when that worker returns.
+    @MainActor func beginReferencePhotoImport() -> UUID? {
+        guard referencePhotoImportLease == nil else { return nil }
+        let lease = UUID(); referencePhotoImportLease = lease
+        return lease
+    }
+    @MainActor func finishReferencePhotoImport(_ lease: UUID) {
+        if referencePhotoImportLease == lease { referencePhotoImportLease = nil }
     }
     /// One recoverable reference-photo slot per room, in the existing protected,
     /// backup-excluded directory. Moves never overwrite an occupied destination.

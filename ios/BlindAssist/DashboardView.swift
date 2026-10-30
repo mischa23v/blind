@@ -194,9 +194,9 @@ private struct CompanionControlsView: View {
                         .font(.footnote).fixedSize(horizontal: false, vertical: true)
                 }
                 .onChange(of: model.selectedDocumentPageCount) { _, _ in pdfPage = 1 }
-                NavigationLink(t("Local recipe reference", "مرجع وصفة محلي")) { LocalRecipeView(arabic: model.arabic) }
+                NavigationLink(t("Local recipe reference", "مرجع وصفة محلي")) { LocalRecipeView(model: model) }
                     .accessibilityIdentifier("open-local-recipe")
-                NavigationLink(t("Email draft", "مسودة بريد")) { LocalEmailDraftView(arabic: model.arabic) }
+                NavigationLink(t("Email draft", "مسودة بريد")) { LocalEmailDraftView(model: model) }
                     .accessibilityIdentifier("open-local-email-draft")
                 HomeToolButtons(model: model)
             }
@@ -395,6 +395,14 @@ struct AssistantToolsView: View {
         #endif
         .sheet(isPresented: $model.showPhotoReference) {
             NavigationStack { ExplorePictureView(model: model) }
+        }
+        // Only the source-owned native delegate or lifecycle may retire this
+        // handoff. A late presentation binding callback cannot clear a newer one.
+        .sheet(item: Binding(get: { model.localEmailDraft.handoff }, set: { _ in })) { draft in
+            LocalMailComposer(draft: draft,
+                isCurrent: { model.ownsLocalEmailHandoff(draft) },
+                finish: model.finishLocalEmailHandoff)
+                .interactiveDismissDisabled()
         }
         .sheet(item: $model.selectedDocumentPickerRequest) { owner in
             SelectedDocumentPicker(ownerID: owner.id,
@@ -765,6 +773,21 @@ struct AssistantToolsView: View {
             Section {
                 Text(StatusText.localized(model.mapping.status, arabic: model.arabic))
                 Text(model.observedSceneStatus).accessibilityIdentifier("observed-scene-planner-status")
+                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+                Text("Seated developer test only. Full-buffer copying and synchronous collision checks may delay camera alerts. Do not use this diagnostic while walking.")
+                Toggle("Developer: full observed-anchor diagnostic (not guidance)", isOn: Binding(
+                    get: { model.meshCandidateDiagnosticsEnabled },
+                    set: { model.setMeshCandidateDiagnosticsEnabled($0) }))
+                    .disabled(!model.meshCandidateDiagnosticsCanEnable)
+                Button("Release full-mesh ownership (no camera handoff)") { model.releaseFullObservedMeshDiagnostic() }
+                    .disabled(!model.meshCandidateDiagnosticsCanRelease)
+                Text(model.fullObservedMeshDiagnosticStatus).accessibilityIdentifier("normal-owner-full-mesh-status")
+                DisclosureGroup("Historical native look-ahead coordinates — not wearer position") {
+                    ForEach(Array(model.fullObservedMeshDiagnosticPoints.enumerated()), id: \.offset) { _, point in Text(point) }
+                }
+                Button("Check frozen look-ahead candidate against admitted mesh") { model.checkFullObservedMeshCandidate() }
+                    .disabled(!model.meshCandidateDiagnosticsEnabled || !model.running || model.simulation || model.places.scanning)
+                #endif
                 NavigationLink(t("Mapping progress", "تقدم رسم الخريطة")) { SurveyProgressView(model: model) }
                 // No export: the 3D map database can hold camera pictures of the home (privacy rule).
                 if model.mapping.exportURL != nil {

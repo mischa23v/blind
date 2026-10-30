@@ -6,6 +6,10 @@ import Foundation
 /// Optional historical geometry consumer of the existing feed. Does not own the camera,
 /// invoke models, modify RTAB-Map, authorize routes or expose raw coordinates to language models.
 final class NativeARObservationBridge {
+    /// Already copied utility-worker hits only; this callback never carries RGB,
+    /// ARFrame/Metal references or a support/clearance grant.
+    var onClassifiedHits: ((NativeClassifiedHitEvidence?, UUID, Double) -> Void)?
+    private let hitMailbox = NativeClassifiedHitMailbox()
     private let pipeline = NativeObservationPipeline()
     private let recordedRoute = RecordedRouteStore()
     // Explicit local diagnostic controls; camera start never opts into test recording.
@@ -82,6 +86,7 @@ final class NativeARObservationBridge {
     func begin(sessionID: UUID, memory: MemoryStore?) {
         stop(); guard let memory else { return }
         self.sessionID = sessionID; self.memory = memory
+        hitMailbox.begin(outcomeGeneration)
         recordedRoute.begin(sessionID: sessionID)
         let generation = outcomeGeneration
         pipeline.begin(sessionID: sessionID, storage: Self.storage(memory)) { [weak self] outcome in
@@ -101,8 +106,24 @@ final class NativeARObservationBridge {
             try NativeARObservationAdapter.captureRoutePose(frame, context: context)
         }
         let generation = outcomeGeneration
+        let hits = hitMailbox, hitCapturedAt = frame.timestamp
+        let deliverHits: @Sendable (NativeClassifiedHitEvidence?) -> Void = { [weak self] evidence in
+            let delivery = NativeClassifiedHitMailbox.Delivery(evidence: evidence, session: sessionID,
+                capturedAt: hitCapturedAt,
+                generation: generation)
+            guard let token = hits.offer(delivery) else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, let value = hits.take(token), self.outcomeGeneration == value.generation,
+                      self.sessionID == value.session else { return }
+                self.onClassifiedHits?(value.evidence, value.session, value.capturedAt)
+            }
+        }
         pipeline.offer(sessionID: sessionID, capturedAt: frame.timestamp, extract: {
-            try NativeARObservationAdapter.capture(frame, context: context)
+            do {
+                let record = try NativeARObservationAdapter.capture(frame, context: context)
+                deliverHits(try? NativeClassifiedHitEvidence(record: record, now: ProcessInfo.processInfo.systemUptime))
+                return record
+            } catch { deliverHits(nil); throw error }
         }) { [weak self] outcome in
             DispatchQueue.main.async { [weak self] in
                 guard self?.outcomeGeneration == generation else { return }; self?.lastOutcome = outcome
@@ -111,7 +132,7 @@ final class NativeARObservationBridge {
     }
     func stop() {
         recordedRoute.stop()
-        pipeline.stop(); sessionID = nil; outcomeGeneration = UUID()
+        pipeline.stop(); hitMailbox.clear(); sessionID = nil; outcomeGeneration = UUID()
     }
     /// Connect to the existing private spatial/map-history deletion path; no new UI needed.
     func clearHistory(memory: MemoryStore?, completion: @escaping (Bool) -> Void) {

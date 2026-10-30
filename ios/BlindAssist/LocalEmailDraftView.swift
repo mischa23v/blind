@@ -1,92 +1,104 @@
 import SwiftUI
 import MessageUI
+import BlindCore
 
-/// User-authored text only. Opening Apple's composer never sends a message.
-/// The user reviews recipients/content there and explicitly presses Send.
+/// The existing user-authored helper and companion share one volatile draft.
+/// The system Mail composer alone owns its explicit Send action; no send API.
 struct LocalEmailDraftView: View {
-    let arabic: Bool
-    @State private var recipient = ""
-    @State private var subject = ""
-    @State private var message = ""
-    @State private var history: [String] = []
-    @State private var composer: ReviewedEmailDraft?
-    @State private var status = ""
+    @ObservedObject var model: NavigationModel
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var opened = false
+    @State private var owner: UUID?
+    private var arabic: Bool { model.arabic }
     private func t(_ en: String, _ ar: String) -> String { arabic ? ar : en }
-    private var valid: Bool {
-        !recipient.isEmpty && recipient.utf8.count <= 254 &&
-        !recipient.unicodeScalars.contains(where: { CharacterSet.whitespacesAndNewlines.contains($0) || CharacterSet.controlCharacters.contains($0) }) &&
-        recipient.filter({ $0 == "@" }).count == 1 &&
-        subject.utf8.count <= 500 && !subject.contains("\n") && !subject.contains("\r") &&
-        message.utf8.count <= 32 * 1024 && !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    private func binding(_ field: LocalEmailDraft.Field, expected: LocalEmailDraft.Snapshot) -> Binding<String> {
+        Binding(get: {
+            guard model.localEmailDraft.snapshot == expected else { return "" }
+            let draft = expected
+            switch field { case .recipient: return draft.content.recipient; case .subject: return draft.content.subject; case .body: return draft.content.body }
+        }, set: { model.editLocalEmailField(field, text: $0, expected: expected) })
     }
     var body: some View {
         Form {
             Text(t("Write and review your own draft. Nothing is sent automatically. Apple's Mail composer requires a configured account and may need a network connection to deliver.",
                    "اكتب مسودتك وراجعها. لا يتم إرسال شيء تلقائياً. تتطلب نافذة البريد حساباً معداً وقد تحتاج إلى اتصال لتسليم الرسالة."))
-            TextField(t("Recipient email", "بريد المستلم"), text: $recipient)
-                .textInputAutocapitalization(.never).keyboardType(.emailAddress).autocorrectionDisabled()
-            TextField(t("Subject", "الموضوع"), text: $subject)
-            TextEditor(text: $message).frame(minHeight: 160)
-                .accessibilityLabel(t("Message draft", "مسودة الرسالة"))
-            Button(t("Save text checkpoint for undo", "احفظ نسخة من النص للتراجع")) {
-                guard message.utf8.count <= 32 * 1024 else { return }
-                history.append(message); if history.count > 5 { history.removeFirst() }
+            if let draft = model.localEmailDraft.snapshot, draft.id == owner {
+                TextField(t("Recipient email", "بريد المستلم"), text: binding(.recipient, expected: draft))
+                    .textInputAutocapitalization(.never).keyboardType(.emailAddress).autocorrectionDisabled()
+                    .disabled(model.localEmailDraft.handoff != nil)
+                TextField(t("Subject", "الموضوع"), text: binding(.subject, expected: draft))
+                    .disabled(model.localEmailDraft.handoff != nil)
+                TextEditor(text: binding(.body, expected: draft)).frame(minHeight: 160)
+                    .accessibilityLabel(t("Message draft", "مسودة الرسالة"))
+                    .disabled(model.localEmailDraft.handoff != nil)
+                Button(t("Save draft checkpoint for undo", "احفظ نسخة من المسودة للتراجع")) {
+                    model.checkpointLocalEmailDraft(expected: draft)
+                }.disabled(model.localEmailDraft.handoff != nil)
+                Button(t("Restore last draft checkpoint", "استعد آخر نسخة من المسودة")) {
+                    model.undoLocalEmailDraft(expected: draft)
+                }.disabled(model.localEmailDraft.checkpointCount == 0 || model.localEmailDraft.handoff != nil)
+                Button(t("Use this draft in typed companion commands", "استخدم هذه المسودة في أوامر المحادثة المكتوبة")) {
+                    _ = model.enableLocalEmailCommands(draft)
+                }.disabled(model.localEmailDraft.commandsEnabled || model.localEmailDraft.handoff != nil)
+                Text(t("Typed commands: email draft recipient: your address; email draft subject: your words; replace email draft body: your words; append email draft body: your words. Read email draft recipient/subject/body; next or previous email draft part; undo email draft; discard email draft; review email draft in Mail. Raw microphone input cannot edit or read this private draft.",
+                       "أوامر مكتوبة: مستلم مسودة البريد: عنوانك؛ موضوع مسودة البريد: كلماتك؛ استبدل نص مسودة البريد: كلماتك؛ أضف إلى نص مسودة البريد: كلماتك. اقرأ مستلم أو موضوع أو نص مسودة البريد؛ الجزء التالي أو السابق من مسودة البريد؛ تراجع عن تعديل مسودة البريد؛ احذف مسودة البريد؛ راجع مسودة البريد في تطبيق البريد. لا يمكن للميكروفون غير الموثق قراءة هذه المسودة أو تعديلها."))
+                Button(t("Review in Mail — not send", "راجع في البريد — دون إرسال")) {
+                    model.requestLocalEmailMailReview(expected: draft)
+                }.disabled(!draft.content.permitsMailReview || !MFMailComposeViewController.canSendMail() || model.localEmailDraft.handoff != nil)
+                Button(t("Discard local draft and checkpoints", "احذف المسودة المحلية ونسخ التراجع"), role: .destructive) {
+                    model.discardLocalEmailDraft(expected: draft)
+                }
+            } else {
+                Button(t("Start an empty local draft", "ابدأ مسودة محلية فارغة")) { owner = model.openLocalEmailDraft() }
             }
-            Button(t("Restore last text checkpoint", "استعد آخر نسخة من النص")) {
-                if let previous = history.popLast() { message = previous }
-            }.disabled(history.isEmpty)
-            Button(t("Review in Mail — not send", "راجع في البريد — دون إرسال")) {
-                guard valid, MFMailComposeViewController.canSendMail() else { return }
-                composer = ReviewedEmailDraft(recipient: recipient, subject: subject, body: message)
-                status = t("Handed to Mail for your review. Not sent by this app.", "تم فتح البريد للمراجعة. لم يرسل التطبيق الرسالة.")
-            }.disabled(!valid || !MFMailComposeViewController.canSendMail() || composer != nil)
             if !MFMailComposeViewController.canSendMail() {
                 Text(t("Mail handoff unavailable: no configured Mail account. You can still write, select and copy your local draft.",
                        "فتح البريد غير متاح: لا يوجد حساب بريد معد. يمكنك كتابة المسودة المحلية وتحديدها ونسخها."))
             }
-            Text(t("Drafts and undo checkpoints are kept only on this page. They are not uploaded or restored after app termination.",
-                   "تُحفظ المسودة ونسخ التراجع في هذه الصفحة فقط. لا تُرفع ولا تُستعاد بعد إغلاق التطبيق."))
-            if !status.isEmpty { Text(status).accessibilityIdentifier("email-handoff-status") }
+            Text(t("Drafts and five undo checkpoints remain only on this phone in this session. Leaving this page discards them unless you explicitly enable companion commands or open Mail review. Stop, backgrounding, replacement or Discard clears the local draft. This cannot revoke a message or draft you already handed to Mail.",
+                   "تبقى المسودة وخمس نسخ تراجع على هذا الهاتف في هذه الجلسة فقط. مغادرة الصفحة تحذفها ما لم تفعل الأوامر صراحةً أو تفتح مراجعة البريد. الإيقاف أو مغادرة التطبيق أو الاستبدال أو الحذف يمحو المسودة المحلية. لا يلغي ذلك رسالة أو مسودة سلمتها إلى البريد."))
+            if !model.localEmailStatus.isEmpty { Text(model.localEmailStatus).accessibilityIdentifier("email-handoff-status") }
         }
         .navigationTitle(t("Email draft", "مسودة بريد"))
-        .sheet(item: $composer) { draft in
-            LocalMailComposer(draft: draft) { id, outcome in
-                guard composer?.id == id else { return }
-                switch outcome {
-                case .cancelled: status = t("Cancelled in Mail. No send confirmed.", "أُلغي في البريد. لم يتأكد إرسال.")
-                case .saved: status = t("Mail reports the draft saved. Not sent.", "أفاد البريد بحفظ المسودة. لم تُرسل.")
-                case .sent: status = t("Mail accepted the message for sending. Delivery and receipt are not confirmed.", "قبل البريد الرسالة للإرسال. لم يتأكد التسليم أو الاستلام.")
-                case .failed: status = t("Mail reported a failure. No successful send confirmed.", "أبلغ البريد عن خطأ. لم يتأكد إرسال ناجح.")
-                @unknown default: status = t("Mail outcome unknown. No send confirmed.", "نتيجة البريد غير معروفة. لم يتأكد إرسال.")
-                }
-                composer = nil
-            }.interactiveDismissDisabled()
+        .onAppear {
+            if !opened { opened = true; owner = model.openLocalEmailDraft() }
         }
+        .onChange(of: scenePhase) { _, phase in if phase != .active { model.clearLocalEmailDraft() } }
+        .onDisappear { model.localEmailReaderDisappeared(owner: owner) }
     }
 }
-private struct ReviewedEmailDraft: Identifiable {
-    let id = UUID()
-    let recipient, subject, body: String
-}
-private struct LocalMailComposer: UIViewControllerRepresentable {
-    let draft: ReviewedEmailDraft
-    let finish: (UUID, MFMailComposeResult) -> Void
+
+/// Reuses the existing MessageUI bridge, now with an exact immutable draft owner.
+/// Only a current, explicitly requested snapshot is copied to the native composer.
+struct LocalMailComposer: UIViewControllerRepresentable {
+    let draft: LocalEmailDraft.Handoff
+    let isCurrent: () -> Bool
+    let finish: (UUID, LocalEmailDraft.MailOutcome) -> Void
     func makeCoordinator() -> Coordinator { Coordinator(draft.id, finish) }
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let controller = MFMailComposeViewController()
         controller.mailComposeDelegate = context.coordinator
-        controller.setToRecipients([draft.recipient]); controller.setSubject(draft.subject)
-        controller.setMessageBody(draft.body, isHTML: false)
+        guard isCurrent() else { return controller }
+        controller.setToRecipients([draft.snapshot.content.recipient])
+        controller.setSubject(draft.snapshot.content.subject)
+        controller.setMessageBody(draft.snapshot.content.body, isHTML: false)
         return controller
     }
     func updateUIViewController(_ controller: MFMailComposeViewController, context: Context) {}
     final class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
-        let id: UUID; let finish: (UUID, MFMailComposeResult) -> Void
+        let id: UUID; let finish: (UUID, LocalEmailDraft.MailOutcome) -> Void
         private var completed = false
-        init(_ id: UUID, _ finish: @escaping (UUID, MFMailComposeResult) -> Void) { self.id = id; self.finish = finish }
+        init(_ id: UUID, _ finish: @escaping (UUID, LocalEmailDraft.MailOutcome) -> Void) { self.id = id; self.finish = finish }
         func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
             guard !completed else { return }; completed = true
-            finish(id, error == nil ? result : .failed)
+            guard error == nil else { finish(id, .failed); return }
+            switch result {
+            case .cancelled: finish(id, .cancelled)
+            case .saved: finish(id, .saved)
+            case .sent: finish(id, .queued) // accepted by Mail, not delivery or receipt
+            case .failed: finish(id, .failed)
+            @unknown default: finish(id, .unknown)
+            }
         }
     }
 }

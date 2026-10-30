@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "commit": "79951a34966f0881cd942fc27c833e020aacde2b",
+  "jobURL": "https://github.com/mischa23v/blind/actions/runs/41025141290/job/123961371959",
+  "inputLogs": {
+    "ingress-recorder-timing-extract.txt": {
+      "bytes": 16268,
+      "sha256": "646920e93586acf67b8f0257430089d5f6b44d4ad68051b4abc67faae45fda7c"
+    },
+    "native-failure-extract.txt": {
+      "bytes": 27954,
+      "sha256": "c6096f512d4c1236f8007d27fe47d49b32a7c7715e344ca03be509d4ddf1d517"
+    }
+  },
+  "queryRecords": 18,
+  "queriesAtLeast10Seconds": [
+    {
+      "query": "DAF2BC7D-814B-4C27-9A88-E4C3AAA251C9",
+      "runtime": "BE760816-21D3-48BC-A892-FFECEEF81EA8",
+      "queryWaitMS": 14060,
+      "stagesAtWait": {
+        "requestEnqueued": 2
+      },
+      "mainThread": false
+    },
+    {
+      "query": "7C8A4430-B6BA-46BB-AA48-B8FDA0E5483C",
+      "runtime": "77FA15FC-CE48-4179-A260-9B64A3BA51DD",
+      "queryWaitMS": 10089,
+      "stagesAtWait": {
+        "requestEnqueued": 6,
+        "workerStarted": 7877,
+        "nativeBuildBegin": 8057,
+        "nativeBuildEnd": 10040,
+        "routeBegin": 10040
+      },
+      "mainThread": false
+    },
+    {
+      "query": "2AAE0591-E542-4244-A805-0EF9AF9789B9",
+      "runtime": "09089B02-5406-431B-96E1-2A5C38E805C2",
+      "queryWaitMS": 10064,
+      "stagesAtWait": {
+        "requestEnqueued": 0,
+        "workerStarted": 63,
+        "nativeBuildBegin": 63
+      },
+      "mainThread": false
+    },
+    {
+      "query": "8EDEE860-6449-4D72-92E9-CFFD3D051722",
+      "runtime": "D6BF006B-43C4-46E3-A2D6-DD94002395EC",
+      "queryWaitMS": 10047,
+      "stagesAtWait": {
+        "requestEnqueued": 0
+      },
+      "mainThread": false
+    },
+    {
+      "query": "821C7DD3-71C5-43CD-8F66-672A121DB579",
+      "runtime": "563B8748-C0C5-4244-ACE5-29A6736F69BB",
+      "queryWaitMS": 10079,
+      "stagesAtWait": {
+        "requestEnqueued": 1,
+        "workerStarted": 4842,
+        "nativeBuildBegin": 4842
+      },
+      "mainThread": false
+    }
+  ],
+  "recorder": {
+    "fixture": "activeTrip",
+    "wait": "snapshot",
+    "originalBudgetSeconds": 5,
+    "operationIndex": 1,
+    "admission": "queued",
+    "workerStarted": false,
+    "loadFinished": false,
+    "databaseReturned": false,
+    "workerFinished": false,
+    "mainDelivered": false
+  },
+  "interpretation": {
+    "identityJoin": "query and runtime UUID only; no method mapping inferred",
+    "clockScopes": "query elapsed is submission-relative; stage milliseconds are owner-relative",
+    "classification": "Five queried callbacks lacked completionDelivered at their wait observation; two lacked workerStarted. This does not establish the OS scheduling cause.",
+    "recorder": "First read had not reached its worker marker by the5s wait. A preceding offer/load may occupy the same queue; no database-versus-scheduling cause inferred.",
+    "fixtureGap": "Thrown query skips normal awaited discard; deferred stopAndDiscard is only a request. Actual late retired native work exists in the prior failed run.",
+    "repairClaim": "Owned failure cleanup and next Classification fixture admission fence only; original native latency failures remain failures."
+  },
+  "nativeExecutedForCandidate": false
+}

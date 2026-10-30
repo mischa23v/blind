@@ -296,14 +296,15 @@ final class VoiceInput: ObservableObject {
 
     func finish() {
         guard lifecycle.requested, canCapture else { return }
-        let text = utterance.deliverable(isEcho: shouldIgnore?(utterance.text) == true)
+        let isOwnSpeechEcho = shouldIgnore?(utterance.text) == true
+        let text = utterance.deliverable(isEcho: isOwnSpeechEcho)
         // Bind the final transcript before beginTurn/cancel retires ASR identifiers.
         let completed = text.map { CapturedVoiceTurn(session: lifecycle.session,
             capture: captureGeneration, recognitionTurn: turn, text: $0,
             completedAt: ProcessInfo.processInfo.systemUptime) }
         #if DEBUG
         debugTrace?.event(.userInput, source: .unverifiedMicrophone) {
-            .init(text: utterance.text,
+            .init(text: isOwnSpeechEcho ? nil : LocalEmailDraftCommand.diagnosticText(utterance.text),
                   label: "asr.final." + (text == nil ? "notDeliverable" : "deliverableUnverified") + "; captureTurn=" + turn.uuidString)
         }
         #endif

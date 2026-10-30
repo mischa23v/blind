@@ -229,7 +229,7 @@ jobs:
         if: always()
         timeout-minutes: 3
         run: python3 -B tools/ci/export-seated-case-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
-      - name: Verify exact twenty-one synthetic hosted cases and source identity
+      - name: Verify exact twenty-six synthetic hosted cases and source identity
         id: collect
         if: always()
         timeout-minutes: 3

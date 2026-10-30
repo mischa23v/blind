@@ -35,10 +35,8 @@ private struct FamiliarPeopleToolsView: View {
     @State private var label = ""
     @State private var confirmDeleteAll = false
     @State private var selectedPhotos: [PhotosPickerItem] = []
-    @State private var photoLoading = false
+    private var photoLoading: Bool { experiment.photoImportInFlight }
     @State private var photoLoadError = ""
-    @State private var photoGeneration = UUID()
-    @State private var photoTask: Task<Void, Never>?
     @State private var awaitingCameraForEnrollment = false
     var body: some View {
         Form {
@@ -226,21 +224,20 @@ private struct FamiliarPeopleToolsView: View {
         .navigationTitle("Helper setup")
     }
     private func toggleVoice() { if model.voice.listening { model.voice.finish() } else { model.startVoiceQuestion() } }
-    private func cancelPhotoLoad() { photoGeneration = UUID(); photoTask?.cancel(); photoTask = nil; photoLoading = false; selectedPhotos = [] }
-    private func loadPhotos(_ selected: [PhotosPickerItem]) {
-        guard !selected.isEmpty, let enrollmentToken = experiment.enrollmentToken else { return }
-        let id = UUID(); photoGeneration = id; photoLoading = true; photoLoadError = ""
-        photoTask?.cancel()
-        photoTask = Task { @MainActor in
-            var data: [Data] = []
-            for item in selected.prefix(6) {
-                guard !Task.isCancelled, photoGeneration == id else { return }
-                if let image = try? await item.loadTransferable(type: Data.self), image.count <= 20_000_000 { data.append(image) }
-                else { photoLoadError = "One or more photos were unavailable, too large, or not transferable. No app upload occurred." }
-            }
-            guard !Task.isCancelled, photoGeneration == id, experiment.enabled, experiment.enrollmentToken == enrollmentToken else { return }
-            photoLoading = false; selectedPhotos = []; experiment.importPhotos(data)
-        }
+    @MainActor private func cancelPhotoLoad() {
+        experiment.cancelSelectedPhotoImport()
+        selectedPhotos = []
     }
+    @MainActor private func loadPhotos(_ selected: [PhotosPickerItem]) {
+        guard !selected.isEmpty, let enrollmentToken = experiment.enrollmentToken else { return }
+        // Replacement retires the old result, but cannot free its physical slot.
+        experiment.cancelSelectedPhotoImport()
+        photoLoadError = ""
+        if !experiment.importSelectedPhotos(selected, enrollmentToken: enrollmentToken) {
+            photoLoadError = "No new import started. If a previous photo is finishing, wait and select again. No app upload occurred."
+        }
+        selectedPhotos = [] // Same items can be selected again after actual completion.
+    }
+
 }
 #endif

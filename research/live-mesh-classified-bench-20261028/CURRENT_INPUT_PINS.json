@@ -14,6 +14,11 @@
       "sha256": "6ae2cbbd53db447bc4a286d2d2c8f9378423dc1f2edea017fe0eb1081ef56476"
     },
     {
+      "path": ".github/workflows/j01-actual-model.yml",
+      "bytes": 2144,
+      "sha256": "ce52163a3d4c307779e8d2000c5cdf833cbd4ec40fc8bd713ad978cdc98ad7e6"
+    },
+    {
       "path": ".github/workflows/mesh-candidate-ingress.yml",
       "bytes": 2196,
       "sha256": "b0c137ce1ced087b5b9967e6693b8473c4620742ad104620aeb75c4443c6ceb5"
@@ -21,7 +26,7 @@
     {
       "path": ".github/workflows/native-apple.yml",
       "bytes": 16188,
-      "sha256": "8f0166e5430092e1ca7464b0fe79a876d83e338ab21d3f7221455667ad67df91"
+      "sha256": "90b59756e593ce76bbcbf299799224f68286b10ab88b2fa9f202e49f7bdffbee"
     },
     {
       "path": ".github/workflows/native-edt-navigation-probe.yml",
@@ -55,8 +60,8 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/AssistantControl.swift",
-      "bytes": 3120,
-      "sha256": "05e83b84a9a4c936dcb3010590bc7ec79892a4921dc4673ff2c6c118efd55bbe"
+      "bytes": 4679,
+      "sha256": "3f7e26055b95c959b173d72afdb026c14c7236ebd51e3309d678f3ad0138719d"
     },
     {
       "path": "BlindCore/Sources/BlindCore/AssistantDialogue.swift",
@@ -409,9 +414,19 @@
       "sha256": "b32693ebe91cd2ce94d15b00e0b3303d02b6a027ed33e94505b424f33e6f8df0"
     },
     {
+      "path": "BlindCore/Sources/BlindCore/LocalEmailDraft.swift",
+      "bytes": 12259,
+      "sha256": "01f9f9d614d7275309317fb0e79d313b2501f78978593ed46134a107640a136f"
+    },
+    {
       "path": "BlindCore/Sources/BlindCore/LocalPlanner.swift",
       "bytes": 6505,
       "sha256": "04da3a8ca35f4bfa3dd98aa4b4c9c11ae90a291504adf77f8420d51a41deedd8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalRecipeCompanion.swift",
+      "bytes": 8309,
+      "sha256": "1db5eacc76dbe90acae69a3a9f08125d29303e8d7bcd3d7c2d8eb39f75e7ecf3"
     },
     {
       "path": "BlindCore/Sources/BlindCore/LocalRecipeReference.swift",
@@ -447,6 +462,11 @@
       "path": "BlindCore/Sources/BlindCore/NarrationDelivery.swift",
       "bytes": 191,
       "sha256": "f52b67b4669481a8caa4105ed4340f67c46703cb47d16b6f56143e71a88351c0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeClassifiedHitEvidence.swift",
+      "bytes": 6729,
+      "sha256": "25f0b2becd0329a2183696e1ec65854f3d540507720f376adbe654463857300e"
     },
     {
       "path": "BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift",
@@ -754,6 +774,11 @@
       "sha256": "63b67123799b2db4f46f7e4b594f692337939c573d7c74997f155d8f2f0101d5"
     },
     {
+      "path": "BlindCore/Tests/BlindCoreTests/AssistantControlTests.swift",
+      "bytes": 4315,
+      "sha256": "932d91745559ae7862a80096af8c2ca9fc622bbccc8971ab3a84e1bd4073fa48"
+    },
+    {
       "path": "BlindCore/Tests/BlindCoreTests/CurrentNavigationHazardsTests.swift",
       "bytes": 4353,
       "sha256": "268b7b2f7c3d3ac18e47d6cc4bcb083bd7be81fdd9d843c7aac0b093e0ac60cc"
@@ -764,9 +789,24 @@
       "sha256": "211386177b1b636b3eb5fdf391e5195d10344a58ab3fa760e62a16ae02d9819e"
     },
     {
+      "path": "BlindCore/Tests/BlindCoreTests/FamiliarPhotoImportOwnershipTests.swift",
+      "bytes": 12989,
+      "sha256": "d8c4ba2b23342defdd9cb9a97eb02d967399d0c5b3e8c708fa7151646f38dda6"
+    },
+    {
       "path": "BlindCore/Tests/BlindCoreTests/Fixtures/companion-evidence.json",
       "bytes": 22377,
       "sha256": "33be5ec6e9715e9e4fcd2ba08ff1c6d72e249ca28071e2dd6c07c2f2ff8ee1b0"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalEmailDraftTests.swift",
+      "bytes": 11472,
+      "sha256": "4be674d0c2dbb8637870b930ee62e854fe5fa8c6aecfc0319e40eff5e3a9d3b5"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalRecipeCompanionTests.swift",
+      "bytes": 9310,
+      "sha256": "a29af6a443e6739b17922a292569c1b841703dcbae3790ad28988a14fd0931cd"
     },
     {
       "path": "BlindCore/Tests/BlindCoreTests/LocalRecipeReferenceTests.swift",
@@ -795,8 +835,8 @@
     },
     {
       "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
-      "bytes": 44915,
-      "sha256": "24dea5dbda2fd476c0226b26ff5976a1e0f1e1b2f31bc4adac70c3daa7256ff9"
+      "bytes": 46117,
+      "sha256": "f6c5b86e2fdb5ae9a6ef10283c218cd4ac7fe9fe2b928178224dae0e4b872f1c"
     },
     {
       "path": "ios/BlindAssist/ConnectedJourneyRuntime.swift",
@@ -805,23 +845,43 @@
     },
     {
       "path": "ios/BlindAssist/DashboardView.swift",
-      "bytes": 88351,
-      "sha256": "cbefeebd8aa797bb0365e975e652b037767e6f42dbdc3b5436ce6f0f0d67cda3"
+      "bytes": 90205,
+      "sha256": "14f497dcc055ef07cec421320f77429df3cfdc1b193f9ea8954f1a4208937615"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
+      "bytes": 56312,
+      "sha256": "2be6627cce59271cc3ca15ee5ecb44880e19f1ecfce232b823042efea788c9b3"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarPeopleView.swift",
+      "bytes": 19869,
+      "sha256": "e519cb942998113af2f5fc4ee2923ce3df2d414366101379dd872c404185df4a"
     },
     {
       "path": "ios/BlindAssist/LocalEmailDraftView.swift",
-      "bytes": 6445,
-      "sha256": "6cb63545feb877240c60c58a7668f7e966cc6c6a402f1b1e7fa5bbb0c8b2a512"
+      "bytes": 8613,
+      "sha256": "4c551fa73eed42a780999a4525f2a7dbdff271ec5319d503c9c0dd56e6381382"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "bytes": 97938,
+      "sha256": "2683c9e8dc3200cca7d7a88d12151a004538f09d30eb6061becc608895ca2ef6"
     },
     {
       "path": "ios/BlindAssist/LocalRecipeView.swift",
-      "bytes": 7240,
-      "sha256": "86ea9ea61c83c9b46b38141d28056f2f443e7a1809acf8addae02cc449e5db52"
+      "bytes": 9427,
+      "sha256": "494ded2a9ffcc40a94fc01166cfb42d1da6c2eb0d1fb5611909c4fd46a50f9ea"
     },
     {
       "path": "ios/BlindAssist/MeshCandidateDiagnostics.swift",
-      "bytes": 2539,
-      "sha256": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724"
+      "bytes": 20256,
+      "sha256": "5e87906063684f90e1e52c2f339dd4d0898fed7f2648d56d9d098e93df734e01"
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+      "bytes": 9751,
+      "sha256": "e806eec1da9d012b94159984e22e3a1014de51590ef3c5e9aaaad29f2afdff96"
     },
     {
       "path": "ios/BlindAssist/NativeMapping.swift",
@@ -830,8 +890,23 @@
     },
     {
       "path": "ios/BlindAssist/NavigationModel.swift",
-      "bytes": 528156,
-      "sha256": "299a5bee4ef8f82debcac9781a0715b9f96367655506fc8262a4eba4b6584645"
+      "bytes": 566231,
+      "sha256": "bfb23aa12c8b3738c3355dc3d0149d60ff0b2db3bb3de78b65c26c1c09bcdf24"
+    },
+    {
+      "path": "ios/BlindAssist/ObservedSceneRuntime.swift",
+      "bytes": 13027,
+      "sha256": "b074bd8cfb19d3727c52bfed7707d01f1480a15e8e9fd4c2f026066df5f33f31"
+    },
+    {
+      "path": "ios/BlindAssist/PlaceStore.swift",
+      "bytes": 49125,
+      "sha256": "59299563db05cd04023845b42b994507ce70660cac032265d7c1fce7d1c64aa1"
+    },
+    {
+      "path": "ios/BlindAssist/RoomDetailView.swift",
+      "bytes": 34880,
+      "sha256": "ca466753a07f7f03bd19e84d40377299974fba01d3bcc8ec44b2d70b03c4ed23"
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
@@ -849,9 +924,24 @@
       "sha256": "e217126cda66bdb6299cea7da55d414b8d12b9d3293e15dc98bcd21fe23c433f"
     },
     {
+      "path": "ios/BlindAssist/SelectedPhotoDecoder.swift",
+      "bytes": 2949,
+      "sha256": "5e40101bec994d45461a14c1244eb34785df02a76ddd6b9368955af324453778"
+    },
+    {
       "path": "ios/BlindAssist/VoiceInput.swift",
-      "bytes": 26379,
-      "sha256": "d45140ec88d34bb9d14ab77da9682f299abdc2286e2c358fa9249befc832ae54"
+      "bytes": 26488,
+      "sha256": "7b1f5b96f45470748fce3326d985ebcc455353cc28b7cde1936b36dde8c34c96"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassificationIngressTests.swift",
+      "bytes": 21084,
+      "sha256": "63069641583f1311081b60b5651a52ca82c608eda013258560c4e1fb69b51b75"
+    },
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "bytes": 83297,
+      "sha256": "4cc525e3fc6cc4e350a704019284c396b6d058db9a409cba12e1894b04df868e"
     },
     {
       "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
@@ -860,13 +950,28 @@
     },
     {
       "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
-      "bytes": 25207,
-      "sha256": "7df266e3b2b4d55d98292a1475c852f90c54783826956c2ea6800b4f2e721b03"
+      "bytes": 45251,
+      "sha256": "cba80b2e7b6e435203ca53514fbd3153eee7657562d5d65c42fa202426f82e73"
+    },
+    {
+      "path": "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
+      "bytes": 18228,
+      "sha256": "414ebb6c8345cd1ed097307b3e41c2832ad94676206566068d3c000a5ae08d6f"
     },
     {
       "path": "ios/BlindAssistTests/NativeQoSComparisonTests.swift",
       "bytes": 6758,
       "sha256": "84248e3bc80f8b48cb6b4a6cfca890cd34da45b02a52e294324965aa2fc67965"
+    },
+    {
+      "path": "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift",
+      "bytes": 15038,
+      "sha256": "1e466c2caf1119a91ecdb34bbaf123e2d533e37194952ebbf2b9d39ed06ffb1c"
+    },
+    {
+      "path": "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+      "bytes": 19507,
+      "sha256": "468990293d238e35ac77bd65457af4113fc6f87636cf1019e44564b578d9ca3d"
     },
     {
       "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
@@ -902,6 +1007,56 @@
       "path": "research/arkit-mesh-adapter-82/Sources/MeshSnapshot.swift",
       "bytes": 7626,
       "sha256": "d7318f9a2564c62677abaf53934ea7721a25fe13a1d59ffab9ecd717762b4fdc"
+    },
+    {
+      "path": "research/ingress-fixture-owned-drain-20261030/OBSERVATIONS.json",
+      "bytes": 3220,
+      "sha256": "12f59341e9a1e345975f949d35e42dbbc66018820daef7851b944758f1ece81e"
+    },
+    {
+      "path": "research/ingress-fixture-owned-drain-20261030/README.md",
+      "bytes": 4089,
+      "sha256": "00103e01f646a9bd1040b02bfc11e86078fcbef3f629b3072fc4d7f2dd0d7ceb"
+    },
+    {
+      "path": "research/ingress-fixture-owned-drain-20261030/SOURCE_PINS.json",
+      "bytes": 1583,
+      "sha256": "b9bc93647e600839af37fbf0094b27f887ad9673079634a223f0a48c4248f2d4"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/ATTESTATION.md",
+      "bytes": 7050,
+      "sha256": "ead87e93b41bc538c70489757f6718a08c2cecbcf2f35cce310501cfcf495346"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/README.md",
+      "bytes": 6135,
+      "sha256": "390d261fdb2862599dfa9169a14e57fe8d47e5450cd0c9d40c38312e90b419a3"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/SUPPORTED.json",
+      "bytes": 3861,
+      "sha256": "1995f554988570d61ee4a768226a6d631e30dc534a51341d93ba02a83145f655"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/app_adapter.py",
+      "bytes": 7368,
+      "sha256": "9b4b2f5f5e995664dd885d669bae6d5a6be8c1c34d43fcabbb6ef0bc3c67d6b0"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/build_attestation.py",
+      "bytes": 12374,
+      "sha256": "9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/test_adapter.py",
+      "bytes": 4834,
+      "sha256": "7c5a0e2e135fd7eea15efa85ec60940651f9fd88af8018bb79bc3829d5e5f5c3"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
+      "bytes": 9312,
+      "sha256": "e84cd70dd5ac14c9fbb3d28b05f98a7f9c8c7b94940cf820c7ff73f9878d4928"
     },
     {
       "path": "research/live-mesh-bench-proposal-20261028/DEPENDENCY_PINS.json",
@@ -1197,6 +1352,16 @@
       "path": "research/native-qos-comparison-20261030/README.md",
       "bytes": 6010,
       "sha256": "8c591113fb202b1a0416f0903085d85b5ebe432c888ae7d095d1134aa9c7a256"
+    },
+    {
+      "path": "research/normal-owner-full-mesh-connection-20261030/CORE_CHECKPOINT.json",
+      "bytes": 1576,
+      "sha256": "47a113fbb5d15ddf4d4239479bfe27e400f40c9d628b508a3efa2ccec71406eb"
+    },
+    {
+      "path": "research/normal-owner-full-mesh-connection-20261030/README.md",
+      "bytes": 7702,
+      "sha256": "e03785e97737132e309efdccb90a3763f1241181ea963c3787e79e484870d6ed"
     },
     {
       "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
@@ -1525,8 +1690,13 @@
     },
     {
       "path": "tools/ci/collect-seated-projection.py",
-      "bytes": 8699,
-      "sha256": "a1bff7b54627e6ed44a45128503e8817f5f5353dba44131b4b005d8dbc70a621"
+      "bytes": 9605,
+      "sha256": "3c3a523c7e7ab35f96a0c53ab0d37ec84024b03213c2133223b8db48dfaf9960"
+    },
+    {
+      "path": "tools/ci/collect_j01_metadata.py",
+      "bytes": 9454,
+      "sha256": "49d388c88a9fba379c0aa9d521bdcceada0fd13b5783d58bad4fa3cbe94f20e1"
     },
     {
       "path": "tools/ci/emit-ci-log-receipts.py",
@@ -1535,8 +1705,8 @@
     },
     {
       "path": "tools/ci/export-seated-case-diagnostics.py",
-      "bytes": 10518,
-      "sha256": "9921aaedcf524067ac43a737c9773a8abe35bd932e94b8bb318c0961ab4f9ebd"
+      "bytes": 10799,
+      "sha256": "4c21ec29cf7792a49e121182a77129072245bed57ffdf4c189fb65feb6ea3fce"
     },
     {
       "path": "tools/ci/extract-seated-candidate-timing.py",
@@ -1549,9 +1719,14 @@
       "sha256": "7fb1d0574b5e94f28f5f96074d5dc38ce12257fbcd49ebe11d7ce2022e521358"
     },
     {
+      "path": "tools/ci/j01-actual-model.py",
+      "bytes": 13960,
+      "sha256": "c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f"
+    },
+    {
       "path": "tools/ci/native-apple.sh",
-      "bytes": 12940,
-      "sha256": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a"
+      "bytes": 13012,
+      "sha256": "49e233866efa0cce408f9a779dbe0ff42c1a27939cc9d1698296ec5fa9a2b03f"
     },
     {
       "path": "tools/ci/native-qos-comparison.py",
@@ -1560,13 +1735,18 @@
     },
     {
       "path": "tools/ci/test-collect-seated-projection.py",
-      "bytes": 19272,
-      "sha256": "e361d7ce41f4d4600d5b3fbe47ce95a04adfeddb41748bde5e8c7536847aebc6"
+      "bytes": 22756,
+      "sha256": "0440a2b890b18433503ddee0ea930dae96326e88e45df9295f1aabc3446feba3"
     },
     {
       "path": "tools/ci/test_collect_classified_bench.py",
       "bytes": 13379,
       "sha256": "d09225d11a9edc1b62c40cc93dd4a02dccac844c9ca443d6672ae1f222d65b24"
+    },
+    {
+      "path": "tools/ci/test_collect_j01_metadata.py",
+      "bytes": 6775,
+      "sha256": "ed5b79d34ea497567af27aadf3e1af82bce68980e128d32625f0b261440ea6d6"
     },
     {
       "path": "tools/ci/test_emit_ci_log_receipts.py",
@@ -1575,8 +1755,8 @@
     },
     {
       "path": "tools/ci/test_export_seated_case_diagnostics.py",
-      "bytes": 16776,
-      "sha256": "4ecb3b818d2717f69c86836ac92154d10d0a02d3d23dd7ea9c2594558a38be42"
+      "bytes": 19233,
+      "sha256": "a15590ad89e8bbfa834fac9fae8b7aca1c4a5b6fc3526226342e3f9e59ae33a1"
     },
     {
       "path": "tools/ci/test_extract_seated_candidate_timing.py",
@@ -1584,9 +1764,24 @@
       "sha256": "3cdc44c19bccf756c3025ffcfee74a902fc0e3006a9b77d5a9c2af4794a62e30"
     },
     {
+      "path": "tools/ci/test_j01_actual_model.py",
+      "bytes": 19502,
+      "sha256": "164ac5735170c953fc9c2b52b1a744b8592062150ce9b1d7d938cb8627916f89"
+    },
+    {
+      "path": "tools/ci/test_j01_project_membership.py",
+      "bytes": 6564,
+      "sha256": "1775b33db1f224e7601771e3bd3ac897d507baa43e8045fba0bdec49c1947026"
+    },
+    {
       "path": "tools/ci/test_native_qos_comparison.py",
       "bytes": 20473,
       "sha256": "2a575392e632e33b94565c68c2c9d80c04bfa68ec7d090ae9c2fdd0237c226a3"
+    },
+    {
+      "path": "tools/ci/test_normal_owner_project.py",
+      "bytes": 6348,
+      "sha256": "e1f8bc2cd7b6d07954fef556743b44fcc93aaffda49a96d95973e8a9a01b182e"
     },
     {
       "path": "tools/ci/test_verify_default_project.py",
@@ -1600,8 +1795,8 @@
     },
     {
       "path": "tools/generate-xcode-project.mjs",
-      "bytes": 51517,
-      "sha256": "4d19234f27551c3bfb204f7ebdbad01807af5da3bdf44059931eb59e094c23b9"
+      "bytes": 52418,
+      "sha256": "489008e0aa9183da04b7770b90a147ae1bc5b84edd1b2543f19fd16b265be976"
     },
     {
       "path": "tools/test/accessibility-voice-continuity.test.py",
@@ -1614,14 +1809,64 @@
       "sha256": "87e63c7e52f451caf835773fa97951c25d590c5e8d7240d628e774157ea9281e"
     },
     {
+      "path": "tools/test/classification-fixture-drain.test.py",
+      "bytes": 6924,
+      "sha256": "27d4405d94e8ff71b7c1125fb41f63dcc376c95d483590dd38b75a8e384236bd"
+    },
+    {
+      "path": "tools/test/classified-hit-current.test.py",
+      "bytes": 5510,
+      "sha256": "1c603497b3993f6f3454f7339a23a2e7ef9a077979eaf9e1691ea053370a5d57"
+    },
+    {
       "path": "tools/test/connected-beacon-bool.test.py",
       "bytes": 3514,
       "sha256": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f"
     },
     {
+      "path": "tools/test/conversation-failure-diagnostics.test.py",
+      "bytes": 3170,
+      "sha256": "ed471c01760b6e3016ef547c23e75b3521d851346332bfa7fc6616810048a8ad"
+    },
+    {
+      "path": "tools/test/familiar-people.test.mjs",
+      "bytes": 21298,
+      "sha256": "fa26c9c0fce5fb00ed74aa8c2ec557c2938412d84d1595f26224865a811bf352"
+    },
+    {
+      "path": "tools/test/familiar-photo-import-bounds.test.mjs",
+      "bytes": 5628,
+      "sha256": "c3d916dfb590c3da170008e582d5f6b1c5eaba28056d639a35e291f47863c2ba"
+    },
+    {
+      "path": "tools/test/local-email-draft-companion.test.py",
+      "bytes": 10989,
+      "sha256": "fb59a9a0afa8df7d0bdf98473bda941853dd1b640c0dd7b8fc5885d99cc2e22b"
+    },
+    {
+      "path": "tools/test/local-recipe-companion.test.py",
+      "bytes": 6621,
+      "sha256": "c494130e36f0a71127a1a6c83b31a2c6fa8c34eb7b1a1282d9940e9f32488b8c"
+    },
+    {
       "path": "tools/test/navigation-integration-current.test.py",
       "bytes": 16761,
       "sha256": "caa32ec912f6b274a4a686e7caccecadb394ac822f2cdd97e593b7fd34990dae"
+    },
+    {
+      "path": "tools/test/normal-owner-mesh-current.test.py",
+      "bytes": 7271,
+      "sha256": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110"
+    },
+    {
+      "path": "tools/test/room-photo-import-bounds.test.mjs",
+      "bytes": 3881,
+      "sha256": "4b6129f60da6e469aaaf7922e331bf87c6a9d4dc60f9066111f3183486362867"
+    },
+    {
+      "path": "tools/test/sc53-current-source.py",
+      "bytes": 6860,
+      "sha256": "df2957ef0fbbac7f19870eda42d5d5e348ebc7242479d3718a2fbe4776b6b856"
     },
     {
       "path": "tools/test/scene-frame-provenance.test.mjs",
@@ -1863,13 +2108,42 @@
     "blindCoreProductionClosurePinned": true,
     "historicalResultsUnchanged": true
   },
-  "beaconBooleanCompileRepair": {
+  "second_tracker_implementation_batch": {
+    "status": "source_only_native_unrun",
+    "requiresFirstBatchManifestSHA256": "a70c408e6a846e59da7ce7cb54fbc737321708954223d516236e74a59745101d",
+    "sourceManifestSHA256": "45079b1c0551c5366052b4621fbaf1235a794da5dc23780cdba86d728390089e",
+    "classifiedExpectedCases": 71,
+    "seatedExpectedCases": 21,
+    "j01RealExecutionDefaultEnabled": false,
+    "j01SourceAttestationVerified": false,
+    "historicalResultsUnchanged": true
+  },
+  "j01SameJobObservationLane": {
+    "status": "source_only_native_unrun",
+    "requiresNext40ManifestSHA256": "70cba571bbcf7044299cc93ee7c9fa6b3f99b94b8f17c7667f49d1fe1882cc3d",
+    "explicitPublicationTriggersExecution": true,
+    "actualBuildReceiptProduced": false,
+    "fullJourneyComplete": false,
+    "runtimeLoadedBinaryVerified": false
+  },
+  "thirdImplementationBatch": {
+    "status": "source_only_native_unrun",
+    "requiresJ01ManifestSHA256": "1420d5d48a073bf4af84a2687a06a8ad93a512bb89883386744189bf3b98cd63",
+    "sourceManifestSHA256": "f4ffb4c074cd287a1cac6b49b0c07cd46ccd04ed1a39c208b2eb21691d785385",
+    "sourceContractManifestSHA256": "00755d25af2a899df9b9176790e4a91d3d773f67aa45a6b44ee445aea175fcdf",
+    "classifiedExpectedCases": 71,
+    "focusedExpectedCases": 26,
+    "j01ActualSelectedScripts": 3,
+    "j01SupportedScripts": 6,
+    "actualModelObserved": false,
+    "physicalAuthority": false
+  },
+  "publishedBeaconBooleanRepairCarry": {
+    "publishedCommit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
     "failedCommit": "119752b88c529adf90bde1092137a85870740ace",
-    "nativeBuildExit": 65,
-    "diagnosticsBuildExit": 65,
-    "hostedTestsExecuted": false,
-    "repairStatus": "source_only_native_unrun",
-    "controllerOptionalBeaconPolicyChanged": false,
-    "hazardAdmissionUnchanged": true
+    "repairCheckpointSHA256": "9301edbcc26d70070b32606d1407721d2b3c4b5f132b420d8a516f7625b66ae0",
+    "scope": "exact reviewed Boolean fix carried into frozen NEXT40/J0117/THIRD45 source; original failed and repaired identities preserved",
+    "newNativeExecutionClaim": false,
+    "controllerOptionalBeaconPolicyChanged": false
   }
 }

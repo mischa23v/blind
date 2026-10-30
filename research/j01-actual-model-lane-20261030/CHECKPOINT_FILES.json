@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "scope": "explicit isolated J01 same-job CI companion; parent layers required; not applied/published",
+  "requiresNext40ManifestSHA256": "70cba571bbcf7044299cc93ee7c9fa6b3f99b94b8f17c7667f49d1fe1882cc3d",
+  "requiresFirst74ManifestSHA256": "a70c408e6a846e59da7ce7cb54fbc737321708954223d516236e74a59745101d",
+  "publishedAncestor": "79951a34966f0881cd942fc27c833e020aacde2b",
+  "files": [
+    {
+      "path": ".github/workflows/j01-actual-model.yml",
+      "beforeSHA256": null,
+      "sha256": "ce52163a3d4c307779e8d2000c5cdf833cbd4ec40fc8bd713ad978cdc98ad7e6",
+      "bytes": 2144
+    },
+    {
+      "path": "research/j01-actual-model-lane-20261030/CI_VALIDATION.json",
+      "beforeSHA256": null,
+      "sha256": "c680952e35e245fc53f5a5ef47b538003c88b85dc756c931d7e6b480e82cacbe",
+      "bytes": 939
+    },
+    {
+      "path": "research/j01-actual-model-lane-20261030/README.md",
+      "beforeSHA256": null,
+      "sha256": "7674c4f9681cb37b9925c23e57a9603800b5f20fc3061547dabf1079a30709b0",
+      "bytes": 5431
+    },
+    {
+      "path": "research/j01-actual-model-lane-20261030/TRIGGER_AUDIT.json",
+      "beforeSHA256": null,
+      "sha256": "1e9967082fed3080663c7b12d76b9d724aeb52790cad8f591f1798bda471f458",
+      "bytes": 15654
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/ATTESTATION.md",
+      "beforeSHA256": null,
+      "sha256": "ead87e93b41bc538c70489757f6718a08c2cecbcf2f35cce310501cfcf495346",
+      "bytes": 7050
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/app_adapter.py",
+      "beforeSHA256": "00f3d5bdad292af12a7b7bdcea36093706b7c2df9a9998000b610021b91e41e9",
+      "sha256": "9b4b2f5f5e995664dd885d669bae6d5a6be8c1c34d43fcabbb6ef0bc3c67d6b0",
+      "bytes": 7368
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/build_attestation.py",
+      "beforeSHA256": null,
+      "sha256": "9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff",
+      "bytes": 12374
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
+      "beforeSHA256": null,
+      "sha256": "e84cd70dd5ac14c9fbb3d28b05f98a7f9c8c7b94940cf820c7ff73f9878d4928",
+      "bytes": 9312
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "beforeSHA256": "00240610703bc3439cddebd4e5ca9740eac9fb855e12b22dc1e177286919cb65",
+      "sha256": "795c72f7270a17b112998c29758c9f4cbbc49e64c4c0381bca129d5a1eadf10e",
+      "bytes": 84162
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "beforeSHA256": "710c5fbb00dcccaa3d5ecb7cba95945d240434df86598248366df36cec4c2a74",
+      "sha256": "a646315e4c4e705a813649a8add263ccb0b750eedece33194d4ef20eec0d62c4",
+      "bytes": 91533
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "beforeSHA256": "a2223c0764eb82db2694db6fec878d9ea3ea5ddabe10c74bbf84275d9fb50cf0",
+      "sha256": "60d8f7bd0f277b35db19a35ee750ad33a364f2ed32d544c292cc7dd2b853e687",
+      "bytes": 50979
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/j01-same-job-observation-layer.patch",
+      "beforeSHA256": null,
+      "sha256": "5cb5ac630aca84d281ea6fe9f7d271be33b8506af7b6a82d8d783854f85a5a66",
+      "bytes": 91074
+    },
+    {
+      "path": "tools/ci/collect_j01_metadata.py",
+      "beforeSHA256": null,
+      "sha256": "49d388c88a9fba379c0aa9d521bdcceada0fd13b5783d58bad4fa3cbe94f20e1",
+      "bytes": 9454
+    },
+    {
+      "path": "tools/ci/j01-actual-model.py",
+      "beforeSHA256": null,
+      "sha256": "a727735827b6d5935baafa9e1c2d9ebc6206d5d2818d568ccbc885f70c7d9264",
+      "bytes": 13897
+    },
+    {
+      "path": "tools/ci/test_collect_j01_metadata.py",
+      "beforeSHA256": null,
+      "sha256": "ed5b79d34ea497567af27aadf3e1af82bce68980e128d32625f0b261440ea6d6",
+      "bytes": 6775
+    },
+    {
+      "path": "tools/ci/test_j01_actual_model.py",
+      "beforeSHA256": null,
+      "sha256": "680ddb47d5db846f5f1216670856e7a18b6bc1a6f8a012d4dfeb3727fc93a584",
+      "bytes": 18744
+    }
+  ],
+  "nativeExecuted": false
+}

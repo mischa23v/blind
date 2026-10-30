@@ -4,6 +4,7 @@ import ARKit
 import LiveMeshClassifiedBench
 #endif
 import AVFoundation
+import MessageUI
 import CoreImage
 import ImageIO
 import CryptoKit
@@ -56,6 +57,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         didSet {
             if oldValue.generation != assistantSession.generation { lastCapturedTextPlaybackReceipt = nil }
             if oldValue.generation != assistantSession.generation {
+                clearLocalEmailDraft()
+                clearLocalRecipe()
                 clearSelectedDocument()
                 revalidateModelDisplays(); feedback.revalidateModelReply()
             }
@@ -266,6 +269,77 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard debugModelResponseTesting else { return }
         modelDisplayExpiryFired(owner: owner)
     }
+    // Opt-in hosted app adapter: real controller and real model, silent output.
+    // No synthetic clock, generated answer, tool result or pose is injected.
+    private var debugHostedJourneyEnabled = false
+    private var debugHostedJourneyResults: [[String: Any]] = []
+    private var debugHostedJourneyDisplays: [[String: Any]] = []
+    private var debugHostedNarrationReceipts: [[String: Any]] = []
+    func debugBeginHostedJourney() -> Bool {
+        #if targetEnvironment(simulator)
+        guard textOnly, ProcessInfo.processInfo.environment["BLIND_J01_HOSTED"] == "1",
+              ProcessInfo.processInfo.environment["BLIND_J01_EPHEMERAL_SIMULATOR"] == "1",
+              ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil,
+              !debugModelResponseTesting, feedback.debugEnableSilentModelTestTransport() else { return false }
+        debugHostedJourneyEnabled = true; debugHostedJourneyResults = []; debugHostedJourneyDisplays = []; debugHostedNarrationReceipts = []
+        assistantSession.start()
+        return true
+        #else
+        return false
+        #endif
+    }
+    func debugHostedJourneyControl(_ operation: String) -> Bool {
+        guard debugHostedJourneyEnabled, textOnly, ProcessInfo.processInfo.environment["BLIND_J01_HOSTED"] == "1",
+              ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else { return false }
+        switch operation {
+        case "continue": return true // no invented user utterance or completion
+        case "interrupt": interruptOrdinaryConversation(origin: .trustedInterface); return true
+        case "replace_request": cancelDescription(); return true
+        default: return false
+        }
+    }
+    var debugHostedJourneySnapshot: [String: Any] {
+        var current: [String:Any]? = nil
+        if let display=currentModelDisplay, !display.historical,
+           display.revision==currentReplyRevision, display.text==currentReply,
+           modelReplyAllowed(display.lease,text:display.text) {
+            current=["request_id":display.lease.binding.requestID.uuidString,
+                "session_generation":display.lease.binding.sessionGeneration,
+                "lease_id":display.lease.id.uuidString,"revision":display.revision.uuidString,
+                "text":String(display.text.prefix(4096)),"text_truncated":display.text.count>4096]
+        }
+        return ["request_id":requestID.uuidString,"busy":busy,"reply":currentReply,
+         "reply_revision":currentReplyRevision.uuidString,"scene_reply":sceneAnswer,
+         "session_generation":assistantSession.generation,"model_returns":debugHostedJourneyResults,
+         "accepted_displays":debugHostedJourneyDisplays,"current_accepted_display":current.map { $0 as Any } ?? NSNull(),
+         "accepted_display_cap_reached":debugHostedJourneyDisplays.count>=64,
+         "queued_count":feedback.debugModelTestQueued.count,
+         "started_count":feedback.debugModelTestStarted.count,
+         "pending_count":conversationSpeech.count,
+         "physical_authority":false,"audio_delivered":false,
+         "narration_receipts":debugHostedNarrationReceipts,
+         "narration_receipt_cap_reached":debugHostedNarrationReceipts.count>=16,
+         "narration_enabled":ambientDescriptions,"session_state":assistantSession.state.rawValue,
+         "session_may_respond":assistantSession.mayRespond,
+         "session_should_listen":assistantSession.shouldListen,
+         "private_audio_held":assistantSession.privateAudioHeld,
+         "ordinary_audio_permitted":assistantSession.maySpeakOrdinary,
+         "speech_priority":feedback.speechPriority.map { String(describing:$0) } ?? "none"]
+    }
+    private func debugRecordHostedNarration(_ operation: String) {
+        guard debugHostedJourneyEnabled, debugHostedNarrationReceipts.count<16 else { return }
+        debugHostedNarrationReceipts.append(["operation":operation,
+            "uptime":ProcessInfo.processInfo.systemUptime,"request_id":requestID.uuidString,
+            "session_generation":assistantSession.generation,"session_state":assistantSession.state.rawValue,
+            "narration_enabled":ambientDescriptions,"should_listen":assistantSession.shouldListen,
+            "audio_delivered":false,"physical_authority":false])
+    }
+    func debugEndHostedJourney() {
+        guard textOnly,ProcessInfo.processInfo.environment["BLIND_J01_HOSTED"] == "1" else{return}
+        debugHostedJourneyEnabled = false
+        cancelDescription();assistantSession.end();voice.cancel()
+        _ = feedback.stopInformation(announceCancellation:false)
+    }
     var debugModelResponseSinkSnapshot: (queued: [String], started: [String], active: Bool, pending: Int) {
         (feedback.debugModelTestQueued, feedback.debugModelTestStarted,
          feedback.debugModelTestHasActiveAttempt, conversationSpeech.count)
@@ -439,6 +513,26 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
     }
+    @Published private(set) var localEmailDraft = LocalEmailDraft()
+    @Published private(set) var localEmailStatus = ""
+    private var emailSpeechResponse: LocalEmailDraft.Response?
+    private var emailSpeechID: UUID?
+    private var emailSpeechIDs = Set<UUID>()
+    private var emailExpiry: Task<Void, Never>?
+    private var emailDisplay: String?
+    private var emailDisplayRevisions: (reply: UUID, scene: UUID)?
+    @Published private(set) var localRecipe = LocalRecipeCompanion()
+    private struct RecipePlayback {
+        let response: LocalRecipeCompanion.Response
+        var index = 0
+        var pendingID: UUID?
+    }
+    private var recipeImportOwner: (id: UUID, generation: UInt64)?
+    private var recipePlayback: RecipePlayback?
+    private var recipeSpeechIDs = Set<UUID>()
+    private var recipeExpiry: Task<Void, Never>?
+    private var recipeDisplay: String?
+    private var recipeDisplayRevisions: (reply: UUID, scene: UUID)?
     @Published private(set) var assistantDialogue = AssistantDialogue()
     @Published private(set) var assistantPreferences = AssistantPreferences()
     private var preferencesRevision = UUID()
@@ -523,7 +617,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     let feedback = Feedback()
     let wearables = BeltLink()
     let mapping = NativeMapping()
-    private let nativeObservations = NativeARObservationBridge()
+    private lazy var nativeObservations: NativeARObservationBridge = {
+        let bridge = NativeARObservationBridge()
+        bridge.onClassifiedHits = { [weak self] evidence, session, capturedAt in
+            guard let self, self.running, self.cameraAwareness, self.assistantSession.foregroundActive,
+                  !self.simulation, !self.places.scanning,
+                  UUID(uuidString: self.observationFrameID) == session else { return }
+            self.withObservedScene { $0.offerClassifiedHits(evidence, session: session, capturedAt: capturedAt) }
+        }
+        return bridge
+    }()
     private lazy var observedSceneRuntime = MainActor.assumeIsolated {
         let runtime = ObservedSceneRuntime()
         runtime.bindGoalRevision(companionWorkingState.goalRevision)
@@ -539,12 +642,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             return arabic ? "لم تتوفر مشاهدات هندسية حالية بعد." : "No current observed scene yet."
         }
         let state = withObservedScene { $0.liveStatus }
+        let classified = withObservedScene { $0.classifiedHitStatus }
         let bodyPreview = bodyWarningProfile?.recordedBoundsPreview()
         let bodyBasis = bodyPreview.map { "\($0.dimensionSource.rawValue), \($0.missingEvidence.count) unknown bounds" }
             ?? "body profile unavailable"
         return arabic
             ? "خريطة تجريبية: \(snapshot.cells.count) خلايا سطح مرصودة. الحالة: \(state). الجسم: \(bodyBasis). ليست إرشاداً للمشي."
-            : "Scene preview: \(snapshot.cells.count) observed surface cells. Planner: \(state). Body: \(bodyBasis). Not walking guidance."
+            : "Scene preview: \(snapshot.cells.count) observed surface cells. Planner: \(state). Body: \(bodyBasis). \(classified) Not walking guidance."
     }
     let journeys = JourneyStore()
     let voice = VoiceInput()
@@ -1006,11 +1110,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let at = Date()
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
-        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedDocumentSpeechPermission(id: id, text: text) ?? false) && (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
+        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.emailSpeechPermission(id: id, text: text) ?? false) && (self?.recipeSpeechPermission(id: id, text: text) ?? false) && (self?.selectedDocumentSpeechPermission(id: id, text: text) ?? false) && (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
             (self?.boardingSpeechPermission(id: id, text: text) ?? false) &&
             (self?.capturedTextSpeechPermission(id: id, text: text) ?? false) }
         feedback.onRequestedSpeechStarted = { [weak self] id, text in
             guard let self else { return }
+            if self.emailSpeechIDs.contains(id) {
+                if self.emailSpeechPermission(id: id, text: text) { self.showLocalEmailReply(text) }
+                return
+            }
+            if self.recipeSpeechIDs.contains(id) {
+                if self.recipeSpeechPermission(id: id, text: text) { self.showRecipeReply(text) }
+                return
+            }
             if self.selectedDocumentSpeechIDs.contains(id) {
                 if let context = self.selectedDocumentContext(), self.selectedDocument.started(id: id, text: text, context: context) {
                     self.showSelectedDocumentReply(text)
@@ -1022,6 +1134,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.finishEmailSpeech(id: id, text: text, outcome: outcome) { return }
+            if self.finishRecipeSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishSelectedDocumentSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishCapturedTextSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishBoardingSpeech(id: id, text: text, outcome: outcome) { return }
@@ -1082,6 +1196,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.drainConversationSpeech()
         }
         feedback.onIdle = { [weak self] in
+            self?.speakNextRecipePart()
             self?.speakNextSelectedDocumentPhrase()
             self?.drainConversationSpeech()
             self?.speakNextSelectedPhotoPhrase()
@@ -1291,6 +1406,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     && current.registryInstallationID==destination.registryInstallationID
             })
         }
+        guard meshCandidateDiagnostics.canYieldCamera else {
+            return "Release the normal-camera full-mesh diagnostic first and wait for its ownership acknowledgement, then re-confirm. No camera handoff occurred."
+        }
         seatedDiagnosticHold = true // Before cleanup can trigger late completions.
         stop()
         do {
@@ -1494,6 +1612,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let now = ProcessInfo.processInfo.systemUptime
             #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
             if !self.simulation && now - self.lastFrameWallTime > 0.5 { self.meshCandidateDiagnostics.stop() }
+            self.meshCandidateDiagnostics.revalidate()
             #endif
             self.expireBackgroundPerception(now: now)
             self.expireItemAppearanceLookup(now: now)
@@ -1532,7 +1651,54 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
     // Internal developer-only control; no persisted setting or normal-build API.
     func setMeshCandidateDiagnosticsEnabled(_ enabled: Bool) {
+        meshCandidateDiagnostics.onChange = { [weak self] in self?.objectWillChange.send() }
         meshCandidateDiagnostics.setEnabled(enabled)
+    }
+    var meshCandidateDiagnosticsEnabled: Bool { meshCandidateDiagnostics.enabled }
+    var meshCandidateDiagnosticsCanEnable: Bool { meshCandidateDiagnostics.canEnable }
+    var meshCandidateDiagnosticsCanRelease: Bool { !meshCandidateDiagnostics.canYieldCamera && !meshCandidateDiagnostics.isReleasing }
+    func releaseFullObservedMeshDiagnostic() {
+        meshCandidateDiagnostics.discard { [weak self] in self?.objectWillChange.send() }
+    }
+    var fullObservedMeshDiagnosticStatus: String {
+        meshCandidateDiagnostics.displayStatus
+    }
+    var fullObservedMeshDiagnosticPoints: [String] {
+        meshCandidateDiagnostics.displayPoints.enumerated().map {
+            "Historical native point \($0.offset): \($0.element) metres (not movement guidance)"
+        }
+    }
+    /// Explicit historical look-ahead inspection only. No body-foot/location claim,
+    /// normal guidance output, model decision or old map registration is issued.
+    func checkFullObservedMeshCandidate() {
+        meshCandidateDiagnostics.retireRequestedPreview()
+        guard normalCameraCallbackAllowed, running, !simulation, !places.scanning,
+              !phoneDetection.hazard.requiresImmediateAttention,
+              let sessionID = UUID(uuidString: observationFrameID),
+              let frame = meshCandidateDiagnostics.latestFrame, frame.session == sessionID,
+              let plan = observedScenePlan, plan.sessionID == sessionID,
+              withObservedScene({ $0.diagnosticIntentIsCurrent(session: sessionID, revision: plan.goalRevision) }),
+              plan.local.state == .candidatePath,
+              let start = plan.local.points.first, let goal = plan.local.points.last,
+              let capturedAt = plan.capturedAt,
+              let profile = bodyWarningProfile?.recordedBoundsPreview(), let body = profile.envelope else { return }
+        let goalRevision = companionWorkingState.goalRevision
+        let request = MeshCandidateDiagnostics.Request(id: UUID(), frame: frame,
+            goalRevision: plan.goalRevision, profileRevision: profile.profileRevision, mountRevision: profile.mountRevision,
+            sceneRevision: plan.sceneRevision, sceneCapturedAt: capturedAt,
+            start: [Float(start.x),Float(start.y),Float(start.z)], goal: [Float(goal.x),Float(goal.y),Float(goal.z)],
+            radius: Float(body.radius), height: Float(body.height), margin: Float(body.margin))
+        meshCandidateDiagnostics.check(request) { [weak self] in
+            guard let self, self.normalCameraCallbackAllowed, self.running, !self.simulation, !self.places.scanning,
+                  self.observationFrameID == sessionID.uuidString,
+                  self.companionWorkingState.goalRevision == goalRevision,
+                  self.withObservedScene({ $0.diagnosticIntentIsCurrent(session: sessionID, revision: plan.goalRevision) }),
+                  !self.phoneDetection.hazard.requiresImmediateAttention,
+                  let current = self.bodyWarningProfile?.recordedBoundsPreview(),
+                  current.profileRevision == profile.profileRevision, current.mountRevision == profile.mountRevision,
+                  current.envelope == body else { return false }
+            return true
+        }
     }
     func discardMeshCandidateDiagnostics(completion: @escaping () -> Void) {
         meshCandidateDiagnostics.discard(completion: completion)
@@ -1697,6 +1863,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             withObservedScene { $0.offer(observation, session: sceneSession, floor: detector.floorHeight,
                 body: bodyWarningProfile?.recordedBoundsPreview()?.envelope, now: ProcessInfo.processInfo.systemUptime, hazard: phoneDetection.hazard) }
         }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        // Opted-in complete-anchor capture follows urgent hazards; native buffers
+        // stay in this serialized callback. Sparse history capture is unchanged.
+        if !phoneDetection.hazard.requiresImmediateAttention, let meshSession = UUID(uuidString: observationFrameID) {
+            meshCandidateDiagnostics.observe(frame: frame, session: meshSession, now: ProcessInfo.processInfo.systemUptime)
+        } else { meshCandidateDiagnostics.stop() }
+        #endif
         survey.observe(observation, floor: detector.floorHeight)
         calibrationProgress = detector.calibrationProgress; publish()
         #if DEBUG
@@ -1910,6 +2083,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        retireEmailOutput()
+        retireRecipePlayback()
         modelResponseAuthority.invalidate()
         latestModelReports = []; latestModelEvidence = []
         // Preserve explicit history but retire its current-observation authority.
@@ -2086,6 +2261,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
     }
     func scanPlace(name: String, compare: Bool = false) {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        guard meshCandidateDiagnostics.canYieldCamera else {
+            message = "Release the normal-camera full-mesh diagnostic and wait for acknowledgement before RoomPlan. No camera handoff occurred."
+            return
+        }
+        #endif
         guard normalCameraSessionAllowed else { return }
         guard running, !simulation, !places.scanning else { message = "Start the live camera first."; return }
         guard !compare || recognizedPlace != nil else { message = "Recognize a saved place before comparing."; return }
@@ -2871,11 +3052,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     func readScene(cloud: Bool, question: String = "Describe what is in front of me.", automatic: Bool = false, focus: String = "surroundings") {
-        if automatic, contextualTask != nil || !contextualOutstanding.isEmpty { return }
         #if !BLIND_DEVELOPER_CLOUD
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        // The research/helper question field is not the private command ingress.
+        // Reject this namespace before any diagnostics, model prompt or observed
+        // scene route; never promote automatic/observed text into draft authority.
+        if LocalEmailDraftCommand.isPrivateInput(question) {
+            if assistantQuestion == question { assistantQuestion = "" }
+            if !automatic {
+                message = arabic ? "استخدم محرر البريد المحلي أو أوامر المسودة المكتوبة في المحادثة." : "Use the local email editor or typed companion draft commands."
+            }
+            return
+        }
+        if automatic, contextualTask != nil || !contextualOutstanding.isEmpty { return }
         if !automatic, routeSelectedDocumentCommand(question, origin: .trustedInterface) { return }
         if !automatic { clearSelectedDocument() }
         if !automatic, routeCapturedTextReview(question, origin: .trustedInterface) { return }
@@ -3192,7 +3383,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
-        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) || selectedDocumentSpeechIDs.contains($0) } ?? false
+        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) || selectedDocumentSpeechIDs.contains($0) || recipeSpeechIDs.contains($0) || emailSpeechIDs.contains($0) } ?? false
         #if DEBUG
         var debugDelivered = false
         defer {
@@ -3412,6 +3603,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         searchInFlight = false; trackLookInFlight = false
     }
     func clearAssistantConversation() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         pendingScopedReview = nil; completedScopedReview = nil; scopedReviewError = ""
         clearExploreSnapshot()
         #if DEBUG
@@ -3657,6 +3850,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func clearNarrationHistory() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         clearSelectedDocument()
         purgeCapturedTextPlayback()
         #if DEBUG
@@ -3668,7 +3863,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func receiveCompanionUtterance(_ text: String, fromVoice: Bool = false) {
         recordingCompanionTurn = true; recordedCompanionSourceID = nil
         defer { recordingCompanionTurn = false; recordedCompanionSourceID = nil }
+        let privateDraftInput = text
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if LocalEmailDraftCommand.isPrivateInput(text) {
+            guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
+                  !fromVoice || assistantSession.shouldListen else { return }
+            let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
+            routePrivateEmailDraftInput(privateDraftInput, origin: origin)
+            return // private namespace never enters diagnostics, dialogue, or model fallback
+        }
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
               !fromVoice || assistantSession.shouldListen else {
             #if DEBUG
@@ -3696,6 +3899,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // A read-only clock question needs conversation authority, not goal authority.
         // Intercept before cancellation, everyday-task mutation or camera work.
         if origin == .trustedInterface {
+            if routeLocalRecipeCommand(text, origin: origin) { return }
             if routeSelectedDocumentCommand(text, origin: origin) { return }
             clearSelectedDocument() // before early clock/history/model routes
         }
@@ -3725,8 +3929,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Narration hold preserves the conversation and retained goal. It is not
         // microphone mute, camera off, task cancellation, or inferred addressee detection.
         if AssistantControl.parse(text) == .quiet { _ = handleAssistantControl(text); return }
-        if !ambientDescriptions,
-           text.trimmingCharacters(in: .punctuationCharacters).lowercased() == "continue" {
+        if AssistantControl.resumesHeldNarration(text, isHeld: !ambientDescriptions) {
             _ = handleAssistantControl("resume descriptions"); return
         }
 
@@ -3940,6 +4143,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             currentClockReceipt = receipt.replyIDs.isEmpty ? nil : receipt
         }
         armModelDisplayExpiry()
+        #if DEBUG
+        if debugHostedJourneyEnabled, let lease=modelReply, debugHostedJourneyDisplays.count<64 {
+            debugHostedJourneyDisplays.append([
+                "request_id":lease.binding.requestID.uuidString,"session_generation":lease.binding.sessionGeneration,
+                "lease_id":lease.id.uuidString,"revision":(settled ? currentReplyRevision:sceneAnswerRevision).uuidString,
+                "settled":settled,"text":String(text.prefix(4096)),"text_truncated":text.count>4096,
+                "accepted_at_uptime":ProcessInfo.processInfo.systemUptime,"audio_delivered":false])
+        }
+        #endif
         return true
     }
 
@@ -4021,6 +4233,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// and perception identities unchanged so ongoing sensor work is not retired.
     private func interruptOrdinaryConversation(origin: CompanionCommandOrigin) {
         guard CommandAuthority.permits(.interruptOrdinarySpeech, from: origin) else { return }
+        retireEmailOutput() // interruption is not a draft edit, undo or discard
+        retireRecipePlayback() // interruption retires only speech, not source/step/timer
         modelResponseAuthority.invalidateConversation()
         revalidateModelDisplays()
         feedback.revalidateModelReply()
@@ -4917,6 +5131,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     guard shown else { return }
                     self.streamedConversationText = displayed
                 }
+            #if DEBUG
+            if self.debugHostedJourneyEnabled, self.debugHostedJourneyResults.count < 8 {
+                self.debugHostedJourneyResults.append([
+                    "request_id":id.uuidString,"returned_at_uptime":ProcessInfo.processInfo.systemUptime,
+                    "text_present":answer.text != nil,"text":answer.text.map { String($0.prefix(4096)) } ?? "",
+                    "text_truncated":(answer.text?.count ?? 0)>4096,"status":String(answer.status.prefix(512)),
+                    "runtime_failure":answer.conversationRuntimeFailure.map { String(describing:$0) } ?? "none",
+                    "cancelled":Task.isCancelled,"current_request":self.requestID == id])
+            }
+            #endif
             // Re-evaluate the action prerequisites after inference; a new request or
             // changed objective invalidates the old decision before it can act.
             let admission = CompanionReactiveSequence.tick([
@@ -5021,11 +5245,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             goalRevision: companionWorkingState.goalRevision, origin: .trustedInterface)
         interruptedSearch.cancel()
         cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false
+        #if DEBUG
+        debugRecordHostedNarration("hold")
+        #endif
     }
     func resumeDescriptions() {
         ambientDescriptions = true
         heldSearchIntent.resume(origin: .trustedInterface)
         resumeHeldSearchIfPossible()
+        #if DEBUG
+        debugRecordHostedNarration("resume")
+        #endif
     }
     private func resumeHeldSearchIfPossible() {
         guard assistantSession.state == .active, running, !busy, !voice.awaitingUtterance,
@@ -5460,6 +5690,8 @@ extension NavigationModel {
 
     /// Camera work always stops in the background; listening follows explicit opt-in.
     func suspendExperience() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         voiceRoomScan.cancel()
         clearSelectedDocument()
         defer { updateLiveActivity() }
@@ -5494,6 +5726,8 @@ extension NavigationModel {
     }
 
     func muteConversation() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         voiceRoomScan.cancel()
         clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
@@ -5510,6 +5744,8 @@ extension NavigationModel {
     }
 
     func endConversation() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
         stopSeatedMeshDiagnostic()
         #endif
@@ -5559,6 +5795,19 @@ extension NavigationModel {
     }
 
     func repeatHomeInformation() {
+        if emailDisplay != nil {
+            // Repeats use the original exact draft receipt, never renew its deadline.
+            if let response = emailSpeechResponse, emailOutputAllowed,
+               localEmailDraft.validates(response, generation: assistantSession.generation,
+                                         uptime: ProcessInfo.processInfo.systemUptime) {
+                presentLocalEmailResponse(response)
+            } else { retireEmailOutput() }
+            return
+        }
+        if recipeDisplay != nil {
+            _ = routeLocalRecipeCommand("read recipe step", origin: .trustedInterface)
+            return // private source repeats never fall through to ordinary history
+        }
         if selectedDocument.selection != nil || selectedDocumentImportOwner != nil || selectedDocumentDisplay != nil {
             repeatSelectedDocumentGuidance(); return
         }
@@ -8151,3 +8400,352 @@ private final class PracticeRuntimeDiagnostic {
 }
 #endif
 
+
+#if DEBUG
+extension NavigationModel {
+    /// Exercises the real authority boundary without starting the microphone or model.
+    @discardableResult func debugRouteLocalRecipeCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard textOnly, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else { return false }
+        return routeLocalRecipeCommand(text, origin: origin)
+    }
+}
+#endif
+
+// MARK: - Explicitly selected recipe -> trusted companion command adapter.
+// No model tool or raw microphone can read/mutate this private source.
+extension NavigationModel {
+    private var recipeOutputAllowed: Bool {
+        assistantSession.foregroundActive && assistantSession.mayRespond &&
+            !assistantSession.privateAudioHeld && !detection.hazard.isUrgent && ambientDescriptions
+    }
+    func beginLocalRecipeSelection() -> UUID? {
+        clearLocalRecipe()
+        guard assistantSession.foregroundActive else { return nil }
+        let id = UUID(); recipeImportOwner = (id, assistantSession.generation)
+        return id
+    }
+    func ownsLocalRecipeSelection(_ owner: UUID) -> Bool {
+        recipeImportOwner?.id == owner && recipeImportOwner?.generation == assistantSession.generation &&
+            assistantSession.foregroundActive
+    }
+    @discardableResult func selectLocalRecipe(_ data: Data, owner: UUID) -> Bool {
+        guard ownsLocalRecipeSelection(owner) else { return false }
+        clearLocalRecipe() // replacement/failure cannot retain an older revision
+        do {
+            let source = try LocalRecipeReference.decode(data)
+            let hash = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            return localRecipe.select(source, sha256: hash, generation: assistantSession.generation,
+                                      origin: .trustedInterface) != nil
+        } catch { return false }
+    }
+    @discardableResult func enableLocalRecipeCommands(_ selected: LocalRecipeCompanion.Selection) -> Bool {
+        guard assistantSession.foregroundActive else { return false }
+        return localRecipe.enable(selected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func clearLocalRecipe() {
+        recipeImportOwner = nil
+        localRecipe.clear()
+        retireRecipePlayback()
+    }
+    func cancelLocalRecipeSelection(_ owner: UUID) {
+        guard recipeImportOwner?.id == owner else { return }
+        clearLocalRecipe()
+    }
+    func localRecipeReaderDisappeared() {
+        // A presented picker may temporarily cover the reader. Its own current
+        // owner/generation gates the eventual import; Stop/background retires it.
+        guard recipeImportOwner == nil else { return }
+        if localRecipe.enabled {
+            // Explicit opt-in retains the bounded source, not a hidden page timer.
+            localRecipe.cancelTimer(); retireRecipePlayback()
+        } else { clearLocalRecipe() }
+    }
+    func tickLocalRecipe() {
+        guard assistantSession.foregroundActive else { clearLocalRecipe(); return }
+        localRecipe.tick(uptime: ProcessInfo.processInfo.systemUptime)
+    }
+    func localRecipeReaderCommand(_ command: LocalRecipeCommand) {
+        retireRecipePlayback()
+        guard let selected = localRecipe.selection, assistantSession.foregroundActive else { return }
+        _ = localRecipe.execute(command, selection: selected, generation: assistantSession.generation,
+            origin: .trustedInterface, uptime: ProcessInfo.processInfo.systemUptime,
+            arabic: arabic, readerControl: true)
+        // Buttons edit/display the same source state; they do not grant companion access.
+        localRecipe.retireResponse()
+    }
+    @discardableResult private func routeLocalRecipeCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard origin == .trustedInterface, let command = LocalRecipeCommand.parse(text) else { return false }
+        interruptOrdinaryConversation(origin: origin)
+        clearSelectedDocument(); purgeCapturedTextPlayback(); clearExploreSnapshot()
+        retireRecipePlayback()
+        if command == .forget {
+            clearLocalRecipe()
+            if recipeOutputAllowed { deliverConversationReply(arabic ? "نسيت الوصفة وألغيت مؤقتها." : "Forgot the recipe and cancelled its timer.") }
+            return true
+        }
+        guard recipeOutputAllowed else { return true }
+        guard localRecipe.enabled, let selected = localRecipe.selection else {
+            deliverConversationReply(arabic ? "اختر وصفة محلية وفعل أوامر المحادثة المكتوبة أولاً." : "Select a local recipe and enable typed companion commands first.")
+            return true
+        }
+        guard let response = localRecipe.execute(command, selection: selected,
+            generation: assistantSession.generation, origin: origin,
+            uptime: ProcessInfo.processInfo.systemUptime, arabic: arabic) else { return true }
+        recipePlayback = RecipePlayback(response: response)
+        let owner = response.id
+        recipeExpiry = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(LocalRecipeCompanion.responseLifetime)) } catch { return }
+            guard let self, self.recipePlayback?.response.id == owner else { return }
+            self.retireRecipePlayback()
+        }
+        if textOnly {
+            // Private source output is volatile: never dialogue/model context/history.
+            showRecipeReply(response.parts.joined(separator: "\n"))
+        } else { speakNextRecipePart() }
+        return true
+    }
+    private func showRecipeReply(_ text: String) {
+        recipeDisplay = text; currentReply = text; sceneAnswer = text
+        recipeDisplayRevisions = (currentReplyRevision, sceneAnswerRevision)
+    }
+    private func retireRecipePlayback() {
+        let pending = recipePlayback?.pendingID
+        recipePlayback = nil; localRecipe.retireResponse()
+        recipeExpiry?.cancel(); recipeExpiry = nil
+        if let display = recipeDisplay, let revisions = recipeDisplayRevisions {
+            if currentReplyRevision == revisions.reply, currentReply == display { currentReply = "" }
+            if sceneAnswerRevision == revisions.scene, sceneAnswer == display { sceneAnswer = "" }
+        }
+        recipeDisplay = nil; recipeDisplayRevisions = nil
+        // Retain callback tombstones; late completions never enter ordinary history.
+        if let pending { feedback.stopRequestedSpeech(pending) }
+    }
+    private func recipeSpeechPermission(id: UUID, text: String) -> Bool {
+        guard recipeSpeechIDs.contains(id) else { return true }
+        guard recipeOutputAllowed, let playback = recipePlayback, playback.pendingID == id,
+              playback.response.parts.indices.contains(playback.index),
+              playback.response.parts[playback.index].utf8.elementsEqual(text.utf8) else { return false }
+        return localRecipe.validates(playback.response, generation: assistantSession.generation,
+                                     uptime: ProcessInfo.processInfo.systemUptime)
+    }
+    private func speakNextRecipePart() {
+        guard !textOnly, recipeOutputAllowed, feedback.speechPriority == nil, !voice.awaitingUtterance,
+              let playback = recipePlayback, playback.pendingID == nil,
+              playback.response.parts.indices.contains(playback.index), recipeSpeechIDs.count < 16,
+              localRecipe.validates(playback.response, generation: assistantSession.generation,
+                                    uptime: ProcessInfo.processInfo.systemUptime) else { return }
+        let id = UUID(), text = playback.response.parts[playback.index]
+        recipeSpeechIDs.insert(id); recipePlayback?.pendingID = id
+        if !speakRequested(text, replace: false, speechID: id) {
+            recipeSpeechIDs.remove(id); retireRecipePlayback() // no pretend delivery or endless budget retry
+        }
+    }
+    @discardableResult private func finishRecipeSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard recipeSpeechIDs.contains(id) else { return false }
+        let valid = recipeSpeechPermission(id: id, text: text)
+        recipeSpeechIDs.remove(id)
+        guard recipePlayback?.pendingID == id else { return true }
+        guard valid, outcome == .completed else { retireRecipePlayback(); return true }
+        recipePlayback?.pendingID = nil; recipePlayback?.index += 1
+        // Only real completion advances speech; source-step/cooking completion is unchanged.
+        // Feedback's normal idle callback dispatches another bounded part if allowed.
+        return true
+    }
+}
+
+// MARK: - Private user-authored email draft, trusted commands and native review only.
+extension NavigationModel {
+    private var emailOutputAllowed: Bool {
+        assistantSession.foregroundActive && assistantSession.mayRespond &&
+            !assistantSession.privateAudioHeld && !detection.hazard.isUrgent && ambientDescriptions
+    }
+    @discardableResult func openLocalEmailDraft() -> UUID? {
+        guard assistantSession.foregroundActive else { return nil }
+        return localEmailDraft.open(generation: assistantSession.generation, origin: .trustedInterface)?.id
+    }
+    @discardableResult func enableLocalEmailCommands(_ expected: LocalEmailDraft.Snapshot) -> Bool {
+        guard assistantSession.foregroundActive else { return false }
+        return localEmailDraft.enable(expected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func clearLocalEmailDraft() {
+        localEmailDraft.clear(); localEmailStatus = ""
+        retireEmailOutput()
+    }
+    func discardLocalEmailDraft(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive,
+              localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        clearLocalEmailDraft()
+    }
+    func localEmailReaderDisappeared(owner: UUID?) {
+        guard let owner, localEmailDraft.snapshot?.id == owner else { return }
+        if !localEmailDraft.commandsEnabled && localEmailDraft.handoff == nil { clearLocalEmailDraft() }
+        else { retireEmailOutput() }
+    }
+    func editLocalEmailField(_ field: LocalEmailDraft.Field, text: String, expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive,
+              localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        retireEmailOutput()
+        if !localEmailDraft.edit(field, value: text, expected: expected, generation: assistantSession.generation,
+                                origin: .trustedInterface) {
+            localEmailStatus = arabic ? "لم يُطبق التعديل. تحقق من حدود النص وعدم فتح البريد." : "Edit not applied. Check text limits and close Mail review first."
+        } else { localEmailStatus = "" }
+    }
+    func checkpointLocalEmailDraft(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive, localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        _ = localEmailDraft.saveCheckpoint(expected: expected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func undoLocalEmailDraft(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive, localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        retireEmailOutput()
+        _ = localEmailDraft.undo(expected: expected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func requestLocalEmailMailReview(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive,
+              localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        prepareLocalEmailMailReview(expected, available: MFMailComposeViewController.canSendMail())
+    }
+    private func prepareLocalEmailMailReview(_ expected: LocalEmailDraft.Snapshot, available: Bool) {
+        retireEmailOutput()
+        guard available else {
+            localEmailStatus = arabic ? "فتح البريد غير متاح. بقيت المسودة محلية ولم تُرسل." : "Mail review unavailable. The draft remains local and was not sent."
+            return
+        }
+        guard localEmailDraft.beginHandoff(expected: expected, generation: assistantSession.generation,
+            origin: .trustedInterface) != nil else {
+            localEmailStatus = arabic ? "راجع المستلم والموضوع والنص قبل فتح البريد. لم تُرسل رسالة." : "Check the recipient, subject and body before Mail review. No message was sent."
+            return
+        }
+        localEmailStatus = arabic ? "فُتح البريد للمراجعة. لا يرسل التطبيق تلقائياً." : "Opened Mail for your review. This app does not send automatically."
+    }
+    func ownsLocalEmailHandoff(_ handoff: LocalEmailDraft.Handoff) -> Bool {
+        assistantSession.foregroundActive && localEmailDraft.ownsHandoff(handoff, generation: assistantSession.generation)
+    }
+    func finishLocalEmailHandoff(_ id: UUID, outcome: LocalEmailDraft.MailOutcome) {
+        guard let handoff = localEmailDraft.handoff, handoff.id == id,
+              localEmailDraft.finishHandoff(handoff, generation: assistantSession.generation) else { return }
+        switch outcome {
+        case .cancelled: localEmailStatus = arabic ? "أُلغي في البريد. لم يتأكد إرسال." : "Cancelled in Mail. No send confirmed."
+        case .saved: localEmailStatus = arabic ? "أفاد البريد بحفظ المسودة. لم تُرسل." : "Mail reports the draft saved. Not sent."
+        case .queued: localEmailStatus = arabic ? "قبل البريد الرسالة للإرسال. لم يتأكد التسليم أو الاستلام." : "Mail accepted the message for sending. Delivery and receipt are not confirmed."
+        case .failed: localEmailStatus = arabic ? "أبلغ البريد عن خطأ. لم يتأكد إرسال ناجح." : "Mail reported a failure. No successful send confirmed."
+        case .unknown: localEmailStatus = arabic ? "نتيجة البريد غير معروفة. لم يتأكد إرسال." : "Mail outcome unknown. No send confirmed."
+        }
+    }
+    private func routePrivateEmailDraftInput(_ text: String, origin: CompanionCommandOrigin) {
+        // This boundary intentionally precedes the ordinary input logger and the
+        // unverified model path: even rejected draft literals stay private.
+        guard origin == .trustedInterface else {
+            interruptOrdinaryConversation(origin: origin)
+            if origin == .unverifiedMicrophone {
+                unverifiedConversationReply(arabic ? "تتطلب أوامر المسودة الخاصة استخدام الكتابة." : "Private draft commands require typed controls.")
+            }
+            return
+        }
+        interruptOrdinaryConversation(origin: origin)
+        clearSelectedDocument(); purgeCapturedTextPlayback(); clearExploreSnapshot()
+        guard let command = LocalEmailDraftCommand.parse(text) else {
+            if emailOutputAllowed { deliverConversationReply(arabic ? "استخدم صيغة أوامر المسودة المعروضة في محرر البريد." : "Use the draft-command syntax shown in the local email editor.") }
+            return
+        }
+        if command == .discard {
+            clearLocalEmailDraft()
+            if emailOutputAllowed { deliverConversationReply(arabic ? "حُذفت المسودة المحلية ونقاط التراجع. هذا لا يلغي رسالة أرسلتها في البريد." : "Local draft and checkpoints discarded. This cannot undo a message you sent in Mail.") }
+            return
+        }
+        guard emailOutputAllowed else { return }
+        guard localEmailDraft.commandsEnabled, let expected = localEmailDraft.snapshot else {
+            deliverConversationReply(arabic ? "افتح محرر البريد المحلي وفعل أوامر المسودة المكتوبة أولاً." : "Open the local email editor and enable typed draft commands first.")
+            return
+        }
+        let generation = assistantSession.generation
+        let changed: Bool
+        switch command {
+        case .recipient(let literal): changed = localEmailDraft.edit(.recipient, value: literal, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .subject(let literal): changed = localEmailDraft.edit(.subject, value: literal, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .body(let literal): changed = localEmailDraft.edit(.body, value: literal, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .append(let literal):
+            let combined = expected.content.body.isEmpty ? literal : expected.content.body + "\n\n" + literal
+            changed = localEmailDraft.edit(.body, value: combined, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .checkpoint: changed = localEmailDraft.saveCheckpoint(expected: expected, generation: generation, origin: origin)
+        case .undo: changed = localEmailDraft.undo(expected: expected, generation: generation, origin: origin)
+        case .handoff: requestLocalEmailMailReview(expected: expected); return
+        case .readRecipient, .readSubject, .readBody, .nextPart, .previousPart:
+            if let response = localEmailDraft.read(command, expected: expected, generation: generation,
+                origin: origin, uptime: ProcessInfo.processInfo.systemUptime, arabic: arabic) {
+                presentLocalEmailResponse(response)
+            } else {
+                localEmailStatus = arabic ? "لا يوجد جزء قابل للقراءة لهذا الطلب. راجع الحقل والجزء في المحرر." : "No readable part for that request. Check the field and review position in the editor."
+                deliverConversationReply(localEmailStatus)
+            }
+            return
+        case .discard: return
+        }
+        localEmailStatus = changed
+            ? (arabic ? "حُدثت المسودة المحلية فقط. لم تُرسل رسالة." : "Local draft state updated only. No message was sent.")
+            : (arabic ? "لم يتغير النص. تحقق من الحدود ونقاط التراجع وإغلاق البريد." : "Draft unchanged. Check limits, checkpoints and whether Mail review is open.")
+        deliverConversationReply(localEmailStatus) // fixed status, never the private literal
+    }
+    private func showLocalEmailReply(_ text: String) {
+        emailDisplay = text; currentReply = text; sceneAnswer = text
+        emailDisplayRevisions = (currentReplyRevision, sceneAnswerRevision)
+    }
+    private func presentLocalEmailResponse(_ response: LocalEmailDraft.Response) {
+        guard emailOutputAllowed, localEmailDraft.validates(response, generation: assistantSession.generation,
+            uptime: ProcessInfo.processInfo.systemUptime) else { return }
+        // Retire an old transport without replacing the source receipt or its deadline.
+        if let old = emailSpeechID { emailSpeechID = nil; feedback.stopRequestedSpeech(old) }
+        emailSpeechResponse = response
+        emailExpiry?.cancel()
+        let owner = response.id
+        let remaining = max(0, LocalEmailDraft.responseLifetime - (ProcessInfo.processInfo.systemUptime - response.issuedAt))
+        emailExpiry = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(remaining)) } catch { return }
+            guard let self, self.emailSpeechResponse?.id == owner else { return }
+            self.retireEmailOutput()
+        }
+        if textOnly { showLocalEmailReply(response.text); return }
+        guard feedback.speechPriority == nil, emailSpeechIDs.count < 16 else { retireEmailOutput(); return }
+        let id = UUID(); emailSpeechID = id; emailSpeechIDs.insert(id)
+        if !speakRequested(response.text, replace: false, speechID: id) {
+            emailSpeechIDs.remove(id); retireEmailOutput()
+        }
+    }
+    private func retireEmailOutput() {
+        let pending = emailSpeechID
+        emailSpeechID = nil; emailSpeechResponse = nil; localEmailDraft.retireResponse()
+        emailExpiry?.cancel(); emailExpiry = nil
+        if let display = emailDisplay, let revisions = emailDisplayRevisions {
+            if currentReplyRevision == revisions.reply, currentReply == display { currentReply = "" }
+            if sceneAnswerRevision == revisions.scene, sceneAnswer == display { sceneAnswer = "" }
+        }
+        emailDisplay = nil; emailDisplayRevisions = nil
+        if let pending { feedback.stopRequestedSpeech(pending) }
+    }
+    private func emailSpeechPermission(id: UUID, text: String) -> Bool {
+        guard emailSpeechIDs.contains(id) else { return true }
+        guard emailOutputAllowed, emailSpeechID == id, let response = emailSpeechResponse,
+              response.text.utf8.elementsEqual(text.utf8) else { return false }
+        return localEmailDraft.validates(response, generation: assistantSession.generation,
+                                        uptime: ProcessInfo.processInfo.systemUptime)
+    }
+    @discardableResult private func finishEmailSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard emailSpeechIDs.contains(id) else { return false }
+        let valid = emailSpeechPermission(id: id, text: text)
+        emailSpeechIDs.remove(id)
+        guard emailSpeechID == id else { return true } // retired callback remains private
+        emailSpeechID = nil
+        if !valid || outcome != .completed { retireEmailOutput() }
+        return true // never pass private text to dialogue, task completion or logging
+    }
+}
+#if DEBUG
+extension NavigationModel {
+    /// No UIView/controller is created; this executes only the real ownership
+    /// policy with a synthetic Mail availability result in an isolated test model.
+    func debugPrepareLocalEmailHandoff(available: Bool) {
+        guard textOnly, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil,
+              let expected = localEmailDraft.snapshot else { return }
+        prepareLocalEmailMailReview(expected, available: available)
+    }
+}
+#endif

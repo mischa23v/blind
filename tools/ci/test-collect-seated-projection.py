@@ -5,14 +5,17 @@ from unittest.mock import patch
 P=Path(__file__).parent;s=importlib.util.spec_from_file_location('seated',P/'collect-seated-projection.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 SOURCE=(P.parents[1]/'ios/BlindAssistTests/SeatedMeshProjectionTests.swift').read_text()
 COLLISION_SOURCE=(P.parents[1]/'ios/BlindAssistTests/SeatedCollisionBridgeTests.swift').read_text()
+NORMAL_SOURCE=(P.parents[1]/'ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift').read_text()
+def collect(cases,summary,log,command,source,collision_source,normal_source=NORMAL_SOURCE):
+ return m.collect(cases,summary,log,command,source,collision_source,normal_source)
 CASES=[{'identifier':x+'()','result':'Passed'} for x in m.EXPECTED]
-SUMMARY={'result':'Passed','totalTestCount':21,'passedTests':21,'failedTests':0,'skippedTests':0,'expectedFailures':0}
+SUMMARY={'result':'Passed','totalTestCount':26,'passedTests':26,'failedTests':0,'skippedTests':0,'expectedFailures':0}
 LOG='\n'.join(f"Test Case '-[BlindAssistTests.{x.split('/')[0]} {x.split('/')[1]}]' "+('started.' if event=='started' else 'passed (0.001 seconds).') for x in m.EXPECTED for event in ['started','passed'])+'\n'
 MAPPED=['SeatedMeshProjectionTests/testMappedDestinationFeedsActualStrictQueryAndCollisionReceipt', 'SeatedMeshProjectionTests/testMappedDestinationRefusesMissingWrongStaleAndCrossFloorAssociation', 'SeatedMeshProjectionTests/testMappedDestinationRetiresHeldResultsOnRestartMapGoalAndSourceChanges']
 class Tests(unittest.TestCase):
- def reject(self,cases=CASES,summary=SUMMARY,log=LOG,command={'exit_code':0},source=SOURCE,collision_source=COLLISION_SOURCE):
-  with self.assertRaises((ValueError,KeyError)):m.collect(cases,summary,log,command,source,collision_source)
- def test_exact21(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE,COLLISION_SOURCE)['executed'],21)
+ def reject(self,cases=CASES,summary=SUMMARY,log=LOG,command={'exit_code':0},source=SOURCE,collision_source=COLLISION_SOURCE,normal_source=NORMAL_SOURCE):
+  with self.assertRaises((ValueError,KeyError)):collect(cases,summary,log,command,source,collision_source,normal_source)
+ def test_exact26(self):self.assertEqual(collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE,COLLISION_SOURCE)['executed'],26)
  def test_missing_case(self):self.reject(cases=CASES[:-1])
  def test_duplicate_case(self):self.reject(cases=CASES[:-1]+CASES[:1])
  def test_failed_case(self):self.reject(cases=[dict(CASES[0],result='Failed')]+CASES[1:])
@@ -23,7 +26,7 @@ class Tests(unittest.TestCase):
  def test_missing_exit(self):self.reject(command={})
  def test_bad_summary(self):self.reject(summary=dict(SUMMARY,totalTestCount=9))
  def test_missing_log_pair_is_explicit_secondary_evidence(self):
-  result=m.collect(CASES,SUMMARY,'\n'.join(LOG.splitlines()[2:]),{'exit_code':0},SOURCE,COLLISION_SOURCE)
+  result=collect(CASES,SUMMARY,'\n'.join(LOG.splitlines()[2:]),{'exit_code':0},SOURCE,COLLISION_SOURCE)
   self.assertEqual(result['consoleEvidence']['missing'],[m.EXPECTED[0]])
   self.assertEqual(result['consoleEvidence']['status'],'incomplete')
  def test_failed_log(self):self.reject(log=LOG.replace('passed','failed',1))
@@ -34,46 +37,46 @@ class Tests(unittest.TestCase):
  def test_source_rename(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[0].split('/')[1]+'(', 'func testUnexpected('))
  def test_source_flag_removal(self):self.reject(source=SOURCE.replace('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n','',1))
  def test_empty_log_cannot_hide_missing_structured_evidence(self):
-  result=m.collect(CASES,SUMMARY,'',{'exit_code':0},SOURCE,COLLISION_SOURCE)
+  result=collect(CASES,SUMMARY,'',{'exit_code':0},SOURCE,COLLISION_SOURCE)
   self.assertEqual(result['consoleEvidence']['status'],'not_observed')
   self.assertEqual(result['consoleEvidence']['missing'],m.EXPECTED)
   self.reject(log='',cases=[])
   self.reject(log='',command={'exit_code':65})
- def test_unqualified_hosted_class(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE,COLLISION_SOURCE)['executed'],21)
+ def test_unqualified_hosted_class(self):self.assertEqual(collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE,COLLISION_SOURCE)['executed'],26)
  def test_original10_alone_rejected(self):self.reject(cases=CASES[:10],summary=dict(SUMMARY,totalTestCount=10,passedTests=10),log='\n'.join(LOG.splitlines()[:20])+'\n')
  def test_original10_still_required(self):self.assertEqual(len(m.EXPECTED[:10]),10);self.reject(cases=CASES[1:])
  def test_new_case_source_missing(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[11].split('/')[1]+'(', 'func helper('))
- def test_new_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:11]+[dict(CASES[11],result='Failed')]+CASES[12:],summary=dict(SUMMARY,passedTests=20,failedTests=1))
- def test_new_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:11]+[dict(CASES[11],result='Skipped')]+CASES[12:],summary=dict(SUMMARY,passedTests=20,skippedTests=1))
+ def test_new_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:11]+[dict(CASES[11],result='Failed')]+CASES[12:],summary=dict(SUMMARY,passedTests=25,failedTests=1))
+ def test_new_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:11]+[dict(CASES[11],result='Skipped')]+CASES[12:],summary=dict(SUMMARY,passedTests=25,skippedTests=1))
  def test_class_renamed(self):self.reject(source=SOURCE.replace('class SeatedMeshProjectionTests:', 'class OtherTests:'))
  def test_multiline_declarations(self):
   source=SOURCE.replace('final class SeatedMeshProjectionTests: XCTestCase {','final class\nSeatedMeshProjectionTests:\nXCTestCase\n{').replace('func '+m.EXPECTED[11].split('/')[1]+'(', 'func\n'+m.EXPECTED[11].split('/')[1]+'\n(')
-  self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],21)
+  self.assertEqual(collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],26)
  def test_original12_alone_rejected(self):self.reject(cases=CASES[:12],summary=dict(SUMMARY,totalTestCount=12,passedTests=12),log='\n'.join(LOG.splitlines()[:24])+'\n')
  def test_original12_prefix_and_readiness_identity(self):
   self.assertEqual(len(m.EXPECTED[:12]),12)
   self.assertEqual(m.EXPECTED[12:13],['SeatedMeshProjectionTests/testActualSourceAndStrictQueryCompleteWhileOptionalRenderIsHeld'])
- def test_readiness_case_missing(self):self.reject(cases=CASES[:12]+CASES[13:],summary=dict(SUMMARY,totalTestCount=20,passedTests=20))
- def test_readiness_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:12]+[dict(CASES[12],result='Failed')]+CASES[13:],summary=dict(SUMMARY,passedTests=20,failedTests=1))
- def test_readiness_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:12]+[dict(CASES[12],result='Skipped')]+CASES[13:],summary=dict(SUMMARY,passedTests=20,skippedTests=1))
+ def test_readiness_case_missing(self):self.reject(cases=CASES[:12]+CASES[13:],summary=dict(SUMMARY,totalTestCount=25,passedTests=25))
+ def test_readiness_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:12]+[dict(CASES[12],result='Failed')]+CASES[13:],summary=dict(SUMMARY,passedTests=25,failedTests=1))
+ def test_readiness_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:12]+[dict(CASES[12],result='Skipped')]+CASES[13:],summary=dict(SUMMARY,passedTests=25,skippedTests=1))
  def test_readiness_source_missing(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[12].split('/')[1]+'(', 'func helper('))
  def test_readiness_source_multiline_declaration(self):
   source=SOURCE.replace('func '+m.EXPECTED[12].split('/')[1]+'(', 'func\n'+m.EXPECTED[12].split('/')[1]+'\n(')
-  self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],21)
+  self.assertEqual(collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],26)
  def test_readiness_duplicate_log_rejected(self):self.reject(log=LOG+'\n'.join(LOG.splitlines()[24:26])+'\n')
  def test_exact17_projection_plus4_collision_split(self):
   self.assertEqual(len(m.PROJECTION_EXPECTED),17);self.assertEqual(len(m.COLLISION_EXPECTED),4)
   self.assertEqual(m.EXPECTED[:17],m.PROJECTION_EXPECTED)
-  self.assertEqual(m.EXPECTED[17:],m.COLLISION_EXPECTED)
+  self.assertEqual(m.EXPECTED[17:21],m.COLLISION_EXPECTED)
  def test_collision_case_missing(self):
   for index in range(17,21):
-   with self.subTest(index=index):self.reject(cases=CASES[:index]+CASES[index+1:],summary=dict(SUMMARY,totalTestCount=20,passedTests=20))
+   with self.subTest(index=index):self.reject(cases=CASES[:index]+CASES[index+1:],summary=dict(SUMMARY,totalTestCount=25,passedTests=25))
  def test_each_collision_failed_with_consistent_counts(self):
   for index in range(17,21):
-   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Failed')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=20,failedTests=1))
+   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Failed')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=25,failedTests=1))
  def test_each_collision_skipped_with_consistent_counts(self):
   for index in range(17,21):
-   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Skipped')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=20,skippedTests=1))
+   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Skipped')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=25,skippedTests=1))
  def test_collision_source_missing(self):self.reject(collision_source='')
  def test_collision_source_flag_removal(self):self.reject(collision_source=COLLISION_SOURCE.replace('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n','',1))
  def test_collision_source_class_renamed(self):self.reject(collision_source=COLLISION_SOURCE.replace('class SeatedCollisionBridgeTests:', 'class OtherTests:'))
@@ -85,20 +88,20 @@ class Tests(unittest.TestCase):
  def test_collision_source_duplicate_class_rejected(self):self.reject(collision_source=COLLISION_SOURCE+'\nfinal class SeatedCollisionBridgeTests: XCTestCase {}\n')
  def test_collision_source_multiline_declarations(self):
   source=COLLISION_SOURCE.replace('final class SeatedCollisionBridgeTests: XCTestCase {','final class\nSeatedCollisionBridgeTests:\nXCTestCase\n{').replace('func '+m.COLLISION_EXPECTED[-1].split('/')[1]+'(', 'func\n'+m.COLLISION_EXPECTED[-1].split('/')[1]+'\n(')
-  self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE,source)['executed'],21)
+  self.assertEqual(collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE,source)['executed'],26)
  def test_original_classes_cannot_swap_sources(self):self.reject(source=COLLISION_SOURCE,collision_source=SOURCE)
  def test_original13_alone_rejected(self):self.reject(cases=CASES[:13],summary=dict(SUMMARY,totalTestCount=13,passedTests=13),log='\n'.join(LOG.splitlines()[:26])+'\n')
- def test_actual_audit_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:13]+[dict(CASES[13],result='Failed')]+CASES[14:],summary=dict(SUMMARY,passedTests=20,failedTests=1))
- def test_actual_audit_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:13]+[dict(CASES[13],result='Skipped')]+CASES[14:],summary=dict(SUMMARY,passedTests=20,skippedTests=1))
+ def test_actual_audit_case_failed_with_consistent_counts(self):self.reject(cases=CASES[:13]+[dict(CASES[13],result='Failed')]+CASES[14:],summary=dict(SUMMARY,passedTests=25,failedTests=1))
+ def test_actual_audit_case_skipped_with_consistent_counts(self):self.reject(cases=CASES[:13]+[dict(CASES[13],result='Skipped')]+CASES[14:],summary=dict(SUMMARY,passedTests=25,skippedTests=1))
  def test_actual_audit_source_missing(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[13].split('/')[1]+'(', 'func helper('))
  def test_actual_audit_source_multiline_declaration(self):
   source=SOURCE.replace('func '+m.EXPECTED[13].split('/')[1]+'(', 'func\n'+m.EXPECTED[13].split('/')[1]+'\n(')
-  self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],21)
+  self.assertEqual(collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],26)
  def test_original18_identities_still_required(self):
   self.assertEqual(len(m.PROJECTION_EXPECTED[:14]+m.COLLISION_EXPECTED),18)
   for name in m.PROJECTION_EXPECTED[:14]+m.COLLISION_EXPECTED:
    cases=[x for x in CASES if x['identifier'].removesuffix('()')!=name]
-   with self.subTest(name=name):self.reject(cases=cases,summary=dict(SUMMARY,totalTestCount=20,passedTests=20))
+   with self.subTest(name=name):self.reject(cases=cases,summary=dict(SUMMARY,totalTestCount=25,passedTests=25))
  def test_original18_without_new_mapped_cases_rejected(self):
   names=set(m.PROJECTION_EXPECTED[:14]+m.COLLISION_EXPECTED)
   cases=[x for x in CASES if x['identifier'].removesuffix('()') in names]
@@ -107,37 +110,37 @@ class Tests(unittest.TestCase):
   self.assertEqual(m.PROJECTION_EXPECTED[14:],MAPPED)
  def test_each_mapped_missing(self):
   for index in range(14,17):
-   with self.subTest(index=index):self.reject(cases=CASES[:index]+CASES[index+1:],summary=dict(SUMMARY,totalTestCount=20,passedTests=20))
+   with self.subTest(index=index):self.reject(cases=CASES[:index]+CASES[index+1:],summary=dict(SUMMARY,totalTestCount=25,passedTests=25))
  def test_each_mapped_failed_with_consistent_counts(self):
   for index in range(14,17):
-   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Failed')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=20,failedTests=1))
+   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Failed')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=25,failedTests=1))
  def test_each_mapped_skipped_with_consistent_counts(self):
   for index in range(14,17):
-   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Skipped')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=20,skippedTests=1))
+   with self.subTest(index=index):self.reject(cases=CASES[:index]+[dict(CASES[index],result='Skipped')]+CASES[index+1:],summary=dict(SUMMARY,passedTests=25,skippedTests=1))
  def test_each_mapped_source_required(self):
   for name in MAPPED:
    with self.subTest(name=name):self.reject(source=SOURCE.replace('func '+name.split('/')[1]+'(', 'func helper('))
  def test_each_mapped_multiline_source_accepted(self):
   for name in MAPPED:
    source=SOURCE.replace('func '+name.split('/')[1]+'(', 'func\n'+name.split('/')[1]+'\n(')
-   with self.subTest(name=name):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],21)
+   with self.subTest(name=name):self.assertEqual(collect(CASES,SUMMARY,LOG,{'exit_code':0},source,COLLISION_SOURCE)['executed'],26)
  def test_each_mapped_failed_log_rejected_missing_log_recorded(self):
   for name in MAPPED:
    cls,method=name.split('/');line=f"Test Case '-[BlindAssistTests.{cls} {method}]' passed (0.001 seconds)."
    with self.subTest(name=name):
     self.reject(log=LOG.replace(line,line.replace('passed','failed')))
-    result=m.collect(CASES,SUMMARY,LOG.replace(line+'\n',''),{'exit_code':0},SOURCE,COLLISION_SOURCE)
+    result=collect(CASES,SUMMARY,LOG.replace(line+'\n',''),{'exit_code':0},SOURCE,COLLISION_SOURCE)
     self.assertEqual(result['consoleEvidence']['partial'],[name])
     self.assertEqual(result['consoleEvidence']['status'],'incomplete')
  def test_all_pass_records_without_start_are_partial_not_fabricated_pairs(self):
   log='\n'.join(line for line in LOG.splitlines() if " passed " in line)
-  result=m.collect(CASES,SUMMARY,log,{'exit_code':0},SOURCE,COLLISION_SOURCE)
+  result=collect(CASES,SUMMARY,log,{'exit_code':0},SOURCE,COLLISION_SOURCE)
   self.assertEqual(result['consoleEvidence']['partial'],m.EXPECTED)
   self.assertTrue(all(events==['passed'] for events in result['logWitnesses'].values()))
  def test_799_shaped_suite_only_console_uses_exact_structured_cases(self):
-  log="Test Suite 'SeatedMeshProjectionTests' passed at synthetic.\nExecuted 21 tests, with 0 failures (0 unexpected)\n** TEST SUCCEEDED **\n"
-  result=m.collect(CASES,SUMMARY,log,{'exit_code':0},SOURCE,COLLISION_SOURCE)
-  self.assertEqual(result['executed'],21)
+  log="Test Suite 'SeatedMeshProjectionTests' passed at synthetic.\nExecuted 26 tests, with 0 failures (0 unexpected)\n** TEST SUCCEEDED **\n"
+  result=collect(CASES,SUMMARY,log,{'exit_code':0},SOURCE,COLLISION_SOURCE)
+  self.assertEqual(result['executed'],26)
   self.assertEqual(result['consoleEvidence']['status'],'not_observed')
   self.assertEqual(result['evidenceAuthority'],'exact-source-xcresult-tests-and-summary-with-command-exit')
   self.reject(cases=CASES[:18],summary=dict(SUMMARY,totalTestCount=18,passedTests=18),log=log)
@@ -147,9 +150,9 @@ class Tests(unittest.TestCase):
  def test_structured_summary_failure_rows_contradict_zero_counts(self):
   self.reject(summary=dict(SUMMARY,testFailures=[{'failureText':'not emitted'}]),log='')
  def test_clean_structured_summary_empty_failure_list_accepted(self):
-  self.assertEqual(m.collect(CASES,dict(SUMMARY,testFailures=[]),'',{'exit_code':0},SOURCE,COLLISION_SOURCE)['executed'],21)
+  self.assertEqual(collect(CASES,dict(SUMMARY,testFailures=[]),'',{'exit_code':0},SOURCE,COLLISION_SOURCE)['executed'],26)
  def test_expected_failure_with_consistent_counts_stays_rejected_without_log(self):
-  self.reject(cases=[dict(CASES[0],result='Expected Failure')]+CASES[1:],summary=dict(SUMMARY,passedTests=20,expectedFailures=1),log='')
+  self.reject(cases=[dict(CASES[0],result='Expected Failure')]+CASES[1:],summary=dict(SUMMARY,passedTests=25,expectedFailures=1),log='')
  def test_console_failed_skip_duplicate_still_veto_structured_pass(self):
   for status in ['failed','skipped']:
    with self.subTest(status=status):self.reject(log=LOG.replace('passed',status,1))
@@ -213,7 +216,38 @@ class MainAuthorityTests(unittest.TestCase):
   code,result=self.run_main(command=65)
   self.assertEqual(code,1);self.assertFalse(result['complete'])
  def test_main_exact_case_set_still_required_without_stdout(self):
-  code,result=self.run_main(cases=CASES[:-1],summary=dict(SUMMARY,totalTestCount=20,passedTests=20))
+  code,result=self.run_main(cases=CASES[:-1],summary=dict(SUMMARY,totalTestCount=25,passedTests=25))
   self.assertEqual(code,1);self.assertFalse(result['complete'])
+
+class NormalOwnerControls(unittest.TestCase):
+ reject=Tests.reject
+ def test_original21_prefix_retained_and_exact_five_append(self):
+  self.assertEqual(m.EXPECTED[:21],m.PROJECTION_EXPECTED+m.COLLISION_EXPECTED)
+  self.assertEqual(m.EXPECTED[21:],['NormalOwnerMeshConnectionTests/testIncompleteInventoryAndAggregateBoundsNeverBecomeEmptyClearSource', 'NormalOwnerMeshConnectionTests/testReorderedFutureWrongSessionAndExpiredFrameCannotIssueQuery', 'NormalOwnerMeshConnectionTests/testActualFullSourceStrictQueryAndAuditKeepFrozenRequestAcrossOrdinaryFrames', 'NormalOwnerMeshConnectionTests/testThirtyTwoSequentialAnchorCopiesPreserveHistoricalAgeAndFreshFrameLease', 'NormalOwnerMeshConnectionTests/testActualAuditGoalRetirementAndStopWaitForOperationDisposal'])
+ def test_original21_without_new_class_rejected(self):self.reject(cases=CASES[:21],summary=dict(SUMMARY,totalTestCount=21,passedTests=21))
+ def test_each_normal_case_missing_failed_skipped_duplicate(self):
+  for i in range(21,26):
+   with self.subTest(i=i):
+    self.reject(cases=CASES[:i]+CASES[i+1:],summary=dict(SUMMARY,totalTestCount=25,passedTests=25))
+    for status,key in [('Failed','failedTests'),('Skipped','skippedTests')]:self.reject(cases=CASES[:i]+[dict(CASES[i],result=status)]+CASES[i+1:],summary=dict(SUMMARY,passedTests=25,**{key:1}))
+    self.reject(cases=CASES[:i]+CASES[i+1:]+[CASES[0]])
+ def test_normal_source_flags_class_names_and_extra_refused(self):
+  for value in ['',NORMAL_SOURCE.replace('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n','',1),NORMAL_SOURCE.replace('class NormalOwnerMeshConnectionTests:', 'class OtherTests:'),NORMAL_SOURCE+'\nfunc testUnexpected() {}\n']:
+   self.reject(normal_source=value)
+  for name in m.NORMAL_OWNER_EXPECTED:self.reject(normal_source=NORMAL_SOURCE.replace('func '+name.split('/')[1]+'(', 'func helper('))
+ def test_normal_multiline_declarations_accepted(self):
+  value=NORMAL_SOURCE.replace('final class NormalOwnerMeshConnectionTests: XCTestCase {','final class\nNormalOwnerMeshConnectionTests:\nXCTestCase\n{')
+  for name in m.NORMAL_OWNER_EXPECTED:value=value.replace('func '+name.split('/')[1]+'(', 'func\n'+name.split('/')[1]+'\n(')
+  self.assertEqual(collect(CASES,SUMMARY,'',{'exit_code':0},SOURCE,COLLISION_SOURCE,value)['executed'],26)
+ def test_normal_failed_or_wrong_class_log_veto_and_missing_secondary(self):
+  for name in m.NORMAL_OWNER_EXPECTED:
+   cls,method=name.split('/');line=f"Test Case '-[BlindAssistTests.{cls} {method}]' passed (0.001 seconds)."
+   self.reject(log=LOG.replace(line,line.replace('passed','failed')))
+   self.reject(log=LOG.replace(line,line.replace(cls,'SeatedMeshProjectionTests')))
+   result=collect(CASES,SUMMARY,LOG.replace(line+'\n',''),{'exit_code':0},SOURCE,COLLISION_SOURCE)
+   self.assertEqual(result['consoleEvidence']['partial'],[name])
+ def test_normal_source_hash_and_selection_remain_required(self):
+  source=(P/'collect-seated-projection.py').read_text();self.assertIn('normalOwnerFixtureSHA256=hashlib.sha256(normal_source.read_bytes()).hexdigest()',source)
+  helper=(P/'native-apple.sh').read_text();self.assertEqual(helper.count("'-only-testing:BlindAssistTests/NormalOwnerMeshConnectionTests'"),1)
 
 if __name__=='__main__':unittest.main()

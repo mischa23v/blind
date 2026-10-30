@@ -28,14 +28,14 @@ def assertion(name=NAME,message='XCTAssertTrue failed',filename=None):
 
 class ProjectionTests(unittest.TestCase):
     def test_all_twenty_one_exact_identities(self):
-        result=m.project_cases(CASES);self.assertEqual(len(result['cases']),21);self.assertTrue(result['exactCaseSetObserved'])
+        result=m.project_cases(CASES);self.assertEqual(len(result['cases']),26);self.assertTrue(result['exactCaseSetObserved'])
     def test_failed_skipped_and_expected_failures_preserved(self):
         for status in ['Failed','Skipped','Expected Failure']:
             rows=[{'identifier':NAME,'result':status}]
             self.assertEqual(m.project_cases(rows)['cases'],rows)
     def test_duplicates_preserved_not_clean(self):
         result=m.project_cases(CASES+[CASES[0]])
-        self.assertEqual(len(result['cases']),22);self.assertEqual(result['duplicateExpectedCaseRows'],1);self.assertFalse(result['exactCaseSetObserved'])
+        self.assertEqual(len(result['cases']),27);self.assertEqual(result['duplicateExpectedCaseRows'],1);self.assertFalse(result['exactCaseSetObserved'])
     def test_unknown_identity_withheld(self):
         result=m.project_cases([{'identifier':'PrivateTests/testPersonal','result':'Failed'}])
         self.assertEqual(result['unexpectedCaseCount'],1);self.assertNotIn('Personal',str(result))
@@ -147,9 +147,9 @@ class CollectTests(unittest.TestCase):
         result=self.run_export();self.assertEqual(result['status'],'diagnostic-only');self.assertEqual(result['acceptance'],'not_inferred_strict_collector_unchanged')
     def test_summary_count_mismatch_keeps_case_rows(self):
         self.summary['totalTestCount']=999;result=self.run_export()
-        self.assertFalse(result['aggregateCountsMatch']);self.assertEqual(len(result['cases']),21)
+        self.assertFalse(result['aggregateCountsMatch']);self.assertEqual(len(result['cases']),26)
     def test_missing_summary_keeps_cases_and_log_categories(self):
-        result=self.run_export(summary_error=True);self.assertEqual(len(result['cases']),21);self.assertIn('logFailureCategories',result)
+        result=self.run_export(summary_error=True);self.assertEqual(len(result['cases']),26);self.assertIn('logFailureCategories',result)
     def test_missing_cases_keeps_summary_categories(self):
         result=self.run_export(case_error=True);self.assertNotIn('cases',result);self.assertIn('summaryFailureCategories',result)
     def test_unknown_summary_schema_explicit(self):
@@ -175,7 +175,8 @@ class SourceTests(unittest.TestCase):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name)
         for path,names,cls in [(m.FIXTURES[0],m.strict.PROJECTION_EXPECTED,'SeatedMeshProjectionTests'),
-                               (m.FIXTURES[1],m.strict.COLLISION_EXPECTED,'SeatedCollisionBridgeTests')]:
+                               (m.FIXTURES[1],m.strict.COLLISION_EXPECTED,'SeatedCollisionBridgeTests'),
+                               (m.FIXTURES[2],m.strict.NORMAL_OWNER_EXPECTED,'NormalOwnerMeshConnectionTests')]:
             file=self.root/path;file.parent.mkdir(parents=True,exist_ok=True)
             file.write_text('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\nfinal class '+cls+': XCTestCase {\n'+
                             ''.join('func '+name.split('/')[1]+'() {}\n' for name in names)+'}\n#endif\n')
@@ -197,16 +198,16 @@ class SourceTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.inspect()
     def test_strict_collector_still_rejects_original_failed_command(self):
         source=(self.root/m.FIXTURES[0]).read_text();collision=(self.root/m.FIXTURES[1]).read_text()
-        with self.assertRaises(ValueError):m.strict.collect(CASES,summary(CASES),'',{'exit_code':65},source,collision)
+        with self.assertRaises(ValueError):m.strict.collect(CASES,summary(CASES),'',{'exit_code':65},source,collision,(self.root/m.FIXTURES[2]).read_text())
 
 
 class MappedDiagnosticControls(unittest.TestCase):
     def test_same_closed_allowlist_as_strict_collector(self):
         self.assertEqual(list(m.EXPECTED),m.strict.EXPECTED)
         self.assertEqual(m.EXPECTED[14:17],tuple(MAPPED))
-        self.assertEqual(len(m.EXPECTED),21)
+        self.assertEqual(len(m.EXPECTED),26)
     def test_all_original_eighteen_retained(self):
-        original=list(m.EXPECTED[:14])+list(m.EXPECTED[17:])
+        original=list(m.EXPECTED[:14])+list(m.EXPECTED[17:21])
         self.assertEqual(len(original),18)
         result=m.project_cases([{'identifier':x,'result':'Failed'} for x in original])
         self.assertEqual([x['identifier'] for x in result['cases']],original)
@@ -228,5 +229,30 @@ class MappedDiagnosticControls(unittest.TestCase):
                 with self.subTest(name=name):self.assertEqual(m.log_failures(path)['records'][0]['identifier'],name)
     def test_similar_mapped_name_withheld(self):
         for name in MAPPED:self.assertIsNone(m.identity(name+'Extra'))
+
+class NormalOwnerDiagnosticControls(unittest.TestCase):
+ def test_strict_same26_allowlist_original21_preserved(self):
+  self.assertEqual(list(m.EXPECTED),m.strict.EXPECTED);self.assertEqual(len(m.EXPECTED[:21]),21)
+  self.assertEqual(m.EXPECTED[21:],tuple(m.strict.NORMAL_OWNER_EXPECTED));self.assertEqual(len(m.EXPECTED[21:]),5)
+ def test_each_new_identity_failure_status_and_fixed_category_retained(self):
+  for name in m.strict.NORMAL_OWNER_EXPECTED:
+   for status in ['Failed','Skipped','Expected Failure']:
+    self.assertEqual(m.project_cases([{'identifier':name,'result':status}])['cases'],[{'identifier':name,'result':status}])
+   self.assertEqual(m.summary_failures({'testFailures':[{'testIdentifier':name,'message':'XCTAssertEqual failed PRIVATE'}]})['records'],[{'identifier':name,'category':'assert_equal'}])
+   with tempfile.TemporaryDirectory() as d:
+    p=Path(d)/'log';p.write_text(assertion(name));self.assertEqual(m.log_failures(p)['records'][0]['identifier'],name)
+    p.write_text(assertion(name,filename='SeatedMeshProjectionTests'));self.assertEqual(m.log_failures(p)['records'],[])
+ def test_new_similar_identity_and_private_assertion_never_echoed(self):
+  for name in m.strict.NORMAL_OWNER_EXPECTED:
+   self.assertIsNone(m.identity(name+'Extra'))
+   result=m.summary_failures({'testFailures':[{'testIdentifier':name,'message':'PRIVATE [1,2,3]'}]});self.assertNotIn('PRIVATE',str(result));self.assertEqual(result['records'][0]['category'],'other_failure')
+ def test_new_fixture_missing_or_renamed_withholds_source_identity(self):
+  with tempfile.TemporaryDirectory() as d:
+   root=Path(d)
+   for i,names in enumerate([m.strict.PROJECTION_EXPECTED,m.strict.COLLISION_EXPECTED,m.strict.NORMAL_OWNER_EXPECTED]):
+    p=root/m.FIXTURES[i];p.parent.mkdir(parents=True,exist_ok=True);p.write_text('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\nfinal class '+names[0].split('/')[0]+': XCTestCase {\n'+''.join('func '+n.split('/')[1]+'() {}\n' for n in names)+'}\n#endif\n')
+   with patch.object(m,'ROOT',root):self.assertEqual(len(m.fixture_source()),3)
+   p=root/m.FIXTURES[2];p.write_text(p.read_text().replace('testActualFullSourceStrictQueryAndAuditKeepFrozenRequestAcrossOrdinaryFrames','helper'))
+   with patch.object(m,'ROOT',root),self.assertRaises(ValueError):m.fixture_source()
 
 if __name__=='__main__':unittest.main()

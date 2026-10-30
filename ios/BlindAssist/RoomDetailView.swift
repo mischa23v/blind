@@ -1,6 +1,5 @@
 import SwiftUI
 import PhotosUI
-import ImageIO
 import BlindCore
 import BlindMemory
 
@@ -189,17 +188,30 @@ struct RoomDetailView: View {
             RoomChangeReview(before: pending.before, after: pending.after, arabic: model.arabic,
                 approve: { approve(pending) }, reject: { reject(pending) }).interactiveDismissDisabled()
         }
-        .task(id: photo) {
-            guard let photo else { return }
-            let revision = photoRevision
+        .task(id: photo) { @MainActor in
+            guard let photo, !Task.isCancelled else { return }
+            let revision = photoRevision, store = model.places
+            guard let lease = store.beginReferencePhotoImport() else {
+                self.photo = nil // Permit selecting the same item again after the worker finishes.
+                message = t("The previous photo is still finishing. Choose this photo again shortly.", "جارٍ إنهاء الصورة السابقة. اختر هذه الصورة مرة أخرى بعد قليل.")
+                return
+            }
+            defer { store.finishReferencePhotoImport(lease) }
             do {
-                guard let data = try await photo.loadTransferable(type: Data.self), data.count <= 20_000_000,
-                      let source = CGImageSourceCreateWithData(data as CFData, nil),
-                      let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true,
-                        kCGImageSourceThumbnailMaxPixelSize: 1200, kCGImageSourceCreateThumbnailWithTransform: true] as CFDictionary),
-                      let jpeg = UIImage(cgImage: image).jpegData(compressionQuality: 0.7) else { throw CocoaError(.fileReadCorruptFile) }
+                try Task.checkCancellation()
+                // The worker is intentionally not cancelled with this view task.
+                // Await its actual return before releasing the shared import slot;
+                // a cancelled waiter must not fan out system transfers or decoders.
+                // It returns bounded JPEG bytes, not a cross-actor UIKit image.
+                let result = await Task.detached(priority: .utility) { () -> Data? in
+                    guard let transfer = try? await photo.loadTransferable(type: SelectedPhotoTransfer.self),
+                          transfer.data.count <= 20_000_000,
+                          let decoded = SelectedPhotoDecoder.decode(transfer.data, maximumDecodedSide: 1200) else { return nil }
+                    return decoded.image.jpegData(compressionQuality: 0.7)
+                }.value
                 try Task.checkCancellation()
                 guard revision == photoRevision, self.photo == photo else { return }
+                guard let jpeg = result else { throw CocoaError(.fileReadCorruptFile) }
                 try model.places.savePhoto(jpeg, for: place)
                 refreshReferencePhoto()
                 message = t("Photo saved locally.", "حُفظت الصورة على الهاتف.")

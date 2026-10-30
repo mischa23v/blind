@@ -434,12 +434,12 @@ struct ConversationTests {
         dialogue.record(role: "user", text: "Hello. My name is Alex.")
         recordModelAvailabilityBeforeAdapter("conversation.greeting")
         let greeting = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
-        let first = try #require(greeting.text, "MODEL_FIXTURE conversation.greeting status=\(greeting.status)")
+        let first = try #require(greeting.text, "MODEL_FIXTURE conversation.greeting status=\(greeting.status) diagnostic=\(greeting.conversationFailureDiagnostic?.receipt ?? "none")")
         dialogue.record(role: "assistant", text: first)
         dialogue.record(role: "user", text: "What is my name?")
         recordModelAvailabilityBeforeAdapter("conversation.nameRecall")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
-        let text = try #require(answer.text, "MODEL_FIXTURE conversation.nameRecall status=\(answer.status)").lowercased()
+        let text = try #require(answer.text, "MODEL_FIXTURE conversation.nameRecall status=\(answer.status) diagnostic=\(answer.conversationFailureDiagnostic?.receipt ?? "none")").lowercased()
         #expect(text.contains("alex"))
         #expect(!text.contains("don't remember") && !text.contains("do not remember"))
         #expect(!text.contains("earlier conversation") && !text.contains("child:"))
@@ -470,11 +470,11 @@ struct TextChatScenarioTests {
         dialogue.record(role: "user", text: scenario.firstMessage)
         recordModelAvailabilityBeforeAdapter("textChat.first")
         let first = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
-        dialogue.record(role: "assistant", text: try #require(first.text, "MODEL_FIXTURE textChat.\(scenario.name).first status=\(first.status)"))
+        dialogue.record(role: "assistant", text: try #require(first.text, "MODEL_FIXTURE textChat.\(scenario.name).first status=\(first.status) diagnostic=\(first.conversationFailureDiagnostic?.receipt ?? "none")"))
         dialogue.record(role: "user", text: scenario.nextMessage)
         recordModelAvailabilityBeforeAdapter("textChat.followup")
         let response = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
-        let text = try #require(response.text, "MODEL_FIXTURE textChat.\(scenario.name).followup status=\(response.status)")
+        let text = try #require(response.text, "MODEL_FIXTURE textChat.\(scenario.name).followup status=\(response.status) diagnostic=\(response.conversationFailureDiagnostic?.receipt ?? "none")")
         // These are deliberately synthetic fixtures, never personal conversation logs.
         print("CHAT FIXTURE [\(scenario.name)]: \(text)")
         #expect(text.lowercased().contains(scenario.expectedWord))
@@ -493,7 +493,7 @@ struct TextChatScenarioTests {
         dialogue.record(role: "user", text: "Is the floor ahead safe for me to walk on?")
         recordModelAvailabilityBeforeAdapter("textChat.unknownFloor")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
-        let text = try #require(answer.text, "MODEL_FIXTURE textChat.unknownFloor status=\(answer.status)")
+        let text = try #require(answer.text, "MODEL_FIXTURE textChat.unknownFloor status=\(answer.status) diagnostic=\(answer.conversationFailureDiagnostic?.receipt ?? "none")")
         print("CHAT FIXTURE [unknown floor]: \(text)")
         #expect(!SpatialClaimGuard.containsSpatialClaim(text))
         let lower = text.lowercased()
@@ -511,7 +511,7 @@ struct SavedProfileConversationTests {
         dialogue.record(role: "user", text: corrected ? "Actually, call me Lina. What is my name?" : "What is my name?")
         recordModelAvailabilityBeforeAdapter("savedProfile")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, preferredName: "Alex")
-        let text = try #require(answer.text, "MODEL_FIXTURE savedProfile.corrected=\(corrected) status=\(answer.status)").lowercased()
+        let text = try #require(answer.text, "MODEL_FIXTURE savedProfile.corrected=\(corrected) status=\(answer.status) diagnostic=\(answer.conversationFailureDiagnostic?.receipt ?? "none")").lowercased()
         #expect(text.contains(corrected ? "lina" : "alex"))
         #expect(!text.contains("don't remember"))
     }
@@ -1125,7 +1125,7 @@ struct UnsupportedPremiseTests {
                 try #require(OnDeviceLanguage.supports(arabic: false))
                 recordModelAvailabilityBeforeAdapter("unsupportedPremise")
                 let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, workingState: state)
-                last = try #require(answer.text, "MODEL_FIXTURE unsupportedPremise.case=\(Self.cases.firstIndex(of: messages) ?? -1) status=\(answer.status)")
+                last = try #require(answer.text, "MODEL_FIXTURE unsupportedPremise.case=\(Self.cases.firstIndex(of: messages) ?? -1) status=\(answer.status) diagnostic=\(answer.conversationFailureDiagnostic?.receipt ?? "none")")
                 #expect(!SpatialClaimGuard.containsSpatialClaim(last))
             }
             #expect(!ConversationClaimGuard.containsUnsupportedClaim(last))
@@ -1206,4 +1206,80 @@ final class PracticePresentationPublisherSemanticsTests: XCTestCase {
         fixture.progress = 1.0
         XCTAssertEqual(received, [1.0, 1.0])
     }
+}
+
+
+import UIKit
+
+/// Temporary synthetic fixtures only. No Photos library, model, camera, map,
+/// memory record or user image is read or deleted by these tests.
+@MainActor final class RoomReferencePhotoImportTests: XCTestCase {
+    private func fixture() throws -> (PlaceStore, URL) {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("RoomImportFixture-" + UUID().uuidString)
+        let store = PlaceStore(directory: root.appendingPathComponent("Places"))
+        return (store, root)
+    }
+    func testOverlappingFirstCallersShareOneStoreLeaseAndForeignFinishCannotReleaseIt() async throws {
+        let (store, directory) = try fixture()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let leases = await withTaskGroup(of: UUID?.self, returning: [UUID].self) { group in
+            for _ in 0..<100 { group.addTask { await store.beginReferencePhotoImport() } }
+            var result: [UUID] = []
+            for await value in group { if let value { result.append(value) } }
+            return result
+        }
+        XCTAssertEqual(leases.count, 1)
+        let lease = try XCTUnwrap(leases.first)
+        store.finishReferencePhotoImport(UUID())
+        XCTAssertNil(store.beginReferencePhotoImport())
+        store.finishReferencePhotoImport(lease)
+        let next = try XCTUnwrap(store.beginReferencePhotoImport())
+        store.finishReferencePhotoImport(lease)
+        XCTAssertNil(store.beginReferencePhotoImport(), "Late completion cannot retire the newer owner")
+        store.finishReferencePhotoImport(next)
+    }
+    func testCancelledWaiterHoldsSlotUntilDetachedWorkerReturns() async throws {
+        let (store, directory) = try fixture(), probe = RoomImportSyntheticProbe()
+        defer { probe.finish(); try? FileManager.default.removeItem(at: directory) }
+        let lease = try XCTUnwrap(store.beginReferencePhotoImport())
+        let waiter = Task { @MainActor in
+            defer { store.finishReferencePhotoImport(lease) }
+            await Task.detached { probe.run() }.value
+            return Task.isCancelled
+        }
+        await fulfillment(of: [probe.entered], timeout: 2)
+        waiter.cancel()
+        XCTAssertNil(store.beginReferencePhotoImport())
+        probe.finish()
+        let wasCancelled = await waiter.value
+        XCTAssertTrue(wasCancelled)
+        let next = try XCTUnwrap(store.beginReferencePhotoImport())
+        store.finishReferencePhotoImport(next)
+    }
+    func testBoundedDecoderSupportsSmallerRoomPreviewWithoutChangingDefault() throws {
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 1600, height: 800), format: format).image { context in
+            UIColor.blue.setFill(); context.fill(CGRect(x: 0, y: 0, width: 1600, height: 800))
+        }
+        let data = try XCTUnwrap(image.pngData())
+        let room = try XCTUnwrap(SelectedPhotoDecoder.decode(data, maximumDecodedSide: 1200))
+        let normal = try XCTUnwrap(SelectedPhotoDecoder.decode(data))
+        XCTAssertEqual(room.image.cgImage?.width, 1200)
+        XCTAssertEqual(room.image.cgImage?.height, 600)
+        XCTAssertEqual(normal.image.cgImage?.width, 1600)
+        XCTAssertEqual(room.sha256, normal.sha256)
+    }
+    func testDecoderRejectsInvalidOutputBoundsAndMalformedBytes() {
+        for limit in [-1, 0, SelectedPhotoReference.maximumDecodedSide + 1] {
+            XCTAssertNil(SelectedPhotoDecoder.decode(Data([1, 2, 3]), maximumDecodedSide: limit))
+        }
+        XCTAssertNil(SelectedPhotoDecoder.decode(Data(), maximumDecodedSide: 1200))
+        XCTAssertNil(SelectedPhotoDecoder.decode(Data([1, 2, 3]), maximumDecodedSide: 1200))
+    }
+}
+private final class RoomImportSyntheticProbe: @unchecked Sendable {
+    let entered = XCTestExpectation(description: "synthetic room import entered")
+    private let release = DispatchSemaphore(value: 0)
+    func run() { entered.fulfill(); _ = release.wait(timeout: .now() + 5) }
+    func finish() { release.signal() }
 }

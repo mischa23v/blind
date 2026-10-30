@@ -113,9 +113,13 @@ test('multiple examples use bounded per-person means and strict build-selected e
 });
 test('real local PhotosPicker imports bind to enrollment token and never store original images', async () => {
   const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
-  for (const literal of ['import PhotosUI', '.photosPicker(', 'loadTransferable(type: Data.self)', 'photoGeneration == id', 'experiment.enrollmentToken == enrollmentToken', 'photoTask?.cancel()', 'experiment.importPhotos(data)', '.onChange(of: experiment.enrollmentToken)', 'Voice can open it but cannot choose its photos']) assert.ok(view.includes(literal), literal);
+  for (const literal of ['import PhotosUI', '.photosPicker(', 'experiment.cancelSelectedPhotoImport()', 'experiment.enrollmentToken', 'experiment.importSelectedPhotos(selected, enrollmentToken: enrollmentToken)', '.onChange(of: experiment.enrollmentToken)', 'Voice can open it but cannot choose its photos']) assert.ok(view.includes(literal), literal);
   const controller = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
   for (const literal of ['CGImageSourceCreateWithData', 'CGImageSourceGetCount(source) == 1', 'kCGImageSourceCreateThumbnailWithTransform: true', '20_000_000', 'photos.count <= remainingExamples', 'try accept(result, source: "selected-photo")', 'draft.previews[example.id] = result.alignedRGB']) assert.ok(controller.includes(literal), literal);
+  assert.match(controller, /loadTransferable\(type: SelectedPhotoTransfer.self\)/);
+  assert.match(controller, /draft\?\.token == enrollmentToken/);
+  assert.match(controller, /photoImportRevision == revision/);
+  assert.doesNotMatch(view, /loadTransferable\(type: Data.self\)|var data: \[Data\]/);
   assert.doesNotMatch(view + controller, /URLSession|PHPhotoLibrary.shared\(\).performChanges/);
 });
 test('voice commands route before generic assistant actions and retain urgent speech priority', async () => {
@@ -165,7 +169,7 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
       const mutation = configured.indexOf('everydayTasks.cancelAll()');
       assert.ok(mutation >= 0, 'Existing task cancellation remains reachable');
       const prefix = configured.slice(0, mutation).replace(/\s+/g, ' ').trim();
-      const required = ['pendingScopedReview = nil; completedScopedReview = nil; scopedReviewError = ""',
+      const required = ['clearLocalEmailDraft()', 'clearLocalRecipe()', 'pendingScopedReview = nil; completedScopedReview = nil; scopedReviewError = ""',
         'clearExploreSnapshot()',
         ...(debug ? ['purgeDebugSessionDiagnostics()'] : []),
         ...(familiar ? ['familiarPeople.cancelSearchForNewGoal()'] : []),
@@ -180,6 +184,8 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
   };
   check(clear);
   for (const [name, from, to] of [
+    ['email draft survives clear', 'clearLocalEmailDraft()', ''],
+    ['recipe source survives clear', 'clearLocalRecipe()', ''],
     ['pending review survives clear', 'pendingScopedReview = nil;', ''],
     ['completed review survives clear', 'completedScopedReview = nil;', ''],
     ['stale review error survives clear', 'scopedReviewError = ""', ''],

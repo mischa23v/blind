@@ -1,3 +1,28 @@
+## Combined source checkpoint — publication annotation, 2026-10-30 17:41 UTC
+
+**This checkpoint includes the reviewed continuation labelled “unpublished” in the unchanged 17:30 snapshot below.** That label is now historical. The published Boolean repair is retained; native validation of this **combined source** has not run at preparation time. Source inclusion is not native/device acceptance.
+
+At 17:41 UTC, the **previous ff0 source's** full hosted-unit step had failed; the overall job was running UI work, with aggregate counts/causes not yet collected. Its seated result remains **13 pass / eight fail / zero skip**. [Previous-source run](https://github.com/mischa23v/blind/actions/runs/41096090593); it does not validate this combined checkpoint.
+
+**Zero accepted workstreams; zero accepted whole journeys of 400; F01/Jev remains deferred.** Prior snapshot/history is unchanged. Only the continuation's publication label is superseded; record new terminal outcomes separately against their exact source.
+
+---
+
+## Existing tracker checkpoint — 2026-10-30 17:30 UTC
+
+[Current 16-workstream status and exact runs](research/tracker-reconciliation-20261028/CURRENT_STATUS.md). No task ID is added or closed. **Zero workstreams and zero of 400 whole journeys are accepted complete.** Source completion, portable checks, native outcomes and device acceptance are separate.
+
+- [x] Publish the implementation checkpoint `119752b` and narrow Boolean compile repair `ff0f50d`; both repaired app builds now compile. This checks off that source/build repair only.
+- [ ] N00/A01/E01/E02: finish the exact ff0 native run and full accessibility audit. Preserve the seated **13 pass / eight fail / zero skip** result and the failed full hosted-unit step (exact counts/causes pending); repair actual runtime failures without weakening original assertions.
+- [ ] N00/N02/N04: finish exact venue → versioned package A/B ownership/loading, actual normal-camera map/frame receipt binding and portal recovery after evidence loss. These are active source tasks, not solely device blockers.
+- [ ] N03/P01/E03/J01/J02: integrate the reviewed but unpublished continuation while preserving the actual ff0 repair and provenance; then compile and execute its real consumers/fixtures. Typed recipe/email adapters are not verified spoken completion, and a harness is not a completed journey.
+- [ ] N05/E04/D01: independently measured holdouts, exact asset/data redistribution/offline evidence and supervised physical acceptance remain separate requirements. No child or physical guidance release follows from source checks.
+- F01: remain **deferred by user**, not an active implementation assignment.
+
+Earlier dated sections and original requirement checklists remain history. Detailed current evidence/gates are in the existing tracker, not an invented completion percentage.
+
+---
+
 ## Existing N00 checkpoint — 2026-10-30 06:18 UTC
 
 N00 remains **partial diagnostic source / Apple acceptance pending**, not complete. Published `e418290ac2a70f93c4250bb094091082408f7093` contains source-readiness and source-bound independent collision integration; evidence is in [PROGRESS](PROGRESS.md) and the existing [N00 row](research/tracker-reconciliation-20261028/TRACKER.json). The exact e418 selection ran all 18 hosted cases (14 passed, four controller methods failed with 12 issues), retaining the preceding 13; all four authored collider cases passed but controller/runtime acceptance remains open. The cleanup-expectation/timing-label repair is source-only; failed `7bb0532` preflight and actual SceneKit delay remain preserved. Physical authority is false. Continue existing R09/R15 association work after integration evidence; hierarchy/journeys, localization, current hazards, transitions/recovery and device gates remain open. No task ID or milestone is added or closed.

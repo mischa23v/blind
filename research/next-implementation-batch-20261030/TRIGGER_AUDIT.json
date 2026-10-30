@@ -1,0 +1,474 @@
+{
+  "schema": 1,
+  "scope": "isolated next40-path layer after exact frozen first74 only",
+  "branch": "codex/recovery-hazard-order-20261027",
+  "workflowCount": 43,
+  "publicationPaths": [
+    "BlindCore/Sources/BlindCore/LocalRecipeCompanion.swift",
+    "BlindCore/Sources/BlindCore/NativeClassifiedHitEvidence.swift",
+    "BlindCore/Tests/BlindCoreTests/LocalRecipeCompanionTests.swift",
+    "ios/BlindAssist.xcodeproj/project.pbxproj",
+    "ios/BlindAssist/DashboardView.swift",
+    "ios/BlindAssist/LocalImageAssistant.swift",
+    "ios/BlindAssist/LocalRecipeView.swift",
+    "ios/BlindAssist/NativeARObservationBridge.swift",
+    "ios/BlindAssist/NavigationModel.swift",
+    "ios/BlindAssist/ObservedSceneRuntime.swift",
+    "ios/BlindAssist/PlaceStore.swift",
+    "ios/BlindAssist/RoomDetailView.swift",
+    "ios/BlindAssist/SelectedPhotoDecoder.swift",
+    "ios/BlindAssistTests/ClassificationIngressTests.swift",
+    "ios/BlindAssistTests/CommunityTests.swift",
+    "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
+    "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
+    "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+    "research/ingress-fixture-owned-drain-20261030/OBSERVATIONS.json",
+    "research/ingress-fixture-owned-drain-20261030/README.md",
+    "research/ingress-fixture-owned-drain-20261030/SOURCE_PINS.json",
+    "research/j01-hosted-app-adapter-20261030/README.md",
+    "research/j01-hosted-app-adapter-20261030/SUPPORTED.json",
+    "research/j01-hosted-app-adapter-20261030/app_adapter.py",
+    "research/j01-hosted-app-adapter-20261030/test_adapter.py",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+    "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+    "research/native-candidate-app-integration-85/integrated/check.py",
+    "research/native-candidate-app-integration-85/integrated/tracker-second-implementation-batch.patch",
+    "research/next-implementation-batch-20261030/CHECKPOINT_FILES.json",
+    "research/next-implementation-batch-20261030/CI_VALIDATION.json",
+    "research/next-implementation-batch-20261030/README.md",
+    "research/next-implementation-batch-20261030/TRIGGER_AUDIT.json",
+    "tools/ci/test_j01_project_membership.py",
+    "tools/generate-xcode-project.mjs",
+    "tools/test/classification-fixture-drain.test.py",
+    "tools/test/classified-hit-current.test.py",
+    "tools/test/conversation-failure-diagnostics.test.py",
+    "tools/test/local-recipe-companion.test.py",
+    "tools/test/room-photo-import-bounds.test.mjs"
+  ],
+  "triggered": [
+    ".github/workflows/accessibility-diagnostic.yml",
+    ".github/workflows/body-profile-current.yml",
+    ".github/workflows/native-apple.yml"
+  ],
+  "ungatedTriggered": [],
+  "workflows": [
+    {
+      "path": ".github/workflows/accessibility-diagnostic.yml",
+      "sha256": "f5c3cc4cc3c8b14a37838bb16f22ddb617fdfccc1385ee2a6b7dfad965299005",
+      "branchEligible": true,
+      "matchedChangedPaths": [
+        "ios/BlindAssist/DashboardView.swift"
+      ],
+      "jobs": [
+        {
+          "job": "focused-audit",
+          "runner": "xcode-27",
+          "timeoutMinutes": 45,
+          "publicGuard": "github.repository == 'mischa23v/blind' && github.event.repository.private == false",
+          "artifactSteps": [
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            },
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/arkit-mesh-adapter.yml",
+      "sha256": "80c2e54bdcf6cf3816cc7ec938a9787036cfffc86fec99bac2b5e6d9438bbd76",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/body-profile-current.yml",
+      "sha256": "6ae2cbbd53db447bc4a286d2d2c8f9378423dc1f2edea017fe0eb1081ef56476",
+      "branchEligible": true,
+      "matchedChangedPaths": [
+        "BlindCore/Sources/BlindCore/LocalRecipeCompanion.swift",
+        "BlindCore/Sources/BlindCore/NativeClassifiedHitEvidence.swift",
+        "BlindCore/Tests/BlindCoreTests/LocalRecipeCompanionTests.swift"
+      ],
+      "jobs": [
+        {
+          "job": "body-profile",
+          "runner": "xcode-27",
+          "timeoutMinutes": 15,
+          "publicGuard": "github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'",
+          "artifactSteps": [
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/camera-audit-scope-control.yml",
+      "sha256": "78578ba7a68760e4dd01038e3521da31d73668a10dbf4a812457cfd72eb38e69",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/camera-effective-type-diagnostic.yml",
+      "sha256": "03fdf1324b6f0a2ad29a35d2cf606d808a119fb5b5a13d22e812a778f89cb6b8",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/camera-geometry-type-diagnostic.yml",
+      "sha256": "a5262b753e015471c2274d2fb1ddd68f8e52c0e179e8d9f1889e4ac1c2eb88d6",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/exact-seed-radius-stage-c-attempt002.yml",
+      "sha256": "b81b84b16e21ad2964e04b38e41b822902b4849f282ab62eea0bef85a6121498",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/exact-seed-radius-stage-c-attempt003.yml",
+      "sha256": "0e5b5c7abf090fa037e9b5862ce509d6c1b6c0c344550326b1e057b62d622525",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/exact-seed-radius-stage-c.yml",
+      "sha256": "ae167d36d490a59ac60360925f435a35d68ea5ad77e6e3d889a9b928db56cc9f",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/familiar-apple.yml",
+      "sha256": "4a4578f1729117136153251aabc6c080ea28a5f2a20d623eed629d474f95fdaf",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/focused-indoor-io.yml",
+      "sha256": "24307aa95d4f2967613ee975aea59f1ab05b630300ee23c5a60427f2327a9d96",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/indoor-io-buffered-diagnostic.yml",
+      "sha256": "9a2df7cabc761560530a9bc968dc342c9745d4774bc6de070b6ce6c59feadad2",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/indoor-io-phase-diagnostic.yml",
+      "sha256": "2577f2b86856a62a8946f32166c83b91374bc1120aa7853323cdcf1227d655bc",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/maurer-envelope-stage-c-attempt001.yml",
+      "sha256": "1fc6f71216250582a6ae34d4eae1ab6bf706f676b0169dd5bc2e2cbd557eb74e",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/maurer-envelope-stage-c-attempt002.yml",
+      "sha256": "263c58ce69853b9df855b76d753954df1e0f04cef08ceb61bb1724f6746537b1",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/mesh-candidate-ingress.yml",
+      "sha256": "b0c137ce1ced087b5b9967e6693b8473c4620742ad104620aeb75c4443c6ceb5",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-accessible-output.yml",
+      "sha256": "ce941358c3e9642ade67e305cbae853c9174b26b34affd35d3ee36d9e9781755",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "sha256": "8f0166e5430092e1ca7464b0fe79a876d83e338ab21d3f7221455667ad67df91",
+      "branchEligible": true,
+      "matchedChangedPaths": [
+        "BlindCore/Sources/BlindCore/LocalRecipeCompanion.swift",
+        "BlindCore/Sources/BlindCore/NativeClassifiedHitEvidence.swift",
+        "BlindCore/Tests/BlindCoreTests/LocalRecipeCompanionTests.swift",
+        "ios/BlindAssist.xcodeproj/project.pbxproj",
+        "ios/BlindAssist/DashboardView.swift",
+        "ios/BlindAssist/LocalImageAssistant.swift",
+        "ios/BlindAssist/LocalRecipeView.swift",
+        "ios/BlindAssist/NativeARObservationBridge.swift",
+        "ios/BlindAssist/NavigationModel.swift",
+        "ios/BlindAssist/ObservedSceneRuntime.swift",
+        "ios/BlindAssist/PlaceStore.swift",
+        "ios/BlindAssist/RoomDetailView.swift",
+        "ios/BlindAssist/SelectedPhotoDecoder.swift",
+        "ios/BlindAssistTests/ClassificationIngressTests.swift",
+        "ios/BlindAssistTests/CommunityTests.swift",
+        "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
+        "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
+        "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+        "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+        "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+        "research/native-candidate-app-integration-85/integrated/check.py",
+        "tools/ci/test_j01_project_membership.py"
+      ],
+      "jobs": [
+        {
+          "job": "native",
+          "runner": "xcode-27",
+          "timeoutMinutes": 65,
+          "publicGuard": "github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')",
+          "artifactSteps": [
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            },
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            },
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            },
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            },
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            },
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            }
+          ]
+        },
+        {
+          "job": "mesh-diagnostics-compile",
+          "runner": "xcode-27",
+          "timeoutMinutes": 25,
+          "publicGuard": "github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')",
+          "artifactSteps": [
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            }
+          ]
+        },
+        {
+          "job": "classified-mesh-bench",
+          "runner": "xcode-27",
+          "timeoutMinutes": 25,
+          "publicGuard": "github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')",
+          "artifactSteps": [
+            {
+              "defaultDisabled": true,
+              "retentionDays": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/native-candidate-app-integration.yml",
+      "sha256": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-candidate-bridge.yml",
+      "sha256": "e40ecd7c27983f8d0ce24c19a6322c659e630dc0c566eab12943bb4ba71210cb",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-contour-probe.yml",
+      "sha256": "9657e44bac2b59d7e2b57a1beab7378986c7edbb679c24c0d0390e43104e6dac",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-core-diagnostic.yml",
+      "sha256": "90603451c0100f1306f8cf3c670b7f2273ff609ceff5696a16e7d6bc0b062b55",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-edt-navigation-probe.yml",
+      "sha256": "df81ce645f528e0fed551ba3a3e5af991cdaffa3a12c602e90f9121c735149e4",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-floor-probe.yml",
+      "sha256": "d8f2d68f144a3804b51006decc381409e47b100126d7b445837a424188d6ddb0",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-mesh-decoder.yml",
+      "sha256": "d45f0c4b978cb1d0a31bacb33dc4df5c22a42a15407f5a37419ac5ed15534724",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-paper-stair-reference.yml",
+      "sha256": "d01c913a533003f53d66d5725ba8b0997238367d2ec8a95d440b858b7e8f5d30",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-qos-comparison.yml",
+      "sha256": "0532d0bffbc1ddd87de435172e64f59b279bf88a7ffab2140b968cbf87a89973",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-reading-component.yml",
+      "sha256": "87865bbc76d25b84bf50ff4018eda7cc006de54612e5787f0b329c815ace2807",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-reading-review-component.yml",
+      "sha256": "e526faba66c9467f6b6bd16c79dc42ac47ac17f00315ebd03588c0b9ecca9334",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-room-mesh-package.yml",
+      "sha256": "84f1aaf463db30a181a877614d1998a48eb5662ac58d7faeb30c753fe1b74c5f",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-rtab-grid.yml",
+      "sha256": "292e40dc022289d3c2fe2f2a1ead274acd2a4614bacca26c9548993816c81b80",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-runtime-readiness.yml",
+      "sha256": "b06bdb3c19d1f3a8847de6e0c880970b3f5c392f76fd826a96daefd4a91c9214",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-runtime-stress.yml",
+      "sha256": "1d9fd634d0b19e8489ec088b6d87c5bf39c102fc9d8ef20ea8ddf09593ff6653",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-runtime-waiter-control.yml",
+      "sha256": "042f24a7760c2242850196b07bab80b710d3c8bcfa32f2334b7a4fc45e665c51",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-search-clue-speech.yml",
+      "sha256": "a091400f2aa094f94fd2a7a9fe1fdaaf98b8d798c70cad780acc656b9a9f8ce2",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-selected-document-probe.yml",
+      "sha256": "76cfdce0de57ebc8423359c27eaef660a0d6f2e988dc1ebf81500b0f33823bbc",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-strict-endpoint-probe.yml",
+      "sha256": "42d5a98200125c6fb3089d0ceff56cc8f5bbcd2dfae0a07964c695af34444a31",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/native-workflow-regressions.yml",
+      "sha256": "c6d7f4d20a09f2b54d224a1e4a55b4cfab5409b9b425a316ed98054ae9c531fb",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/navigation-test-data-release.yml",
+      "sha256": "8c69742745f1012ac9b8f7d79c1581957529a84249065ab5511fd0d4c7f048df",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/practice-endpoint-control.yml",
+      "sha256": "3268fbfb9635abf3da91edbbb6c559c6e193f241e519c59ac96bdee078d263f1",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/practice-layout-comparison.yml",
+      "sha256": "059594cb99be4ade465599d68c49c77bbf9e9dac94c96c9fa5be9d44b5577528",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/review-camera-audit-comparison.yml",
+      "sha256": "2f6a1ec4f82bb3668ff5a069a4300b9fedc6f82b576c8729def684d44d42bdc7",
+      "branchEligible": true,
+      "matchedChangedPaths": [],
+      "jobs": []
+    },
+    {
+      "path": ".github/workflows/voice-enrollment-apple.yml",
+      "sha256": "b114db5816e2ff7d70053be7b0723c46a3590037ab18c66565c2bd8fcb1c7858",
+      "branchEligible": false,
+      "matchedChangedPaths": [],
+      "jobs": []
+    }
+  ],
+  "nativeExecuted": false
+}

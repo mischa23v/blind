@@ -18,27 +18,101 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
-# Restore the exact compiled-failing119 source for historical provenance only.
-# Current Boolean/permission contracts below still inspect actual current R.
-pre_beacon_bool_source={}
-with tempfile.TemporaryDirectory(prefix='stage85-beacon-bool-') as temp:
+# Carry only the published Boolean repair over the exact frozen future layers.
+# This temporary reversal is historical provenance, never current behavior.
+pre_beacon_carry_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-published-beacon-carry-') as temp:
     root=Path(temp)
-    for name in list(manifest['beforeBeaconBoolCompileRepair'])+manifest['beaconBoolCompileRepairNewFiles']:
+    for name in manifest['beforePublishedBeaconRepairCarry']:
         target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
-    subprocess.run(['git','apply','-R',str(H/'beacon-bool-compile-repair.patch')],cwd=root,check=True,timeout=15,capture_output=True)
-    for name,digest in manifest['beforeBeaconBoolCompileRepair'].items():
-        value=(root/name).read_bytes();check('exact failed119 input '+name,hashlib.sha256(value).hexdigest()==digest);pre_beacon_bool_source[name]=value
-    for name in manifest['beaconBoolCompileRepairNewFiles']:
-        check('new Boolean repair control absent in failed119 '+name,not (root/name).exists())
+    subprocess.run(['git','apply','-R',str(H/'published-beacon-repair-carry.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforePublishedBeaconRepairCarry'].items():
+        value=(root/name).read_bytes();check('exact frozen83 before published Boolean carry '+name,hashlib.sha256(value).hexdigest()==digest);pre_beacon_carry_source[name]=value
 check('current beacon Boolean contract and negative controls',subprocess.run([sys.executable,'-B',str(R/'tools/test/connected-beacon-bool.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+
+# Third source integration restores exact reviewed J0117 before old layers.
+# Current production contracts continue to read R, never these restored bytes.
+pre_third_source=dict(pre_beacon_carry_source)
+with tempfile.TemporaryDirectory(prefix='stage85-third-tracker-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeThirdTrackerImplementation'])+manifest['thirdTrackerImplementationNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_beacon_carry_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'tracker-third-implementation-batch.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeThirdTrackerImplementation'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-third-batch input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_third_source[name]=value
+    for name in manifest['thirdTrackerImplementationNewFiles']:
+        check('new third-batch input absent from parent '+name,not (root/name).exists())
+
+# Explicit J01 lane restores exact NEXT40 before any historical reversal.
+# Its current portable controls below still read the actual current checkout R.
+pre_j01_source=dict(pre_third_source)
+with tempfile.TemporaryDirectory(prefix='stage85-j01-lane-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeJ01SameJobObservation'])+manifest['j01SameJobObservationNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_third_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'j01-same-job-observation-layer.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeJ01SameJobObservation'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-J01-lane input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_j01_source[name]=value
+    for name in manifest['j01SameJobObservationNewFiles']:
+        check('new J01-lane input absent from NEXT40 '+name,not (root/name).exists())
+
+# Second implementation batch restores the exact frozen first-batch inputs.
+# Current contracts still read R; restored bytes are only historical provenance.
+pre_second_tracker_source=dict(pre_j01_source)
+with tempfile.TemporaryDirectory(prefix='stage85-second-tracker-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeSecondTrackerImplementationBatch'])+manifest['secondTrackerImplementationBatchNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_j01_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'tracker-second-implementation-batch.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeSecondTrackerImplementationBatch'].items():
+        value=(root/name).read_bytes()
+        check('exact first-batch input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_second_tracker_source[name]=value
+    for name in manifest['secondTrackerImplementationBatchNewFiles']:
+        check('new second-batch input absent from first batch '+name,not (root/name).exists())
+
+# Independently reproduce the exact published ff0 repair from recovered failed119.
+# Its immutable original patch/checkpoint stay unchanged. This side proof then
+# reverses back to failed119, leaving the main frozen historical chain untouched.
+published_repair=manifest['publishedBeaconBoolRepair']
+repair_checkpoint_bytes=(R/published_repair['checkpoint']).read_bytes()
+check('published repair checkpoint bytes unchanged',hashlib.sha256(repair_checkpoint_bytes).hexdigest()==published_repair['checkpointSHA256'])
+repair_checkpoint=json.loads(repair_checkpoint_bytes)
+repair_rows={row['path']:row for row in repair_checkpoint['files']}
+repair_patch=H/'beacon-bool-compile-repair.patch'
+check('published repair original patch unchanged',hashlib.sha256(repair_patch.read_bytes()).hexdigest()==published_repair['originalPatchSHA256'])
+with tempfile.TemporaryDirectory(prefix='stage85-published-ff0-proof-') as temp:
+    root=Path(temp)
+    for name,digest in manifest['beforeBeaconBoolCompileRepair'].items():
+        value=pre_second_tracker_source[name]
+        check('failed119 published-repair preimage '+name,hashlib.sha256(value).hexdigest()==digest and repair_rows[name]['beforeSHA256']==digest)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(value)
+    for name in manifest['beaconBoolCompileRepairNewFiles']:
+        check('published repair new control was absent in failed119 '+name,repair_rows[name]['beforeSHA256'] is None and not (root/name).exists())
+    subprocess.run(['git','apply',str(repair_patch)],cwd=root,check=True,timeout=15,capture_output=True)
+    for name in list(manifest['beforeBeaconBoolCompileRepair'])+manifest['beaconBoolCompileRepairNewFiles']:
+        value=(root/name).read_bytes()
+        check('exact published ff0 repair identity '+name,len(value)==repair_rows[name]['bytes'] and hashlib.sha256(value).hexdigest()==repair_rows[name]['sha256'])
+    subprocess.run(['git','apply','-R',str(repair_patch)],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeBeaconBoolCompileRepair'].items():
+        check('published repair proof restored failed119 '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+    for name in manifest['beaconBoolCompileRepairNewFiles']:
+        check('published repair proof removed later control '+name,not (root/name).exists())
 
 # Restore the exact post-map source before historical assertions. This layer
 # intentionally changes current production behavior; no earlier pass is relabelled.
-pre_tracker_implementation_source=dict(pre_beacon_bool_source)
+pre_tracker_implementation_source=dict(pre_second_tracker_source)
 with tempfile.TemporaryDirectory(prefix='stage85-tracker-implementation-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeTrackerImplementationBatch'])+manifest['trackerImplementationBatchNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_beacon_bool_source.get(name,(R/name).read_bytes()))
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_second_tracker_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'tracker-implementation-batch.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeTrackerImplementationBatch'].items():
@@ -409,10 +483,40 @@ with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
         check('exact original recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     check('bridge absent in original', not (root / 'ios/BlindAssist/MeshCandidateDiagnostics.swift').exists())
     original_nav = (root / 'ios/BlindAssist/NavigationModel.swift').read_text()
-bridge = (R / 'ios/BlindAssist/MeshCandidateDiagnostics.swift').read_text()
+historical_bridge = pre_third_source['ios/BlindAssist/MeshCandidateDiagnostics.swift'].decode()
+bridge = historical_bridge
+current_bridge = (R / 'ios/BlindAssist/MeshCandidateDiagnostics.swift').read_text()
 # Historical critical-order contracts below run on exact recovered pre-viewer bytes.
 # Current default behavior and new diagnostic ownership are checked separately below.
 current_nav = (R / 'ios/BlindAssist/NavigationModel.swift').read_text()
+# These new contracts inspect actual production source/project and all original
+# fixture identities. Native compile, model and physical acceptance remain open.
+for script in ['tools/test/normal-owner-mesh-current.test.py',
+               'tools/test/local-email-draft-companion.test.py',
+               'tools/ci/test_normal_owner_project.py']:
+    check('current third-batch portable contract '+script,subprocess.run([sys.executable,'-B',str(R/script)],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=20).returncode==0)
+check('current SC53 thirty source contracts',subprocess.run([sys.executable,'-B',str(R/'tools/test/sc53-current-source.py'),'--root',str(R)],cwd=R,capture_output=True,timeout=20).returncode==0)
+check('current bounded familiar-photo import contracts',subprocess.run(['node','--test','--test-concurrency=1',str(R/'tools/test/familiar-photo-import-bounds.test.mjs'),str(R/'tools/test/familiar-people.test.mjs')],cwd=R,capture_output=True,timeout=20).returncode==0)
+check('current normal-owner remains compile-gated and default off',current_bridge.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n') and 'private(set) var enabled = false' in current_bridge and 'UserDefaults' not in current_bridge)
+
+# Same-job provenance/metadata controls are portable synthetic tests, not an
+# Apple build or an observed actual-model run. Only explicit workflow executes.
+for script in ['research/j01-hosted-app-adapter-20261030/test_build_attestation.py',
+               'tools/ci/test_j01_actual_model.py',
+               'tools/ci/test_collect_j01_metadata.py']:
+    check('current J01 same-job portable contract '+script,subprocess.run([sys.executable,'-B',str(R/script)],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R),'BLIND_SOURCE_REPO':str(R)},capture_output=True,timeout=20).returncode==0)
+
+# Additional actual-current source contracts; opt-in real-model execution is not
+# invoked by these portable controls or by ordinary hosted fixture selection.
+for script in ['tools/test/classified-hit-current.test.py',
+               'tools/test/classification-fixture-drain.test.py',
+               'tools/test/conversation-failure-diagnostics.test.py',
+               'tools/test/local-recipe-companion.test.py',
+               'research/j01-hosted-app-adapter-20261030/test_adapter.py',
+               'tools/ci/test_j01_project_membership.py']:
+    check('current second-batch portable contract '+script,subprocess.run([sys.executable,'-B',str(R/script)],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=20).returncode==0)
+check('current bounded room-photo import contracts',subprocess.run(['node','--test','--test-concurrency=1',str(R/'tools/test/room-photo-import-bounds.test.mjs')],cwd=R,capture_output=True,timeout=15).returncode==0)
+
 # Implementation contracts below read actual current production bytes, never the
 # recovered historical view. They are portable source checks, not native passes.
 check('current navigation seventy implementation contracts',subprocess.run([sys.executable,str(R/'tools/test/navigation-integration-current.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
@@ -421,16 +525,17 @@ check('current captured-photo frame and absence contracts',subprocess.run(['node
 
 nav = pre_seated_nav
 project = pre_seated_project
-check('bridge exact reviewed proposal', bridge == (H.parent / 'proposal/MeshCandidateDiagnostics.swift').read_text())
-check('bridge compile fence', bridge.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n') and bridge.endswith('#endif\n'))
-check('default off and not persisted', 'private(set) var enabled = false' in bridge and 'UserDefaults' not in bridge)
-check('no copy or geometry ingest', not any(x in bridge for x in ['.ingest(', '.copy(', '.geometry', 'ARMeshAnchor', 'MTLBuffer']))
-check('terminal discard', 'terminal = true; enabled = false' in bridge and 'guard !terminal' in bridge)
-check('no geometry output or guidance', not any(x in bridge for x in ['route(', 'speak(', 'guidance', 'ARSession()']))
+check('historical counters-only bridge exact reviewed proposal', bridge == (H.parent / 'proposal/MeshCandidateDiagnostics.swift').read_text())
+check('historical counters-only bridge compile fence', bridge.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n') and bridge.endswith('#endif\n'))
+check('historical counters-only default off and not persisted', 'private(set) var enabled = false' in bridge and 'UserDefaults' not in bridge)
+check('historical counters-only no copy or geometry ingest', not any(x in bridge for x in ['.ingest(', '.copy(', '.geometry', 'ARMeshAnchor', 'MTLBuffer']))
+check('historical counters-only terminal discard', 'terminal = true; enabled = false' in bridge and 'guard !terminal' in bridge)
+check('historical counters-only no geometry output or guidance', not any(x in bridge for x in ['route(', 'speak(', 'guidance', 'ARSession()']))
 check('existing main callback ownership', 'session.delegateQueue = .main' in nav)
 check('flag not in default project settings', 'BLIND_MESH_CANDIDATE_DIAGNOSTICS' not in project)
 production = '\n'.join(p.read_text() for p in (R / 'ios/BlindAssist').glob('*.swift'))
-check('only declaration of runtime enable control', len(re.findall(r'\bsetMeshCandidateDiagnosticsEnabled\s*\(', production)) == 1)
+check('current exact explicit normal-owner enable seam', len(re.findall(r'\bsetMeshCandidateDiagnosticsEnabled\s*\(', production)) == 2 and 'set: { model.setMeshCandidateDiagnosticsEnabled($0) }' in (R/'ios/BlindAssist/DashboardView.swift').read_text())
+check('historical counters-only enable declaration', sum(len(re.findall(r'\bsetMeshCandidateDiagnosticsEnabled\s*\(', pre_third_source.get(str(p.relative_to(R)),p.read_bytes()).decode())) for p in (R/'ios/BlindAssist').glob('*.swift')) == 1)
 # These blocks contain no nested compiler directives. Removing only this exact
 # feature fence from the recovered pre-practice layer must recover the entire
 # historical default NavigationModel. The separate exact patch binds later changes.
@@ -539,5 +644,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', beaconBoolCompileRepairApplied=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit seated confirmation required', meshDiagnosticGeometryCopyEnabled='only inside separately admitted diagnostic owner',
+    appleBuild='pending', beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

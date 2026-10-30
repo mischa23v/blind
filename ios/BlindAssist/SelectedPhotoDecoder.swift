@@ -7,8 +7,9 @@ import BlindCore
 /// existing iCloud original; this app never uploads or stores selected bytes.
 enum SelectedPhotoDecoder {
     struct Decoded { let image: UIImage; let sha256: String }
-    static func decode(_ data: Data) -> Decoded? {
-        guard !data.isEmpty, data.count <= SelectedPhotoReference.maximumEncodedBytes,
+    static func decode(_ data: Data, maximumDecodedSide: Int = SelectedPhotoReference.maximumDecodedSide) -> Decoded? {
+        guard maximumDecodedSide > 0, maximumDecodedSide <= SelectedPhotoReference.maximumDecodedSide,
+              !data.isEmpty, data.count <= SelectedPhotoReference.maximumEncodedBytes,
               let source = CGImageSourceCreateWithData(data as CFData, [kCGImageSourceShouldCache: false] as CFDictionary),
               CGImageSourceGetCount(source) == 1,
               let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
@@ -19,10 +20,10 @@ enum SelectedPhotoDecoder {
               let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [
                 kCGImageSourceCreateThumbnailFromImageAlways: true,
                 kCGImageSourceCreateThumbnailWithTransform: true,
-                kCGImageSourceThumbnailMaxPixelSize: SelectedPhotoReference.maximumDecodedSide,
+                kCGImageSourceThumbnailMaxPixelSize: maximumDecodedSide,
                 kCGImageSourceShouldCacheImmediately: true
-              ] as CFDictionary), image.width <= SelectedPhotoReference.maximumDecodedSide,
-              image.height <= SelectedPhotoReference.maximumDecodedSide else { return nil }
+              ] as CFDictionary), image.width <= maximumDecodedSide,
+              image.height <= maximumDecodedSide else { return nil }
         return Decoded(image: UIImage(cgImage: image), sha256: SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined())
     }
 }

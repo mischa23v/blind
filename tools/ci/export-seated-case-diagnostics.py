@@ -28,7 +28,8 @@ LINE_LIMIT = 4096
 OUTPUT_LIMIT = 128 * 1024
 EXCEPTIONS = (OSError, ValueError, TypeError, KeyError, RecursionError, subprocess.SubprocessError)
 FIXTURES = ('ios/BlindAssistTests/SeatedMeshProjectionTests.swift',
-            'ios/BlindAssistTests/SeatedCollisionBridgeTests.swift')
+            'ios/BlindAssistTests/SeatedCollisionBridgeTests.swift',
+            'ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift')
 ASSERTIONS = {
     'XCTAssertTrue': 'assert_true', 'XCTAssertFalse': 'assert_false',
     'XCTAssertEqual': 'assert_equal', 'XCTAssertNotEqual': 'assert_not_equal',
@@ -55,7 +56,7 @@ def identity(value):
     if type(value) is not str or len(value) > 512: return None
     candidate = value.removesuffix('()').removeprefix('BlindAssistTests/')
     if candidate in EXPECTED: return candidate
-    match = re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SeatedMeshProjectionTests|SeatedCollisionBridgeTests) (test\w+)\]', value)
+    match = re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SeatedMeshProjectionTests|SeatedCollisionBridgeTests|NormalOwnerMeshConnectionTests) (test\w+)\]', value)
     candidate = '/'.join(match.groups()) if match else None
     return candidate if candidate in EXPECTED else None
 
@@ -114,9 +115,9 @@ def log_failures(path):
     result = {'records': [], 'recordsOmitted': 0, 'oversizeLinesSkipped': 0,
               'origin': 'fixed-fixture-log', 'countMeaning': 'matching_log_records_not_unique_assertions'}
     require(path.is_file() and not path.is_symlink())
-    pattern = re.compile(r'^(?:[^\r\n]{0,2048}/)?(SeatedMeshProjectionTests|SeatedCollisionBridgeTests)\.swift:'
+    pattern = re.compile(r'^(?:[^\r\n]{0,2048}/)?(SeatedMeshProjectionTests|SeatedCollisionBridgeTests|NormalOwnerMeshConnectionTests)\.swift:'
                          r'([0-9]{1,7})(?::[0-9]{1,7})?: error: '
-                         r'(-\[(?:BlindAssistTests\.)?(?:SeatedMeshProjectionTests|SeatedCollisionBridgeTests) test\w+\]) : (.*)$')
+                         r'(-\[(?:BlindAssistTests\.)?(?:SeatedMeshProjectionTests|SeatedCollisionBridgeTests|NormalOwnerMeshConnectionTests) test\w+\]) : (.*)$')
     total = 0; skipping = False
     with path.open('rb') as stream:
         while True:
@@ -144,12 +145,13 @@ def fixture_source():
     data = [bounded(ROOT / p, 2 * 1024 * 1024) for p in FIXTURES]
     strict.verify_fixture_source(data[0].decode(), strict.PROJECTION_EXPECTED, 'SeatedMeshProjectionTests')
     strict.verify_fixture_source(data[1].decode(), strict.COLLISION_EXPECTED, 'SeatedCollisionBridgeTests')
+    strict.verify_fixture_source(data[2].decode(), strict.NORMAL_OWNER_EXPECTED, 'NormalOwnerMeshConnectionTests')
     return {p: hashlib.sha256(b).hexdigest() for p, b in zip(FIXTURES, data)}
 
 
 def collect(out):
     result = {'schema': 1, 'status': 'unavailable', 'sourceVerified': False,
-              'scope': '21 fixed synthetic hosted cases; diagnostic metadata only',
+              'scope': '26 fixed synthetic hosted cases; diagnostic metadata only',
               'acceptance': 'not_inferred_strict_collector_unchanged', 'physicalAuthority': False,
               'assertionOriginsCombined': False, 'commandExit': None, 'errors': []}
     expected = os.environ.get('GITHUB_SHA')

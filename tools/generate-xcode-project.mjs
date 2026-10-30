@@ -19,7 +19,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     if (!isAbsolute(objectDetector) || /[\p{Cc}$]/u.test(objectDetector) || !['Detector.mlmodel', 'Detector.mlmodelc'].includes(basename(objectDetector))) throw new Error('Use an absolute Detector.mlmodel or Detector.mlmodelc path.');
     if (![objectDetectorSHA256, objectDetectorManifestSHA256].every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value))) throw new Error('Object detector requires verified artifact and manifest hashes.');
   } else if (objectDetectorSHA256 !== undefined || objectDetectorManifestSHA256 !== undefined) throw new Error('Detector hashes require --object-detector.');
-  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift', 'SeatedMeshProjectionTests.swift', 'SeatedCollisionBridgeTests.swift', 'NativeQoSComparisonTests.swift'];
+  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift', 'HostedNonvisualJourneyTests.swift', 'SeatedMeshProjectionTests.swift', 'SeatedCollisionBridgeTests.swift', 'NormalOwnerMeshConnectionTests.swift', 'NativeQoSComparisonTests.swift'];
   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
   const refs = [], sources = [];
   for (const file of files) {
@@ -103,8 +103,16 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const benchPackage = add('seated-mesh-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/live-mesh-classified-bench-20261028";');
   const benchDependency = add('seated-mesh-product', `isa = XCSwiftPackageProductDependency; package = ${benchPackage}; productName = LiveMeshClassifiedBench;`);
   const benchLibrary = add('seated-mesh-library', `isa = PBXBuildFile; productRef = ${benchDependency};`);
+  // Opt-in normal-owner app code emits direct82/81 symbols. Link the existing
+  // local products explicitly; no new package, flag or default activation.
+  const snapshotPackage = add('mesh-snapshot-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/arkit-mesh-adapter-82";');
+  const decoderPackage = add('mesh-decoder-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/native-mesh-decoder-81";');
+  const appMeshSnapshot = add('normal-owner-snapshot-product', `isa = XCSwiftPackageProductDependency; package = ${snapshotPackage}; productName = MeshSnapshot82;`);
+  const appMeshSnapshotBuild = add('normal-owner-snapshot-framework', `isa = PBXBuildFile; productRef = ${appMeshSnapshot};`);
+  const appMeshDecoder = add('normal-owner-decoder-product', `isa = XCSwiftPackageProductDependency; package = ${decoderPackage}; productName = MeshBufferDecoder81;`);
+  const appMeshDecoderBuild = add('normal-owner-decoder-framework', `isa = PBXBuildFile; productRef = ${appMeshDecoder};`);
   const sourcesPhase = add('sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${sources.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
-  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${benchLibrary},${meshLibrary},${roomMeshLibrary},${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
+  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${appMeshSnapshotBuild},${appMeshDecoderBuild},${benchLibrary},${meshLibrary},${roomMeshLibrary},${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
   let activityTarget, activityEmbed;
   if (liveActivity) {
     const activityProduct = add('activity-product', 'isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = BlindAssistLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR;');
@@ -132,7 +140,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "${configurationConditions}"; ${deviceSettings} ${nativeSettings} TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; ONLY_ACTIVE_ARCH = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
   }
   const configList = add('configs', `isa = XCConfigurationList; buildConfigurations = (${configs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
-  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${benchDependency},${meshDependency},${roomMeshDependency},${dependency},${memoryDependency},);`);
+  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${appMeshSnapshot},${appMeshDecoder},${benchDependency},${meshDependency},${roomMeshDependency},${dependency},${memoryDependency},);`);
   const uiFile = add('ui-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT;');
   const uiBuild = add('ui-build', `isa = PBXBuildFile; fileRef = ${uiFile};`);
   // Preserve the already-committed opt-in diagnostic IDs and UI-test-only membership.
@@ -177,14 +185,12 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const unitRoomMeshBuild = add('unit-room-mesh-build', `isa = PBXBuildFile; productRef = ${unitRoomMesh};`);
   // Synthetic owned-snapshot regressions only. Existing83 is already linked by
   // the app;82 is explicit for @testable owned fixtures, never a public forge API.
-  const snapshotPackage = add('mesh-snapshot-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/arkit-mesh-adapter-82";');
   const unitMeshIngress = add('unit-mesh-ingress', `isa = XCSwiftPackageProductDependency; package = ${meshPackage}; productName = MeshCandidateIngress83;`);
   const unitMeshIngressBuild = add('unit-mesh-ingress-build', `isa = PBXBuildFile; productRef = ${unitMeshIngress};`);
   const unitMeshSnapshot = add('unit-mesh-snapshot', `isa = XCSwiftPackageProductDependency; package = ${snapshotPackage}; productName = MeshSnapshot82;`);
   const unitMeshSnapshotBuild = add('unit-mesh-snapshot-build', `isa = PBXBuildFile; productRef = ${unitMeshSnapshot};`);
   //82's decoded return types and default Limits argument emit direct81 symbols
   //in hosted fixtures. Explicitly link81; source visibility is not link reachability.
-  const decoderPackage = add('mesh-decoder-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/native-mesh-decoder-81";');
   const unitMeshDecoder = add('unit-mesh-decoder', `isa = XCSwiftPackageProductDependency; package = ${decoderPackage}; productName = MeshBufferDecoder81;`);
   const unitMeshDecoderBuild = add('unit-mesh-decoder-build', `isa = PBXBuildFile; productRef = ${unitMeshDecoder};`);
   const unitBench = add('unit-seated-mesh', `isa = XCSwiftPackageProductDependency; package = ${benchPackage}; productName = LiveMeshClassifiedBench;`);

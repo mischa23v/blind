@@ -1,22 +1,58 @@
 {
-  "as_of": "2026-10-28T06:28:00Z",
-  "scope": "Evidence reconciliation, not a new run or source implementation. Current ownership is a snapshot; historical family gaps must be rechecked against later fixes before assigning implementation. Latest user priority: connected world/place/floor/room/pose/planner/hazard/guidance replay first; device gates must not halt code integration.",
+  "publication_annotation": {
+    "as_of": "2026-10-30T17:41:00Z",
+    "scope": "Publication annotation for this combined source checkpoint. The complete 17:30 checkpoint, workstream-stage snapshot and historical evidence below are unchanged. Their reviewed-unpublished labels are historical and superseded only for source inclusion, not acceptance.",
+    "reviewed_continuation": {
+      "included_in_this_source_checkpoint": true,
+      "published_bool_repair_retained": true,
+      "combined_native_validation": "not_run_at_preparation_time",
+      "source_scope": "Reviewed recipe/email adapters, actual-app/model-lane journey harness, classified/normal-mesh integration and bounded imports. Source inclusion is not test/device acceptance."
+    },
+    "previous_source_observation": {
+      "observed_at": "2026-10-30T17:41:00Z",
+      "commit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
+      "run_url": "https://github.com/mischa23v/blind/actions/runs/41096090593",
+      "full_hosted_unit_step": "failed; exact aggregate counts and causes not yet collected",
+      "overall_native_job": "in_progress_UI_running",
+      "seated": {
+        "passed": 13,
+        "failed": 8,
+        "skipped": 0
+      },
+      "validates_combined_checkpoint": false
+    },
+    "accepted_workstreams": 0,
+    "accepted_whole_journeys": 0,
+    "required_whole_journeys": 400,
+    "F01": "DEFERRED_BY_USER",
+    "physical_authority": false,
+    "supersedes": "Only the publication labeling of the reviewed continuation; no historical outcome, failure, dependency, ID or acceptance gate is removed."
+  },
+  "as_of": "2026-10-30T17:30:00Z",
+  "scope": "Current source/publication/testing/device stages are separate. Dated historical laps, matrix, component summary and family mapping are retained unchanged. No workstream is accepted complete, no phone-accuracy percentage is inferred, and no whole user/model/device journey is accepted.",
   "workstreams": [
     {
       "id": "N01",
       "title": "Assisted static 3D reconstruction and movement",
       "state": "TESTED_OFFLINE_NOT_DEVICE",
       "evidence": [
-        "research/journey-benchmark-readiness-84/final-20261028-0325/FINAL_RESULT.json"
+        "research/journey-benchmark-readiness-84/final-20261028-0325/FINAL_RESULT.json",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Retain final matrix failures/unknowns and historical lap records; do not relabel arrivals as phone accuracy.",
-      "current_owner": "root-publishing / rejection-diagnosis-agent"
+      "next_test": "Retain the baseline; do not rerun or retune inspected development frames as a fresh holdout.",
+      "current_owner": "offline evidence maintenance",
+      "historical_state": "TESTED_OFFLINE_NOT_DEVICE",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Historical assisted offline results retained: 94/100 completed movement episodes, 90 arrivals; supplied/reference conditions are not live localization.",
+      "current_testing": "No new physical result; historical denominators and unknown ground/support are unchanged.",
+      "device_or_data_gate": "Independent holdout/body/support acceptance remains open."
     },
     {
       "id": "N00",
       "title": "Connected recorded build/replay before live phone handoff",
-      "state": "PARTIAL_DIAGNOSTIC_SOURCE_APPLE_FAILED",
+      "state": "PARTIAL_SOURCE_NATIVE_FAILED",
       "evidence": [
         "ios/BlindAssist/NavigationModel.swift",
         "ios/BlindAssist/NativeLocalizationIssuer.swift",
@@ -26,14 +62,21 @@
         "ios/BlindAssist/NativeMapping.swift",
         "research/seated-body-foot-candidate-20261030/SOURCE_READINESS_SPLIT.md",
         "research/seated-independent-collision-bridge-20261030/README.md",
-        "research/apple-preflight-edt-repair-20261030/README.md"
+        "research/apple-preflight-edt-repair-20261030/README.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "N01"
       ],
-      "next_test": "Preserve exact e418 18-case failure accounting; validate the cleanup-expectation/timing-label repair and diagnose/fix observed runtime integration failures without removing original visual/ownership assertions. Actual SceneKit delay remains unresolved. Then continue existing R09/R15 frame identities: bind a real catalog destination/artifact to the exact recovered/registered source and actual strict planner/audit. Missing association, changed revision/session, tracking loss, return and blocked paths must refuse. Map hierarchy/journeys, localization/support/hazards and device acceptance remain open; no live speaker or physical release.",
-      "current_owner": "root-integration-and-Apple-evidence",
-      "checkpoint": {
+      "next_test": "Diagnose the eight failed controller cases with original assertions intact; finish source-bound package loading before claiming a connected route.",
+      "current_owner": "navigation integration",
+      "historical_state": "PARTIAL_DIAGNOSTIC_SOURCE_APPLE_FAILED",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published destination association, same-owner recovery and diagnostic collision/source ownership; further venue-to-exact-package A/B loading is in progress.",
+      "current_testing": "ff0 default and diagnostics compile passed. Exact seated selection is 13 pass / 8 fail / 0 skip; full hosted-unit step failed, with exact aggregate counts/causes pending collection.",
+      "device_or_data_gate": "Positive real saved-world activation, registration and physical support are not established.",
+      "historical_checkpoint": {
         "as_of": "2026-10-30T06:18:00Z",
         "source_commit": "e418290ac2a70f93c4250bb094091082408f7093",
         "scope": "Diagnostic-only source readiness and same-source collision bridge implemented; N00 remains incomplete.",
@@ -45,133 +88,204 @@
     {
       "id": "N02",
       "title": "Calibrated live localization, heading and deviation",
-      "state": "CODE_CONTRACT_DEVICE_PENDING",
+      "state": "PARTIAL_SOURCE_DEVICE_PENDING",
       "evidence": [
-        "research/world-map-localization-audit/TRACKER_ADDENDUM.md"
+        "research/world-map-localization-audit/TRACKER_ADDENDUM.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Same-room held-out RGB/depth/IMU timestamps/intrinsics/extrinsics; random starts, two-image ambiguity, lookalikes, wrong floor, tracking-loss/restart. Measure position/yaw error, false acceptance and time-to-recover; no supplied-pose or reference leakage.",
-      "current_owner": "localization-contract-agent"
+      "next_test": "Finish the exact map/frame producer and wrong-room/floor/restart refusal tests; then measure localization without reference leakage.",
+      "current_owner": "normal-frame localization integration",
+      "historical_state": "CODE_CONTRACT_DEVICE_PENDING",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Existing localization/heading contracts remain; exact normal-camera map/frame producer is being wired through current owners.",
+      "current_testing": "Candidate contracts/source checks do not measure live position or heading; new producer is not yet accepted.",
+      "device_or_data_gate": "Measured body/heading calibration and independent RGB-D/IMU cases are required."
     },
     {
       "id": "N03",
       "title": "Incremental current obstacle and floor evidence",
-      "state": "PARTIAL_CODE_NOT_ACCEPTED",
+      "state": "PARTIAL_SOURCE_DIAGNOSTIC_ONLY",
       "evidence": [
-        "REBUILD_TRACKER.md"
+        "REBUILD_TRACKER.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "N02"
       ],
-      "next_test": "Chronological real frames only, no future full mesh. Held-out rooms and staged moved chair/toy/drop/overhang; retain unknown support, measure miss by hazard size/range, coverage and detection-to-output latency.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Integrate the reviewed current-geometry consumer after exact-build checks; preserve unknown support and hazard-first behavior.",
+      "current_owner": "current-geometry integration",
+      "historical_state": "PARTIAL_CODE_NOT_ACCEPTED",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published current-hazard veto; later reviewed classified/normal-mesh consumer remains unpublished and diagnostic-only.",
+      "current_testing": "Published ff0 classified core checks: 71 pass; five iOS-only cases excluded. Later candidate native fixtures have not run.",
+      "device_or_data_gate": "Full-footprint floor/support, missed hazards and detection-to-output latency are not established."
     },
     {
       "id": "N04",
       "title": "Live route following, return and map transitions",
-      "state": "PARTIAL_CODE_NOT_ACCEPTED",
+      "state": "PARTIAL_SOURCE_DEVICE_PENDING",
       "evidence": [
         "ios/BlindAssist/ConnectedJourneyRuntime.swift",
-        "SPATIAL_COMPANION_ACCEPTANCE.md"
+        "SPATIAL_COMPANION_ACCEPTANCE.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "N02",
         "N03"
       ],
-      "next_test": "Whole app route through actual doorway and back, deviation/lag/sideways motion, blocked return, room/floor change, restart. Sweep calibrated body/margins; no reference veto presented as perception.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Complete target ownership/recovery wiring; test wrong-map, stale frame, cancel, restart and blocked return before live movement.",
+      "current_owner": "route and portal recovery integration",
+      "historical_state": "PARTIAL_CODE_NOT_ACCEPTED",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published off-route/blocked-route retirement and destination ownership requests; exact package loading and portal-recovery dead-end repair are active.",
+      "current_testing": "Current source refuses missing ownership; this is not an executed doorway/return journey.",
+      "device_or_data_gate": "Actual target-map relocalization, calibrated body connectors and full route/return device cases remain open."
     },
     {
       "id": "N05",
       "title": "Holdout rooms and measured error budget",
-      "state": "OPEN",
+      "state": "EVALUATION_DATA_PENDING",
       "evidence": [
-        "REBUILD_TRACKER.md"
+        "REBUILD_TRACKER.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "N01"
       ],
-      "next_test": "Preselect independent real RGB-D rooms, freeze thresholds before holdout, measure clearance against reference/tape; report geometry/pose/body/reaction margins separately. No ROI/FARO-derived repair on scored inputs.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Freeze the protocol and obtain independent data; report geometry/pose/body/reaction errors separately.",
+      "current_owner": "independent evaluation planning",
+      "historical_state": "OPEN",
+      "accepted_complete": false,
+      "progress_group": "evaluation_or_device",
+      "current_source": "Evaluation requirements exist; no new independent room holdout was supplied by this implementation batch.",
+      "current_testing": "Diagnosis-exposed Coffee frames remain development evidence, not untouched final holdouts.",
+      "device_or_data_gate": "Independent real rooms, measurements and a frozen error-budget protocol are still needed."
     },
     {
       "id": "A01",
       "title": "Practice cancellation and native accessibility",
-      "state": "CODE_REPAIR_NATIVE_PENDING",
+      "state": "PARTIAL_SOURCE_NATIVE_UI_PENDING",
       "evidence": [
-        "research/practice-cancellation-test-review-20261027/production-diagnosis/PUBLICATION_MANIFEST.json"
+        "research/practice-cancellation-test-review-20261027/production-diagnosis/PUBLICATION_MANIFEST.json",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Existing CI on exact published fix: unchanged 90s active witness then End, Dynamic Type audit and native callback checks; subsequently physical VoiceOver/audio/lifecycle.",
-      "current_owner": "root / accessibility-agent"
+      "next_test": "Finish the repaired app native suite and unchanged full accessibility audit; fix actual elements rather than exempting them.",
+      "current_owner": "native accessibility verification",
+      "historical_state": "CODE_REPAIR_NATIVE_PENDING",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published microphone restart/reconnect/quiet controls and Ask-layout repair retain cancellation and accessibility assertions.",
+      "current_testing": "119 accessibility failed before UI execution because of the compile error; no successful current full accessibility audit is established.",
+      "device_or_data_gate": "Physical VoiceOver/audio-route/lifecycle behavior and Dynamic Type audit remain open."
     },
     {
       "id": "P01",
       "title": "Local image retention, deletion and derived-source invalidation",
-      "state": "CODE_REVIEW_IN_PROGRESS",
+      "state": "PARTIAL_SOURCE_DEVICE_PENDING",
       "evidence": [
-        "research/image-retention-review-20261028"
+        "research/image-retention-review-20261028",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Delete/trash/restore/expiry across originals, thumbnails, OCR/memory, active tasks; app restart, cancellation race, failed disk write, no upload. Device storage/thermal budget still needed.",
-      "current_owner": "image-retention-agent"
+      "next_test": "Integrate reviewed bounds, then verify actual transfer lifetime and invalidation without changing consent or upload policy.",
+      "current_owner": "private-source lifecycle verification",
+      "historical_state": "CODE_REVIEW_IN_PROGRESS",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published capture disposal/provenance and derived-source invalidation; bounded room and optional familiar-photo import continuation is reviewed, not yet published.",
+      "current_testing": "Portable privacy/ownership controls pass; later candidate Apple Photos/storage tests have not run.",
+      "device_or_data_gate": "Actual cancellation, disk failure, restart, deletion and device memory/thermal behavior remain open."
     },
     {
       "id": "E01",
       "title": "Everyday perception and local model correctness",
-      "state": "PARTIAL_CODE_DEVICE_PENDING",
+      "state": "PARTIAL_SOURCE_DEVICE_PENDING",
       "evidence": [
         "SCENARIO_TRACEABILITY.md",
-        "CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md"
+        "CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Consented real paired currency/face/color/product/page inputs with correct labels and negatives; exact shipped assets/licenses; wrong/occluded/stale views, observed not absent, and measured native response latency. Specialist output is not general object identity.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Inspect exact-build model failures and paired real-source correctness; never replace missing evidence with generated physical facts.",
+      "current_owner": "perception and local-model verification",
+      "historical_state": "PARTIAL_CODE_DEVICE_PENDING",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published scene provenance and visual-absence safeguards preserve conservative nonphysical output; real perception/model accuracy is not inferred.",
+      "current_testing": "Current full hosted-unit step failed; exact local-model results and causes have not yet been collected. Earlier model failures are not erased by build success.",
+      "device_or_data_gate": "Consented independent currency/face/color/product/page inputs, licensed assets and supported-device availability remain needed."
     },
     {
       "id": "E02",
       "title": "Voice continuity and useful complete everyday goals",
-      "state": "PARTIAL_CODE_DEVICE_PENDING",
+      "state": "PARTIAL_SOURCE_NATIVE_PENDING",
       "evidence": [
         "EVERYDAY_COMPANION_ACCEPTANCE.md",
-        "CHILD_ASSISTANT_TEST_TRACKER.md"
+        "CHILD_ASSISTANT_TEST_TRACKER.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "A01"
       ],
-      "next_test": "Real local model + microphone + speech/VoiceOver: shopping list add/review/remove/restart, historical-object correction, reading interruption/resume, quiet/chat/mute/end. Record exact utterances, tool calls, delivered output and goal completion, not helper assertions.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Run the actual source-bound native/model lane after integration; preserve failures, unavailable outputs and source authority.",
+      "current_owner": "voice and companion acceptance",
+      "historical_state": "PARTIAL_CODE_DEVICE_PENDING",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published voice recovery/lifecycle controls; later reviewed actual-app model lane and narration aliases remain unpublished.",
+      "current_testing": "No current full microphone/model/speech/VoiceOver journey is accepted; a typed fixture is not verified spoken interaction.",
+      "device_or_data_gate": "Real audio, interruption/resume, latency and useful complete-goal acceptance remain open."
     },
     {
       "id": "E03",
       "title": "Missing source/action adapters",
-      "state": "OPEN_OR_PARTIAL",
+      "state": "PARTIAL_SOURCE_ADAPTERS_REVIEWED_UNPUBLISHED",
       "evidence": [
-        "tests/scenarios/integrated/requirement-coverage.json"
+        "tests/scenarios/integrated/requirement-coverage.json",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Inventory actual weather/menu/manual/PDF/recipe-timer/booking/send adapters against SC03/16/28/29/42/43/44; author unavailable/offline/authorization cases before implementation. Future external paid actions are not free offline core.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Integrate the local adapters and native tests. Keep raw microphone unverified, Mail review explicit, and missing/offline external data truthful.",
+      "current_owner": "local source and action adapter integration",
+      "historical_state": "OPEN_OR_PARTIAL",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published local reference helpers; later reviewed recipe and exact-revision private email trusted-typed adapters provide real dispatch, not just separate helper state.",
+      "current_testing": "Source controls/review pass; recipe/email Swift fixtures and native Mail presentation are not executed for the unpublished candidate.",
+      "device_or_data_gate": "Verified-speaker/voice confirmation, actual external delivery, trustworthy weather/menu data and authorized booking workflows remain open."
     },
     {
       "id": "E04",
       "title": "Asset/data licensing and offline availability",
-      "state": "OPEN",
+      "state": "PARTIAL_GUARD_PUBLISHED_RIGHTS_PENDING",
       "evidence": [
-        "TASKS.md"
+        "TASKS.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Pin every shipped face/detector/currency/model asset, license/redistribution/size/hash and actual offline availability; resolve missing or restricted weights without network fallback.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Audit the exact selected built assets and licenses; do not make optional paid/network services a free-core requirement.",
+      "current_owner": "asset provenance and licensing review",
+      "historical_state": "OPEN",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Default-project guard rejects raw model/ONNX paths and case variants while retaining the exact optional oracle exception. Optional assets remain excluded by default.",
+      "current_testing": "The guard has portable negative controls; it does not verify model/data redistribution rights or runtime offline availability.",
+      "device_or_data_gate": "Final selected-bundle inventory, transitive/training-data rights and supported-device offline checks remain open."
     },
     {
       "id": "J01",
       "title": "400 whole integrated journeys",
-      "state": "OPEN_0_COMPLETE_IN_PUBLISHED_COMPONENT_SUMMARY",
+      "state": "PARTIAL_HARNESS_REVIEWED_0_JOURNEYS",
       "evidence": [
         "research/evaluations/integrated-scenarios-20261025/EXECUTION_SUMMARY.json",
         "tests/scenarios/integrated/coverage-obligations.json",
-        "tests/scenarios/integrated/requirement-coverage.json"
+        "tests/scenarios/integrated/requirement-coverage.json",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "N04",
@@ -179,30 +293,44 @@
         "E02",
         "E03"
       ],
-      "next_test": "Replace 360 unexecuted obligations with exact inputs/tool/native paths/assertions/dispositions; preserve 40 authored navigation plumbing cases. Run each complete chain on pinned source, keep failed/blocked/not-run distinct. 372 deduplicated component sequences and 100 simulation schedules are NOT 400 journeys.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Publish only reviewed integration, then run unchanged selected episodes and report passed/failed/blocked/not-run separately.",
+      "current_owner": "whole-journey harness integration",
+      "historical_state": "OPEN_0_COMPLETE_IN_PUBLISHED_COMPONENT_SUMMARY",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Later reviewed actual-app/model-lane adapters and bound episode receipts exist; the candidate is not published or executed.",
+      "current_testing": "Accepted complete user/model/device journeys: 0/400. Component checks, authored scripts and simulation schedules are not journeys.",
+      "device_or_data_gate": "Whole source-bound input/tool/model/output/goal chains still require actual execution and recorded dispositions."
     },
     {
       "id": "J02",
       "title": "Clean-copy reproducibility and final release review",
-      "state": "PARTIAL_PACKAGE_NOT_STANDALONE",
+      "state": "PARTIAL_REPRODUCIBILITY_SOURCE_REVIEWED",
       "evidence": [
         "research/journey-benchmark-readiness-84/final-20261028-0325/FINAL_RESULT.json",
-        "research/evaluations/integrated-scenarios-20261025/README.md"
+        "research/evaluations/integrated-scenarios-20261025/README.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "J01",
         "N05"
       ],
-      "next_test": "Clean checkout plus licensed pinned external data/toolchains, reproduce manifests/scoring/native tests and report missing dependencies. Raw archive upload and new workflow activation remain separate approval gates.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Preserve the repaired published base during integration; verify clean-copy manifests and exact native results before release review.",
+      "current_owner": "source provenance and release evidence",
+      "historical_state": "PARTIAL_PACKAGE_NOT_STANDALONE",
+      "accepted_complete": false,
+      "progress_group": "partial_implementation",
+      "current_source": "Published ff0 compile repair and reviewed later exact source/provenance carry are separate stages; clean-copy integration evidence is being maintained.",
+      "current_testing": "Portable provenance/negative controls do not establish Apple build, data availability or release reproducibility.",
+      "device_or_data_gate": "J01/N05, current native failures and selected asset/toolchain reproducibility remain open."
     },
     {
       "id": "D01",
       "title": "Supervised physical adult then child acceptance",
       "state": "DEVICE_PENDING",
       "evidence": [
-        "CHILD_ASSISTANT_TEST_TRACKER.md"
+        "CHILD_ASSISTANT_TEST_TRACKER.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [
         "N04",
@@ -211,19 +339,32 @@
         "E01",
         "E02"
       ],
-      "next_test": "Bench and supervised adult trials first with O&M/safety review, harmless staged hazards, actual dimensions, latency/battery/heat and recovery limits. No child safety conclusion from simulated collision checks.",
-      "current_owner": "unassigned-next-wave"
+      "next_test": "Do not begin unsupervised or child mobility trials from source checks or diagnostic receipts.",
+      "current_owner": "supervised acceptance planning",
+      "historical_state": "DEVICE_PENDING",
+      "accepted_complete": false,
+      "progress_group": "evaluation_or_device",
+      "current_source": "No supervised physical acceptance is supplied by this source work.",
+      "current_testing": "No new adult/child physical test result is claimed.",
+      "device_or_data_gate": "Bench/failure tests, supervised adult progression, qualified O&M/guardian review and measured latency/battery/heat remain required."
     },
     {
       "id": "F01",
       "title": "Jev/visual-answer verification research",
       "state": "DEFERRED_BY_USER",
       "evidence": [
-        "research/JEV_IMAGE_VERIFICATION_REVIEW.md"
+        "research/JEV_IMAGE_VERIFICATION_REVIEW.md",
+        "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
       ],
       "depends_on": [],
-      "next_test": "Future only; no hosted image upload/API call/implementation now. Requires explicit privacy/authority decision and fresh correctness evaluation.",
-      "current_owner": "deferred-not-active"
+      "next_test": "Remain deferred; do not launch hosted image uploads/API calls for this work.",
+      "current_owner": "deferred_not_active",
+      "historical_state": "DEFERRED_BY_USER",
+      "accepted_complete": false,
+      "progress_group": "deferred",
+      "current_source": "Jev/visual-answer verification remains explicitly deferred by the user.",
+      "current_testing": "Not executed or counted as an active delivery item.",
+      "device_or_data_gate": "Any future work needs its separate privacy/authority decision and fresh correctness evaluation."
     }
   ],
   "historical_assisted_laps": [
@@ -668,5 +809,118 @@
       "full_family_status": "NOT_COMPLETE",
       "source": "tests/scenarios/integrated/requirement-coverage.json"
     }
-  ]
+  ],
+  "historical_reconciliation_as_of": "2026-10-28T06:28:00Z",
+  "current_checkpoint": {
+    "as_of": "2026-10-30T17:30:00Z",
+    "published_source": {
+      "commit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
+      "url": "https://github.com/mischa23v/blind/commit/ff0f50df695bfa48fd72697858c574fda653dc4e",
+      "prior_implementation_commit": "119752b88c529adf90bde1092137a85870740ace",
+      "prior_url": "https://github.com/mischa23v/blind/commit/119752b88c529adf90bde1092137a85870740ace"
+    },
+    "progress_groups": {
+      "partial_implementation_workstreams": 13,
+      "evaluation_or_device_stages": 2,
+      "deferred_by_user": 1,
+      "accepted_complete": 0,
+      "scope": "Each workstream appears once in these snapshot progress groups; these are not a completion or accuracy percentage."
+    },
+    "accepted_whole_journeys": {
+      "accepted": 0,
+      "required": 400,
+      "component_tests_are_not_journeys": true
+    },
+    "published_119_tests": {
+      "native_run": "https://github.com/mischa23v/blind/actions/runs/41093837152",
+      "body_run": "https://github.com/mischa23v/blind/actions/runs/41093837285",
+      "accessibility_run": "https://github.com/mischa23v/blind/actions/runs/41093837161",
+      "core": {
+        "passed": 1499,
+        "failed": 0,
+        "skipped": 1
+      },
+      "memory": {
+        "passed": 58,
+        "failed": 0
+      },
+      "classified": {
+        "passed": 71,
+        "failed": 0,
+        "ios_only_exclusions": 5
+      },
+      "required_body_witnesses_passed": 9,
+      "default_app_build": "failed",
+      "diagnostics_app_build": "failed",
+      "primary_failure": "Void return in Bool beacon closure; exit 65. Fixed by published ff0, not retroactively a passing 119 run.",
+      "hosted_units": "not_executed_due_to_compile_failure",
+      "accessibility": "failed_before_UI_execution; both layout sizes and full audit exit 65"
+    },
+    "published_ff0_tests": {
+      "native_run": "https://github.com/mischa23v/blind/actions/runs/41096090593",
+      "default_job": "https://github.com/mischa23v/blind/actions/runs/41096090593/job/124202100185",
+      "diagnostics_job": "https://github.com/mischa23v/blind/actions/runs/41096090593/job/124202100531",
+      "classified_job": "https://github.com/mischa23v/blind/actions/runs/41096090593/job/124202100700",
+      "default_app_build": "passed",
+      "diagnostics_app_build": "passed",
+      "core_memory_steps": "passed; terminal exact counts not yet collected for this commit",
+      "full_hosted_units": "failed_step_at_17:29:47Z; exact aggregate counts and causes not yet collected",
+      "seated": {
+        "executed": 21,
+        "passed": 13,
+        "failed": 8,
+        "skipped": 0,
+        "command_exit": 65,
+        "exact_source_verified": true,
+        "exact_case_set_observed": true,
+        "collision_fixture_passes": 4,
+        "failure_records": 27,
+        "unexpected_failure_records": 2,
+        "strict_acceptance_receipt": "unavailable on nonzero test command; not a pass"
+      },
+      "classified": {
+        "passed": 71,
+        "failed": 0,
+        "ios_only_exclusions": 5,
+        "source_clean_before_after": true
+      },
+      "accessibility": "no successful full audit established for current app",
+      "device_acceptance": "not_established",
+      "overall_native_job": "in_progress_at_checkpoint; focused seed-radius fixtures running and UI pending",
+      "last_job_status_observed_utc": "2026-10-30T17:29:47Z"
+    },
+    "reviewed_unpublished": {
+      "published": false,
+      "native_executed_for_candidate": false,
+      "scope": "Later reviewed source/CI continuation carries the published Bool fix and includes recipe/email adapters, J01 real-app/model-lane harness, classified/normal-mesh integration and bounded familiar import. Review is not publication or execution.",
+      "manifest_sha256": "e160a0ebf31818e19cf287fc7dea2e15f9ca058ec8cf73c7b1e791af042e26eb"
+    },
+    "active_implementation": [
+      {
+        "workstreams": [
+          "N00",
+          "N04"
+        ],
+        "task": "Connect selected venue to the exact package A/B loading and registered ownership, preserving selection/version/session and cancellation fences.",
+        "status": "in_progress_not_accepted"
+      },
+      {
+        "workstreams": [
+          "N02"
+        ],
+        "task": "Produce exact normal-camera map/frame evidence through existing owners; do not synthesize body calibration or physical authority.",
+        "status": "in_progress_not_accepted"
+      },
+      {
+        "workstreams": [
+          "N04"
+        ],
+        "task": "Repair destination-portal recovery dead ends without inventing target-map pose or bypassing source/destination ownership.",
+        "status": "in_progress_not_accepted"
+      }
+    ],
+    "physical_authority": false,
+    "child_trial_readiness": false,
+    "status_document": "research/tracker-reconciliation-20261028/CURRENT_STATUS.md"
+  }
 }

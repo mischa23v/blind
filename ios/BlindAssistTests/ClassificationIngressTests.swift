@@ -19,6 +19,26 @@ final class ClassificationIngressTests: XCTestCase {
         func put(_ value: T) { lock.lock(); self.value = value; lock.unlock() }
         func get() -> T? { lock.lock(); defer { lock.unlock() }; return value }
     }
+    // Test-local serial ownership, not a runtime queue/QoS change. An expired
+    // cleanup wait cannot lend unfinished native work to the next fixture.
+    private final class FixtureDrainGate: @unchecked Sendable {
+        private let lock = NSLock()
+        private var current: UUID?
+        func reserve() -> UUID? {
+            lock.lock(); defer { lock.unlock() }
+            guard current == nil else { return nil }
+            let token = UUID(); current = token; return token
+        }
+        func acknowledge(_ token: UUID) {
+            lock.lock(); defer { lock.unlock() }
+            guard current == token else { return }
+            current = nil
+        }
+    }
+    private static let fixtureDrainGate = FixtureDrainGate()
+    // Test-case-owned callbacks. Only the actual stopAndDiscard acknowledgment
+    // marks an admitted owner drained; constructors that throw admitted no work.
+    private var discardAcknowledgements: [ObjectIdentifier: (acknowledged: Box<Bool>, token: UUID)] = [:]
     private func plane(_ c: MeshSnapshot82.Context, _ id: UUID, labels: [UInt8]?,
                        x: Float = 0, y: Float = 0, shortClassificationBytes: Bool = false) -> MeshSnapshot82.Capture {
         let bytes = vertices.flatMap { value in
@@ -69,13 +89,30 @@ final class ClassificationIngressTests: XCTestCase {
 #endif
     private func makeOwner(supportPolicy: MeshSupportPolicy = .legacySlope,
                            decodeQueue: DispatchQueue) throws -> MeshCandidateIngress83 {
+        guard let token = Self.fixtureDrainGate.reserve() else {
+            XCTFail("Previous classification fixture native owner has not acknowledged discard")
+            throw MeshCandidateIngress83.Failure.unavailable
+        }
+        let owner: MeshCandidateIngress83
+        do {
 #if DEBUG
-        try MeshCandidateIngress83(supportPolicy: supportPolicy,
-            captureSyntheticTestTiming: true, syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) },
-            decodeQueue: decodeQueue)
+            owner = try MeshCandidateIngress83(supportPolicy: supportPolicy,
+                captureSyntheticTestTiming: true, syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) },
+                decodeQueue: decodeQueue)
 #else
-        try MeshCandidateIngress83(supportPolicy: supportPolicy, decodeQueue: decodeQueue)
+            owner = try MeshCandidateIngress83(supportPolicy: supportPolicy, decodeQueue: decodeQueue)
 #endif
+        } catch {
+            Self.fixtureDrainGate.acknowledge(token) // Constructor failed before any fixture admission.
+            throw error
+        }
+        discardAcknowledgements[ObjectIdentifier(owner)] = (Box<Bool>(), token)
+        addTeardownBlock { [self, owner] in
+            // Reuse the existing ten-second discard deadline. This cannot erase
+            // the original query failure or certify eventual work as on-time.
+            await discard(owner)
+        }
+        return owner
     }
     private enum TimingEvent: String { case submitted, callback, waitFinished, failureDiscardCompleted, discardCompleted }
     private static func timingReceipt(_ owner: MeshCandidateIngress83, event: TimingEvent,
@@ -110,9 +147,21 @@ final class ClassificationIngressTests: XCTestCase {
         return value
     }
     private func discard(_ owner: MeshCandidateIngress83) async {
-        let done = expectation(description: "acknowledged owned/native discard")
+        guard let receipt = discardAcknowledgements[ObjectIdentifier(owner)] else {
+            XCTFail("Fixture owner was not registered for acknowledged cleanup")
+            return
+        }
+        guard receipt.acknowledged.get() != true else { return }
+        // Each wait owns a fresh expectation, including a teardown retry after
+        // an earlier wait failed. Never wait twice on the same XCTest object.
+        let done = XCTestExpectation(description: "acknowledged owned/native discard")
+        done.assertForOverFulfill = true
         let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
-        owner.stopAndDiscard { done.fulfill() }
+        owner.stopAndDiscard {
+            receipt.acknowledged.put(true)
+            Self.fixtureDrainGate.acknowledge(receipt.token)
+            done.fulfill()
+        }
         await fulfillment(of: [done], timeout: 10)
         Self.timingReceipt(owner, event: .waitFinished, queryID: queryID, submittedAt: submittedAt)
     }
@@ -131,6 +180,20 @@ final class ClassificationIngressTests: XCTestCase {
         XCTAssertFalse(candidate.route.actualWorldCoverageKnown, file: file, line: line)
         XCTAssertFalse(candidate.route.rawDepthHazardImplemented, file: file, line: line)
         XCTAssertTrue(candidate.route.rawDepthHazardVeto, file: file, line: line)
+    }
+    func testFixtureAdmissionRemainsClosedUntilExactOwnerDiscardAcknowledges() throws {
+        let gate = FixtureDrainGate()
+        let first = try XCTUnwrap(gate.reserve())
+        XCTAssertNil(gate.reserve())
+        gate.acknowledge(UUID()) // A foreign acknowledgment cannot release the owner.
+        XCTAssertNil(gate.reserve())
+        gate.acknowledge(first)
+        let second = try XCTUnwrap(gate.reserve())
+        XCTAssertNotEqual(first, second)
+        gate.acknowledge(first) // A duplicate/late old acknowledgment cannot release a new owner.
+        XCTAssertNil(gate.reserve())
+        gate.acknowledge(second)
+        XCTAssertNotNil(gate.reserve())
     }
     func testActualDecoderPreservesKnownLabelsAndDoesNotGuessMissingOrUnsupported() throws {
         let c = MeshSnapshot82.Context(sessionID: UUID(), generation: 1, revision: 1, receiptUptime: 1)

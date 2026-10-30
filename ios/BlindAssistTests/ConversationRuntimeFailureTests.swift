@@ -1,5 +1,8 @@
 import XCTest
 import BlindCore
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
 @testable import BlindAssist
 
 /// Deterministic result-policy tests, not Foundation Models acceptance.
@@ -444,6 +447,330 @@ final class ConversationControlLifecycleTests: XCTestCase {
         XCTAssertEqual(restored.goalSource?.recordedAt, date)
         XCTAssertEqual(restored.reportedCompletedSteps, reports)
         XCTAssertTrue(restored.proposedStep.isEmpty, "A retained report must not become a fresh movement suggestion")
+    }
+
+}
+
+/// Synthetic errors only; no Foundation Model generation, images or user data.
+final class ConversationFailureDiagnosticTests: XCTestCase {
+    func testUnknownErrorDoesNotLeakPrivateDescriptionDomainOrUserInfo() {
+        let secret = "synthetic-private-marker"
+        let error = NSError(domain: secret, code: 17, userInfo: [NSLocalizedDescriptionKey: secret, NSFilePathErrorKey: secret])
+        let value = ConversationFailureDiagnostic.capture(error, phase: .prepareContext)
+        XCTAssertEqual(value.phase, .prepareContext)
+        XCTAssertEqual(value.category, .unclassified)
+        XCTAssertEqual(value.family, .unclassified)
+        XCTAssertNil(value.opaqueCode)
+        XCTAssertFalse(value.receipt.contains(secret))
+    }
+    func testKnownBridgeDomainRetainsOnlyOpaqueBoundedCodeNotPayload() {
+        let secret = "synthetic-private-marker"
+        let error = NSError(domain: "FoundationModels.LanguageModelError", code: 2, userInfo: [NSLocalizedDescriptionKey: secret])
+        let value = ConversationFailureDiagnostic.capture(error, phase: .generateReply)
+        XCTAssertEqual(value.phase, .generateReply)
+        XCTAssertEqual(value.family, .languageModel)
+        XCTAssertEqual(value.category, .unclassified) // Never infer a cause from code 2.
+        XCTAssertEqual(value.opaqueCode, 2)
+        XCTAssertFalse(value.receipt.contains(secret))
+        for code in [-1, 256, Int.max] {
+            XCTAssertNil(ConversationFailureDiagnostic.capture(NSError(domain: "FoundationModels.LanguageModelError", code: code), phase: .generateReply).opaqueCode)
+        }
+    }
+    func testDiagnosticIsNotModelTextOrTaskCompletion() {
+        let diagnostic = ConversationFailureDiagnostic.capture(NSError(domain: "fixture", code: 1), phase: .generateReply)
+        let answer = LocalImageAnswer.conversationFailure(.generationFailed, arabic: false, diagnostic: diagnostic)
+        XCTAssertNil(answer.text)
+        XCTAssertNil(answer.taskUpdate)
+        XCTAssertEqual(answer.conversationFailureDiagnostic, diagnostic)
+        XCTAssertEqual(answer.conversationOperationalFallback, "I couldn't finish an on-device reply just now.")
+    }
+    #if canImport(FoundationModels)
+    @available(iOS 26.0, *)
+    func testLegacyTypedCausesDoNotRetainAssociatedContext() {
+        let context = LanguageModelSession.GenerationError.Context(debugDescription: "synthetic-private-marker")
+        let cases: [(LanguageModelSession.GenerationError, ConversationFailureDiagnostic.Category)] = [
+            (.exceededContextWindowSize(context), .contextOverflow), (.assetsUnavailable(context), .assetsUnavailable),
+            (.guardrailViolation(context), .guardrailViolation), (.unsupportedGuide(context), .unsupportedGuide),
+            (.unsupportedLanguageOrLocale(context), .unsupportedLanguageOrLocale), (.decodingFailure(context), .decodingFailure),
+            (.rateLimited(context), .rateLimited), (.concurrentRequests(context), .concurrentRequests)
+        ]
+        for (error, expected) in cases {
+            let value = ConversationFailureDiagnostic.capture(error, phase: .generateReply)
+            XCTAssertEqual(value.category, expected)
+            XCTAssertFalse(value.receipt.contains("synthetic-private-marker"))
+        }
+    }
+    #endif
+}
+
+/// Exact typed companion dispatch and private selected-source state, with no
+/// microphone, model invocation, network, food preparation or audio execution.
+@MainActor
+final class LocalRecipeCompanionAdapterTests: XCTestCase {
+    private let marker = "Private authored recipe fixture."
+    private func data() throws -> Data {
+        try JSONSerialization.data(withJSONObject: ["schema": 1, "title": "Test source", "attribution": "Authored fixture only",
+            "ingredients": [["name": "test", "quantity": "verbatim"]],
+            "steps": [["text": marker, "timerSeconds": 60], ["text": "Second source text."]]])
+    }
+    private func fixture(enable: Bool = true) throws -> NavigationModel {
+        let model = NavigationModel()
+        XCTAssertTrue(model.debugBeginModelResponseTest(question: "Recipe adapter source test", at: 10))
+        let owner = try XCTUnwrap(model.beginLocalRecipeSelection())
+        XCTAssertTrue(model.selectLocalRecipe(try data(), owner: owner))
+        if enable {
+            XCTAssertTrue(model.enableLocalRecipeCommands(try XCTUnwrap(model.localRecipe.selection)))
+        }
+        return model
+    }
+    func testRealCompanionInputRequiresExplicitSourceEnableAndUsesPrivateLiteralOutput() throws {
+        let model = try fixture(enable: false); defer { model.endConversation() }
+        model.receiveCompanionUtterance("read recipe step")
+        XCTAssertNil(model.localRecipe.response)
+        XCTAssertFalse(model.currentReply.contains(marker))
+        XCTAssertTrue(model.enableLocalRecipeCommands(try XCTUnwrap(model.localRecipe.selection)))
+        model.receiveCompanionUtterance("read recipe step")
+        XCTAssertTrue(model.currentReply.contains(marker))
+        XCTAssertEqual(model.localRecipe.session?.stepIndex, 0)
+        XCTAssertFalse(model.assistantDialogue.turns.contains { $0.text.contains(marker) })
+        XCTAssertFalse(model.assistantDialogue.userRecords.contains { $0.text.contains(marker) })
+    }
+    func testActualNextPreviousAndTimerCommandsShareTheHelperSessionWithoutCompletionClaims() throws {
+        let model = try fixture(); defer { model.endConversation() }
+        model.receiveCompanionUtterance("start recipe timer")
+        XCTAssertEqual(model.localRecipe.session?.timerState, .running)
+        model.receiveCompanionUtterance("next recipe step")
+        XCTAssertEqual(model.localRecipe.session?.stepIndex, 1)
+        XCTAssertEqual(model.localRecipe.session?.timerState, .cancelled)
+        XCTAssertTrue(model.currentReply.contains("Second source text."))
+        model.receiveCompanionUtterance("previous recipe step")
+        XCTAssertEqual(model.localRecipe.session?.stepIndex, 0)
+        XCTAssertTrue(model.currentReply.contains(marker))
+        model.receiveCompanionUtterance("stop recipe")
+        XCTAssertNil(model.localRecipe.session); XCTAssertNil(model.localRecipe.selection)
+        XCTAssertFalse(model.currentReply.contains(marker))
+    }
+    func testUnverifiedMicrophoneModelAndObservedOriginsCannotEnterActualAdapter() throws {
+        let model = try fixture(); defer { model.endConversation() }
+        let selection = model.localRecipe.selection
+        for origin in CompanionCommandOrigin.allCases where origin != .trustedInterface {
+            for text in ["read recipe step", "next recipe step", "start recipe timer", "forget recipe"] {
+                XCTAssertFalse(model.debugRouteLocalRecipeCommand(text, origin: origin))
+                XCTAssertEqual(model.localRecipe.selection, selection)
+                XCTAssertEqual(model.localRecipe.session?.stepIndex, 0)
+                XCTAssertEqual(model.localRecipe.session?.timerState, .idle)
+            }
+        }
+    }
+    func testOldPickerCannotResurrectRecipeAfterStopOrNewSelection() throws {
+        let model = try fixture(); defer { model.endConversation() }
+        let old = try XCTUnwrap(model.beginLocalRecipeSelection())
+        model.endConversation(); model.startConversation()
+        XCTAssertFalse(model.selectLocalRecipe(try data(), owner: old))
+        XCTAssertNil(model.localRecipe.selection)
+        let replaced = try XCTUnwrap(model.beginLocalRecipeSelection())
+        let current = try XCTUnwrap(model.beginLocalRecipeSelection())
+        model.cancelLocalRecipeSelection(replaced)
+        XCTAssertFalse(model.selectLocalRecipe(try data(), owner: replaced))
+        XCTAssertTrue(model.selectLocalRecipe(try data(), owner: current))
+    }
+    func testReplacementAndInvalidImportRetireExactOldOutputAndTimer() throws {
+        let model = try fixture(); defer { model.endConversation() }
+        let old = try XCTUnwrap(model.localRecipe.selection)
+        model.receiveCompanionUtterance("start recipe timer")
+        model.receiveCompanionUtterance("read recipe step")
+        let owner = try XCTUnwrap(model.beginLocalRecipeSelection())
+        XCTAssertNil(model.localRecipe.selection); XCTAssertFalse(model.currentReply.contains(marker))
+        XCTAssertFalse(model.selectLocalRecipe(Data("{}".utf8), owner: owner))
+        XCTAssertFalse(model.enableLocalRecipeCommands(old))
+        XCTAssertNil(model.localRecipe.session)
+    }
+    func testLeavingReaderRequiresExplicitOptInAndAlwaysCancelsPageTimer() throws {
+        let model = try fixture(enable: false); defer { model.endConversation() }
+        model.localRecipeReaderDisappeared(); XCTAssertNil(model.localRecipe.selection)
+        let owner = try XCTUnwrap(model.beginLocalRecipeSelection())
+        XCTAssertTrue(model.selectLocalRecipe(try data(), owner: owner))
+        XCTAssertTrue(model.enableLocalRecipeCommands(try XCTUnwrap(model.localRecipe.selection)))
+        model.localRecipeReaderCommand(.startTimer)
+        XCTAssertEqual(model.localRecipe.session?.timerState, .running)
+        model.localRecipeReaderDisappeared()
+        XCTAssertNotNil(model.localRecipe.selection); XCTAssertTrue(model.localRecipe.enabled)
+        XCTAssertEqual(model.localRecipe.session?.timerState, .cancelled)
+    }
+    func testBackgroundAndEndRemoveSourceAndSourceDisplayRatherThanRestoringAuthority() throws {
+        let model = try fixture(); defer { model.endConversation() }
+        model.receiveCompanionUtterance("read recipe step")
+        XCTAssertTrue(model.currentReply.contains(marker))
+        model.suspendExperience()
+        XCTAssertNil(model.localRecipe.selection); XCTAssertNil(model.localRecipe.session)
+        XCTAssertFalse(model.currentReply.contains(marker))
+        model.resumeExperienceIfNeeded()
+        XCTAssertNil(model.localRecipe.selection)
+    }
+}
+
+/// Exact private typed-command dispatch and draft/source ownership. No native
+/// composer, microphone, local model, network or actual email send is executed.
+@MainActor
+final class LocalEmailCompanionAdapterTests: XCTestCase {
+    private let marker = "PRIVATE-DRAFT-FIXTURE"
+    private func fixture(enable: Bool = true) throws -> (NavigationModel, UUID) {
+        let model = NavigationModel()
+        model.arabic = false
+        XCTAssertTrue(model.debugBeginModelResponseTest(question: "Local draft source adapter test", at: 10))
+        let owner = try XCTUnwrap(model.openLocalEmailDraft())
+        if enable { XCTAssertTrue(model.enableLocalEmailCommands(try XCTUnwrap(model.localEmailDraft.snapshot))) }
+        return (model, owner)
+    }
+    private func fill(_ model: NavigationModel) {
+        model.receiveCompanionUtterance("email draft recipient: fixture@example.invalid")
+        model.receiveCompanionUtterance("email draft subject: Exact authored subject")
+        model.receiveCompanionUtterance("replace email draft body: " + marker)
+    }
+    func testTrustedPrivateInputUsesOneSharedDraftOnlyAfterExplicitEnable() throws {
+        let (model, _) = try fixture(enable: false); defer { model.endConversation() }
+        model.receiveCompanionUtterance("replace email draft body: " + marker)
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, "")
+        XCTAssertTrue(model.enableLocalEmailCommands(try XCTUnwrap(model.localEmailDraft.snapshot)))
+        fill(model)
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, marker)
+        XCTAssertFalse(model.assistantDialogue.turns.contains { $0.text.contains(marker) })
+        XCTAssertFalse(model.assistantDialogue.userRecords.contains { $0.text.contains(marker) })
+        XCTAssertNil(model.localEmailDraft.handoff)
+    }
+    func testLiteralAppendAndUndoPreserveUserWordsInsteadOfExecutingEmbeddedCommands() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        let literal = "Keep Case.\ndiscard email draft.  \n"
+        model.receiveCompanionUtterance("append email draft body: " + literal)
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, marker + "\n\n" + literal)
+        XCTAssertNil(model.localEmailDraft.handoff)
+        model.receiveCompanionUtterance("undo email draft")
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, marker)
+    }
+    func testRealUnverifiedMicrophoneNamespaceNeverReadsMutatesOrFallsThroughToModel() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        let before = model.localEmailDraft.snapshot
+        for text in ["replace email draft body: MICROPHONE-PRIVATE-FIXTURE", "read email draft body", "discard email draft", "review email draft in Mail"] {
+            model.receiveCompanionUtterance(text, fromVoice: true)
+            XCTAssertEqual(model.localEmailDraft.snapshot, before)
+            XCTAssertNil(model.localEmailDraft.handoff)
+            XCTAssertFalse(model.currentReply.contains(marker))
+            XCTAssertFalse(model.currentReply.contains("MICROPHONE-PRIVATE-FIXTURE"))
+            XCTAssertFalse(model.busy)
+        }
+        XCTAssertFalse(model.assistantDialogue.turns.contains { $0.text.contains("MICROPHONE-PRIVATE-FIXTURE") })
+    }
+    func testPrivateReviewIsAttributedAndNeverBecomesDialogueOrTaskHistory() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        model.receiveCompanionUtterance("read email draft body")
+        XCTAssertTrue(model.currentReply.hasPrefix("Your draft body, part 1 of 1: «"))
+        XCTAssertTrue(model.currentReply.contains(marker))
+        XCTAssertFalse(model.assistantDialogue.turns.contains { $0.text.contains(marker) })
+        model.receiveCompanionUtterance("replace email draft body: Updated private literal.")
+        XCTAssertFalse(model.currentReply.contains(marker))
+        model.receiveCompanionUtterance("next email draft part")
+        XCTAssertFalse(model.currentReply.contains("Updated private literal."))
+    }
+    func testMalformedQuotedOversizeAndSendCommandsCannotCauseHandoffOrEchoPrivatePayload() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        let before = model.localEmailDraft.snapshot
+        for text in ["send email draft", "\"replace email draft body: " + marker + "\"", "if ready discard email draft",
+                     "replace email draft body: " + String(repeating: "S", count: 2100)] {
+            model.receiveCompanionUtterance(text)
+            XCTAssertEqual(model.localEmailDraft.snapshot, before)
+            XCTAssertNil(model.localEmailDraft.handoff)
+            XCTAssertFalse(model.currentReply.contains(marker))
+        }
+    }
+    func testNativeReviewReceiptUsesExactSnapshotAndQueuedDoesNotClaimDelivery() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        let expected = try XCTUnwrap(model.localEmailDraft.snapshot)
+        model.debugPrepareLocalEmailHandoff(available: true)
+        let handoff = try XCTUnwrap(model.localEmailDraft.handoff)
+        XCTAssertEqual(handoff.snapshot, expected)
+        model.editLocalEmailField(.body, text: "Cannot rewrite while native review owns it.", expected: expected)
+        XCTAssertEqual(model.localEmailDraft.snapshot, expected)
+        model.finishLocalEmailHandoff(handoff.id, outcome: .queued)
+        XCTAssertNil(model.localEmailDraft.handoff)
+        XCTAssertTrue(model.localEmailStatus.contains("Delivery and receipt are not confirmed"))
+        let completed = model.localEmailStatus
+        model.finishLocalEmailHandoff(handoff.id, outcome: .failed)
+        XCTAssertEqual(model.localEmailStatus, completed)
+    }
+    func testUnavailableMailDoesNotCreateHandoffOrDiscardLocalWriting() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        model.debugPrepareLocalEmailHandoff(available: false)
+        XCTAssertNil(model.localEmailDraft.handoff)
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, marker)
+        XCTAssertTrue(model.localEmailStatus.contains("was not sent"))
+    }
+    func testStopBackgroundDestroyAndLateCallbackCannotRestoreAnOldDraft() throws {
+        let (model, owner) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        model.debugPrepareLocalEmailHandoff(available: true)
+        let old = try XCTUnwrap(model.localEmailDraft.handoff)
+        model.suspendExperience()
+        XCTAssertNil(model.localEmailDraft.snapshot); XCTAssertNil(model.localEmailDraft.handoff)
+        XCTAssertEqual(model.localEmailDraft.checkpointCount, 0)
+        model.resumeExperienceIfNeeded()
+        let newer = try XCTUnwrap(model.openLocalEmailDraft())
+        XCTAssertNotEqual(newer, owner)
+        model.editLocalEmailField(.body, text: marker, expected: old.snapshot)
+        model.finishLocalEmailHandoff(old.id, outcome: .queued)
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, "")
+        XCTAssertFalse(model.localEmailStatus.contains("accepted"))
+        model.endConversation(); XCTAssertNil(model.localEmailDraft.snapshot)
+    }
+    func testHelperLifetimeRetainsOnlyExplicitlyEnabledSourceOrCurrentNativeReview() throws {
+        let (model, owner) = try fixture(enable: false); defer { model.endConversation() }
+        model.editLocalEmailField(.body, text: marker, expected: try XCTUnwrap(model.localEmailDraft.snapshot))
+        model.localEmailReaderDisappeared(owner: owner)
+        XCTAssertNil(model.localEmailDraft.snapshot)
+        let current = try XCTUnwrap(model.openLocalEmailDraft())
+        XCTAssertTrue(model.enableLocalEmailCommands(try XCTUnwrap(model.localEmailDraft.snapshot)))
+        model.editLocalEmailField(.body, text: marker, expected: try XCTUnwrap(model.localEmailDraft.snapshot))
+        model.localEmailReaderDisappeared(owner: current)
+        XCTAssertEqual(model.localEmailDraft.snapshot?.content.body, marker)
+        model.receiveCompanionUtterance("discard email draft")
+        XCTAssertNil(model.localEmailDraft.snapshot); XCTAssertEqual(model.localEmailDraft.checkpointCount, 0)
+    }
+    func testStaleHelperBindingsCannotOverwriteNewCompanionRevisionOrOpenMailForIt() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        let old = try XCTUnwrap(model.localEmailDraft.snapshot)
+        model.receiveCompanionUtterance("replace email draft body: Newer typed draft revision.")
+        let newer = try XCTUnwrap(model.localEmailDraft.snapshot)
+        model.editLocalEmailField(.body, text: "Old binding full text", expected: old)
+        model.checkpointLocalEmailDraft(expected: old)
+        model.undoLocalEmailDraft(expected: old)
+        model.requestLocalEmailMailReview(expected: old)
+        model.discardLocalEmailDraft(expected: old)
+        XCTAssertEqual(model.localEmailDraft.snapshot, newer)
+        XCTAssertNil(model.localEmailDraft.handoff)
+        XCTAssertNotEqual(old.revision, newer.revision)
+    }
+
+    func testSceneQuestionNamespaceRejectsWithoutModelOrDraftAuthority() throws {
+        let (model, _) = try fixture(); defer { model.endConversation() }
+        fill(model)
+        let before = model.localEmailDraft.snapshot
+        for automatic in [false, true] {
+            let privateQuestion = "replace email draft body: SCENE-PRIVATE-FIXTURE"
+            model.assistantQuestion = privateQuestion
+            model.readScene(cloud: false, question: privateQuestion, automatic: automatic)
+            XCTAssertEqual(model.localEmailDraft.snapshot, before)
+            XCTAssertNil(model.localEmailDraft.handoff)
+            XCTAssertFalse(model.busy)
+            XCTAssertEqual(model.assistantQuestion, "")
+            XCTAssertFalse(model.currentReply.contains("SCENE-PRIVATE-FIXTURE"))
+            XCTAssertFalse(model.assistantDialogue.turns.contains { $0.text.contains("SCENE-PRIVATE-FIXTURE") })
+        }
     }
 
 }

@@ -1,3 +1,26 @@
+## Combined source checkpoint — publication annotation, 2026-10-30 17:41 UTC
+
+**This checkpoint includes the reviewed continuation labelled “unpublished” in the unchanged 17:30 snapshot below.** That label is now historical. The published Boolean repair is retained; native validation of this **combined source** has not run at preparation time. Source inclusion is not native/device acceptance.
+
+At 17:41 UTC, the **previous ff0 source's** full hosted-unit step had failed; the overall job was running UI work, with aggregate counts/causes not yet collected. Its seated result remains **13 pass / eight fail / zero skip**. [Previous-source run](https://github.com/mischa23v/blind/actions/runs/41096090593); it does not validate this combined checkpoint.
+
+**Zero accepted workstreams; zero accepted whole journeys of 400; F01/Jev remains deferred.** Prior snapshot/history is unchanged. Only the continuation's publication label is superseded; record new terminal outcomes separately against their exact source.
+
+---
+
+## Next actions on the actual published source — 2026-10-30 17:30 UTC
+
+Current published commit: [ff0f50d](https://github.com/mischa23v/blind/commit/ff0f50df695bfa48fd72697858c574fda653dc4e). [Concise tracker / evidence](research/tracker-reconciliation-20261028/CURRENT_STATUS.md).
+
+1. Collect the terminal [ff0 native run](https://github.com/mischa23v/blind/actions/runs/41096090593). Both app builds passed, but the exact seated selection is **13 pass / eight fail / zero skip**; the full hosted-unit step has failed, with exact counts/causes not yet collected. The overall job continues through focused seed-radius fixtures and UI remains pending. Diagnose source/query/ownership/drain failures with all cases and assertions intact. Full UI/accessibility acceptance remains open.
+2. Integrate the reviewed unpublished continuation on the repaired source, keeping Boolean behavior and exact source/test provenance. Publication is not native acceptance; do not restore the old compile defect.
+3. Finish active N00/N02/N04 wiring: exact selected venue/package A/B loading, normal-camera map/frame receipt producer and portal recovery after evidence loss. Preserve cancellation/replacement/session/source identity; missing pose/registration/support stays unknown.
+4. Execute complete native/model/tool/audio/accessibility paths, then independent holdout/license/device gates. **0/400 whole journeys are accepted**; source tests and diagnostic routes do not substitute for them. Jev/F01 remains deferred.
+
+No paid/model-download work, private uploads or unsupervised/child physical trials are introduced by these pointers. Earlier dated entries below are retained history, superseded only for current source/run status.
+
+---
+
 ## Current N00 integration work — 2026-10-30 06:18 UTC
 
 Source readiness and the same-source independent collision bridge are implemented in the diagnostic-only app at `e418290ac2a70f93c4250bb094091082408f7093`; do not repeat these as unstarted source tasks. N00 remains open.

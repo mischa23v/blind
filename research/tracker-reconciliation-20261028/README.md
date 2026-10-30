@@ -1,4 +1,22 @@
-# Remaining-work reconciliation — 28 October 2026
+## Combined source checkpoint — publication annotation, 2026-10-30 17:41 UTC
+
+**This checkpoint includes the reviewed continuation labelled “unpublished” in the unchanged 17:30 snapshot below.** That label is now historical. The published Boolean repair is retained; native validation of this **combined source** has not run at preparation time. Source inclusion is not native/device acceptance.
+
+At 17:41 UTC, the **previous ff0 source's** full hosted-unit step had failed; the overall job was running UI work, with aggregate counts/causes not yet collected. Its seated result remains **13 pass / eight fail / zero skip**. [Previous-source run](https://github.com/mischa23v/blind/actions/runs/41096090593); it does not validate this combined checkpoint.
+
+**Zero accepted workstreams; zero accepted whole journeys of 400; F01/Jev remains deferred.** Prior snapshot/history is unchanged. Only the continuation's publication label is superseded; record new terminal outcomes separately against their exact source.
+
+---
+
+# Current tracker pointer — 30 October 2026
+
+Read [CURRENT_STATUS.md](CURRENT_STATUS.md) for the exact published commits, current Apple evidence and concise 16-workstream status. [TRACKER.json](TRACKER.json) separates source, testing and device/data gates and retains historical evidence. At 17:30 UTC: 13 partial-implementation workstreams, two evaluation/device stages, one user-deferred; **zero accepted complete and zero accepted whole journeys of 400**. These groups are not a completion percentage.
+
+The remainder of this document and the original `SOURCE_PINS.json` / `CHECK_RESULT.json` are the dated 28 October audit. Its source inventory and owner snapshot are historical, not instructions to reimplement work completed since then. The unchanged historical checker is separate from the additive current-checkpoint validation.
+
+---
+
+# Historical reconciliation — 28 October 2026
 
 This is a bounded evidence audit, **not new navigation execution, release approval or a replacement for TASKS.md**. `TRACKER.json` maps 16 workstreams and the existing 53 requirement families. Historical family descriptions are retained as historical dependencies, not asserted to supersede subsequent source fixes. Parent publication must verify its remote commit separately.
 

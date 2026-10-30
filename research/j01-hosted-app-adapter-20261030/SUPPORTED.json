@@ -1,0 +1,150 @@
+{
+  "REQ-SC02-1": [
+    {
+      "event_id": "REQ-SC02-1:0",
+      "offset_ms": 0,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Tell me a joke, then help me with my homework."
+    },
+    {
+      "event_id": "REQ-SC02-1:control",
+      "offset_ms": 500,
+      "kind": "test_control",
+      "operation": "continue",
+      "origin": "test_harness_not_sensor",
+      "value": {}
+    },
+    {
+      "event_id": "REQ-SC02-1:1",
+      "offset_ms": 1000,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Okay, what comes next?"
+    }
+  ],
+  "REQ-SC02-3": [
+    {
+      "event_id": "REQ-SC02-3:0",
+      "offset_ms": 0,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Tell me a joke, then help me with my homework."
+    },
+    {
+      "event_id": "REQ-SC02-3:control",
+      "offset_ms": 500,
+      "kind": "test_control",
+      "operation": "interrupt",
+      "origin": "test_harness_not_sensor",
+      "value": {}
+    },
+    {
+      "event_id": "REQ-SC02-3:1",
+      "offset_ms": 1000,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Wait. Now continue what we were doing."
+    }
+  ],
+  "REQ-SC02-4": [
+    {
+      "event_id": "REQ-SC02-4:0",
+      "offset_ms": 0,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Tell me a joke, then help me with my homework."
+    },
+    {
+      "event_id": "REQ-SC02-4:control",
+      "offset_ms": 500,
+      "kind": "test_control",
+      "operation": "replace_request",
+      "origin": "test_harness_not_sensor",
+      "value": {
+        "new_request_id": "REQ-SC02-4:replacement"
+      }
+    },
+    {
+      "event_id": "REQ-SC02-4:1",
+      "offset_ms": 1000,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "No, I mean this other one, not the first one."
+    }
+  ],
+  "REQ-SC53-1": [
+    {
+      "event_id": "REQ-SC53-1:0",
+      "offset_ms": 0,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Please stay quiet while I listen to the story."
+    },
+    {
+      "event_id": "REQ-SC53-1:control",
+      "offset_ms": 500,
+      "kind": "test_control",
+      "operation": "continue",
+      "origin": "test_harness_not_sensor",
+      "value": {}
+    },
+    {
+      "event_id": "REQ-SC53-1:1",
+      "offset_ms": 1000,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Okay, what comes next?"
+    }
+  ],
+  "REQ-SC53-3": [
+    {
+      "event_id": "REQ-SC53-3:0",
+      "offset_ms": 0,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Please stay quiet while I listen to the story."
+    },
+    {
+      "event_id": "REQ-SC53-3:control",
+      "offset_ms": 500,
+      "kind": "test_control",
+      "operation": "interrupt",
+      "origin": "test_harness_not_sensor",
+      "value": {}
+    },
+    {
+      "event_id": "REQ-SC53-3:1",
+      "offset_ms": 1000,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Wait. Now continue what we were doing."
+    }
+  ],
+  "REQ-SC53-4": [
+    {
+      "event_id": "REQ-SC53-4:0",
+      "offset_ms": 0,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "Please stay quiet while I listen to the story."
+    },
+    {
+      "event_id": "REQ-SC53-4:control",
+      "offset_ms": 500,
+      "kind": "test_control",
+      "operation": "replace_request",
+      "origin": "test_harness_not_sensor",
+      "value": {
+        "new_request_id": "REQ-SC53-4:replacement"
+      }
+    },
+    {
+      "event_id": "REQ-SC53-4:1",
+      "offset_ms": 1000,
+      "kind": "user_utterance",
+      "origin": "authored_direct_user",
+      "text": "No, I mean this other one, not the first one."
+    }
+  ]
+}

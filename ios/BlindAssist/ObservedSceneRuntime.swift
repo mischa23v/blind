@@ -89,10 +89,35 @@ import BlindCore
         try await completion.1.wait()
     }
 #endif
+    private var classifiedHits = NativeClassifiedHitState()
+    var classifiedHitEvidence: NativeClassifiedHitEvidence? {
+        guard let session, let evidence = classifiedHits.evidence,
+              evidence.isFresh(session: session, now: clock()) else { return nil }
+        return evidence
+    }
+    /// Additional sampled evidence, NOT merged into the depth-only mapper or
+    /// interpreted as current free space. Changed hits retire old pending plans.
+    func offerClassifiedHits(_ evidence: NativeClassifiedHitEvidence?, session: UUID, capturedAt: Double) {
+        guard self.session == session else { return }
+        if capturedAt.isFinite, capturedAt <= minimumCapture { return }
+        if classifiedHits.consume(evidence, session: session, capturedAt: capturedAt, now: clock()) {
+            planValidity?.invalidate(); plan = nil; onChange?()
+        }
+    }
+    var classifiedHitStatus: String {
+        guard let evidence = classifiedHitEvidence else { return "Classified hits unavailable; floor support unknown." }
+        return "Sampled classified hits: \(evidence.surfaces.count) anchors; incomplete=\(evidence.sampledOrIncomplete). No floor-support or clearance claim."
+    }
     private var lastOffered = -Double.infinity
     private var minimumCapture = -Double.infinity
     private var intent: ObservedSceneAccumulator.Intent = .lookAhead
     private var goalRevision = UUID()
+#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    /// Exact local intent namespace, separate from the companion's String revision.
+    func diagnosticIntentIsCurrent(session: UUID, revision: UUID) -> Bool {
+        self.session == session && goalRevision == revision
+    }
+#endif
     private var ownerGoalRevision: String?
     private var bodyRevision = UUID()
     private(set) var snapshot: ObservedSceneSnapshot?
@@ -105,7 +130,7 @@ import BlindCore
     }
     func begin(session: UUID, capturedAfter: Double? = nil) {
         planValidity?.invalidate()
-        self.session = session; epoch = UUID(); worker = Worker(session: session)
+        self.session = session; classifiedHits.begin(session: session); epoch = UUID(); worker = Worker(session: session)
         intent = .lookAhead; goalRevision = UUID(); lastOffered = -.infinity
         minimumCapture = capturedAfter.flatMap { $0.isFinite ? $0 : nil } ?? -.infinity
         snapshot = nil; plan = nil; liveStatus = "waitingForObservation"; onChange?()
@@ -113,12 +138,12 @@ import BlindCore
     }
     func stop() {
         planValidity?.invalidate()
-        session = nil; worker = nil; epoch = UUID(); snapshot = nil; plan = nil; liveStatus = "stopped"; onChange?()
+        classifiedHits.stop(); session = nil; worker = nil; epoch = UUID(); snapshot = nil; plan = nil; liveStatus = "stopped"; onChange?()
     }
     func trackingLost(at capturedAt: Double? = nil) {
         guard let session else { return }
         planValidity?.invalidate()
-        epoch = UUID(); worker = Worker(session: session); snapshot = nil; plan = nil
+        classifiedHits.retire(); epoch = UUID(); worker = Worker(session: session); snapshot = nil; plan = nil
         // Preserve requested intent, but never revive the former return origin.
         let loss = capturedAt ?? clock()
         if loss.isFinite { minimumCapture = max(minimumCapture, lastOffered, loss) }
@@ -126,7 +151,7 @@ import BlindCore
     }
     func setIntent(_ intent: ObservedSceneAccumulator.Intent) {
         planValidity?.invalidate()
-        self.intent = intent; goalRevision = UUID(); plan = nil; liveStatus = "waitingForObservation"; onChange?()
+        classifiedHits.retire(); self.intent = intent; goalRevision = UUID(); plan = nil; liveStatus = "waitingForObservation"; onChange?()
     }
     /// A trusted goal/subtask replacement retires the previous return request,
     /// including work already queued for its older owner.
@@ -142,12 +167,13 @@ import BlindCore
     }
     func suspendLive(at capturedAt: Double? = nil) {
         planValidity?.invalidate()
-        epoch = UUID(); plan = nil; liveStatus = "depthUnavailable"
+        classifiedHits.retire(); epoch = UUID(); plan = nil; liveStatus = "depthUnavailable"
         let loss = capturedAt ?? clock()
         if loss.isFinite { minimumCapture = max(minimumCapture, lastOffered, loss) }
         onChange?()
     }
     func revalidate(now: Double) {
+        if classifiedHits.expire(now: now) { planValidity?.invalidate(); plan = nil; onChange?() }
         guard let captured = snapshot?.capturedAt else { return }
         if !now.isFinite || now < captured || now - captured > 0.5 { plan = nil; liveStatus = "expired"; onChange?() }
     }
@@ -166,6 +192,7 @@ import BlindCore
         }
         lastOffered = observation.timestamp
         let id = UUID(), generation = epoch, intent = intent, goal = goalRevision, bodyVersion = bodyRevision
+        let classifiedRevision = classifiedHits.revision
         workID = id
         let validity = PlanValidity()
         planValidity = validity
@@ -210,7 +237,7 @@ import BlindCore
                 guard let self, self.workID == id else { return }
                 self.workID = nil
                 self.planValidity = nil
-                guard self.epoch == generation, self.session == session, self.goalRevision == goal, self.bodyRevision == bodyVersion else { return }
+                guard self.epoch == generation, self.session == session, self.goalRevision == goal, self.bodyRevision == bodyVersion, self.classifiedHits.revision == classifiedRevision else { return }
                 self.snapshot = snapshot; self.plan = plan
                 self.liveStatus = snapshot.status == .observing
                     ? (body == nil ? "bodyEnvelopeUnavailable" : plan?.local.state.rawValue ?? snapshot.returnState.rawValue) : snapshot.status.rawValue

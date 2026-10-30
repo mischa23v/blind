@@ -1,0 +1,52 @@
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -5512,8 +5512,8 @@
+                 createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
+             return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
+         }, beacon: { id in
+-            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return }
+-            self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
++            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return false }
++            return self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
+         }) {
+             lastIndoorAnnouncement = now; lastIndoorCueKey = key
+         }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -890,8 +890,8 @@
+     },
+     {
+       "path": "ios/BlindAssist/NavigationModel.swift",
+-      "bytes": 566218,
+-      "sha256": "75403f4b029fbc3ef417e7b65725af9e77e8a1e682cca921cca24104deae6fb0"
++      "bytes": 566231,
++      "sha256": "bfb23aa12c8b3738c3355dc3d0149d60ff0b2db3bb3de78b65c26c1c09bcdf24"
+     },
+     {
+       "path": "ios/BlindAssist/ObservedSceneRuntime.swift",
+@@ -1817,6 +1817,11 @@
+       "path": "tools/test/classified-hit-current.test.py",
+       "bytes": 5510,
+       "sha256": "1c603497b3993f6f3454f7339a23a2e7ef9a077979eaf9e1691ea053370a5d57"
++    },
++    {
++      "path": "tools/test/connected-beacon-bool.test.py",
++      "bytes": 3514,
++      "sha256": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f"
+     },
+     {
+       "path": "tools/test/conversation-failure-diagnostics.test.py",
+@@ -2132,5 +2137,13 @@
+     "j01SupportedScripts": 6,
+     "actualModelObserved": false,
+     "physicalAuthority": false
++  },
++  "publishedBeaconBooleanRepairCarry": {
++    "publishedCommit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
++    "failedCommit": "119752b88c529adf90bde1092137a85870740ace",
++    "repairCheckpointSHA256": "9301edbcc26d70070b32606d1407721d2b3c4b5f132b420d8a516f7625b66ae0",
++    "scope": "exact reviewed Boolean fix carried into frozen NEXT40/J0117/THIRD45 source; original failed and repaired identities preserved",
++    "newNativeExecutionClaim": false,
++    "controllerOptionalBeaconPolicyChanged": false
+   }
+ }

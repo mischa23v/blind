@@ -1,3 +1,23 @@
+## Combined source checkpoint — publication annotation, 2026-10-30 17:41 UTC
+
+**This checkpoint includes the reviewed continuation labelled “unpublished” in the unchanged 17:30 snapshot below.** That label is now historical. The published Boolean repair is retained; native validation of this **combined source** has not run at preparation time. Source inclusion is not native/device acceptance.
+
+At 17:41 UTC, the **previous ff0 source's** full hosted-unit step had failed; the overall job was running UI work, with aggregate counts/causes not yet collected. Its seated result remains **13 pass / eight fail / zero skip**. [Previous-source run](https://github.com/mischa23v/blind/actions/runs/41096090593); it does not validate this combined checkpoint.
+
+**Zero accepted workstreams; zero accepted whole journeys of 400; F01/Jev remains deferred.** Prior snapshot/history is unchanged. Only the continuation's publication label is superseded; record new terminal outcomes separately against their exact source.
+
+---
+
+## Current source and acceptance checkpoint — 2026-10-30 17:30 UTC
+
+The existing [16-workstream tracker](research/tracker-reconciliation-20261028/CURRENT_STATUS.md) now separates publication, source implementation, component/native execution and device/data acceptance. **13 workstreams have partial implementation, two are evaluation/device stages, one is user-deferred; none is accepted complete. Accepted whole journeys remain 0/400.** These are not completion or accuracy percentages.
+
+Published [119752b](https://github.com/mischa23v/blind/commit/119752b88c529adf90bde1092137a85870740ace) passed Core **1,499 + one skip**, Memory **58**, classified core **71**, and nine required body witnesses, but both app builds failed at a Boolean beacon closure. Published [ff0f50d](https://github.com/mischa23v/blind/commit/ff0f50df695bfa48fd72697858c574fda653dc4e) repaired compilation: default and diagnostics builds passed. Its exact seated result is **21 = 13 pass + eight fail + zero skip**, command exit 65; all four collision fixtures passed. Classified core is 71 pass. The full hosted-unit **step failed at 17:29:47 UTC**; exact aggregate counts/causes are pending collection. The overall native job is still running focused seed-radius fixtures, with UI pending. [119 native run](https://github.com/mischa23v/blind/actions/runs/41093837152), [ff0 run](https://github.com/mischa23v/blind/actions/runs/41096090593). Full accessibility and physical acceptance remain open; prior failures are preserved.
+
+The later reviewed source/CI continuation—including typed recipe/email dispatch, actual-app/model-lane journey harness, classified/normal-mesh consumers and bounded imports—is **not published or natively executed at this checkpoint**. New active source work is exact venue/package loading, normal-camera map/frame receipt production (N02), and destination/portal recovery (N04). None supplies missing calibration, registration, current support or physical authority. Jev/F01 remains user-deferred. Earlier dated entries below remain historical, not the current commit or test status.
+
+---
+
 ## N00 diagnostic integration checkpoint — 2026-10-30 06:18 UTC
 
 Latest published source: `e418290ac2a70f93c4250bb094091082408f7093`. The diagnostic-only app now admits exact source/strict-query metadata independently of optional SceneKit rendering and connects the existing independent collision algorithm to that same post-query source. Requested/native foot association, raw-body versus explicit-margin contacts, source/capture fences and complete ownership drain are retained. This is implemented source, **not completed N00 or physical guidance**. [Readiness](research/seated-body-foot-candidate-20261030/SOURCE_READINESS_SPLIT.md), [collision bridge](research/seated-independent-collision-bridge-20261030/README.md).

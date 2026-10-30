@@ -149,6 +149,7 @@ PY
       -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
       '-only-testing:BlindAssistTests/SeatedMeshProjectionTests' \
       '-only-testing:BlindAssistTests/SeatedCollisionBridgeTests' \
+      '-only-testing:BlindAssistTests/NormalOwnerMeshConnectionTests' \
       'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' \
       -resultBundlePath "$out/diagnostics-unit.xcresult" test || status=$?
     printf '{"exit_code":%s}\n' "$status" > "$out/diagnostics-unit-exit.json"
