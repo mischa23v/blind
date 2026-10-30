@@ -18,12 +18,27 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Source-readiness correction preserves every earlier source/visual-failure layer.
+pre_readiness_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-source-readiness-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeSourceReadinessSplit'])+manifest['sourceReadinessSplitNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'seated-source-readiness-split.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeSourceReadinessSplit'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-source-readiness input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_readiness_source[name]=value
+    for name in manifest['sourceReadinessSplitNewFiles']:
+        check('new readiness source absent from earlier layer '+name,not (root/name).exists())
+
 # Room-mesh defaults to log receipts without remote artifact storage.
-pre_roommesh_storage_source = {}
+pre_roommesh_storage_source = dict(pre_readiness_source)
 with tempfile.TemporaryDirectory(prefix='stage85-roommesh-storage-') as temp:
     root=Path(temp)
     for name in manifest['beforeRoommeshNoArtifact']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_readiness_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'roommesh-no-artifact-layer.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeRoommeshNoArtifact'].items():

@@ -225,7 +225,7 @@ jobs:
         id: unit
         timeout-minutes: 10
         run: bash tools/ci/native-apple.sh diagnostics-unit
-      - name: Verify exact twelve synthetic hosted cases and source identity
+      - name: Verify exact thirteen synthetic hosted cases and source identity
         id: collect
         if: always()
         timeout-minutes: 3

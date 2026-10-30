@@ -51,7 +51,21 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     private var footCandidate: DiagnosticBodyFootCandidate?
     private var cameraCapture: LiveMeshBenchSession.CameraCapture?
     private var footDeclaration: DiagnosticBodyFootCandidate.Declaration?
-    private var snapshotPending = false, statusPending = false, routePending = false
+    private var sourceRequestPending = false, renderPending = false, statusPending = false, routePending = false
+    private var hadTrackedSession = false
+    private var isTestBackend = false
+    private struct RenderRequest {
+        let source: MeshCandidateIngress83.SourceSnapshot
+        let phase: ((SourcePhaseForTesting) -> Void)?
+    }
+    private var queuedRender: RenderRequest?
+    @Published private(set) var renderReceipt = "Optional visualization not started. Source admission does not depend on it."
+    var hasCurrentSourceForTesting: Bool {
+        guard !stopped,let snapshot,let bench else {return false}
+        return bench.hasCurrentTrackedSession && bench.isCurrent(snapshot)
+    }
+    var hasPendingRenderForTesting: Bool {renderPending}
+
     private var timer: Timer?
     private let renderQueue = DispatchQueue(label: "blind.seated-mesh.render", qos: .utility)
     private var onStopped: (() -> Void)?
@@ -62,7 +76,9 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         case source_controller_callback, source_refused, render_enqueued, render_begin, render_end
         case display_accepted, display_rejected
     }
-    var onSourcePhaseForTesting: ((SourcePhaseForTesting) -> Void)?
+    /// The factory freezes one scalar recorder context for this source delivery;
+    /// a later source request must not rebind an earlier queued render's clock.
+    var sourcePhaseRecorderForTesting: (() -> ((SourcePhaseForTesting) -> Void)?)?
 
     init(session: ARSession, expectedDelegate: any ARSessionDelegate, onStopped: @escaping () -> Void) throws {
         dispatchPrecondition(condition: .onQueue(.main))
@@ -79,11 +95,18 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     /// No ARSession, permissions or native-result fabrication. A test backend must
     /// produce its snapshots/routes through the real ingress; this adds no caller
     /// in the normal app and no physical authority.
-    init(testBackend: any SeatedMeshDiagnosticBackend, clock: @escaping () -> Double) {
-        self.bench = testBackend; self.clock = clock
+    init(testBackend: any SeatedMeshDiagnosticBackend, clock: @escaping () -> Double,
+         onStopped: (() -> Void)? = nil) {
+        self.bench = testBackend; self.clock = clock;self.onStopped=onStopped;isTestBackend=true
+    }
+    /// Test backend calls this ONLY after its real native stop/discard callback.
+    /// It does not acknowledge pending source, render, status or route stacks.
+    func acknowledgeTestBackendNativeDrainForTesting() {
+        precondition(isTestBackend && stopped)
+        nativeDrained=true;bench=nil;finishStopIfDrained()
     }
     private func finishStopIfDrained() {
-        guard stopped, nativeDrained, !snapshotPending, !statusPending, !routePending else { return }
+        guard stopped, nativeDrained, !sourceRequestPending, !renderPending, !statusPending, !routePending else { return }
         let completion = onStopped; onStopped = nil; completion?()
     }
     /// Run after the current callback stack releases its owned source/render values.
@@ -98,8 +121,9 @@ final class SeatedMeshDiagnosticController: ObservableObject {
         renderQueue.async { [weak self] in
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                self.snapshotPending = false
+                self.renderPending = false
                 self.finishStopIfDrained()
+                self.startLatestRenderIfPossible()
             }
         }
     }
@@ -108,8 +132,8 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     /// real pending/worker/main/barrier drain using a held synthetic payload closure.
     func enqueueSyntheticDisplayWorkForTesting(work: @escaping () -> Void,
         afterEnqueue: @escaping () -> Void, delivered: @escaping () -> Void) {
-        precondition(!snapshotPending && !stopped)
-        snapshotPending = true
+        precondition(!renderPending && !stopped)
+        renderPending = true
         renderQueue.async { [weak self] in
             work()
             DispatchQueue.main.async { [weak self] in
@@ -132,6 +156,7 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     private func retireAll() {
         epoch = UUID(); stopped = true
         timer?.invalidate(); timer = nil
+        queuedRender=nil;renderReceipt="Optional visualization retired; waiting for active display work to drain."
         footCandidate = nil; cameraCapture = nil; footDeclaration = nil; footReceipt = "Candidate erased."
         snapshot = nil; candidate = nil; scene = nil; anchorReceipts = []; routePointReceipts = []; meshBoundsReceipt = "Source bounds erased."
         routeReceipt = "WITHHELD — diagnostic stopped or session lost."
@@ -153,84 +178,117 @@ final class SeatedMeshDiagnosticController: ObservableObject {
     private func tick() {
         guard !stopped, let bench else { return }
         guard bench.state == .capturing else { retireAll(); return }
-        if scene != nil && !bench.hasCurrentTrackedSession { retireAll(); bench.stop(); return }
+        // Wait for initial tracking, but retire loss after tracking was admitted,
+        // independently of whether optional SceneKit visualization ever finished.
+        if bench.hasCurrentTrackedSession {hadTrackedSession=true}
+        else if hadTrackedSession {retireAll();bench.stop();return}
         if let snapshot, !bench.isCurrent(snapshot) {
-            self.snapshot = nil
-            sourceReceipt = "RETIRED SOURCE REVISION — wireframe is historical inspection only, not current. Waiting for newer immutable source. " + sourceReceipt
+            self.snapshot=nil;queuedRender=nil;scene=nil
+            meshBoundsReceipt="Retired source bounds erased."
+            renderReceipt="RETIRED — previous optional picture erased; waiting for a current source."
+            sourceReceipt="RETIRED SOURCE REVISION — waiting for a current immutable source."
         }
         if cameraCapture != nil && !footIsCurrent() {
-            retirePreview(); routeReceipt = "WITHHELD — frozen diagnostic capture or declared inputs retired. No newer frame was substituted."
+            retirePreview();routeReceipt="WITHHELD — frozen diagnostic capture or declared inputs retired. No newer frame was substituted."
         }
-        if let candidate, !bench.isCurrent(candidate) { retirePreview(); routeReceipt = "WITHHELD — route retired by newer source, tracking or ownership." }
+        if let candidate,!bench.isCurrent(candidate) {retirePreview();routeReceipt="WITHHELD — route retired by newer source, tracking or ownership."}
         if !statusPending {
-            statusPending = true; let token = epoch
+            statusPending=true;let token=epoch
             bench.requestStatus { [weak self] text in
-                guard let self else { return }
-                self.statusPending = false
-                defer { self.scheduleDisplayDrainCheck() }
-                guard self.epoch == token, !self.stopped else { return }
-                self.producerReceipt = text
+                guard let self else {return}
+                self.statusPending=false
+                defer {self.scheduleDisplayDrainCheck()}
+                guard self.epoch == token,!self.stopped else {return}
+                self.producerReceipt=text
             }
         }
-        guard snapshot == nil, !snapshotPending, !routePending else { return }
-        snapshotPending = true; let token = epoch
+        // Optional renderer is NOT a source/query admission gate.
+        guard snapshot == nil,!sourceRequestPending,!routePending else {return}
+        sourceRequestPending=true;let token=epoch
         bench.requestSourceSnapshot { [weak self] result in
-            guard let self else { return }
-            defer { self.scheduleDisplayDrainCheck() }
-            self.onSourcePhaseForTesting?(.source_controller_callback)
-            guard self.epoch == token, !self.stopped else { self.onSourcePhaseForTesting?(.source_refused); self.snapshotPending = false; return }
+            guard let self else {return}
+            self.sourceRequestPending=false
+            defer {self.scheduleDisplayDrainCheck()}
+            let phase=self.sourcePhaseRecorderForTesting?()
+            phase?(.source_controller_callback)
+            guard self.epoch == token,!self.stopped,self.bench?.hasCurrentTrackedSession == true else {phase?(.source_refused);return}
             switch result {
             case .failure(let failure):
-                self.onSourcePhaseForTesting?(.source_refused)
-                self.snapshotPending = false
-                self.sourceReceipt = (self.scene == nil ? "" : "RETIRED historical wireframe remains for inspection only. ") + "Source snapshot withheld: \(failure). No missing area is treated as free."
+                phase?(.source_refused)
+                self.sourceReceipt="Source snapshot withheld: \(failure). No missing area is treated as free."
             case .success(let source):
-                // One renderer task at a time. Source arrays are owned immutable
-                // values; no ARFrame, ARMeshAnchor or Metal buffer enters this queue.
-                let phase = self.onSourcePhaseForTesting
-                phase?(.render_enqueued)
-                self.renderQueue.async { [weak self] in
-                    phase?(.render_begin)
-                    let rendered = SeatedMeshRenderer.makeScene(source.geometry)
-                    phase?(.render_end)
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self else { return }
-                        defer { self.finishRenderDelivery() }
-                        guard self.epoch == token, !self.stopped, self.bench?.hasCurrentTrackedSession == true else { phase?(.display_rejected); return }
-                        guard let renderResult = rendered else { phase?(.display_rejected); self.sourceReceipt = "Source geometry cannot be rendered within bounds. Whole snapshot withheld."; return }
-                        let rendered = renderResult.scene
-                        self.meshBoundsReceipt = renderResult.bounds
-                        let current = self.bench?.isCurrent(source) == true
-                        self.snapshot = current ? source : nil; self.scene = rendered
-                        phase?(current ? .display_accepted : .display_rejected)
-                        let g = source.geometry
-                        let triangles = g.anchors.reduce(0) { $0 + $1.triangleIndices.count / 3 }
-                        self.sourceReceipt = (current ? "CURRENT DELIVERY REVISION — " : "RETIRED SOURCE REVISION — historical wireframe only, not current. ") + "Session \(g.sessionID), generation \(g.generation), revision \(g.revision). \(g.anchors.count) anchors, \(triangles) actual source triangles; metres, ARKit +Y up. Source delivery complete: \(g.sourceDeliveryComplete). Mesh capture time unavailable; physical coverage unknown. Gaps: \(g.unknownCoverage.joined(separator: ", "))."
-                        self.anchorReceipts = g.anchorDelivery.map { r in
-                            "Anchor \(r.anchorID): required \(r.requiredRevision), installed \(r.installedRevision.map(String.init) ?? "none"), unresolved through \(r.unresolvedThroughRevision.map(String.init) ?? "none"), issue \(r.issue?.rawValue ?? "none"), removed \(r.removed). Receipt uptime \(r.receiptUptime); capture time unavailable."
-                        }
-                        if let candidate = self.candidate,
-                           SeatedMeshProjection.matches(source: .init(session: g.sessionID, generation: g.generation, revision: g.revision),
-                             route: .init(session: candidate.route.sessionID, generation: candidate.route.generation, revision: candidate.route.revision),
-                             sourceCurrent: current, routeCurrent: self.bench?.isCurrent(candidate) == true),
-                           self.cameraCapture == nil || self.footIsCurrent(),
-                           let line = SeatedMeshRenderer.route(candidate.route.points) {
-                            rendered.rootNode.addChildNode(line)
-                            if let foot = self.footCandidate {
-                                let marker = SCNNode(geometry: SCNSphere(radius: 0.025))
-                                marker.name = "diagnostic-foot-candidate"
-                                marker.geometry?.firstMaterial?.diffuse.contents = UIColor.systemYellow
-                                let p = foot.requestedFoot; marker.position = SCNVector3(Float(p.x),Float(p.y),Float(p.z))
-                                rendered.rootNode.addChildNode(marker)
-                            }
-                            self.routePointReceipts = candidate.route.points.prefix(256).enumerated().map { index, p in
-                                "Diagnostic point \(index): X \(p[0]), Y \(p[1]), Z \(p[2]) metres."
-                            }
-                            self.routeReceipt = "AVAILABLE SOURCE-ONLY DIAGNOSTIC — \(candidate.route.points.count) points; revision \(candidate.route.revision). Strict supplied XZ gate; \(self.previewParameters). Body location, connectors, current support and obstacle clearance NOT verified. NOT walking guidance."
-                        } else {
-                            self.candidate = nil; self.routePointReceipts = []
-                            self.routeReceipt = "WITHHELD — \(current ? Self.coverageReason(g) : "rendered source revision retired during inspection"). Supplied test endpoints required. No safe-path claim."
-                        }
+                guard self.bench?.isCurrent(source) == true else {phase?(.source_refused);return}
+                self.hadTrackedSession=true
+                self.snapshot=source // Actual immutable source admitted before visualization.
+                self.scene=nil;self.meshBoundsReceipt="Optional bounds pending for newly admitted source."
+                self.renderReceipt="Optional picture pending for current revision \(source.geometry.revision); any older picture is erased."
+                self.publishSourceMetadata(source)
+                self.publishMatchedRouteMetadata(source)
+                self.queuedRender=RenderRequest(source:source,phase:phase) // bounded latest-only slot
+                self.startLatestRenderIfPossible()
+            }
+        }
+    }
+    private func publishSourceMetadata(_ source: MeshCandidateIngress83.SourceSnapshot) {
+        let g=source.geometry
+        let triangles=g.anchors.reduce(0) {$0+$1.triangleIndices.count/3}
+        sourceReceipt="CURRENT DELIVERY REVISION — Session \(g.sessionID), generation \(g.generation), revision \(g.revision). \(g.anchors.count) anchors, \(triangles) actual source triangles; metres, ARKit +Y up. Source delivery complete: \(g.sourceDeliveryComplete). Mesh capture time unavailable; physical coverage unknown. Gaps: \(g.unknownCoverage.joined(separator:", ")). Optional visualization is separate."
+        anchorReceipts=g.anchorDelivery.map {r in
+            "Anchor \(r.anchorID): required \(r.requiredRevision), installed \(r.installedRevision.map(String.init) ?? "none"), unresolved through \(r.unresolvedThroughRevision.map(String.init) ?? "none"), issue \(r.issue?.rawValue ?? "none"), removed \(r.removed). Receipt uptime \(r.receiptUptime); capture time unavailable."
+        }
+    }
+    private func routeMatches(_ source: MeshCandidateIngress83.SourceSnapshot) -> Bool {
+        guard let candidate,bench?.isCurrent(source) == true,bench?.isCurrent(candidate) == true else {return false}
+        let g=source.geometry,r=candidate.route
+        return SeatedMeshProjection.matches(source:.init(session:g.sessionID,generation:g.generation,revision:g.revision),
+            route:.init(session:r.sessionID,generation:r.generation,revision:r.revision),sourceCurrent:true,routeCurrent:true)
+            && (cameraCapture == nil || footIsCurrent())
+    }
+    private func publishMatchedRouteMetadata(_ source: MeshCandidateIngress83.SourceSnapshot) {
+        guard routeMatches(source),let candidate else {
+            routePointReceipts=[]
+            routeReceipt="WITHHELD — no current same-source route association. Supplied test endpoints required. No safe-path claim."
+            return
+        }
+        routePointReceipts=candidate.route.points.prefix(256).enumerated().map {index,p in
+            "Diagnostic point \(index): X \(p[0]), Y \(p[1]), Z \(p[2]) metres."
+        }
+        routeReceipt="AVAILABLE SOURCE-ONLY DIAGNOSTIC — \(candidate.route.points.count) points; revision \(candidate.route.revision). Strict supplied XZ gate; \(previewParameters). Body location, connectors, current support and obstacle clearance NOT verified. NOT walking guidance. Optional picture may still be pending."
+    }
+    private func startLatestRenderIfPossible() {
+        guard !stopped,!renderPending,let request=queuedRender else {return}
+        queuedRender=nil
+        guard let snapshot,bench?.isCurrent(request.source) == true,
+              snapshot.geometry.sessionID == request.source.geometry.sessionID,
+              snapshot.geometry.generation == request.source.geometry.generation,
+              snapshot.geometry.revision == request.source.geometry.revision else {return}
+        renderPending=true;let token=epoch,source=request.source,phase=request.phase
+        renderReceipt="Optional visualization pending. Source/query readiness does not wait for it."
+        phase?(.render_enqueued)
+        renderQueue.async { [weak self] in
+            phase?(.render_begin)
+            let rendered=SeatedMeshRenderer.makeScene(source.geometry)
+            phase?(.render_end)
+            DispatchQueue.main.async { [weak self] in
+                guard let self else {return}
+                defer {self.finishRenderDelivery()}
+                guard self.epoch == token,!self.stopped,self.bench?.hasCurrentTrackedSession == true,
+                      self.bench?.isCurrent(source) == true,let current=self.snapshot,
+                      current.geometry.sessionID == source.geometry.sessionID,
+                      current.geometry.generation == source.geometry.generation,
+                      current.geometry.revision == source.geometry.revision else {phase?(.display_rejected);return}
+                guard let rendered else {phase?(.display_rejected);self.renderReceipt="Optional visualization unavailable; source admission is unchanged.";return}
+                self.scene=rendered.scene;self.meshBoundsReceipt=rendered.bounds
+                self.renderReceipt="Optional source picture rendered for revision \(source.geometry.revision). Not physical clearance."
+                phase?(.display_accepted)
+                // Render consumers never overwrite authoritative snapshot or route metadata.
+                if self.routeMatches(source),let candidate=self.candidate,let line=SeatedMeshRenderer.route(candidate.route.points) {
+                    rendered.scene.rootNode.addChildNode(line)
+                    if let foot=self.footCandidate {
+                        let marker=SCNNode(geometry:SCNSphere(radius:0.025));marker.name="diagnostic-foot-candidate"
+                        marker.geometry?.firstMaterial?.diffuse.contents=UIColor.systemYellow
+                        let p=foot.requestedFoot;marker.position=SCNVector3(Float(p.x),Float(p.y),Float(p.z))
+                        rendered.scene.rootNode.addChildNode(marker)
                     }
                 }
             }

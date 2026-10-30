@@ -123,13 +123,16 @@ final class SeatedMeshProjectionTests: XCTestCase {
 
     @MainActor func testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding() async throws {
         let backend = try SeatedCandidateFixtureBackend()
-        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now })
+        let ownerDrained=expectation(description:"seated controller ownership drained")
+        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{ownerDrained.fulfill()})
         addTeardownBlock {
             let drained = XCTestExpectation(description: "seated native teardown drained")
-            await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
-            await self.fulfillment(of: [drained], timeout: 10)
+            await MainActor.run { controller.stop(); backend.stopAndDrain {
+                    DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();drained.fulfill()}
+                } }
+            await self.fulfillment(of: [drained,ownerDrained], timeout: 10)
         }
-        controller.onSourcePhaseForTesting = { [weak backend] in backend?.recordSource($0.rawValue) }
+        controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
         try controller.activate()
         await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil }, object: nil)], timeout: 10)
         backend.printTiming(event: "happy_wait_finished")
@@ -170,13 +173,16 @@ final class SeatedMeshProjectionTests: XCTestCase {
     @MainActor func testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange() async throws {
         for retireSource in [false,true] {
             let backend = try SeatedCandidateFixtureBackend()
-            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now })
+            let ownerDrained=expectation(description:"seated rejection controller ownership drained")
+            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{ownerDrained.fulfill()})
             addTeardownBlock {
                 let drained = XCTestExpectation(description: "seated rejection teardown drained")
-                await MainActor.run { controller.stop(); backend.stopAndDrain { drained.fulfill() } }
-                await self.fulfillment(of: [drained], timeout: 10)
+                await MainActor.run { controller.stop(); backend.stopAndDrain {
+                    DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();drained.fulfill()}
+                } }
+                await self.fulfillment(of: [drained,ownerDrained], timeout: 10)
             }
-            controller.onSourcePhaseForTesting = { [weak backend] in backend?.recordSource($0.rawValue) }
+            controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
             try controller.activate()
             await fulfillment(of: [XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in controller.scene != nil },object: nil)],timeout: 10)
             backend.printTiming(event: "rejection_wait_finished")
@@ -196,9 +202,59 @@ final class SeatedMeshProjectionTests: XCTestCase {
             XCTAssertNil(controller.scene?.rootNode.childNode(withName: "diagnostic-foot-candidate",recursively: false))
             controller.stop(); XCTAssertNil(controller.scene)
             let drained = expectation(description: "rejection iteration native drain")
-            backend.stopAndDrain { drained.fulfill() }
-            await fulfillment(of: [drained], timeout: 10)
+            backend.stopAndDrain { DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();drained.fulfill()} }
+            await fulfillment(of: [drained,ownerDrained], timeout: 10)
         }
+    }
+
+    @MainActor func testActualSourceAndStrictQueryCompleteWhileOptionalRenderIsHeld() async throws {
+        let backend=try SeatedCandidateFixtureBackend()
+        let ownerDone=expectation(description:"held-render controller ownership drained")
+        var stopped=false
+        let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
+        let hold=DispatchSemaphore(value:0)
+        defer {hold.signal()}
+        addTeardownBlock {
+            await MainActor.run {controller.stop();backend.stopAndDrain {
+                DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}
+            }}
+            await self.fulfillment(of:[ownerDone],timeout:10)
+            await MainActor.run {backend.printTiming(event:"drain_complete")}
+        }
+        controller.sourcePhaseRecorderForTesting = { [weak backend] in backend?.sourcePhaseRecorder() }
+        let entered=expectation(description:"optional render worker held")
+        controller.enqueueSyntheticDisplayWorkForTesting(work:{entered.fulfill()},afterEnqueue:{hold.wait()},delivered:{})
+        try controller.activate()
+        await fulfillment(of:[entered,XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.hasCurrentSourceForTesting},object:nil)],timeout:10)
+        backend.printTiming(event:"happy_wait_finished")
+        guard controller.hasCurrentSourceForTesting else {XCTFail("No admitted source; no query attempted");return}
+        XCTAssertTrue(controller.hasPendingRenderForTesting);XCTAssertNil(controller.scene)
+        let ready=expectation(description:"real strict query while render held")
+        backend.onHeld={ready.fulfill()}
+        controller.requestPreview(startText:"",goalText:"1 0 0",radiusText:"0.3",heightText:"1.7",
+            declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true)
+        await fulfillment(of:[ready],timeout:10)
+        backend.printTiming(event:"happy_wait_finished")
+        let result=try XCTUnwrap(backend.heldResult).get()
+        XCTAssertEqual(result.route.endpointPolicy,.requireSuppliedXZOverPolygon)
+        XCTAssertEqual(result.route.endpointAdmission?.start.requested,backend.submittedStart)
+        XCTAssertFalse(result.physicalAuthority)
+        backend.release()
+        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in
+            controller.routeReceipt.hasPrefix("AVAILABLE SOURCE-ONLY DIAGNOSTIC") && controller.hasCurrentSourceForTesting
+        },object:nil)],timeout:10)
+        XCTAssertTrue(controller.sourceReceipt.contains("revision \(result.route.revision)"))
+        XCTAssertFalse(controller.routePointReceipts.isEmpty)
+        XCTAssertTrue(controller.footReceipt.contains("Native associated start"))
+        XCTAssertNil(controller.scene);XCTAssertTrue(controller.hasPendingRenderForTesting)
+        controller.stop()
+        let nativeDone=expectation(description:"actual native drain while renderer held")
+        backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();nativeDone.fulfill()}}
+        await fulfillment(of:[nativeDone],timeout:10)
+        XCTAssertFalse(stopped,"Native drain alone cannot release exclusive ownership")
+        hold.signal()
+        await fulfillment(of:[ownerDone],timeout:10)
+        XCTAssertTrue(stopped);XCTAssertFalse(controller.hasPendingRenderForTesting)
     }
 
 }
@@ -212,10 +268,7 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     private var active = true
     private let timingLock = NSLock()
     private var submittedAt: Double?, nativeCompletedAt: Double?, mainHeldAt: Double?
-    private var sourceSubmittedAt: Double?
-    private var sourceRequest = 0
-    private var sourceRows: [(Int,String,Int,Bool,String)] = []
-    private var sourceRecords = 0
+    private let sourceTiming=SeatedSourceTimingRecorder()
     var now = 10.0
     var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
     var hasCurrentTrackedSession: Bool { active }
@@ -252,7 +305,11 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
             columnMajorCameraToWorld: [1,0,0,0,0,1,0,0,0,0,1,0,0,Double(Float(1.2)),0,1]))
     }
     func activateForSeatedBench() throws {}
-    func stop() { active = false; snapshots.retire(); ingress.stop() }
+    func stop() {
+        active=false;snapshots.retire();ingress.stop()
+        let retired=heldCompletion;heldCompletion=nil;heldResult=nil
+        retired?(.failure(.stale)) // Same stopped-owner refusal as production, never a fabricated route.
+    }
     func stopAndDrain(_ completion: @escaping () -> Void) {
         stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
         ingress.stopAndDiscard { [self] in
@@ -263,11 +320,9 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     func reacquireTrackedFrameAnchors() { snapshots.retire() }
     func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
     func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot,MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
-        timingLock.lock()
-        sourceRequest += 1; sourceSubmittedAt = ProcessInfo.processInfo.systemUptime
-        timingLock.unlock()
-        recordSource("source_requested")
-        ingress.requestSourceSnapshot(generation: ingress.generation) { [weak self] result in
+        let timing=sourceTiming,context=sourceTiming.begin()
+        timing.record("source_requested",context:context)
+        ingress.requestSourceSnapshot(generation: ingress.generation) { result in
             let outcome: String
             switch result {
             case .success: outcome = "success"
@@ -282,9 +337,9 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
                 case .invalidRetainedState: outcome = "runtime_invalidRetainedState"
                 }
             }
-            self?.recordSource("source_native_callback", outcome: outcome)
-            DispatchQueue.main.async { [weak self] in
-                self?.recordSource("source_main_callback", outcome: outcome)
+            timing.record("source_native_callback",context:context,outcome:outcome)
+            DispatchQueue.main.async {
+                timing.record("source_main_callback",context:context,outcome:outcome)
                 completion(result)
             }
         }
@@ -306,29 +361,18 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
                 self.timingLock.lock(); self.nativeCompletedAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
             }
             DispatchQueue.main.async {
-                if let self {
-                    self.timingLock.lock(); self.mainHeldAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
-                    self.heldResult = result; self.heldCompletion = completion; self.onHeld?()
-                }
+                guard let self,self.active else {completion(.failure(.stale));return}
+                self.timingLock.lock(); self.mainHeldAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
+                self.heldResult = result; self.heldCompletion = completion; self.onHeld?()
             }
         }
     }
-    /// Monotonic source-request-relative metadata. No logging on callback/render
-    /// critical paths; total capture is bounded even if source admission retries.
-    func recordSource(_ event: String, outcome: String = "none") {
-        let timestamp = ProcessInfo.processInfo.systemUptime, main = Thread.isMainThread
-        timingLock.lock(); defer { timingLock.unlock() }
-        guard sourceRecords < 64, sourceRequest > 0, sourceRequest <= 64 else { return }
-        let elapsed = sourceSubmittedAt.map { timestamp >= $0 ? Int((timestamp-$0)*1000) : -1 } ?? -1
-        sourceRows.append((sourceRequest,event,elapsed,main,outcome)); sourceRecords += 1
+    func sourcePhaseRecorder() -> ((SeatedMeshDiagnosticController.SourcePhaseForTesting)->Void)? {
+        let timing=sourceTiming
+        guard let context=timing.latest else {return nil}
+        return {phase in timing.record(phase.rawValue,context:context)}
     }
-    func printSourceTiming() {
-        timingLock.lock(); let rows = sourceRows; sourceRows.removeAll(keepingCapacity: true); timingLock.unlock()
-        let id = ingress.diagnosticReceiptID?.uuidString ?? "none"
-        for row in rows {
-            print("SEATED_CANDIDATE_SOURCE id=\(id) request=\(row.0) event=\(row.1) elapsed_ms=\(row.2) main_thread=\(row.3) outcome=\(row.4)")
-        }
-    }
+    func printSourceTiming() {sourceTiming.printRecords(id:ingress.diagnosticReceiptID?.uuidString ?? "none")}
     /// Called after XCTest's bounded wait or drain, never in native completion's
     /// critical path. Missing stages remain -1, not invented zero-time successes.
     func printTiming(event: String) {
@@ -360,6 +404,31 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     func release() {
         guard let heldResult, let completion = heldCompletion else { return }
         heldCompletion = nil; completion(heldResult)
+    }
+}
+/// Only scalar metadata is retained by render callbacks, never the native owner.
+private final class SeatedSourceTimingRecorder {
+    struct Context {let request:Int;let started:Double}
+    private let lock=NSLock()
+    private var current:Context?
+    private var count=0
+    private var rows:[(Int,String,Int,Bool,String)]=[]
+    var latest:Context? {lock.lock();defer{lock.unlock()};return current}
+    func begin()->Context {
+        lock.lock();defer{lock.unlock()}
+        let next=Context(request:(current?.request ?? 0)+1,started:ProcessInfo.processInfo.systemUptime)
+        current=next;return next
+    }
+    func record(_ event:String,context:Context,outcome:String="none") {
+        let now=ProcessInfo.processInfo.systemUptime,main=Thread.isMainThread
+        lock.lock();defer{lock.unlock()}
+        guard count<64,context.request>0,context.request<=64 else{return}
+        let elapsed=now>=context.started ? Int((now-context.started)*1000) : -1
+        rows.append((context.request,event,elapsed,main,outcome));count+=1
+    }
+    func printRecords(id:String) {
+        lock.lock();let copy=rows;rows.removeAll(keepingCapacity:true);lock.unlock()
+        for row in copy {print("SEATED_CANDIDATE_SOURCE id=\(id) request=\(row.0) event=\(row.1) elapsed_ms=\(row.2) main_thread=\(row.3) outcome=\(row.4)")}
     }
 }
 #endif

@@ -59,6 +59,7 @@ private struct SeatedMeshDiagnosticDisplay: View {
         VStack(alignment: .leading, spacing: 12) {
             Button("Stop diagnostic and erase geometry", role: .destructive) { controller.stop() }
                 .frame(minHeight: 44).accessibilityIdentifier("seated-mesh-stop")
+            Text(controller.renderReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-render-receipt")
             Text(controller.sourceReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-source-receipt")
             Text("Scale reference: 1 coordinate unit = 1 metre. The viewport fits the source bounds; orbit and zoom only change the view, never geometry scale. Numeric bounds are source extents, not measured passage clearance.")
                 .accessibilityIdentifier("seated-mesh-metre-scale")

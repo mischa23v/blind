@@ -475,13 +475,13 @@
     },
     {
       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
-      "bytes": 24007,
-      "sha256": "c83a9202f27817006f76ce8e3d38fc4c99aefa60bbe4e825f390cdfe86d480d3"
+      "bytes": 28764,
+      "sha256": "3aa1a99d15714caa7e3446e808f24b52d0eb75889e07d9f8eab759c3574b2480"
     },
     {
       "path": ".github/workflows/native-apple.yml",
-      "bytes": 15949,
-      "sha256": "5faa2d067d0a3b39d5ef046f4a4d78aab2c5ae4ad638c65629f4b6301cf94db5"
+      "bytes": 15951,
+      "sha256": "fe99a40983e8d217ce556ce8f1f11e53b187352627e526285b71620b93836c91"
     },
     {
       "path": ".github/workflows/body-profile-current.yml",
@@ -490,13 +490,13 @@
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
-      "bytes": 28351,
-      "sha256": "a358111bb67e9eb6318a512deb714afda2c4fd562d041214aa5f89411c6e3c98"
+      "bytes": 31297,
+      "sha256": "4a3b7f14806117c6357371e9079eb509ebf871ae169ddf9bd1ef0264000f45e1"
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
-      "bytes": 7878,
-      "sha256": "fb0f858f5fc8793a4e203a81f0049d6c733b5dc21fb6c1b3dd04e8601906d568"
+      "bytes": 7999,
+      "sha256": "86d0e8ed679c76a15f141aa4a6334ef513964dce8de27444e8e510e4a29fd86c"
     },
     {
       "path": "tools/ci/test_emit_ci_log_receipts.py",
@@ -510,13 +510,13 @@
     },
     {
       "path": "tools/ci/collect-seated-projection.py",
-      "bytes": 5154,
-      "sha256": "8a5154bf61af16ddde49739c98f9e90e82c8d0f55155d9d9679770e85887b40d"
+      "bytes": 5264,
+      "sha256": "78e122fc9b6aaf536d0943cd7d27d8c89ab714b0c7806a436ab21354b462019a"
     },
     {
       "path": "tools/ci/test-collect-seated-projection.py",
-      "bytes": 4097,
-      "sha256": "3ff739c5a31665322052ac3d5de664d81c42d8c34f098ddea2dcad71c9df89cb"
+      "bytes": 5495,
+      "sha256": "b82f7c6541efe63aa90e0442c4f19149311f593c60b0ac5c880efd99eadcc0fb"
     },
     {
       "path": "tools/ci/emit-ci-log-receipts.py",
@@ -743,5 +743,10 @@
     "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
     "status": "source_only_no_artifact_default",
     "scope": "default-off room-mesh artifact action plus bounded metadata-only log receipts; native commands unchanged"
+  },
+  "source_readiness_split": {
+    "baseCommit": "276b1c522bd5ff4ff26df23ba83a7728bdce3df9",
+    "status": "isolated_unexecuted_proposal",
+    "scope": "actual source admission independent of optional SceneKit rendering; no physical authority"
   }
 }
