@@ -5282,8 +5282,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
             return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
         }, beacon: { id in
-            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return }
-            self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
+            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return false }
+            return self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
         }) {
             lastIndoorAnnouncement = now; lastIndoorCueKey = key
         }

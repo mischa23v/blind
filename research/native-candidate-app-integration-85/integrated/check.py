@@ -18,13 +18,27 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Restore the exact compiled-failing119 source for historical provenance only.
+# Current Boolean/permission contracts below still inspect actual current R.
+pre_beacon_bool_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-beacon-bool-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeBeaconBoolCompileRepair'])+manifest['beaconBoolCompileRepairNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'beacon-bool-compile-repair.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeBeaconBoolCompileRepair'].items():
+        value=(root/name).read_bytes();check('exact failed119 input '+name,hashlib.sha256(value).hexdigest()==digest);pre_beacon_bool_source[name]=value
+    for name in manifest['beaconBoolCompileRepairNewFiles']:
+        check('new Boolean repair control absent in failed119 '+name,not (root/name).exists())
+check('current beacon Boolean contract and negative controls',subprocess.run([sys.executable,'-B',str(R/'tools/test/connected-beacon-bool.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+
 # Restore the exact post-map source before historical assertions. This layer
 # intentionally changes current production behavior; no earlier pass is relabelled.
-pre_tracker_implementation_source={}
+pre_tracker_implementation_source=dict(pre_beacon_bool_source)
 with tempfile.TemporaryDirectory(prefix='stage85-tracker-implementation-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeTrackerImplementationBatch'])+manifest['trackerImplementationBatchNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_beacon_bool_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'tracker-implementation-batch.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeTrackerImplementationBatch'].items():
@@ -525,5 +539,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit seated confirmation required', meshDiagnosticGeometryCopyEnabled='only inside separately admitted diagnostic owner',
+    appleBuild='pending', beaconBoolCompileRepairApplied=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit seated confirmation required', meshDiagnosticGeometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

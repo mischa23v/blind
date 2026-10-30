@@ -9,13 +9,13 @@
     "ios/BlindAssist.xcodeproj/project.pbxproj": "ae6019c332ab26081523defd8d97f0d728163171026cf70dcb00cdf4ad80ae67"
   },
   "integrated": {
-    "ios/BlindAssist/NavigationModel.swift": "62e54655e1133d52d7945f71ba0f38e8920afbc8c5fc363a2ecfeaa1abe40e42",
+    "ios/BlindAssist/NavigationModel.swift": "299a5bee4ef8f82debcac9781a0715b9f96367655506fc8262a4eba4b6584645",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "24dea5dbda2fd476c0226b26ff5976a1e0f1e1b2f31bc4adac70c3daa7256ff9",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a",
     ".github/workflows/native-apple.yml": "8f0166e5430092e1ca7464b0fe79a876d83e338ab21d3f7221455667ad67df91",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "ed84cde5ee10a06928bf83beeabd4e9e73fdd9647a9aa469eb5e4f40d5ef812d",
+    "research/native-candidate-app-integration-85/integrated/check.py": "58a825aacf8e841b107304b7d64e81e2dfed9ae44c6cd8530bb6df9e3b3ccfd9",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -91,7 +91,7 @@
     "tools/ci/test-collect-seed-radius.py": "61b0478a5376deee60154d151bd871e48a37d750e49b9c184c45283d7d05bd04",
     "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a",
     "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76",
-    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "4ad30a70f930efe52b89fcd1f0e147607ca3e9ca1c5da640cc5448da3ec37545",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "fea1771271ab32bd368a99fa30342d24687a3a9932783ec3f920b10e33a3c2ac",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-ci-layer.patch": "15df8e9d41d0560c7d8bec363acb85eaa31d46f30edddfacbef8e431abddf5ad",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43",
     "tools/ci/export-seed-radius-diagnostics.py": "91600e8003140cafe936222d0721f9030af351c83e62a07ff983e31efcc0c760",
@@ -340,7 +340,9 @@
     "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift": "231f444e91103a81f67eb686da03d566541ca0794b7f6e282e78b432aed78b83",
     "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchSessionTests.swift": "b97c01ee43b5fa9a777aa11c317a5cf7d5d42f741bd1032df96d72ba455352d1",
     "research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift": "0ee0f21b0489e401010e3dabd0d00e4c94c6891663c5f88ecd00898791fcc245",
-    "BlindCore/Package.swift": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f"
+    "BlindCore/Package.swift": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f",
+    "tools/test/connected-beacon-bool.test.py": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f",
+    "research/native-candidate-app-integration-85/integrated/beacon-bool-compile-repair.patch": "355d94b7a7d3030b653277888e10570b4866f0fa85b23d2b4bc30d5e74896913"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -819,5 +821,12 @@
     "tools/test/navigation-integration-current.test.py",
     "tools/test/scene-frame-provenance.test.mjs",
     "tools/test/visual-absence-contract.test.mjs"
+  ],
+  "beforeBeaconBoolCompileRepair": {
+    "ios/BlindAssist/NavigationModel.swift": "62e54655e1133d52d7945f71ba0f38e8920afbc8c5fc363a2ecfeaa1abe40e42",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "4ad30a70f930efe52b89fcd1f0e147607ca3e9ca1c5da640cc5448da3ec37545"
+  },
+  "beaconBoolCompileRepairNewFiles": [
+    "tools/test/connected-beacon-bool.test.py"
   ]
 }

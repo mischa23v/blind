@@ -830,8 +830,8 @@
     },
     {
       "path": "ios/BlindAssist/NavigationModel.swift",
-      "bytes": 528143,
-      "sha256": "62e54655e1133d52d7945f71ba0f38e8920afbc8c5fc363a2ecfeaa1abe40e42"
+      "bytes": 528156,
+      "sha256": "299a5bee4ef8f82debcac9781a0715b9f96367655506fc8262a4eba4b6584645"
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
@@ -1614,6 +1614,11 @@
       "sha256": "87e63c7e52f451caf835773fa97951c25d590c5e8d7240d628e774157ea9281e"
     },
     {
+      "path": "tools/test/connected-beacon-bool.test.py",
+      "bytes": 3514,
+      "sha256": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f"
+    },
+    {
       "path": "tools/test/navigation-integration-current.test.py",
       "bytes": 16761,
       "sha256": "caa32ec912f6b274a4a686e7caccecadb394ac822f2cdd97e593b7fd34990dae"
@@ -1857,5 +1862,14 @@
     "seatedExpectedCases": 21,
     "blindCoreProductionClosurePinned": true,
     "historicalResultsUnchanged": true
+  },
+  "beaconBooleanCompileRepair": {
+    "failedCommit": "119752b88c529adf90bde1092137a85870740ace",
+    "nativeBuildExit": 65,
+    "diagnosticsBuildExit": 65,
+    "hostedTestsExecuted": false,
+    "repairStatus": "source_only_native_unrun",
+    "controllerOptionalBeaconPolicyChanged": false,
+    "hazardAdmissionUnchanged": true
   }
 }
