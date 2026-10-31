@@ -115,6 +115,76 @@ def verify_checkout(folder,label,ctx):
  require(event.get('after')==ctx['GITHUB_SHA'] and event.get('ref')==BRANCH,'actual push ref/commit differs')
  require(event.get('repository',{}).get('full_name')=='mischa23v/blind' and event['repository'].get('private') is False,'public source repository required')
 
+# Closed diagnostics only: neither exception text nor file/environment contents are emitted.
+FAILURE_STAGES=frozenset(('checkout_before_build', 'attestation_begin', 'build_command', 'descriptor_selection', 'checkout_after_build', 'attestation_finish', 'receipt_write', 'receipt_digest', 'attestation_verify', 'script_selection', 'script_observations'))
+ATTESTATION_FAILURE_CODES={
+ 'CI run identity':'attestation_ci_run_identity',
+ 'Mach-O executable required':'attestation_mach_o_executable_required',
+ 'actual build command did not succeed':'attestation_actual_build_command_did_not_succeed',
+ 'actual build-for-testing command required':'attestation_actual_build_for_testing_command_required',
+ 'app/test bundle shapes':'attestation_app_test_bundle_shapes',
+ 'artifact observation time budget':'attestation_artifact_observation_time_budget',
+ 'artifact outside selected build root':'attestation_artifact_outside_selected_build_root',
+ 'artifact path':'attestation_artifact_path',
+ 'begin age':'attestation_begin_age',
+ 'begin schema':'attestation_begin_schema',
+ 'bounded verification time required':'attestation_bounded_verification_time_required',
+ 'build begin context mismatch':'attestation_build_begin_context_mismatch',
+ 'build command identity':'attestation_build_command_identity',
+ 'build command shape':'attestation_build_command_shape',
+ 'build failed':'attestation_build_failed',
+ 'bundle byte budget':'attestation_bundle_byte_budget',
+ 'bundle directory required':'attestation_bundle_directory_required',
+ 'bundle directory symlink':'attestation_bundle_directory_symlink',
+ 'bundle executable mode':'attestation_bundle_executable_mode',
+ 'bundle executable name':'attestation_bundle_executable_name',
+ 'bundle file-count budget':'attestation_bundle_file_count_budget',
+ 'bytes changed between identity and read':'attestation_bytes_changed_between_identity_and_read',
+ 'combined artifact byte budget':'attestation_combined_artifact_byte_budget',
+ 'command shape':'attestation_command_shape',
+ 'directory count budget':'attestation_directory_count_budget',
+ 'directory width budget':'attestation_directory_width_budget',
+ 'duplicate JSON key':'attestation_duplicate_json_key',
+ 'empty bundle':'attestation_empty_bundle',
+ 'file changed during hashing':'attestation_file_changed_during_hashing',
+ 'file grew beyond cap':'attestation_file_grew_beyond_cap',
+ 'fresh receipt output required':'attestation_fresh_receipt_output_required',
+ 'host executable differs from Info.plist':'attestation_host_executable_differs_from_info_plist',
+ 'independently trusted receipt digest required':'attestation_independently_trusted_receipt_digest_required',
+ 'job identity':'attestation_job_identity',
+ 'one hosted test target':'attestation_one_hosted_test_target',
+ 'parent traversal refused':'attestation_parent_traversal_refused',
+ 'provenance implementation pins':'attestation_provenance_implementation_pins',
+ 'read budget':'attestation_read_budget',
+ 'receipt changed after approved digest check':'attestation_receipt_changed_after_approved_digest_check',
+ 'receipt content changed during parse':'attestation_receipt_content_changed_during_parse',
+ 'receipt digest mismatch':'attestation_receipt_digest_mismatch',
+ 'receipt provenance mismatch':'attestation_receipt_provenance_mismatch',
+ 'receipt source mismatch':'attestation_receipt_source_mismatch',
+ 'regular bounded descriptor required':'attestation_regular_bounded_descriptor_required',
+ 'regular bounded file required':'attestation_regular_bounded_file_required',
+ 'regular bounded file required before open':'attestation_regular_bounded_file_required_before_open',
+ 'regular executable descriptor required':'attestation_regular_executable_descriptor_required',
+ 'relative path shape':'attestation_relative_path_shape',
+ 'reviewed CI context required':'attestation_reviewed_ci_context_required',
+ 'reviewed dependency lock parser changed':'attestation_reviewed_dependency_lock_parser_changed',
+ 'reviewed provenance helper changed':'attestation_reviewed_provenance_helper_changed',
+ 'selected descriptor/app/test bytes differ from trusted build':'attestation_selected_descriptor_app_test_bytes_differ_from_trusted_build',
+ 'source changed across build':'attestation_source_changed_across_build',
+ 'source changed during artifact capture':'attestation_source_changed_during_artifact_capture',
+ 'source clean proof missing':'attestation_source_clean_proof_missing',
+ 'symlink component refused':'attestation_symlink_component_refused',
+ 'unsafe relative path':'attestation_unsafe_relative_path',
+ 'unsupported artifact placeholder':'attestation_unsupported_artifact_placeholder',
+ 'workflow SHA':'attestation_workflow_sha',
+ 'workflow identity':'attestation_workflow_identity',
+}
+def safe_failure(stage,error):
+ code='unclassified'
+ if stage in ('attestation_begin','attestation_finish','receipt_digest','attestation_verify') and type(error) is ValueError and len(error.args)==1 and type(error.args[0]) is str:
+  code=ATTESTATION_FAILURE_CODES.get(error.args[0],'unclassified')
+ return {'failureStage':stage if stage in FAILURE_STAGES else 'unclassified','failureCode':code}
+
 def run():
  global RUN_DEADLINE
  require(sys.platform=='darwin','Apple host required');ctx=context(os.environ)
@@ -122,24 +192,35 @@ def run():
  RUN_DEADLINE=time.monotonic()+RUN_SECONDS
  out=root_path(os.environ);out.mkdir(mode=0o700)
  report={'schema':1,'sourceCommit':ctx['GITHUB_SHA'],'ci':ctx,'status':'incomplete','buildSucceeded':False,'scriptReceipts':[],'fullJourneyComplete':False,'runtimeLoadedBinaryVerified':False}
+ stage='checkout_before_build'
  try:
   verify_checkout(out,'before-build',ctx)
+  stage='attestation_begin'
   before=attestation.begin(R,os.environ);write(out/'begin.json',before)
+  stage='build_command'
   result=command(build_argv(out),out/'build.log',900,64*1024*1024);write(out/'build-command.json',result)
   report['buildCommandExit']=result['exit_code'];report['buildCommandReason']=result['reason']
   require(good(result),'actual default build-for-testing failed')
+  stage='descriptor_selection'
   products=out/'DerivedData/Build/Products';descriptor=select_descriptor(products)
+  stage='checkout_after_build'
   verify_checkout(out,'after-build',ctx)
+  stage='attestation_finish'
   receipt=attestation.finish(R,os.environ,before,result,products,descriptor.name)
   require(receipt['ci']==ctx and receipt['sourceCommit']==ctx['GITHUB_SHA'],'same run/job source required')
+  stage='receipt_write'
   receipt_path=out/'build-receipt.json';write(receipt_path,receipt)
   # Trust comes from this reviewed authenticated CI producer executing the fixed
   # command, not from any caller's JSON/digest. Parent authenticates the real run.
+  stage='receipt_digest'
   receipt_sha=attestation.digest(receipt_path,8*1024*1024)['sha256']
+  stage='attestation_verify'
   proof=attestation.verify(products,descriptor.name,receipt_path,receipt_sha,ctx['GITHUB_SHA'])
   report.update(buildSucceeded=True,buildReceiptSHA256=receipt_sha,workflowSHA256=hashlib.sha256((R/'.github/workflows/j01-actual-model.yml').read_bytes()).hexdigest(),sourceAttestation=proof)
   emit({k:v for k,v in report.items() if k!='scriptReceipts'})
+  stage='script_selection'
   scripts=attestation.read_json(P/'SUPPORTED.json',65536);require(type(scripts) is dict and all(scripts.get(k)==metadata.SUPPORTED[k] for k in SCENARIOS),'exact three selected scripts required')
+  stage='script_observations'
   for index,scenario in enumerate(SCENARIOS):
    case=out/('case-'+str(index));case.mkdir(mode=0o700);udid=None;acquisition={'attempted':False}
    row={'scenario_id':scenario,'status':'unavailable','wrapper_exit':None,'cleanup_completed':False,'fullJourneyComplete':False}
@@ -175,6 +256,7 @@ def run():
   # final accepted reply and no unavailable/failing final return, without scoring semantics.
   report['status']='observed' if len(report['scriptReceipts'])==3 and all(x.get('status')=='observed' for x in report['scriptReceipts']) else 'incomplete'
  except Exception as error:
+  report.update(safe_failure(stage,error))
   report.update(status='incomplete',error_type=type(error).__name__ if type(error).__name__ in ('OSError','ValueError','KeyError','TypeError','Refused','TimeoutExpired','CalledProcessError') else 'refused')
  finally:
   write(out/'RESULT.json',report);emit(report)

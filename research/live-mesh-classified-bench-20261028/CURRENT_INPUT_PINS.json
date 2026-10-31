@@ -1885,8 +1885,8 @@
     },
     {
       "path": "tools/ci/j01-actual-model.py",
-      "bytes": 13960,
-      "sha256": "c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f"
+      "bytes": 19447,
+      "sha256": "3f5c34a2197210170130d7f81e7b7794dd544d2f27729ffe48e4a7a2c2b1628a"
     },
     {
       "path": "tools/ci/native-apple.sh",
@@ -1940,8 +1940,8 @@
     },
     {
       "path": "tools/ci/test_j01_actual_model.py",
-      "bytes": 20120,
-      "sha256": "043f4f0b96d90796cb2a98d44b4d3cb3e1efbf911fff1c1cc0f77495f6543e4f"
+      "bytes": 22326,
+      "sha256": "6e65efd761c6933a1d5b6158f44502b763ca0d2f78f4b350523cc33e6a8e1388"
     },
     {
       "path": "tools/ci/test_j01_portable_failure_diagnostic.py",
@@ -2408,6 +2408,11 @@
   "edtViewContactComposition": {
     "scope": "Strict current contact source to historical EDT source composition",
     "historicalInputsRetained": 58,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "j01ClosedFailureDiagnostics": {
+    "scope": "Closed stage and fixed guard code only; no raw error disclosure or acceptance change",
     "nativeExecuted": false,
     "physicalAuthority": false
   }

@@ -15,7 +15,7 @@
     "tools/ci/native-apple.sh": "49e233866efa0cce408f9a779dbe0ff42c1a27939cc9d1698296ec5fa9a2b03f",
     ".github/workflows/native-apple.yml": "90b59756e593ce76bbcbf299799224f68286b10ab88b2fa9f202e49f7bdffbee",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "8886aaf0586b544ce01b3265bb285fb5986dd320c29a2eada5727f33400ec55c",
+    "research/native-candidate-app-integration-85/integrated/check.py": "37eb469c0c9804e8165bc22e2aa9e3391548eca3df2dd100f368d8fbd7021e97",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -91,7 +91,7 @@
     "tools/ci/test-collect-seed-radius.py": "61b0478a5376deee60154d151bd871e48a37d750e49b9c184c45283d7d05bd04",
     "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a",
     "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76",
-    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "722f4147d26a081ec909efd85134039a30a833710f05b2d6166bbea66d37b09c",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "7adba369753ca0162ad26c887bc67961b1203e76bb89238306be8b143c21f531",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-ci-layer.patch": "15df8e9d41d0560c7d8bec363acb85eaa31d46f30edddfacbef8e431abddf5ad",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43",
     "tools/ci/export-seed-radius-diagnostics.py": "91600e8003140cafe936222d0721f9030af351c83e62a07ff983e31efcc0c760",
@@ -377,10 +377,10 @@
     "research/j01-hosted-app-adapter-20261030/build_attestation.py": "9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff",
     "research/j01-hosted-app-adapter-20261030/test_build_attestation.py": "6896b49ce79a2923516ca01275630253abeb8b98f5cd984b66c0290eb97a4707",
     "tools/ci/test_collect_j01_metadata.py": "ed5b79d34ea497567af27aadf3e1af82bce68980e128d32625f0b261440ea6d6",
-    "tools/ci/j01-actual-model.py": "c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f",
+    "tools/ci/j01-actual-model.py": "3f5c34a2197210170130d7f81e7b7794dd544d2f27729ffe48e4a7a2c2b1628a",
     "tools/ci/collect_j01_metadata.py": "49d388c88a9fba379c0aa9d521bdcceada0fd13b5783d58bad4fa3cbe94f20e1",
     ".github/workflows/j01-actual-model.yml": "ce52163a3d4c307779e8d2000c5cdf833cbd4ec40fc8bd713ad978cdc98ad7e6",
-    "tools/ci/test_j01_actual_model.py": "043f4f0b96d90796cb2a98d44b4d3cb3e1efbf911fff1c1cc0f77495f6543e4f",
+    "tools/ci/test_j01_actual_model.py": "6e65efd761c6933a1d5b6158f44502b763ca0d2f78f4b350523cc33e6a8e1388",
     "research/native-candidate-app-integration-85/integrated/j01-same-job-observation-layer.patch": "5cb5ac630aca84d281ea6fe9f7d271be33b8506af7b6a82d8d783854f85a5a66",
     "BlindCore/Tests/BlindCoreTests/FamiliarPhotoImportOwnershipTests.swift": "d8c4ba2b23342defdd9cb9a97eb02d967399d0c5b3e8c708fa7151646f38dda6",
     "BlindCore/Tests/BlindCoreTests/AssistantControlTests.swift": "932d91745559ae7862a80096af8c2ca9fc622bbccc8971ab3a84e1bd4073fa48",
@@ -457,7 +457,8 @@
     "research/native-candidate-app-integration-85/integrated/journey-required-goal-unwrap-layer.patch": "8cfe51b0a34bbaef67189c23c280ef140f550bd6ae33f936ff3a2e37f2bdd97f",
     "research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json": "38986f45a6c6735bdc1002fe3db17a89b31233474ac931dfb87184df46fbbc04",
     "research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90",
-    "research/native-candidate-app-integration-85/integrated/edt-view-contact-composition-layer.patch": "1390ed77ff81a74fb0bfe817615bf848d5a9c3cd69346bfa8c558b1c7286af4c"
+    "research/native-candidate-app-integration-85/integrated/edt-view-contact-composition-layer.patch": "1390ed77ff81a74fb0bfe817615bf848d5a9c3cd69346bfa8c558b1c7286af4c",
+    "research/native-candidate-app-integration-85/integrated/j01-closed-failure-diagnostics-layer.patch": "f5e18ed4ed32b3f78804ba0194ceda4b2078ca6e3a4b0e64007783c393be0349"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -1156,5 +1157,11 @@
   "edtViewContactCompositionNewFiles": [
     "research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json",
     "research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch"
-  ]
+  ],
+  "beforeJ01ClosedFailureDiagnostics": {
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "722f4147d26a081ec909efd85134039a30a833710f05b2d6166bbea66d37b09c",
+    "tools/ci/j01-actual-model.py": "c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f",
+    "tools/ci/test_j01_actual_model.py": "043f4f0b96d90796cb2a98d44b4d3cb3e1efbf911fff1c1cc0f77495f6543e4f"
+  },
+  "j01ClosedFailureDiagnosticsNewFiles": []
 }

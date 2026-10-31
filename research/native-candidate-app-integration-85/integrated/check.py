@@ -42,13 +42,41 @@ def j01_portable_failure(script, result):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Closed J01 failure stage diagnostics preserve strict acceptance and privacy.
+# Original runner semantics and all older reversal proofs remain immutable.
+pre_j01_closed_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-j01-closed-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeJ01ClosedFailureDiagnostics'])+manifest['j01ClosedFailureDiagnosticsNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'j01-closed-failure-diagnostics-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeJ01ClosedFailureDiagnostics'].items():
+        value=(root/name).read_bytes()
+        check('exact source before J01 closed diagnostics '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_j01_closed_source[name]=value
+    for name in manifest['j01ClosedFailureDiagnosticsNewFiles']:
+        check('new J01 closed diagnostics file absent before repair '+name,not (root/name).exists())
+import ast
+j01_runner_path='tools/ci/j01-actual-model.py'
+class Strip(ast.NodeTransformer):
+ def visit_FunctionDef(self,node):
+  if node.name=='safe_failure':return None
+  return self.generic_visit(node)
+ def visit_Assign(self,node):
+  if len(node.targets)==1 and isinstance(node.targets[0],ast.Name) and node.targets[0].id in ('stage','FAILURE_STAGES','ATTESTATION_FAILURE_CODES'):return None
+  return node
+ def visit_Expr(self,node):
+  if isinstance(node.value,ast.Call) and isinstance(node.value.func,ast.Attribute) and isinstance(node.value.func.value,ast.Name) and node.value.func.value.id=='report' and node.value.func.attr=='update' and len(node.value.args)==1 and isinstance(node.value.args[0],ast.Call) and isinstance(node.value.args[0].func,ast.Name) and node.value.args[0].func.id=='safe_failure':return None
+  return node
+check('current J01 runner original semantics unchanged after diagnostics',ast.dump(Strip().visit(ast.parse((R/j01_runner_path).read_text())),include_attributes=False)==ast.dump(ast.parse(pre_j01_closed_source[j01_runner_path].decode()),include_attributes=False))
+
 # Compose current reviewed contact diagnostics into the strict historical EDT view.
 # Historical source and all older reversal proofs remain immutable.
-pre_edt_contact_source={}
+pre_edt_contact_source=dict(pre_j01_closed_source)
 with tempfile.TemporaryDirectory(prefix='stage85-edt-contact-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeEDTViewContactComposition'])+manifest['edtViewContactCompositionNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_j01_closed_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'edt-view-contact-composition-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeEDTViewContactComposition'].items():
         value=(root/name).read_bytes()
@@ -149,7 +177,7 @@ check('current adjacent accessible Ask and voice continuity contracts',subproces
 ui_expected_methods=['testMainScreenContainsOnlyReplyAndTabButtons', 'testReadingAndConversationControlsAreReachableInSettings', 'testQuietDescriptionsCanResumeWithoutStartingMicrophoneOrCamera', 'testAskControlsAndUnavailableReasonRemainReachableWithoutCamera', 'testRoomsShowSavedRoomsAndExplicitStartScan', 'testWritingIsAvailableWithoutMicrophoneCapture', 'testAssistantPreferencesAndConversationMemoryRemainReachable', 'testPhotoExplorerCanBeDismissedWithoutStartingCamera', 'testSettingsAndWearableSetupAreReachable', 'testPracticeNavigationRemainsReachable', 'testPracticeIsAnnouncedAndCanStop', 'testAccessibleMainModesAndOfflineDefault', 'testDescribeFocusAndStopControl', 'testPracticeLayoutAtDefaultSize', 'testPracticeLayoutAtLargestAccessibilitySize', 'testAccessibilityAuditOfMainScreen', 'testAccessibilityAuditOfCameraAndAsk', 'testOfflineCommunityLibraryKeepsLocalImportAvailable', 'testEmptyInterestDoesNotBecomeStoredPreference']
 check('current UI exact original nineteen method identities retained',re.findall(r'\bfunc\s+(test\w+)\s*\(', (R/'ios/BlindAssistUITests/LaunchTests.swift').read_text())==ui_expected_methods)
 check('J01 production attestation unchanged by fixture repair',hashlib.sha256((R/'research/j01-hosted-app-adapter-20261030/build_attestation.py').read_bytes()).hexdigest()=='9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff')
-check('J01 production runner unchanged by fixture repair',hashlib.sha256((R/'tools/ci/j01-actual-model.py').read_bytes()).hexdigest()=='c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f')
+check('J01 production runner unchanged by fixture repair',hashlib.sha256(pre_j01_closed_source['tools/ci/j01-actual-model.py']).hexdigest()=='c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f')
 
 
 # Seated same-family fixture ownership and the floor audit are an additive layer.
@@ -829,5 +857,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', edtViewContactCompositionSourceApplied=True, edtViewContactCompositionNativeExecuted=False, journeyRequiredGoalUnwrapSourceApplied=True, journeyRequiredGoalUnwrapNativeExecuted=False, collisionContactPhaseSourceApplied=True, collisionContactPhaseNativeExecuted=False, classificationCrossFamilyDrainSourceApplied=True, classificationCrossFamilyDrainNativeExecuted=False, depthRasterIntegritySourceApplied=True, depthRasterIntegrityNativeExecuted=False, repeatAnswerContrastSourceApplied=True, repeatAnswerRenderedContrastVerified=False, j01TemporaryRootFixtureRepairApplied=True, j01ProductionAttestationPolicyChanged=False, seatedFixtureOwnedAdmissionSourceApplied=True, seatedFixtureOwnedAdmissionNativeExecuted=False, floorSupportResearchOnly=True, floorSupportImplementationChanged=False, localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
+    appleBuild='pending', j01ClosedFailureDiagnosticsSourceApplied=True, j01ClosedFailureDiagnosticsNativeExecuted=False, edtViewContactCompositionSourceApplied=True, edtViewContactCompositionNativeExecuted=False, journeyRequiredGoalUnwrapSourceApplied=True, journeyRequiredGoalUnwrapNativeExecuted=False, collisionContactPhaseSourceApplied=True, collisionContactPhaseNativeExecuted=False, classificationCrossFamilyDrainSourceApplied=True, classificationCrossFamilyDrainNativeExecuted=False, depthRasterIntegritySourceApplied=True, depthRasterIntegrityNativeExecuted=False, repeatAnswerContrastSourceApplied=True, repeatAnswerRenderedContrastVerified=False, j01TemporaryRootFixtureRepairApplied=True, j01ProductionAttestationPolicyChanged=False, seatedFixtureOwnedAdmissionSourceApplied=True, seatedFixtureOwnedAdmissionNativeExecuted=False, floorSupportResearchOnly=True, floorSupportImplementationChanged=False, localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

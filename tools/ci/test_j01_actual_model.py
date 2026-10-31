@@ -117,7 +117,7 @@ class Tests(unittest.TestCase):
  def test_mode_does_not_accept_config_or_digest(self):
   with mock.patch.object(sys,'argv',['runner','run','--receipt','external']),self.assertRaises(ValueError):m.main()
 
- def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False):
+ def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False,attestation_error_stage=None,attestation_error=None):
   import test_collect_j01_metadata as fixtures
   with tempfile.TemporaryDirectory() as d:
    root=pathlib.Path(d).resolve(strict=True);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
@@ -147,6 +147,7 @@ class Tests(unittest.TestCase):
     for obj,key,value in [(m,'R',repo),(m,'P',packet),(m.sys,'platform','darwin')]:stack.enter_context(mock.patch.object(obj,key,value))
     stack.enter_context(mock.patch.dict(os.environ,e,clear=True))
     for obj,key,kw in [(m,'verify_checkout',{'return_value':None}),(m,'command',{'side_effect':command}),(m,'create_simulator',{'side_effect':create}),(m,'tool',{'return_value':b'{}'}),(m,'cleanup_simulator',{'return_value':cleanup}),(m,'emit',{'side_effect':emitted.append}),(m.attestation,'begin',{'return_value':before}),(m.attestation,'finish',{'return_value':{'ci':ctx,'sourceCommit':SHA}}),(m.attestation,'verify',{'side_effect':proof}),(m.attestation,'source_provenance',{'return_value':source})]:stack.enter_context(mock.patch.object(obj,key,**kw))
+    if attestation_error_stage is not None:stack.enter_context(mock.patch.object(m.attestation,attestation_error_stage,side_effect=attestation_error))
     code=m.run()
    result=json.loads((root/'blind-j01-123-1/RESULT.json').read_text())
    return code,result,calls,emitted
@@ -220,5 +221,25 @@ class Tests(unittest.TestCase):
   self.assertEqual([x['scenario_id'] for x in r['scriptReceipts']],list(m.SCENARIOS));self.assertEqual(len(calls),4)
  def test_changed_original_script_is_refused_before_any_execution(self):
   code,r,calls,_=self.simulated_run(changed_selected_script=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertEqual(r['scriptReceipts'],[])
+
+
+ def test_closed_attestation_codes_never_echo_dynamic_error_content(self):
+  for stage in m.FAILURE_STAGES:
+   for error in (ValueError('/PRIVATE/path token=secret'),ValueError('symlink component refused /PRIVATE'),ValueError({'PRIVATE':'secret'}),TypeError('symlink component refused'),m.Refused('symlink component refused')):
+    result=m.safe_failure(stage,error);self.assertEqual(result['failureCode'],'unclassified');self.assertNotIn('PRIVATE',json.dumps(result))
+  self.assertEqual(m.safe_failure('/PRIVATE',ValueError('symlink component refused')),{'failureStage':'unclassified','failureCode':'unclassified'})
+ def test_closed_attestation_codes_cover_each_fixed_guard_without_raw_output(self):
+  for message,code in m.ATTESTATION_FAILURE_CODES.items():
+   self.assertRegex(code,r'^attestation_[a-z0-9_]+$')
+   self.assertEqual(m.safe_failure('attestation_finish',ValueError(message)),{'failureStage':'attestation_finish','failureCode':code})
+  self.assertEqual(m.safe_failure('script_observations',ValueError('symlink component refused'))['failureCode'],'unclassified')
+ def test_post_build_attestation_failures_stay_incomplete_without_model_calls(self):
+  for stage in ('finish','verify'):
+   for message in ('symlink component refused','artifact observation time budget','/PRIVATE/token secret'):
+    with self.subTest(stage=stage,message=message):
+     code,r,calls,emitted=self.simulated_run(attestation_error_stage=stage,attestation_error=ValueError(message))
+     self.assertEqual(code,1);self.assertEqual(r['buildCommandExit'],0);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[]);self.assertEqual(len(calls),1)
+     self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertFalse(r['fullJourneyComplete']);self.assertEqual(r['failureStage'],'attestation_'+stage)
+     self.assertEqual(r['failureCode'],m.ATTESTATION_FAILURE_CODES.get(message,'unclassified'));self.assertNotIn('PRIVATE',json.dumps(emitted));self.assertNotIn('secret',json.dumps(emitted))
 
 if __name__=='__main__':unittest.main()
