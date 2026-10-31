@@ -129,6 +129,23 @@ class ActualProvenanceTests(unittest.TestCase):
     self.assertEqual(receipt['sourceCommit'],sha)
     self.assertIn('untrusted',receipt['producerTrust'])
     self.assertFalse(receipt['nativeTestExecutedByRecorder'])
+    # Authored first-resolution transition: the unchanged exact public-pin
+    # parser permits creation, but strict attestation forbids it AFTER begin.
+    lock=root/'ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
+    lock.parent.mkdir(parents=True,exist_ok=True)
+    value={'version':3,'pins':[{'identity':'grdb.swift','kind':'remoteSourceControl','location':'https://github.com/groue/GRDB.swift.git','state':{'revision':'b83108d10f42680d78f23fe4d4d80fc88dab3212','version':'7.11.1'}}]}
+    lock.write_text(json.dumps(value))
+    with self.assertRaisesRegex(ValueError,'source changed across build'):a.finish(root,env,before,command,artifact.root,'build.xctestrun')
+    resolved=a.begin(root,env)
+    stable=a.finish(root,env,resolved,command,artifact.root,'build.xctestrun')
+    self.assertEqual(stable['before']['provenance'],stable['after'])
+    value['originHash']='a'*64;lock.write_text(json.dumps(value))
+    with self.assertRaisesRegex(ValueError,'source changed across build'):a.finish(root,env,resolved,command,artifact.root,'build.xctestrun')
+    value['pins'][0]['state']['revision']='0'*40;lock.write_text(json.dumps(value))
+    with self.assertRaises(ValueError):a.begin(root,env)
+    lock.unlink();lock.symlink_to(artifact.root/'build.xctestrun')
+    with self.assertRaises(ValueError):a.begin(root,env)
+    lock.unlink()
     for bad in [dict(command,exit_code=1),dict(command,exit_code=False),dict(command,argv=[])]:
      with self.assertRaises(ValueError):a.finish(root,env,before,bad,artifact.root,'build.xctestrun')
     stale=copy.deepcopy(before);stale['createdAt']=0
@@ -136,7 +153,7 @@ class ActualProvenanceTests(unittest.TestCase):
    finally:artifact.doCleanups()
 
    with self.assertRaises(ValueError):a.source_provenance(root,'0'*40)
-   (root/'ios').mkdir();(root/'ios/untracked.swift').write_text('// untracked')
+   (root/'ios').mkdir(exist_ok=True);(root/'ios/untracked.swift').write_text('// untracked')
    with self.assertRaises(ValueError):a.source_provenance(root,sha)
    (root/'ios/untracked.swift').unlink();(root/a.LOCK).write_text('changed')
    with self.assertRaises(ValueError):a.source_provenance(root,sha)

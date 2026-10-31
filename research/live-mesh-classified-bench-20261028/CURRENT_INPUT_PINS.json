@@ -1145,8 +1145,8 @@
     },
     {
       "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
-      "bytes": 10076,
-      "sha256": "6896b49ce79a2923516ca01275630253abeb8b98f5cd984b66c0290eb97a4707"
+      "bytes": 11465,
+      "sha256": "60aab6415052f291b8e4fd84ff08e52829042e2dd47035a34e555a1729e6e741"
     },
     {
       "path": "research/j01-temp-fixture-portability-20261030/README.md",
@@ -1885,8 +1885,8 @@
     },
     {
       "path": "tools/ci/j01-actual-model.py",
-      "bytes": 19447,
-      "sha256": "3f5c34a2197210170130d7f81e7b7794dd544d2f27729ffe48e4a7a2c2b1628a"
+      "bytes": 20253,
+      "sha256": "763381a32c5d8b5e06cc23abf98dd150fccb78d30be9de82dbb7f3f10eddd04e"
     },
     {
       "path": "tools/ci/native-apple.sh",
@@ -1940,8 +1940,8 @@
     },
     {
       "path": "tools/ci/test_j01_actual_model.py",
-      "bytes": 22326,
-      "sha256": "6e65efd761c6933a1d5b6158f44502b763ca0d2f78f4b350523cc33e6a8e1388"
+      "bytes": 23681,
+      "sha256": "7e729a178e765c04c54e3441912d25c9ce10d2589ae28491cc566c427d024288"
     },
     {
       "path": "tools/ci/test_j01_portable_failure_diagnostic.py",
@@ -2413,6 +2413,11 @@
   },
   "j01ClosedFailureDiagnostics": {
     "scope": "Closed stage and fixed guard code only; no raw error disclosure or acceptance change",
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "j01ResolutionPreparation": {
+    "scope": "Bounded fixed dependency resolution before strict build attestation begin",
     "nativeExecuted": false,
     "physicalAuthority": false
   }

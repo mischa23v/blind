@@ -1,0 +1,204 @@
+diff --git a/research/j01-hosted-app-adapter-20261030/test_build_attestation.py b/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
+--- a/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
++++ b/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
+@@ -129,6 +129,23 @@
+     self.assertEqual(receipt['sourceCommit'],sha)
+     self.assertIn('untrusted',receipt['producerTrust'])
+     self.assertFalse(receipt['nativeTestExecutedByRecorder'])
++    # Authored first-resolution transition: the unchanged exact public-pin
++    # parser permits creation, but strict attestation forbids it AFTER begin.
++    lock=root/'ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
++    lock.parent.mkdir(parents=True,exist_ok=True)
++    value={'version':3,'pins':[{'identity':'grdb.swift','kind':'remoteSourceControl','location':'https://github.com/groue/GRDB.swift.git','state':{'revision':'b83108d10f42680d78f23fe4d4d80fc88dab3212','version':'7.11.1'}}]}
++    lock.write_text(json.dumps(value))
++    with self.assertRaisesRegex(ValueError,'source changed across build'):a.finish(root,env,before,command,artifact.root,'build.xctestrun')
++    resolved=a.begin(root,env)
++    stable=a.finish(root,env,resolved,command,artifact.root,'build.xctestrun')
++    self.assertEqual(stable['before']['provenance'],stable['after'])
++    value['originHash']='a'*64;lock.write_text(json.dumps(value))
++    with self.assertRaisesRegex(ValueError,'source changed across build'):a.finish(root,env,resolved,command,artifact.root,'build.xctestrun')
++    value['pins'][0]['state']['revision']='0'*40;lock.write_text(json.dumps(value))
++    with self.assertRaises(ValueError):a.begin(root,env)
++    lock.unlink();lock.symlink_to(artifact.root/'build.xctestrun')
++    with self.assertRaises(ValueError):a.begin(root,env)
++    lock.unlink()
+     for bad in [dict(command,exit_code=1),dict(command,exit_code=False),dict(command,argv=[])]:
+      with self.assertRaises(ValueError):a.finish(root,env,before,bad,artifact.root,'build.xctestrun')
+     stale=copy.deepcopy(before);stale['createdAt']=0
+@@ -136,7 +153,7 @@
+    finally:artifact.doCleanups()
+
+    with self.assertRaises(ValueError):a.source_provenance(root,'0'*40)
+-   (root/'ios').mkdir();(root/'ios/untracked.swift').write_text('// untracked')
++   (root/'ios').mkdir(exist_ok=True);(root/'ios/untracked.swift').write_text('// untracked')
+    with self.assertRaises(ValueError):a.source_provenance(root,sha)
+    (root/'ios/untracked.swift').unlink();(root/a.LOCK).write_text('changed')
+    with self.assertRaises(ValueError):a.source_provenance(root,sha)
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -1145,8 +1145,8 @@
+     },
+     {
+       "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
+-      "bytes": 10076,
+-      "sha256": "6896b49ce79a2923516ca01275630253abeb8b98f5cd984b66c0290eb97a4707"
++      "bytes": 11465,
++      "sha256": "60aab6415052f291b8e4fd84ff08e52829042e2dd47035a34e555a1729e6e741"
+     },
+     {
+       "path": "research/j01-temp-fixture-portability-20261030/README.md",
+@@ -1885,8 +1885,8 @@
+     },
+     {
+       "path": "tools/ci/j01-actual-model.py",
+-      "bytes": 19447,
+-      "sha256": "3f5c34a2197210170130d7f81e7b7794dd544d2f27729ffe48e4a7a2c2b1628a"
++      "bytes": 20253,
++      "sha256": "763381a32c5d8b5e06cc23abf98dd150fccb78d30be9de82dbb7f3f10eddd04e"
+     },
+     {
+       "path": "tools/ci/native-apple.sh",
+@@ -1940,8 +1940,8 @@
+     },
+     {
+       "path": "tools/ci/test_j01_actual_model.py",
+-      "bytes": 22326,
+-      "sha256": "6e65efd761c6933a1d5b6158f44502b763ca0d2f78f4b350523cc33e6a8e1388"
++      "bytes": 23681,
++      "sha256": "7e729a178e765c04c54e3441912d25c9ce10d2589ae28491cc566c427d024288"
+     },
+     {
+       "path": "tools/ci/test_j01_portable_failure_diagnostic.py",
+@@ -2415,5 +2415,10 @@
+     "scope": "Closed stage and fixed guard code only; no raw error disclosure or acceptance change",
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "j01ResolutionPreparation": {
++    "scope": "Bounded fixed dependency resolution before strict build attestation begin",
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }
+diff --git a/tools/ci/j01-actual-model.py b/tools/ci/j01-actual-model.py
+--- a/tools/ci/j01-actual-model.py
++++ b/tools/ci/j01-actual-model.py
+@@ -78,6 +78,9 @@
+  return attestation.stable_bytes(log,4*1024*1024)
+ def build_argv(folder):
+  return ['/usr/bin/xcodebuild','-project','ios/BlindAssist.xcodeproj','-scheme','BlindAssist','-configuration','Debug','-jobs','2','-derivedDataPath',str(folder/'DerivedData'),'CODE_SIGNING_ALLOWED=NO','-destination','generic/platform=iOS Simulator','-parallel-testing-enabled','NO','build-for-testing']
++def resolve_argv(folder):
++ # Same fixed project/scheme and owned DerivedData; no caller-supplied package input.
++ return build_argv(folder)[:-1]+['-resolvePackageDependencies']
+ def select_descriptor(products):
+  paths=sorted(products.glob('*.xctestrun'));require(len(paths)==1,'one fresh descriptor required')
+  return paths[0]
+@@ -116,7 +119,7 @@
+  require(event.get('repository',{}).get('full_name')=='mischa23v/blind' and event['repository'].get('private') is False,'public source repository required')
+
+ # Closed diagnostics only: neither exception text nor file/environment contents are emitted.
+-FAILURE_STAGES=frozenset(('checkout_before_build', 'attestation_begin', 'build_command', 'descriptor_selection', 'checkout_after_build', 'attestation_finish', 'receipt_write', 'receipt_digest', 'attestation_verify', 'script_selection', 'script_observations'))
++FAILURE_STAGES=frozenset(('dependency_preflight','dependency_resolution','checkout_before_build', 'attestation_begin', 'build_command', 'descriptor_selection', 'checkout_after_build', 'attestation_finish', 'receipt_write', 'receipt_digest', 'attestation_verify', 'script_selection', 'script_observations'))
+ ATTESTATION_FAILURE_CODES={
+  'CI run identity':'attestation_ci_run_identity',
+  'Mach-O executable required':'attestation_mach_o_executable_required',
+@@ -195,6 +198,14 @@
+  stage='checkout_before_build'
+  try:
+   verify_checkout(out,'before-build',ctx)
++  stage='dependency_preflight'
++  attestation.source_provenance(R,ctx['GITHUB_SHA']) # Strict source and exact-lock validation before resolution.
++  stage='dependency_resolution'
++  resolution=command(resolve_argv(out),out/'resolve.log',180,16*1024*1024)
++  report['resolutionCommandExit']=resolution['exit_code'];report['resolutionCommandReason']=resolution['reason']
++  require(good(resolution),'fixed package resolution failed')
++  # The first resolution may create the two already-allowlisted exact public
++  # locks. Freeze only AFTER resolution; actual build equality remains strict.
+   stage='attestation_begin'
+   before=attestation.begin(R,os.environ);write(out/'begin.json',before)
+   stage='build_command'
+diff --git a/tools/ci/test_j01_actual_model.py b/tools/ci/test_j01_actual_model.py
+--- a/tools/ci/test_j01_actual_model.py
++++ b/tools/ci/test_j01_actual_model.py
+@@ -117,7 +117,7 @@
+  def test_mode_does_not_accept_config_or_digest(self):
+   with mock.patch.object(sys,'argv',['runner','run','--receipt','external']),self.assertRaises(ValueError):m.main()
+
+- def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False,attestation_error_stage=None,attestation_error=None):
++ def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False,attestation_error_stage=None,attestation_error=None,resolution_exit=0):
+   import test_collect_j01_metadata as fixtures
+   with tempfile.TemporaryDirectory() as d:
+    root=pathlib.Path(d).resolve(strict=True);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
+@@ -131,6 +131,8 @@
+    def proof(*args,**kwargs):return dict(verified=True,runtimeLoadedBinaryVerified=False,sourceCommit=SHA,receiptSHA256=args[3],scope='selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested',trustBasis='external reviewed CI receipt digest, not caller source echo')
+    def command(argv,log,*args,**kwargs):
+     calls.append(argv)
++    if argv[-1]=='-resolvePackageDependencies':
++     log.write_text('');return dict(argv=argv,exit_code=resolution_exit,reason='completed')
+     if argv[0]=='/usr/bin/xcodebuild':
+      products=log.parent/'DerivedData/Build/Products';products.mkdir(parents=True);(products/'one.xctestrun').write_text('fixture')
+      log.write_text('');return dict(argv=argv,exit_code=build_exit,reason='completed')
+@@ -159,20 +161,20 @@
+     code,r,_,_=self.simulated_run();self.assertEqual(code,0);self.assertFalse(r['fullJourneyComplete'])
+     with self.assertRaises(ValueError):m.root_path(env(str(alias)))
+  def test_simulated_same_job_three_script_positive_is_not_journey_success(self):
+-  code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),4);self.assertEqual(len(r['scriptReceipts']),3)
++  code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),5);self.assertEqual(len(r['scriptReceipts']),3)
+   self.assertFalse(r['fullJourneyComplete']);self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertNotIn('PRIVATE',json.dumps(emitted))
+  def test_simulated_model_unavailable_preserves_nonzero(self):
+   code,r,_,_=self.simulated_run(model_available=False);self.assertEqual(code,1);self.assertEqual(r['status'],'incomplete');self.assertEqual(len(r['scriptReceipts']),3)
+  def test_simulated_wrapper_failure_never_becomes_model_observation(self):
+   code,r,_,_=self.simulated_run(wrapper_exit=2);self.assertEqual(code,1);self.assertTrue(all(x['wrapper_exit']==2 for x in r['scriptReceipts']))
+  def test_simulated_cleanup_failure_withholds_later_scripts(self):
+-  code,r,calls,_=self.simulated_run(cleanup=False);self.assertEqual(code,1);self.assertEqual(len(r['scriptReceipts']),1);self.assertEqual(len(calls),2)
++  code,r,calls,_=self.simulated_run(cleanup=False);self.assertEqual(code,1);self.assertEqual(len(r['scriptReceipts']),1);self.assertEqual(len(calls),3)
+  def test_simulated_ambiguous_creation_stops_without_false_cleanup(self):
+-  code,r,calls,emitted=self.simulated_run(ambiguous_create=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertEqual(len(r['scriptReceipts']),1);self.assertFalse(r['scriptReceipts'][0]['cleanup_completed']);self.assertNotIn('PRIVATE',json.dumps(emitted))
++  code,r,calls,emitted=self.simulated_run(ambiguous_create=True);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertEqual(len(r['scriptReceipts']),1);self.assertFalse(r['scriptReceipts'][0]['cleanup_completed']);self.assertNotIn('PRIVATE',json.dumps(emitted))
+  def test_simulated_build_failure_prevents_model_or_receipt_claim(self):
+-  code,r,calls,_=self.simulated_run(build_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertFalse(r['buildSucceeded']);self.assertNotIn('sourceAttestation',r);self.assertEqual(r['scriptReceipts'],[])
++  code,r,calls,_=self.simulated_run(build_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertFalse(r['buildSucceeded']);self.assertNotIn('sourceAttestation',r);self.assertEqual(r['scriptReceipts'],[])
+  def test_simulated_changed_source_never_starts_script(self):
+-  code,r,calls,_=self.simulated_run(changed_source=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertTrue(all(x['status']=='unavailable' for x in r['scriptReceipts']))
++  code,r,calls,_=self.simulated_run(changed_source=True);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertTrue(all(x['status']=='unavailable' for x in r['scriptReceipts']))
+
+  def test_parent_owned_mode_is_explicit_and_identity_checked(self):
+   spec=importlib.util.spec_from_file_location('owned_app_adapter',m.P/'app_adapter.py');a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
+@@ -218,9 +220,9 @@
+
+  def test_additional_reviewed_scripts_never_expand_selected_three(self):
+   code,r,calls,_=self.simulated_run(extra_scripts=True);self.assertEqual(code,0)
+-  self.assertEqual([x['scenario_id'] for x in r['scriptReceipts']],list(m.SCENARIOS));self.assertEqual(len(calls),4)
++  self.assertEqual([x['scenario_id'] for x in r['scriptReceipts']],list(m.SCENARIOS));self.assertEqual(len(calls),5)
+  def test_changed_original_script_is_refused_before_any_execution(self):
+-  code,r,calls,_=self.simulated_run(changed_selected_script=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertEqual(r['scriptReceipts'],[])
++  code,r,calls,_=self.simulated_run(changed_selected_script=True);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertEqual(r['scriptReceipts'],[])
+
+
+  def test_closed_attestation_codes_never_echo_dynamic_error_content(self):
+@@ -238,8 +240,23 @@
+    for message in ('symlink component refused','artifact observation time budget','/PRIVATE/token secret'):
+     with self.subTest(stage=stage,message=message):
+      code,r,calls,emitted=self.simulated_run(attestation_error_stage=stage,attestation_error=ValueError(message))
+-     self.assertEqual(code,1);self.assertEqual(r['buildCommandExit'],0);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[]);self.assertEqual(len(calls),1)
++     self.assertEqual(code,1);self.assertEqual(r['buildCommandExit'],0);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[]);self.assertEqual(len(calls),2)
+      self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertFalse(r['fullJourneyComplete']);self.assertEqual(r['failureStage'],'attestation_'+stage)
+      self.assertEqual(r['failureCode'],m.ATTESTATION_FAILURE_CODES.get(message,'unclassified'));self.assertNotIn('PRIVATE',json.dumps(emitted));self.assertNotIn('secret',json.dumps(emitted))
+
++
++ def test_fixed_resolution_precedes_build_with_same_owned_inputs(self):
++  code,r,calls,_=self.simulated_run();self.assertEqual(code,0)
++  self.assertEqual(calls[0][:-1],calls[1][:-1]);self.assertEqual(calls[0][-1],'-resolvePackageDependencies');self.assertEqual(calls[1][-1],'build-for-testing')
++  self.assertEqual(r['resolutionCommandExit'],0)
++  source=(P/'j01-actual-model.py').read_text()
++  self.assertLess(source.index('resolution=command('),source.index('before=attestation.begin('))
++  self.assertLess(source.index("attestation.source_provenance(R,ctx['GITHUB_SHA']) # Strict"),source.index('resolution=command('))
++  self.assertIn("out/'resolve.log',180,16*1024*1024",source)
++ def test_failed_resolution_stops_before_actual_build_and_observation(self):
++  code,r,calls,_=self.simulated_run(resolution_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),1)
++  self.assertEqual(r['resolutionCommandExit'],65);self.assertEqual(r['failureStage'],'dependency_resolution')
++  self.assertNotIn('buildCommandExit',r);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[])
++  self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertFalse(r['fullJourneyComplete'])
++
+ if __name__=='__main__':unittest.main()

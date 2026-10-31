@@ -78,6 +78,9 @@ def tool(argv,folder,label,seconds=30,*,cleanup=False):
  return attestation.stable_bytes(log,4*1024*1024)
 def build_argv(folder):
  return ['/usr/bin/xcodebuild','-project','ios/BlindAssist.xcodeproj','-scheme','BlindAssist','-configuration','Debug','-jobs','2','-derivedDataPath',str(folder/'DerivedData'),'CODE_SIGNING_ALLOWED=NO','-destination','generic/platform=iOS Simulator','-parallel-testing-enabled','NO','build-for-testing']
+def resolve_argv(folder):
+ # Same fixed project/scheme and owned DerivedData; no caller-supplied package input.
+ return build_argv(folder)[:-1]+['-resolvePackageDependencies']
 def select_descriptor(products):
  paths=sorted(products.glob('*.xctestrun'));require(len(paths)==1,'one fresh descriptor required')
  return paths[0]
@@ -116,7 +119,7 @@ def verify_checkout(folder,label,ctx):
  require(event.get('repository',{}).get('full_name')=='mischa23v/blind' and event['repository'].get('private') is False,'public source repository required')
 
 # Closed diagnostics only: neither exception text nor file/environment contents are emitted.
-FAILURE_STAGES=frozenset(('checkout_before_build', 'attestation_begin', 'build_command', 'descriptor_selection', 'checkout_after_build', 'attestation_finish', 'receipt_write', 'receipt_digest', 'attestation_verify', 'script_selection', 'script_observations'))
+FAILURE_STAGES=frozenset(('dependency_preflight','dependency_resolution','checkout_before_build', 'attestation_begin', 'build_command', 'descriptor_selection', 'checkout_after_build', 'attestation_finish', 'receipt_write', 'receipt_digest', 'attestation_verify', 'script_selection', 'script_observations'))
 ATTESTATION_FAILURE_CODES={
  'CI run identity':'attestation_ci_run_identity',
  'Mach-O executable required':'attestation_mach_o_executable_required',
@@ -195,6 +198,14 @@ def run():
  stage='checkout_before_build'
  try:
   verify_checkout(out,'before-build',ctx)
+  stage='dependency_preflight'
+  attestation.source_provenance(R,ctx['GITHUB_SHA']) # Strict source and exact-lock validation before resolution.
+  stage='dependency_resolution'
+  resolution=command(resolve_argv(out),out/'resolve.log',180,16*1024*1024)
+  report['resolutionCommandExit']=resolution['exit_code'];report['resolutionCommandReason']=resolution['reason']
+  require(good(resolution),'fixed package resolution failed')
+  # The first resolution may create the two already-allowlisted exact public
+  # locks. Freeze only AFTER resolution; actual build equality remains strict.
   stage='attestation_begin'
   before=attestation.begin(R,os.environ);write(out/'begin.json',before)
   stage='build_command'

@@ -117,7 +117,7 @@ class Tests(unittest.TestCase):
  def test_mode_does_not_accept_config_or_digest(self):
   with mock.patch.object(sys,'argv',['runner','run','--receipt','external']),self.assertRaises(ValueError):m.main()
 
- def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False,attestation_error_stage=None,attestation_error=None):
+ def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False,attestation_error_stage=None,attestation_error=None,resolution_exit=0):
   import test_collect_j01_metadata as fixtures
   with tempfile.TemporaryDirectory() as d:
    root=pathlib.Path(d).resolve(strict=True);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
@@ -131,6 +131,8 @@ class Tests(unittest.TestCase):
    def proof(*args,**kwargs):return dict(verified=True,runtimeLoadedBinaryVerified=False,sourceCommit=SHA,receiptSHA256=args[3],scope='selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested',trustBasis='external reviewed CI receipt digest, not caller source echo')
    def command(argv,log,*args,**kwargs):
     calls.append(argv)
+    if argv[-1]=='-resolvePackageDependencies':
+     log.write_text('');return dict(argv=argv,exit_code=resolution_exit,reason='completed')
     if argv[0]=='/usr/bin/xcodebuild':
      products=log.parent/'DerivedData/Build/Products';products.mkdir(parents=True);(products/'one.xctestrun').write_text('fixture')
      log.write_text('');return dict(argv=argv,exit_code=build_exit,reason='completed')
@@ -159,20 +161,20 @@ class Tests(unittest.TestCase):
     code,r,_,_=self.simulated_run();self.assertEqual(code,0);self.assertFalse(r['fullJourneyComplete'])
     with self.assertRaises(ValueError):m.root_path(env(str(alias)))
  def test_simulated_same_job_three_script_positive_is_not_journey_success(self):
-  code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),4);self.assertEqual(len(r['scriptReceipts']),3)
+  code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),5);self.assertEqual(len(r['scriptReceipts']),3)
   self.assertFalse(r['fullJourneyComplete']);self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertNotIn('PRIVATE',json.dumps(emitted))
  def test_simulated_model_unavailable_preserves_nonzero(self):
   code,r,_,_=self.simulated_run(model_available=False);self.assertEqual(code,1);self.assertEqual(r['status'],'incomplete');self.assertEqual(len(r['scriptReceipts']),3)
  def test_simulated_wrapper_failure_never_becomes_model_observation(self):
   code,r,_,_=self.simulated_run(wrapper_exit=2);self.assertEqual(code,1);self.assertTrue(all(x['wrapper_exit']==2 for x in r['scriptReceipts']))
  def test_simulated_cleanup_failure_withholds_later_scripts(self):
-  code,r,calls,_=self.simulated_run(cleanup=False);self.assertEqual(code,1);self.assertEqual(len(r['scriptReceipts']),1);self.assertEqual(len(calls),2)
+  code,r,calls,_=self.simulated_run(cleanup=False);self.assertEqual(code,1);self.assertEqual(len(r['scriptReceipts']),1);self.assertEqual(len(calls),3)
  def test_simulated_ambiguous_creation_stops_without_false_cleanup(self):
-  code,r,calls,emitted=self.simulated_run(ambiguous_create=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertEqual(len(r['scriptReceipts']),1);self.assertFalse(r['scriptReceipts'][0]['cleanup_completed']);self.assertNotIn('PRIVATE',json.dumps(emitted))
+  code,r,calls,emitted=self.simulated_run(ambiguous_create=True);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertEqual(len(r['scriptReceipts']),1);self.assertFalse(r['scriptReceipts'][0]['cleanup_completed']);self.assertNotIn('PRIVATE',json.dumps(emitted))
  def test_simulated_build_failure_prevents_model_or_receipt_claim(self):
-  code,r,calls,_=self.simulated_run(build_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertFalse(r['buildSucceeded']);self.assertNotIn('sourceAttestation',r);self.assertEqual(r['scriptReceipts'],[])
+  code,r,calls,_=self.simulated_run(build_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertFalse(r['buildSucceeded']);self.assertNotIn('sourceAttestation',r);self.assertEqual(r['scriptReceipts'],[])
  def test_simulated_changed_source_never_starts_script(self):
-  code,r,calls,_=self.simulated_run(changed_source=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertTrue(all(x['status']=='unavailable' for x in r['scriptReceipts']))
+  code,r,calls,_=self.simulated_run(changed_source=True);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertTrue(all(x['status']=='unavailable' for x in r['scriptReceipts']))
 
  def test_parent_owned_mode_is_explicit_and_identity_checked(self):
   spec=importlib.util.spec_from_file_location('owned_app_adapter',m.P/'app_adapter.py');a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
@@ -218,9 +220,9 @@ class Tests(unittest.TestCase):
 
  def test_additional_reviewed_scripts_never_expand_selected_three(self):
   code,r,calls,_=self.simulated_run(extra_scripts=True);self.assertEqual(code,0)
-  self.assertEqual([x['scenario_id'] for x in r['scriptReceipts']],list(m.SCENARIOS));self.assertEqual(len(calls),4)
+  self.assertEqual([x['scenario_id'] for x in r['scriptReceipts']],list(m.SCENARIOS));self.assertEqual(len(calls),5)
  def test_changed_original_script_is_refused_before_any_execution(self):
-  code,r,calls,_=self.simulated_run(changed_selected_script=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertEqual(r['scriptReceipts'],[])
+  code,r,calls,_=self.simulated_run(changed_selected_script=True);self.assertEqual(code,1);self.assertEqual(len(calls),2);self.assertEqual(r['scriptReceipts'],[])
 
 
  def test_closed_attestation_codes_never_echo_dynamic_error_content(self):
@@ -238,8 +240,23 @@ class Tests(unittest.TestCase):
    for message in ('symlink component refused','artifact observation time budget','/PRIVATE/token secret'):
     with self.subTest(stage=stage,message=message):
      code,r,calls,emitted=self.simulated_run(attestation_error_stage=stage,attestation_error=ValueError(message))
-     self.assertEqual(code,1);self.assertEqual(r['buildCommandExit'],0);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[]);self.assertEqual(len(calls),1)
+     self.assertEqual(code,1);self.assertEqual(r['buildCommandExit'],0);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[]);self.assertEqual(len(calls),2)
      self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertFalse(r['fullJourneyComplete']);self.assertEqual(r['failureStage'],'attestation_'+stage)
      self.assertEqual(r['failureCode'],m.ATTESTATION_FAILURE_CODES.get(message,'unclassified'));self.assertNotIn('PRIVATE',json.dumps(emitted));self.assertNotIn('secret',json.dumps(emitted))
+
+
+ def test_fixed_resolution_precedes_build_with_same_owned_inputs(self):
+  code,r,calls,_=self.simulated_run();self.assertEqual(code,0)
+  self.assertEqual(calls[0][:-1],calls[1][:-1]);self.assertEqual(calls[0][-1],'-resolvePackageDependencies');self.assertEqual(calls[1][-1],'build-for-testing')
+  self.assertEqual(r['resolutionCommandExit'],0)
+  source=(P/'j01-actual-model.py').read_text()
+  self.assertLess(source.index('resolution=command('),source.index('before=attestation.begin('))
+  self.assertLess(source.index("attestation.source_provenance(R,ctx['GITHUB_SHA']) # Strict"),source.index('resolution=command('))
+  self.assertIn("out/'resolve.log',180,16*1024*1024",source)
+ def test_failed_resolution_stops_before_actual_build_and_observation(self):
+  code,r,calls,_=self.simulated_run(resolution_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),1)
+  self.assertEqual(r['resolutionCommandExit'],65);self.assertEqual(r['failureStage'],'dependency_resolution')
+  self.assertNotIn('buildCommandExit',r);self.assertFalse(r['buildSucceeded']);self.assertEqual(r['scriptReceipts'],[])
+  self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertFalse(r['fullJourneyComplete'])
 
 if __name__=='__main__':unittest.main()
