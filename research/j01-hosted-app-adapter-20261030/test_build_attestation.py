@@ -4,7 +4,7 @@ P=pathlib.Path(__file__).resolve().parent
 spec=importlib.util.spec_from_file_location('a',P/'build_attestation.py');a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
 class IdentityTests(unittest.TestCase):
  def setUp(self):
-  self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=pathlib.Path(self.temp.name)
+  self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=pathlib.Path(self.temp.name).resolve(strict=True)
   app=self.root/'Product/App.app';bundle=app/'PlugIns/BlindAssistTests.xctest'
   for directory,name in [(app,'App'),(bundle,'Tests')]:
    directory.mkdir(parents=True);(directory/'Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':name}))
@@ -93,11 +93,24 @@ class IdentityTests(unittest.TestCase):
  def test_wrong_ci(self):
   for key,value in [('GITHUB_ACTIONS','false'),('GITHUB_REPOSITORY','other/repo'),('GITHUB_RUN_ID','no'),('GITHUB_SHA','no')]:
    with self.assertRaises(ValueError):a.ci_context(dict(self.ci,**{key:value}))
+class TempRootTests(unittest.TestCase):
+ def test_owned_temp_root_is_canonical_but_runtime_alias_stays_refused(self):
+  from unittest.mock import patch
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp).resolve(strict=True);real=root/'real';real.mkdir()
+   alias=root/'alias';alias.symlink_to(real,target_is_directory=True)
+   with patch.object(tempfile,'tempdir',str(alias)):
+    fixture=IdentityTests(methodName='test_synthetic_identity_only');fixture.setUp()
+    try:
+     self.assertTrue(fixture.root.is_relative_to(real));self.assertTrue(fixture.verify()['verified'])
+     with self.assertRaises(ValueError):a.selection(alias/fixture.root.name,'build.xctestrun')
+    finally:fixture.doCleanups()
+
 class ActualProvenanceTests(unittest.TestCase):
  def test_existing_checker_real_clean_dirty_git(self):
   repo=pathlib.Path(os.environ.get('BLIND_SOURCE_REPO',pathlib.Path(__file__).resolve().parents[2]))
   with tempfile.TemporaryDirectory() as tmp:
-   root=pathlib.Path(tmp)
+   root=pathlib.Path(tmp).resolve(strict=True)
    for name in [a.HELPER,a.LOCK]:
     data=(repo/name).read_bytes() # actual-current bytes, never an old Git HEAD fallback
     self.assertEqual(hashlib.sha256(data).hexdigest(),{a.HELPER:a.HELPER_SHA,a.LOCK:a.LOCK_SHA}[name])

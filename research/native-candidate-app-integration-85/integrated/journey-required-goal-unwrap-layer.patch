@@ -1,0 +1,78 @@
+diff --git a/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift b/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift
+--- a/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift
++++ b/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift
+@@ -752,10 +752,10 @@
+         let before = try runtime.snapshot.encoded(), goal = runtime.goal, start = runtime.snapshot.start
+         let context = try XCTUnwrap(runtime.nativeLocalizationContext)
+         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
+-            goalRevision: context.goalRevision))
++            goalRevision: try XCTUnwrap(context.goalRevision)))
+         XCTAssertEqual(runtime.expectedSessionID, context.sessionID) // Same-owner replay ledger is retained.
+         XCTAssertFalse(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
+-            goalRevision: context.goalRevision))
++            goalRevision: try XCTUnwrap(context.goalRevision)))
+         XCTAssertThrowsError(try runtime.next(now: 1.4)) // Loss/source history alone is not current pose.
+         XCTAssertNil(runtime.diagnosticOwnedRoute)
+         XCTAssertEqual(try runtime.snapshot.encoded(), before)
+@@ -797,7 +797,7 @@
+         let (runtime, _, _) = try await preparedPortalRecovery(ambiguousEntry: true)
+         let context = try XCTUnwrap(runtime.nativeLocalizationContext), before = try runtime.snapshot.encoded()
+         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
+-            goalRevision: context.goalRevision))
++            goalRevision: try XCTUnwrap(context.goalRevision)))
+         let midLeg = SpatialLocalizationCapture(sessionID: context.sessionID, binding: F.b,
+             floorID: "ground", roomID: "hall", position: .init(2,1.3,3), bodyYaw: -.pi/2,
+             source: .alignedMapPose, headingSource: .bodyAligned, trackingNormal: true,
+@@ -816,7 +816,7 @@
+         let (runtime, io, departure) = try await preparedPortalRecovery()
+         let context = try XCTUnwrap(runtime.nativeLocalizationContext), retained = runtime.goal
+         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
+-            goalRevision: context.goalRevision))
++            goalRevision: try XCTUnwrap(context.goalRevision)))
+         let wrong = SpatialLocalizationCapture(sessionID: departure.sessionID, binding: F.b,
+             floorID: "ground", roomID: "hall", position: .init(1,1.3,3), bodyYaw: -.pi/2,
+             source: .alignedMapPose, headingSource: .bodyAligned, trackingNormal: true,
+@@ -857,7 +857,7 @@
+         XCTAssertEqual(context.revision.binding, F.a); XCTAssertEqual(returning.purpose, .returnToStart)
+         XCTAssertEqual(associations, 1)
+         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
+-            goalRevision: context.goalRevision))
++            goalRevision: try XCTUnwrap(context.goalRevision)))
+         XCTAssertThrowsError(try runtime.next(now: 2))
+         try observe(runtime, F.endpoint(F.a,"p"), time: 2, yaw: .pi/2)
+         XCTAssertEqual(try runtime.next(now: 2).route.target.id, "m")
+@@ -876,7 +876,7 @@
+         let context = try XCTUnwrap(runtime.nativeLocalizationContext), prior = runtime.goal
+         let start = runtime.snapshot.start
+         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
+-            goalRevision: context.goalRevision))
++            goalRevision: try XCTUnwrap(context.goalRevision)))
+         try runtime.setDestination(binding: F.b, nodeID: "m", origin: .trustedInterface)
+         try await completedWork(runtime)
+         XCTAssertNotEqual(runtime.goal?.revision, prior?.revision)
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -1000,8 +1000,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
+-      "bytes": 59265,
+-      "sha256": "627ac370221c9003a83679a24893be64058d0572958283ada2587a89dbfbb1cc"
++      "bytes": 59355,
++      "sha256": "a744313687fd03bffa3b0eb87333a08875a6a9ede9983c62f673fbb9e309d5af"
+     },
+     {
+       "path": "ios/BlindAssistTests/ConnectedNavigationBenchIntegrationTests.swift",
+@@ -2388,5 +2388,11 @@
+     "newNativeMethodsUnrun": 1,
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "journeyRequiredGoalUnwrap": {
++    "scope": "Six required goal UUID optional unwraps in existing tests only",
++    "nativeMethodsRetained": 27,
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }

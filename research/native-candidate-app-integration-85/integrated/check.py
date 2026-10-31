@@ -15,16 +15,167 @@ checks = []
 def check(name, value):
     assert value, name
     checks.append(name)
+def j01_portable_failure(script, result):
+    """Closed metadata from fixed synthetic test stderr, never raw text/environment."""
+    if result.returncode == 0:
+        return True
+    raw = result.stderr or b''
+    if isinstance(raw, bytes):
+        raw = raw[-16384:].decode('utf-8', 'replace')
+    records = []
+    for line in raw[-16384:].splitlines()[-96:]:
+        test = re.match(r'^(ERROR|FAIL): (test_[A-Za-z0-9_]{1,120})(?: |$)', line)
+        if test:
+            records.append({'kind': test[1], 'test': test[2]})
+        else:
+            error = re.match(r'^(ValueError|AssertionError|FileNotFoundError|PermissionError|OSError|RuntimeError|TypeError|KeyError):(?: |$)', line)
+            if error:
+                record = {'errorType': error[1]}
+                if line == 'ValueError: symlink component refused':
+                    record['reason'] = 'symlink_component_refused'
+                records.append(record)
+        if len(records) == 24:
+            break
+    print('J01_PORTABLE_FAILURE=' + json.dumps({'script': script, 'returncode': result.returncode, 'stderrTailBytesExamined': min(len(raw.encode('utf-8')), 16384), 'records': records}, separators=(',', ':')))
+    return False
+
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Six XCTest required-goal UUID unwraps repair the recorded933 compile error.
+# Current source is checked mechanically; reversal preserves all prior evidence.
+pre_journey_goal_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-journey-goal-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeJourneyRequiredGoalUnwrap'])+manifest['journeyRequiredGoalUnwrapNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'journey-required-goal-unwrap-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeJourneyRequiredGoalUnwrap'].items():
+        value=(root/name).read_bytes()
+        check('exact source before required goal unwrap '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_journey_goal_source[name]=value
+    for name in manifest['journeyRequiredGoalUnwrapNewFiles']:
+        check('new goal unwrap file absent before repair '+name,not (root/name).exists())
+goal_test_path='ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift'
+goal_test=(R/goal_test_path).read_text()
+goal_old='goalRevision: context.goalRevision))'
+goal_new='goalRevision: try XCTUnwrap(context.goalRevision)))'
+check('six required goal unwraps fail nil without fabricated identity',goal_test.count(goal_new)==6 and goal_old not in goal_test)
+check('all other journey test bytes preserved',goal_test.replace(goal_new,goal_old).encode()==pre_journey_goal_source[goal_test_path])
+check('all27 original journey native methods retained',len(re.findall(r'func (test\w+)',goal_test))==27)
+
+# Authored collision-contact addendum and strict optional evidence collector.
+# Current checks inspect final R; exact reversal is historical provenance only.
+pre_collision_contact_source=dict(pre_journey_goal_source)
+with tempfile.TemporaryDirectory(prefix='stage85-collision-contact-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeCollisionContactPhase'])+manifest['collisionContactPhaseNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_journey_goal_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'collision-contact-phase-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeCollisionContactPhase'].items():
+        value=(root/name).read_bytes()
+        check('exact source before collision contact addendum '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_collision_contact_source[name]=value
+    for name in manifest['collisionContactPhaseNewFiles']:
+        check('new collision contact file absent before addendum '+name,not (root/name).exists())
+check('current contact source original cases cleanup retention bounds and negative mutations',subprocess.run([sys.executable,'-B',str(R/'tools/test/collision-contact-addendum.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+check('current strict contact evidence collector all original and additive controls',subprocess.run([sys.executable,'-B',str(R/'tools/ci/test-native-route-diagnostic-evidence.py')],cwd=R,capture_output=True,timeout=30).returncode==0)
+
+# Two classification families share one exact acknowledged test owner.
+# Reverse only for historical proofs; current controls inspect actual final R.
+pre_classification_family_source=dict(pre_collision_contact_source)
+with tempfile.TemporaryDirectory(prefix='stage85-classification-family-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeClassificationCrossFamilyDrain'])+manifest['classificationCrossFamilyDrainNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_collision_contact_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'classification-cross-family-drain-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeClassificationCrossFamilyDrain'].items():
+        value=(root/name).read_bytes()
+        check('exact source before classification cross-family drain '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_classification_family_source[name]=value
+    for name in manifest['classificationCrossFamilyDrainNewFiles']:
+        check('new cross-family file absent from preceding source '+name,not (root/name).exists())
+check('current cross-family exact native ownership identities assertions budgets and negative controls',subprocess.run([sys.executable,'-B',str(R/'tools/test/classification-fixture-drain.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+
+# Raw-depth accounting is a separate additive input-integrity layer.
+# Reverse only for historical proofs; current controls always inspect actual R.
+pre_depth_raster_source=dict(pre_classification_family_source)
+with tempfile.TemporaryDirectory(prefix='stage85-depth-raster-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeDepthRasterIntegrity'])+manifest['depthRasterIntegrityNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_classification_family_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'depth-raster-integrity-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeDepthRasterIntegrity'].items():
+        value=(root/name).read_bytes()
+        check('exact source before depth raster integrity '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_depth_raster_source[name]=value
+    for name in manifest['depthRasterIntegrityNewFiles']:
+        check('new depth integrity file absent from preceding source '+name,not (root/name).exists())
+check('current raw depth integrity source and arithmetic controls',subprocess.run([sys.executable,'-B',str(R/'research/depth-raster-integrity-20261030/source_check.py'),str(R)],cwd=R,capture_output=True,timeout=15).returncode==0)
+depth_expected_methods=['testUnknownEvidenceDoesNotDiscardObservedGeometry', 'testOpticalConventionsCannotSilentlyMix', 'testFullRotationAndInversePreserveTiltAndTranslation', 'testScaleShearReflectionAndNonfinitePoseRejected', 'testIntrinsicsScaleUsesImageAndDepthResolution', 'testLowAndMissingConfidenceRemainHistoryNotUncertainty', 'testMissingDepthAndTrackingLossStillRetainAttributedPoseHistory', 'testStaleFutureOrMissingNativeReceiptRejected', 'testRecordedClockNeverBecomesDeviceUptime', 'testMapTargetDoesNotReframeCoordinatesOrProvideFloor', 'testPlaneFloorClassificationIsNotFloorIdentityOrSupportPermit', 'testBadMeshIndicesAndUndeclaredTruncationRejected', 'testBadDepthPixelsAndDuplicatePixelsRejected', 'testHistorySurvivesRestartWithoutRestoringAuthority', 'testCachedRecordSizeAndBytesDoNotChangeOnLaterAppend', 'testDuplicateAndOutOfOrderCallbacksCannotRewriteHistory', 'testHistoryBoundEvictionIsExplicitNotCompleteInventory', 'testMalformedArchiveAndSchemaRejected', 'testMalformedEvictionCounterRejectedWithoutOverflowTrap', 'testDepthAccountingRejectsHugeInvalidCountWithoutOverflow', 'testDepthAccountingRejectsImpossibleInvalidRasterCoverage', 'testDepthAccountingUsesCeilingStrideCapacityAndAllowsSparseSubsets', 'testDepthAccountingRejectsNegativeAndOverBudgetCounts']
+check('current depth native exact19 retained plus4 unrun identities',re.findall(r'func\s+(test\w+)\s*\(', (R/'BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift').read_text())==depth_expected_methods)
+
+# UI contrast source and test-only J01 root identity form an additive outer layer.
+# Current controls inspect final R; only historical provenance uses the reversal.
+pre_ui_j01_source=dict(pre_depth_raster_source)
+with tempfile.TemporaryDirectory(prefix='stage85-ui-j01-fixture-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeRepeatAnswerJ01Fixture'])+manifest['repeatAnswerJ01FixtureNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_depth_raster_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'repeat-answer-j01-fixture-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeRepeatAnswerJ01Fixture'].items():
+        value=(root/name).read_bytes()
+        check('exact before UI contrast and J01 fixture '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_ui_j01_source[name]=value
+    for name in manifest['repeatAnswerJ01FixtureNewFiles']:
+        check('new UI or J01 fixture file absent before outer layer '+name,not (root/name).exists())
+check('current Repeat answer unchanged action disabled gate audit and negative controls',subprocess.run([sys.executable,'-B',str(R/'tools/test/repeat-answer-contrast.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+check('current adjacent accessible Ask and voice continuity contracts',subprocess.run([sys.executable,'-B',str(R/'tools/test/accessibility-voice-continuity.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+ui_expected_methods=['testMainScreenContainsOnlyReplyAndTabButtons', 'testReadingAndConversationControlsAreReachableInSettings', 'testQuietDescriptionsCanResumeWithoutStartingMicrophoneOrCamera', 'testAskControlsAndUnavailableReasonRemainReachableWithoutCamera', 'testRoomsShowSavedRoomsAndExplicitStartScan', 'testWritingIsAvailableWithoutMicrophoneCapture', 'testAssistantPreferencesAndConversationMemoryRemainReachable', 'testPhotoExplorerCanBeDismissedWithoutStartingCamera', 'testSettingsAndWearableSetupAreReachable', 'testPracticeNavigationRemainsReachable', 'testPracticeIsAnnouncedAndCanStop', 'testAccessibleMainModesAndOfflineDefault', 'testDescribeFocusAndStopControl', 'testPracticeLayoutAtDefaultSize', 'testPracticeLayoutAtLargestAccessibilitySize', 'testAccessibilityAuditOfMainScreen', 'testAccessibilityAuditOfCameraAndAsk', 'testOfflineCommunityLibraryKeepsLocalImportAvailable', 'testEmptyInterestDoesNotBecomeStoredPreference']
+check('current UI exact original nineteen method identities retained',re.findall(r'\bfunc\s+(test\w+)\s*\(', (R/'ios/BlindAssistUITests/LaunchTests.swift').read_text())==ui_expected_methods)
+check('J01 production attestation unchanged by fixture repair',hashlib.sha256((R/'research/j01-hosted-app-adapter-20261030/build_attestation.py').read_bytes()).hexdigest()=='9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff')
+check('J01 production runner unchanged by fixture repair',hashlib.sha256((R/'tools/ci/j01-actual-model.py').read_bytes()).hexdigest()=='c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f')
+
+
+# Seated same-family fixture ownership and the floor audit are an additive layer.
+# Reverse only in a temporary tree; current owner controls below inspect final R.
+pre_owned_drain_source=dict(pre_ui_j01_source)
+with tempfile.TemporaryDirectory(prefix='stage85-seated-owned-drain-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeSeatedOwnedDrainFloorAudit'])+manifest['seatedOwnedDrainFloorAuditNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_ui_j01_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'seated-owned-drain-floor-audit-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeSeatedOwnedDrainFloorAudit'].items():
+        value=(root/name).read_bytes()
+        check('exact source37 before seated fixture drain '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_owned_drain_source[name]=value
+    for name in manifest['seatedOwnedDrainFloorAuditNewFiles']:
+        check('new seated or research file absent from source37 '+name,not (root/name).exists())
+check('current real full-controller seated fixture drain and negative controls',subprocess.run([sys.executable,'-B',str(R/'tools/test/seated-fixture-drain.test.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
+seated_owner_pins=json.loads((R/'research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json').read_text())
+for family in ['source','unchangedDependencies']:
+    for name,digest in seated_owner_pins[family].items():
+        check('current seated ownership '+family+' pin '+name,hashlib.sha256((R/name).read_bytes()).hexdigest()==digest)
+# Reuse the existing strict collector's exact original17+collision4+normal-owner5
+# source identities. This is NOT an xcresult or a new native execution receipt.
+import importlib.util
+collector_spec=importlib.util.spec_from_file_location('seated_current_collector',R/'tools/ci/collect-seated-projection.py')
+collector=importlib.util.module_from_spec(collector_spec);collector_spec.loader.exec_module(collector)
+for cls,names in [('SeatedMeshProjectionTests',collector.PROJECTION_EXPECTED),('SeatedCollisionBridgeTests',collector.COLLISION_EXPECTED),('NormalOwnerMeshConnectionTests',collector.NORMAL_OWNER_EXPECTED)]:
+    collector.verify_fixture_source((R/('ios/BlindAssistTests/'+cls+'.swift')).read_text(),names,cls)
+    check('current strict focused class identity '+cls,True)
+check('current focused source remains17plus4plus5 no new methods',[len(collector.PROJECTION_EXPECTED),len(collector.COLLISION_EXPECTED),len(collector.NORMAL_OWNER_EXPECTED)]==[17,4,5])
+floor_audit=subprocess.run([sys.executable,'-B',str(R/'research/live-floor-support-gap-20261030/audit.py'),'--repo',str(R)],cwd=R,capture_output=True,text=True,timeout=15)
+check('current floor support research exact source audit',floor_audit.returncode==0)
+check('floor source audit reproduces immutable research-only result',json.loads(floor_audit.stdout)==json.loads((R/'research/live-floor-support-gap-20261030/RESULTS.json').read_text()))
+
 # Restore exact reviewed86 bytes only for historical provenance. Current source
 # gates below still read R and cannot pass against this recovered historical tree.
-pre_local_map_source={}
+pre_local_map_source=dict(pre_owned_drain_source)
 with tempfile.TemporaryDirectory(prefix='stage85-local-map-pipeline-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeLocalMapPipeline'])+manifest['localMapPipelineNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_owned_drain_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'local-map-pipeline-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeLocalMapPipeline'].items():
         value=(root/name).read_bytes()
@@ -521,8 +672,9 @@ check('current normal-owner remains compile-gated and default off',current_bridg
 # Apple build or an observed actual-model run. Only explicit workflow executes.
 for script in ['research/j01-hosted-app-adapter-20261030/test_build_attestation.py',
                'tools/ci/test_j01_actual_model.py',
-               'tools/ci/test_collect_j01_metadata.py']:
-    check('current J01 same-job portable contract '+script,subprocess.run([sys.executable,'-B',str(R/script)],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R),'BLIND_SOURCE_REPO':str(R)},capture_output=True,timeout=20).returncode==0)
+               'tools/ci/test_collect_j01_metadata.py',
+               'tools/ci/test_j01_portable_failure_diagnostic.py']:
+    check('current J01 same-job portable contract '+script,j01_portable_failure(script,subprocess.run([sys.executable,'-B',str(R/script)],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R),'BLIND_SOURCE_REPO':str(R)},capture_output=True,timeout=20)))
 
 # Additional actual-current source contracts; opt-in real-model execution is not
 # invoked by these portable controls or by ordinary hosted fixture selection.
@@ -662,5 +814,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
+    appleBuild='pending', journeyRequiredGoalUnwrapSourceApplied=True, journeyRequiredGoalUnwrapNativeExecuted=False, collisionContactPhaseSourceApplied=True, collisionContactPhaseNativeExecuted=False, classificationCrossFamilyDrainSourceApplied=True, classificationCrossFamilyDrainNativeExecuted=False, depthRasterIntegritySourceApplied=True, depthRasterIntegrityNativeExecuted=False, repeatAnswerContrastSourceApplied=True, repeatAnswerRenderedContrastVerified=False, j01TemporaryRootFixtureRepairApplied=True, j01ProductionAttestationPolicyChanged=False, seatedFixtureOwnedAdmissionSourceApplied=True, seatedFixtureOwnedAdmissionNativeExecuted=False, floorSupportResearchOnly=True, floorSupportImplementationChanged=False, localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

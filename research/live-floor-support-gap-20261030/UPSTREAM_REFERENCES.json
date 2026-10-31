@@ -1,0 +1,54 @@
+{
+  "inspectedAtUTC": "2026-10-30",
+  "adoptionStatus": "reference-only; no dependency selected, code imported, installs, builds or upstream tests",
+  "repositories": [
+    {
+      "repository": "ANYbotics/elevation_mapping",
+      "revision": "f4b082c64a3e660980da53b33c7936a8f2a2ea22",
+      "license": "BSD-3-Clause",
+      "licenseBlobSHA": "5d62a45504b02f4572114a16db8ae0be52ccd4bc",
+      "sourceFiles": [
+        {
+          "path": "elevation_mapping/src/RobotMotionMapUpdater.cpp",
+          "gitBlobSHA": "9c0506421e4c40aec8f5c0099622b85b7bebab93"
+        },
+        {
+          "path": "elevation_mapping/src/sensor_processors/StructuredLightSensorProcessor.cpp",
+          "gitBlobSHA": "504b5ad49a2038873782246adb17dcd79daf0fba"
+        }
+      ],
+      "limit": "Maintenance explicitly discontinued; ROS/research foundation, not native iOS or safety qualification."
+    },
+    {
+      "repository": "leggedrobotics/traversability_estimation",
+      "revision": "14d24c059e1c43466aadf328280adf6394d78039",
+      "license": "BSD-3-Clause",
+      "licenseBlobSHA": "f1270a9ec04b6f08d6c1c68c92139b6196b8699a",
+      "sourceFiles": [
+        {
+          "path": "README.md",
+          "gitBlobSHA": "f75126c48297ac8926851d22f7409e3f44ba2d31"
+        }
+      ],
+      "limit": "ROS research package; README says no unit tests; unknown-region score is not clearance."
+    }
+  ],
+  "primaryDocumentation": [
+    {
+      "url": "https://developer.apple.com/documentation/arkit/arworldtrackingconfiguration/scenereconstruction",
+      "limit": "Documented estimated/smoothed mesh, not full-footprint support."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/arkit/ardepthdata/confidencemap",
+      "limit": "Ordinal depth confidence, not calibrated metric covariance."
+    }
+  ],
+  "paper": {
+    "doi": "10.1109/LRA.2018.2849506",
+    "title": "Probabilistic Terrain Mapping for Mobile Robots With Uncertain Localization",
+    "year": 2018,
+    "fullTextRead": false,
+    "attemptedURL": "https://www.research-collection.ethz.ch/bitstreams/4c405df7-a90b-4a12-8d48-eb5dd166cc17/download",
+    "result": "HTTP 403; no retry"
+  }
+}

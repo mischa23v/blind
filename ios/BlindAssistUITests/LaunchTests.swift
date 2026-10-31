@@ -89,6 +89,10 @@ final class LaunchTests: XCTestCase {
         let reason = app.staticTexts["local-answer-unavailable-reason"]
         reveal(reason)
         XCTAssertEqual(reason.label, "Camera monitoring is not running. Open Camera and safety to start it.")
+        let repeatAnswer = app.buttons["repeat-answer"]
+        reveal(repeatAnswer)
+        XCTAssertEqual(repeatAnswer.label, "Repeat answer")
+        XCTAssertFalse(repeatAnswer.isEnabled, "Readable styling must not enable an empty answer")
         XCTAssertTrue(app.descendants(matching: .any)["ask-focus"].exists)
         let goal = app.descendants(matching: .any)["ask-goal"]
         reveal(goal)
@@ -380,6 +384,7 @@ final class LaunchTests: XCTestCase {
             ("practice-header", app.staticTexts.matching(NSPredicate(format: "label == %@", "Practice")).firstMatch),
             ("practice-footer", app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Practice pauses live sensors and ends by itself after two minutes.")).firstMatch),
             ("local-answer", app.buttons["local-answer"]),
+            ("repeat-answer", app.buttons["repeat-answer"]),
             ("local-answer-unavailable-reason", app.staticTexts["local-answer-unavailable-reason"]),
             ("voice-question", app.buttons["voice-question"])
         ]

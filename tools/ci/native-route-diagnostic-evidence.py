@@ -51,6 +51,8 @@ DIAGNOSTIC_SPECS = (
      'SavedRoomCollisionMixedScene-v1.json', 'collision-mixed-scene'),
     ('SavedRoomRouteMeshAppleFixtureTests/testPublicRawExportAndExactDegenerateReceiptsRemainAuditable',
      'APPLE_ROOM_PACKED_ROUTING_GEOMETRY.json', 'packed-routing'))
+CONTACT_PHASE_SPEC = ('SavedRoomRouteDiagnosticAppleTests/testAdditiveSourceProvedStartsAndUnchangedHallContactPhases',
+                      'APPLE_VALID_START_CONTACT_PHASES.json', 'valid-start-contact-phases')
 DIAGNOSTIC_LIMIT = 131072
 CONTROL_NAMES = ('thinWallForward', 'thinWallReverse', 'wallInitialOverlap', 'wallTerminalOverlap',
                  'containedSolid', 'overheadTallForward', 'overheadTallReverse', 'overheadShort', 'clear', 'floor')
@@ -85,7 +87,7 @@ def canonical(identifier):
     stripped = identifier.removesuffix('()')
     if stripped.startswith('BlindAssistTests/'):
         stripped = stripped[len('BlindAssistTests/'):]
-    return stripped if stripped in {s[0] for s in SPECS + DIAGNOSTIC_SPECS} else None
+    return stripped if stripped in {s[0] for s in SPECS + DIAGNOSTIC_SPECS + (CONTACT_PHASE_SPEC,)} else None
 
 
 def export_size(directory):
@@ -945,13 +947,232 @@ def validate_mixed_collision_matrix(report):
     return report
 
 
+CONTACT_PHASE_INPUT = 'RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json'
+CONTACT_PHASE_SHA256 = 'a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663'
+CONTACT_PHASE_SPEC = ('SavedRoomRouteDiagnosticAppleTests/testAdditiveSourceProvedStartsAndUnchangedHallContactPhases',
+                      'APPLE_VALID_START_CONTACT_PHASES.json', 'valid-start-contact-phases')
+CONTACT_HALL_IDS = {'0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA', '0CD2F73E-5F0B-444C-BE63-2F9855C59D47'}
+
+
+def contact_phase_source(repo, docs, hashes):
+    # Optional exact public fixture only. Older result bundles never need this file.
+    name = 'ios/BlindAssistTests/Fixtures/' + CONTACT_PHASE_INPUT
+    path = repo / name
+    require(not path.is_symlink() and path.is_file() and 0 < path.stat().st_size <= 16384, 'invalid_contact_phase_source')
+    raw = path.read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == CONTACT_PHASE_SHA256, 'contact_phase_source_hash_mismatch')
+    docs[CONTACT_PHASE_INPUT] = decode(raw)
+    hashes[name] = CONTACT_PHASE_SHA256
+
+
+def contact_phase_point(local, floor):
+    # Same declared Float32 RoomPlan feature transform and final Float32 point.
+    matrix = [float32(value) for value in floor['transform']]
+    return [float32(((matrix[r] * local[0] + matrix[4+r] * local[1]) +
+                     matrix[8+r] * local[2]) + matrix[12+r]) for r in range(3)]
+
+
+def contact_phase_same_number(actual, expected):
+    # JSON NSNumber Float formatting may shorten the exact Float32 decimal.
+    # Two Float32 ULP-scale serialization tolerance, never a geometry clearance.
+    return number(actual) and abs(actual - expected) <= max(1e-8, abs(expected) * 2**-22)
+
+
+def contact_phase_feature_sets(room, docs):
+    source = docs['RoomPlanApple/' + room + '.capturedRoom.json']
+    return {'floorIDs': {x['identifier'] for x in source['floors']},
+            'boundIDs': {x['identifier'] for x in source['objects']},
+            'obstacleIDs': {x['identifier'] for kind in ('walls','doors','windows','openings','objects') for x in source[kind]}}
+
+
+def validate_contact_phase(phase, room, docs):
+    allowed = contact_phase_feature_sets(room, docs)
+    names = set(allowed) | {'hasObstacleContact', 'details'}
+    keys(phase, names, names)
+    for field, identities in allowed.items():
+        values = phase[field]
+        require(isinstance(values, list) and len(values) <= len(identities) and
+                all(isinstance(v, str) and v in identities for v in values) and
+                values == sorted(set(values)), 'contact_phase_feature_identity')
+    require(type(phase['hasObstacleContact']) is bool and
+            phase['hasObstacleContact'] == bool(phase['obstacleIDs'] or phase['boundIDs']), 'contact_phase_contact_disagreement')
+    details = phase['details']
+    require(isinstance(details, list) and len(details) <= 128, 'contact_phase_detail_budget')
+    kinds = {'obstacle-surface':'obstacleIDs', 'floor-surface':'floorIDs', 'furniture-bound':'boundIDs'}
+    observed = {field:set() for field in allowed}
+    for detail in details:
+        fields = {'featureID','kind','point','normal','penetrationDistance'}
+        keys(detail, fields, fields)
+        kind = detail['kind']
+        require(isinstance(kind, str) and kind in kinds and isinstance(detail['featureID'], str) and
+                detail['featureID'] in phase[kinds[kind]], 'contact_phase_detail_identity')
+        require(vector(detail['point']) and vector(detail['normal']) and
+                all(abs(n) <= 10000 for n in detail['point']) and all(abs(n) <= 2 for n in detail['normal']) and
+                number(detail['penetrationDistance']) and abs(detail['penetrationDistance']) <= 100,
+                'contact_phase_detail_number')
+        observed[kinds[kind]].add(detail['featureID'])
+    require(all(observed[k] == set(phase[k]) for k in allowed), 'contact_phase_detail_inventory')
+
+
+def validate_contact_phases(phases, room, docs, radius, height):
+    fields = {'initial','swept','terminal','fullFootprintSupportVerified','physicalAuthority','actualCylinder'}
+    keys(phases, fields, fields)
+    require(phases['fullFootprintSupportVerified'] is False and phases['physicalAuthority'] is False,
+            'physical_authority_or_coverage_claim')
+    shape = phases['actualCylinder']
+    shape_fields = {'radius','height','radialSegmentCount','heightSegmentCount','collisionMargin'}
+    keys(shape, shape_fields, shape_fields)
+    require(contact_phase_same_number(shape['radius'], radius) and contact_phase_same_number(shape['height'], height) and
+            number(shape['collisionMargin']) and shape['collisionMargin'] == 0 and
+            number(shape['radialSegmentCount']) and shape['radialSegmentCount'] == int(shape['radialSegmentCount']) and 3 <= shape['radialSegmentCount'] <= 1024 and
+            number(shape['heightSegmentCount']) and shape['heightSegmentCount'] == int(shape['heightSegmentCount']) and 1 <= shape['heightSegmentCount'] <= 1024,
+            'contact_cylinder_mismatch')
+    for name in ('initial','swept','terminal'):
+        validate_contact_phase(phases[name], room, docs)
+    return any(phases[name]['hasObstacleContact'] for name in ('initial','swept','terminal'))
+
+
+def validate_contact_triangles(geometry, docs):
+    require(isinstance(geometry, list) and len(geometry) <= 128, 'contact_triangle_budget')
+    wall_ids = {x['identifier'] for x in docs['RoomPlanApple/Hallway2.capturedRoom.json']['walls']}
+    require(CONTACT_HALL_IDS <= wall_ids, 'contact_triangle_source_identity')
+    seen = set()
+    for triangle in geometry:
+        fields = {'triangleIndex','featureID','indices','worldPositionFloat32Bits'}
+        keys(triangle, fields, fields)
+        index = triangle['triangleIndex']
+        require(bounded_integer(index, 1000000) and index not in seen and
+                isinstance(triangle['featureID'], str) and triangle['featureID'] in CONTACT_HALL_IDS,
+                'contact_triangle_identity')
+        seen.add(index)
+        require(isinstance(triangle['indices'], list) and len(triangle['indices']) == 3 and
+                all(bounded_integer(v, 1000000) for v in triangle['indices']), 'contact_triangle_indices')
+        words = triangle['worldPositionFloat32Bits']
+        require(isinstance(words, list) and len(words) == 3 and all(isinstance(v, list) and len(v) == 3 for v in words),
+                'contact_triangle_words')
+        for vertex in words:
+            require(all(bounded_integer(v, 0xffffffff) for v in vertex), 'contact_triangle_words')
+            values = [struct.unpack('<f', struct.pack('<I', v))[0] for v in vertex]
+            require(all(math.isfinite(v) and abs(v) <= 10000 for v in values), 'contact_triangle_number')
+    require([v['triangleIndex'] for v in geometry] == sorted(seen), 'contact_triangle_order')
+
+
+def validate_contact_phase_report(report, docs):
+    top = {'schema','physicalAuthority','fullFootprintSupportVerified','originalSchedulesChanged','outcomes','hallTriangles'}
+    keys(report, top, top)
+    require(type(report['schema']) is int and report['schema'] == 1 and
+            report['physicalAuthority'] is False and report['fullFootprintSupportVerified'] is False and
+            report['originalSchedulesChanged'] is False, 'unsupported_contact_report_schema')
+    require(CONTACT_PHASE_INPUT in docs, 'contact_phase_source_unavailable')
+    plan = docs[CONTACT_PHASE_INPUT]
+    require(plan['sourceFixtureSHA256'] == FIXTURES and plan['baseProtocolSHA256'] == BASE and
+            plan['physicalAuthority'] is False and plan['nativeExecuted'] is False and
+            plan['changesOriginalSchedules'] is False, 'contact_phase_source_mismatch')
+    queries = plan['queries']; rows = report['outcomes']
+    require(isinstance(rows, list) and len(rows) == 4 and len(queries) == 4, 'contact_phase_schedule_count')
+    profiles = docs['RoomRouteDiagnostic/PROTOCOL.json']['profiles'] + docs['RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json']['profiles']
+    base = {'id','room','profile','physicalAuthority','fullFootprintSupportVerified','outcome'}
+    meta = {'sourceSHA256','requestedStart','requestedGoal','rawRadius','rawHeight','effectiveRadius','effectiveHeight'}
+    phases = ['startRaw','startMargin','goalRaw','goalMargin']
+    native = {'nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal'}
+    error_outcomes = {'diagnostic-budget-exceeded','contact-detail-budget-exceeded','query-or-oracle-error'}
+    outcomes = error_outcomes | {'not-run-after-undrained-owner','stationary-endpoint-contact','native-query-failure','partial-route','candidate-contact','historical-model-no-contact'}
+    undrained = False
+    for row, query in zip(rows, queries):
+        keys(row, base | meta | set(phases) | native | {'segments','detailsComplete','cleanupAcknowledged'}, base)
+        require((row['id'],row['room'],row['profile']) == (query['id'],query['room'],query['profile']) and
+                row['physicalAuthority'] is False and row['fullFootprintSupportVerified'] is False,
+                'contact_phase_schedule_identity')
+        outcome = row['outcome']
+        require(isinstance(outcome, str) and outcome in outcomes, 'contact_phase_unknown_outcome')
+        if undrained:
+            require(outcome == 'not-run-after-undrained-owner' and set(row) == base, 'contact_phase_undrained_admission')
+            continue
+        require(outcome != 'not-run-after-undrained-owner', 'contact_phase_unjustified_abort')
+        error = outcome in error_outcomes
+        require((row.get('detailsComplete') is False) if error else ('detailsComplete' not in row), 'contact_phase_completeness_disagreement')
+        if 'cleanupAcknowledged' in row:
+            require(type(row['cleanupAcknowledged']) is bool, 'contact_phase_cleanup_boolean')
+            undrained = not row['cleanupAcknowledged']
+        room = query['room']; source = docs['RoomPlanApple/' + room + '.capturedRoom.json']
+        profile = next((p for p in profiles if p['id'] == query['profile']), None)
+        require(profile is not None, 'contact_phase_unknown_profile')
+        radius = math.hypot(profile['width'], profile['depth']) / 2
+        raw_radius, raw_height = float32(radius), float32(profile['height'])
+        margin_radius, margin_height = float32(radius + profile['margin']), float32(profile['height'] + profile['margin'])
+        metadata_present = set(row) & meta
+        require(metadata_present in (set(), meta), 'contact_phase_partial_metadata')
+        if metadata_present:
+            require(row['sourceSHA256'] == FIXTURES[room], 'contact_phase_source_hash_mismatch')
+            floor = source['floors'][0]
+            for field, local in [('requestedStart',query['start']),('requestedGoal',query['goal'])]:
+                expected = contact_phase_point(local, floor)
+                require(vector(row[field]) and all(contact_phase_same_number(a,b) for a,b in zip(row[field],expected)), 'contact_phase_requested_point_mismatch')
+            for field, expected in [('rawRadius',radius),('rawHeight',profile['height']),('effectiveRadius',margin_radius),('effectiveHeight',margin_height)]:
+                require(contact_phase_same_number(row[field],expected), 'contact_phase_profile_mismatch')
+        else:
+            require(error and set(row) <= base | {'detailsComplete'}, 'contact_phase_missing_active_metadata')
+            continue
+        phase_present = [name for name in phases if name in row]
+        require(phase_present == phases[:len(phase_present)], 'contact_phase_endpoint_order')
+        endpoint_contact = False
+        for name in phase_present:
+            r,h = (raw_radius,raw_height) if name.endswith('Raw') else (margin_radius,margin_height)
+            endpoint_contact |= validate_contact_phases(row[name],room,docs,r,h)
+        if 'cleanupAcknowledged' in row:
+            require(phase_present == phases and not endpoint_contact, 'contact_phase_cleanup_without_admission')
+        if not error:
+            require(phase_present == phases, 'contact_phase_endpoint_receipt_missing')
+        if outcome == 'stationary-endpoint-contact':
+            require(endpoint_contact and not set(row) & (native | {'segments','cleanupAcknowledged'}), 'contact_phase_stationary_disagreement')
+            continue
+        if not error:
+            require(not endpoint_contact and 'cleanupAcknowledged' in row, 'contact_phase_native_admission_disagreement')
+        native_present = set(row) & native
+        require(native_present in (set(),native), 'contact_phase_partial_native_metadata')
+        if not native_present:
+            require('segments' not in row and (error or outcome == 'native-query-failure'), 'contact_phase_missing_route')
+            continue
+        require('cleanupAcknowledged' in row and phase_present == phases and not endpoint_contact, 'contact_phase_route_without_admission')
+        require(type(row['nativeComplete']) is bool and bounded_integer(row['nativeStatus'],2**32-1) and
+                isinstance(row['routePoints'],list) and len(row['routePoints']) <= 128 and all(vector(v) for v in row['routePoints']) and
+                vector(row['projectedStart']) and vector(row['projectedGoal']), 'contact_phase_native_fields')
+        points = row['routePoints']; segments = row.get('segments',[])
+        require(isinstance(segments,list) and len(segments) <= 131, 'contact_phase_segment_budget')
+        if not points:
+            require(error and not segments, 'contact_phase_empty_route')
+            continue
+        expected = [('requested-start-to-projection',row['requestedStart'],row['projectedStart'])]
+        if points[0] != row['projectedStart']: expected.append(('projection-to-detour-start',row['projectedStart'],points[0]))
+        expected += [('detour-segment-'+str(i),points[i-1],points[i]) for i in range(1,len(points))]
+        if row['nativeComplete']:
+            if points[-1] != row['projectedGoal']: expected.append(('detour-end-to-projection',points[-1],row['projectedGoal']))
+            expected.append(('projection-to-requested-goal',row['projectedGoal'],row['requestedGoal']))
+        require(len(segments) <= len(expected) and (error or len(segments) == len(expected)), 'contact_phase_segment_chain')
+        route_contact = False
+        for index,(segment,edge) in enumerate(zip(segments,expected)):
+            fields = {'kind','from','to','raw','margin','receiptState'}
+            keys(segment,fields,fields-{'margin'})
+            require((segment['kind'],segment['from'],segment['to']) == edge and vector(segment['from']) and vector(segment['to']), 'contact_phase_segment_chain')
+            state = segment['receiptState']
+            require(state in ('raw-recorded','complete') and (('margin' in segment) == (state == 'complete')), 'contact_phase_segment_state')
+            require(state == 'complete' or (error and index == len(segments)-1), 'contact_phase_incomplete_segment_position')
+            route_contact |= validate_contact_phases(segment['raw'],room,docs,raw_radius,raw_height)
+            if 'margin' in segment: route_contact |= validate_contact_phases(segment['margin'],room,docs,margin_radius,margin_height)
+        if not error:
+            expected_outcome = 'partial-route' if not row['nativeComplete'] else 'candidate-contact' if route_contact else 'historical-model-no-contact'
+            require(outcome == expected_outcome, 'contact_phase_outcome_disagreement')
+    validate_contact_triangles(report['hallTriangles'],docs)
+    return report
+
+
 def collect(repo, bundle, cases, query):
     result = {'schema':1, 'status':'not_observed', 'physicalAuthority':False,
               'scope':'public Apple historical fixtures and synthetic controls; no physical authority',
               'aggregateByteLimit':LIMIT, 'reports':[]}
     wanted = {}
     observed = {canonical(case['identifier']) for case in cases}
-    specs = SPECS + tuple(spec for spec in DIAGNOSTIC_SPECS if spec[0] in observed)
+    specs = SPECS + tuple(spec for spec in DIAGNOSTIC_SPECS + (CONTACT_PHASE_SPEC,) if spec[0] in observed)
     for key, name, label in specs:
         found = [c for c in cases if canonical(c['identifier']) == key]
         record = {'attachmentName':name, 'testIdentifier':key, 'status':'test_not_observed'}
@@ -979,7 +1200,10 @@ def collect(repo, bundle, cases, query):
                     raw = exported_report(directory, name)
                 require(total + len(raw) <= LIMIT, 'aggregate_over_budget')
                 total += len(raw)
-                if label in ('metadata-inventory','collision-backend','collision-mixed-scene','packed-routing'):
+                if label == 'valid-start-contact-phases':
+                    contact_phase_source(repo, docs, hashes)
+                    report = validate_contact_phase_report(decode(raw), docs)
+                elif label in ('metadata-inventory','collision-backend','collision-mixed-scene','packed-routing'):
                     require(len(raw) <= DIAGNOSTIC_LIMIT, 'diagnostic_over_budget')
                     if label == 'metadata-inventory': report = validate_metadata_inventory(decode(raw), uuids, docs)
                     elif label == 'collision-backend': report = validate_collision_matrix(decode(raw))

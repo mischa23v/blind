@@ -19,9 +19,9 @@ final class ClassificationIngressTests: XCTestCase {
         func put(_ value: T) { lock.lock(); self.value = value; lock.unlock() }
         func get() -> T? { lock.lock(); defer { lock.unlock() }; return value }
     }
-    // Test-local serial ownership, not a runtime queue/QoS change. An expired
+    // Shared by both classification fixture families, not a runtime queue/QoS change. An expired
     // cleanup wait cannot lend unfinished native work to the next fixture.
-    private final class FixtureDrainGate: @unchecked Sendable {
+    final class FixtureDrainGate: @unchecked Sendable {
         private let lock = NSLock()
         private var current: UUID?
         func reserve() -> UUID? {
@@ -35,7 +35,7 @@ final class ClassificationIngressTests: XCTestCase {
             current = nil
         }
     }
-    private static let fixtureDrainGate = FixtureDrainGate()
+    static let fixtureDrainGate = FixtureDrainGate()
     // Test-case-owned callbacks. Only the actual stopAndDiscard acknowledgment
     // marks an admitted owner drained; constructors that throw admitted no work.
     private var discardAcknowledgements: [ObjectIdentifier: (acknowledged: Box<Bool>, token: UUID)] = [:]
@@ -182,6 +182,7 @@ final class ClassificationIngressTests: XCTestCase {
         XCTAssertTrue(candidate.route.rawDepthHazardVeto, file: file, line: line)
     }
     func testFixtureAdmissionRemainsClosedUntilExactOwnerDiscardAcknowledges() throws {
+        XCTAssertTrue(Self.fixtureDrainGate === ClassifiedRoomMeshTests.fixtureDrainGate)
         let gate = FixtureDrainGate()
         let first = try XCTUnwrap(gate.reserve())
         XCTAssertNil(gate.reserve())

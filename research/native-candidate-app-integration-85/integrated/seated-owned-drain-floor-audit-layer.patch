@@ -1,0 +1,882 @@
+diff --git a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+--- a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -74,6 +74,7 @@
+         let last = try XCTUnwrap(lease.confirm(view:second))
+         XCTAssertTrue(lease.close(view:second))
+         XCTAssertFalse(lease.consume(view:second, confirmation:last))
++        try checkFixtureAdmissionTokens()
+     }
+
+     @MainActor func testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain() async throws {
+@@ -84,7 +85,7 @@
+         let hold = DispatchSemaphore(value:0), began = expectation(description:"renderer began")
+         defer { hold.signal() }
+         var finished = false
+-        let controller = try SeatedMeshDiagnosticController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
++        let controller = try makeSessionController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
+         controller.onNativeDrainForTesting = { native.fulfill() }
+         controller.enqueueSyntheticDisplayWorkForTesting(work: {
+             began.fulfill(); hold.wait()
+@@ -93,9 +94,12 @@
+         controller.stop()
+         await fulfillment(of:[native],timeout:10)
+         XCTAssertFalse(finished); XCTAssertNil(session.configuration)
++        try await assertLaterFixtureRefusedWhileControllerHeld()
+         hold.signal()
+         await fulfillment(of:[done],timeout:10)
+         XCTAssertTrue(finished); XCTAssertTrue(session.delegate === original)
++        let reopened=try SeatedFixtureDrainGate.shared.reserve()
++        SeatedFixtureDrainGate.shared.acknowledge(reopened)
+     }
+     @MainActor func testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns() async throws {
+         final class Delegate: NSObject, ARSessionDelegate {}
+@@ -107,7 +111,7 @@
+         defer { hold.signal() }
+         var finished = false, payload: Payload? = Payload()
+         weak var released = payload
+-        let controller = try SeatedMeshDiagnosticController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
++        let controller = try makeSessionController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
+         controller.onNativeDrainForTesting = { native.fulfill() }
+         controller.enqueueSyntheticDisplayWorkForTesting(work: {}, afterEnqueue: { [payload] in
+             withExtendedLifetime(payload) { hold.wait() }
+@@ -126,7 +130,7 @@
+         let backend = try SeatedCandidateFixtureBackend()
+         let ownerDrained=XCTestExpectation(description:"seated controller ownership drained")
+         ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+-        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{ownerDrained.fulfill()})
++        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{backend.acknowledgeControllerDrain();ownerDrained.fulfill()})
+         addTeardownBlock {
+             let drained = XCTestExpectation(description: "seated native teardown drained")
+             await MainActor.run { controller.stop(); backend.stopAndDrain {
+@@ -190,7 +194,7 @@
+             let ownerDrained=XCTestExpectation(description:"seated rejection controller ownership drained")
+             ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+             var stopped=false
+-            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{stopped=true;ownerDrained.fulfill()})
++            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDrained.fulfill()})
+             addTeardownBlock {
+                 let drained = XCTestExpectation(description: "seated rejection teardown drained")
+                 await MainActor.run { controller.stop(); backend.stopAndDrain {
+@@ -228,7 +232,7 @@
+         let ownerDone=XCTestExpectation(description:"held-render controller ownership drained")
+         ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+         var stopped=false
+-        let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
++        let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
+         let hold=DispatchSemaphore(value:0)
+         defer {hold.signal()}
+         addTeardownBlock {
+@@ -282,7 +286,7 @@
+             let ownerDone=XCTestExpectation(description:"audit owner drained \(retirement)")
+             ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
+             var stopped=false,progressed=false
+-            let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
++            let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
+             let renderHold=DispatchSemaphore(value:0)
+             defer {renderHold.signal();gate.release()}
+             addTeardownBlock {
+@@ -486,7 +490,7 @@
+                 savedWorldRequest:request,restoreLoader:{_ in
+                     entered.fulfill();_ = gate.wait(timeout:.now()+10)
+                     return .failure(LiveMeshBenchSession.Failure.unavailable) // No forged successful AR archive.
+-                },onStopped:{stopped=true;ownerDone.fulfill()})
++                },onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
+             let retire: @MainActor () -> Void = {
+                 guard !draining else{return};draining=true;controller.stop()
+                 backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}}
+@@ -517,6 +521,55 @@
+         }
+     }
+
++    /// Same-family lease covers the native-session lifecycle fixtures too. Their
++    /// body may fail before its final wait, so teardown owns an independent wait.
++    @MainActor private func makeSessionController(session: ARSession,
++        expectedDelegate: any ARSessionDelegate, onStopped: @escaping () -> Void) throws -> SeatedMeshDiagnosticController {
++        let gate=SeatedFixtureDrainGate.shared,token=try gate.reserve()
++        let drained=XCTestExpectation(description:"seated session full controller teardown drained")
++        drained.assertForOverFulfill=true
++        let controller:SeatedMeshDiagnosticController
++        do {
++            controller=try SeatedMeshDiagnosticController(session:session,expectedDelegate:expectedDelegate) {
++                gate.acknowledge(token) // Actual full-controller native/render/source/audit drain only.
++                drained.fulfill();onStopped()
++            }
++        } catch {
++            gate.acknowledge(token) // Constructor failed before session/geometry work was admitted.
++            throw error
++        }
++        addTeardownBlock {
++            await MainActor.run {controller.stop()}
++            await self.fulfillment(of:[drained],timeout:10)
++        }
++        return controller
++    }
++    /// Run while the first real controller's render closure is held AFTER native
++    /// discard. A second backend must throw before constructing/queuing native work.
++    @MainActor private func assertLaterFixtureRefusedWhileControllerHeld() async throws {
++        do {
++            let unexpected=try SeatedCandidateFixtureBackend()
++            // Regression-failure cleanup: this unexpected backend has no controller.
++            let drained=XCTestExpectation(description:"unexpected fixture native cleanup")
++            drained.assertForOverFulfill=true
++            unexpected.stopAndDrain {unexpected.acknowledgeControllerDrain();drained.fulfill()}
++            await fulfillment(of:[drained],timeout:10)
++            XCTFail("A later fixture was admitted before full controller drain")
++        } catch SeatedFixtureDrainGate.Failure.previousControllerNotDrained {
++            // Expected refusal is the assertion here, not a skipped native case.
++        }
++    }
++    private func checkFixtureAdmissionTokens() throws {
++        let gate=SeatedFixtureDrainGate(),first=try gate.reserve()
++        XCTAssertThrowsError(try gate.reserve())
++        gate.acknowledge(UUID());XCTAssertThrowsError(try gate.reserve())
++        gate.acknowledge(first)
++        let second=try gate.reserve();XCTAssertNotEqual(first,second)
++        gate.acknowledge(first);XCTAssertThrowsError(try gate.reserve())
++        gate.acknowledge(second)
++        let third=try gate.reserve();gate.acknowledge(third)
++    }
++
+     @MainActor private func requestMappedPreview(_ controller:SeatedMeshDiagnosticController) {
+         controller.requestPreview(startText:"",goalText:"99 99 99",radiusText:"0.3",heightText:"1.7",
+             declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1",useMappedDestination:true)
+@@ -536,7 +589,7 @@
+         ownerDone.assertForOverFulfill=true
+         var stopped=false,stopping=false
+         let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},
+-            destinationProvider:destinationProvider,onStopped:{stopped=true;ownerDone.fulfill()})
++            destinationProvider:destinationProvider,onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
+         // Source and audit must NOT wait for optional visualization; preceding real
+         // visualization tests remain unchanged, not replaced by this fixture.
+         controller.enqueueSyntheticDisplayWorkForTesting(work:{},afterEnqueue:{hold.wait()},delivered:{})
+@@ -562,9 +615,31 @@
+
+ }
+
++/// Test-only same-family admission. Persist across XCTestCase instances; never
++/// reset on timeout. This is not a runtime scheduling policy or a QoS adjustment.
++private final class SeatedFixtureDrainGate: @unchecked Sendable {
++    enum Failure: Error {case previousControllerNotDrained}
++    static let shared=SeatedFixtureDrainGate()
++    private let lock=NSLock()
++    private var current:UUID?
++    func reserve() throws -> UUID {
++        lock.lock();defer {lock.unlock()}
++        guard current == nil else {throw Failure.previousControllerNotDrained}
++        let token=UUID();current=token;return token
++    }
++    func acknowledge(_ token:UUID) {
++        lock.lock();defer {lock.unlock()}
++        guard current == token else {return}
++        current=nil
++    }
++}
++
+ /// Copied synthetic frame scalars + an actual owned classified floor packet.
+ /// No ARFrame/ARSession activation, forged route/snapshot, validator or guidance.
+ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
++    private let fixtureGate:SeatedFixtureDrainGate
++    private let fixtureToken:UUID
++    func acknowledgeControllerDrain() {fixtureGate.acknowledge(fixtureToken)}
+     private let ingress: LiveMeshBenchIngress
+     private let snapshots = MeshBenchCameraSnapshot()
+     private let sessionID = UUID(), anchorID = UUID()
+@@ -587,9 +662,16 @@
+     var onHeld: (() -> Void)?
+     private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
+     init(savedFrame: SavedWorldFrame? = nil) throws {
++        let gate=SeatedFixtureDrainGate.shared,token=try gate.reserve()
++        fixtureGate=gate;fixtureToken=token
+         let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
+-        ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
+-            syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
++        do {
++            ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
++                syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
++        } catch {
++            gate.acknowledge(token) // No native/source work admitted by the failed constructor.
++            throw error
++        }
+         let values: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
+         let bytes = values.flatMap { value in (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0*8)) } }
+         let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
+@@ -604,7 +686,12 @@
+                     classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
+             } catch { return .unknownGap(.init(context: context,anchorID: id,reason: .invalidDescriptor)) }
+         }
+-        guard accepted else { throw LiveMeshBenchSession.Failure.unavailable }
++        guard accepted else {
++            // A real ingress exists: even constructor failure must await its exact
++            // native discard, rather than reopen admission from an elapsed timeout.
++            ingress.stopAndDiscard {gate.acknowledge(token)}
++            throw LiveMeshBenchSession.Failure.unavailable
++        }
+         decode.sync {}
+         self.savedFrame=savedFrame
+         if let savedFrame {
+diff --git a/research/live-floor-support-gap-20261030/README.md b/research/live-floor-support-gap-20261030/README.md
+new file mode 100644
+--- /dev/null
++++ b/research/live-floor-support-gap-20261030/README.md
+@@ -0,0 +1,85 @@
++# Live floor support: exact missing producer and a usable temporal design
++
++2026-10-30. **Source audit, not a navigation implementation, sensor experiment or release approval.** This packet changes no app code, defaults, thresholds, geometry, physical-output gates or calibration. It deliberately does not add another receipt-only owner. Source was resolved as reviewed post86 source28, then reviewed86, then exact `ff0f50df695bfa48fd72697858c574fda653dc4e`; `SOURCE_PINS.json` records exact bytes. The independent review and root publication remain separate.
++
++## Finding
++
++There is no independently validated production `NativeLocalizationMeasurements` producer to connect. `NavigationModel.nativeLocalizationCalibrationRevision` is literally `unconfigured`. The latest issuer retains candidates but retires registered output with `missingCalibration` (or `localReferenceOnly`); only its explicit bench seam can prepare a pair, and it never installs that pair. Goal-free saved-world references intentionally have no floor identity or physical authority.
++
++This is **not proof that useful phone navigation is impossible**. Two distinct issues were conflated:
++
++1. Missing measured inputs: camera-to-body reference, metric/radian error model, observed support coverage and its change/freshness validity.
++2. A restrictive current interface: `NativeLocalizationEvidenceGate.prepareForBench` requires `support.observedAt == candidate.capturedAt`. It has no explicit representation of a fresh evaluation of older, directly observed floor now briefly occluded by the wearer. Relabeling an old source timestamp to satisfy equality would be false evidence; merely removing equality would be unsafe.
++
++## Actual connected path
++
++| Existing producer / consumer | What reaches it | What it does not establish |
++|---|---|---|
++| `DepthSampler.observation` → `processDepthHazards` | Original `sceneDepth`, confidence 2, scaled frame intrinsics, full camera transform; stride 2 depth samples, original timestamp | Pixel identities/intrinsics are not retained in `Observation`; body transform and quantified errors are absent. A confidence ordinal is not a covariance. |
++| `HazardDetector` → `CurrentNavigationHazards` | Fresh positive hazards and a retained level-floor calibration | The floor scalar is not newly measured full support. Current hazard receipts always report `fullFootprintSupportKnown == false`. |
++| `ObservedSceneRuntime` → existing `LocalPlanner` | Same sampled world points, retained floor, recorded body-envelope preview | Candidate look-ahead only, not current foot location or body-to-start connector. |
++| `NativeARObservationAdapter.capture` → private observation history | Actual frame pose/intrinsics plus bounded sampled depth pixels and confidence; sparse anchors | At most 1,024 sampled raster positions, historical storage, no certified coverage. Unreadable/missing data remain explicit. This is not the motion producer. |
++| `NativeMapping.consume` → pinned RTAB-Map → local-grid owner | Original RGB/depth frame and upstream ground/obstacle/empty cells with transforms and associations | Ground labels, empty rays and a 30-second retained tile do not mean current support. Latest-pose lease is separate. |
++| `offerNativeLocalization` → selected router → issuer | Same-frame recovered-world association, full pose, session/selection/map/mount owners | No measured body pose, support or total error is supplied. A recovered coordinate frame alone is not calibration. |
++
++The raw depth and RTAB offers are already deferred behind urgent processing. The raw/history path does not depend on the hazard lane's horizontal-heading admission. No missing callback here justifies passing a retained floor scalar into `SpatialFloorSupport`.
++
++## Blind spots versus unnecessarily strict requirements
++
++**Code-defined exclusion:** `HazardDetector` samples its corridor from 0.3 m ahead; `GroundGeometryAnalyzer` also starts at 0.3 m and uses diagnostic unvalidated tolerances. `LocalPlanner` deliberately starts its grid at approximately 0.6 m ahead of the camera. None establishes the near connector, underfoot region or rear region. These are coordinates relative to the camera, not a calibrated wearer footprint.
++
++**Sensor visibility:** a forward-facing depth camera cannot observe a surface through an occluding body or outside its frustum. But floor can be observed before the wearer reaches it; a stationary supervised scan can also observe currently visible near-floor regions. Whether a given chest pose sees a specific region is determined by that frame's intrinsics, full pose, valid depth and occlusion—not a universal invented iPhone field-of-view number. A roughly downward camera can still produce raw observations; the hazard `DepthSampler` intentionally rejects horizontal optical length at or below 0.25 because its camera-relative horizontal direction is undefined. Do not invent body yaw to bypass this condition.
++
++**Overstrict if interpreted as a perpetual rule:** demanding every required supporting surface be directly visible in the *same instant* as the pose is incompatible with ordinary occlusion during walking. It is a defensible current fail-closed gate, not necessarily the eventual operational definition of fresh support. Previously observed floor should remain dated evidence, not vanish solely because a foot now covers it; neither should it become indefinitely current.
++
++**Still not observable from these inputs:** an occluded newly opened hole, loose or moving covering, traction, actual contact/load bearing, or a new obstacle hidden from all current sensors cannot be ruled out by a frozen depth map. A useful operating domain, residual-risk policy and supervised validation are required; the app must not promise universal support/clearance. A cane/companion/user assertion is not sensor proof. First-start support has no prior observation unless it was actually acquired.
++
++## Established method, not a new mapper
++
++[ANYbotics' original robot-centric elevation mapping](https://github.com/ANYbotics/elevation_mapping/tree/f4b082c64a3e660980da53b33c7936a8f2a2ea22) uses distance measurements, pose/covariance and transforms, propagating localization uncertainty through robot motion. It retains terrain rather than requiring every point in every scan; it also has visibility cleanup and explicit sensor-noise inputs. Its BSD-3-Clause repository now says it is not actively maintained. This is a relevant method reference, **not an adopted iOS dependency or a safety-certified algorithm**. Its constant-plane initialization is unsuitable for this app's missing-data rule and must not be used. No upstream code was installed or copied into the app; reference source text was inspected read-only.
++
++[ETH's traversability estimator](https://github.com/leggedrobotics/traversability_estimation/tree/14d24c059e1c43466aadf328280adf6394d78039) has a footprint-path query on an elevation map, but is ROS research software and its README reports no unit tests. Its configurable default score for unknown regions must not be accepted as clearance. Its root license is BSD-3-Clause. It is evidence of an established task decomposition, not proof of phone integration. Exact inspected revisions and file blob IDs are in `UPSTREAM_REFERENCES.json`. No upstream tests or builds ran.
++
++The primary [2018 terrain-mapping paper](https://doi.org/10.1109/LRA.2018.2849506) is the algorithm reference. The ETH download returned HTTP 403 in this pass; no paper details beyond the upstream repository's explanation are claimed from an unread full text. No retry or alternate download was attempted.
++
++[Apple's scene reconstruction API](https://developer.apple.com/documentation/arkit/arworldtrackingconfiguration/scenereconstruction) estimates geometry and can smooth detected planes. [Depth confidence](https://developer.apple.com/documentation/arkit/ardepthdata/confidencemap) is ordinal and affected by reflective/absorbing surfaces. Thus neither a `.floor` label nor a smoothed mesh is a substitute for original, time-associated depth and measured uncertainty.
++
++## Smallest justified next integration slice
++
++**Design hypothesis needing independent review and device validation, not implemented here:** evaluate already directly observed, short-lived floor evidence at the *current* pose, carrying acquisition age and propagated uncertainty separately. Reuse the existing ARKit acquisition/projection and selected RTAB-Map ownership/transform foundations; select a maintained suitable terrain-estimation implementation before porting an algorithm. Do not write a substitute mapper merely to make the gate pass.
++
++Before changing the gate, define a producer input/output contract with these actual values:
++
++- Raw source frame IDs, original acquisition times, depth/confidence pixels (including invalid/unobserved regions), intrinsics/resolution, full camera-to-session-world transforms and tracking/recovery epoch. Reuse the existing adapter; the sparse history cap must be disclosed, not treated as a dense guarantee.
++- Independently measured camera-to-body transform and revision, body reference convention, supported mount orientation, full support-query footprint and body/equipment geometry revision. Reported mount offsets and heuristic `BodyHeading.confidence` are not this measurement.
++- Validated depth/pose/time/mount error model for the intended hardware/mount/domain. ARKit `.normal` and confidence 2 do not provide metric error bounds by themselves.
++- **Separate** `evaluatedAt`/current candidate identity from each source acquisition time (at minimum oldest/newest plus resolvable source IDs). Evaluation may age/reproject evidence; it must not refresh acquisition age. The producer must retain uncertainty and unknown coverage across motion, not flatten to one floor.
++- Coverage of the intended support-query region expanded by current uncertainty, and a local support-height interval/model. A single `supportHeight` plus digest is only a downstream summary; the trusted validator must resolve the real geometry and provenance. Ground support and full-body obstacle clearance are separate checks.
++- A validated maximum source age, motion/uncertainty domain and change/contradiction policy. **No numerical expiry or motion threshold is selected by this audit.** New contradictory returns retire the affected support; missing returns do not imply either a new floor or free space. Unknown cells stay unknown.
++- Mandatory reset on stop/background/session or recovery change, mount/body/calibration revision change, tracking loss, map-frame change, expiry, stale/reordered callbacks and source contradictions. Current-candidate and output-delivery freshness remain mandatory even if support sources are older.
++
++The immediate honest code seam remains `NativeLocalizationMeasurements` → `NativeLocalizationEvidenceGate.prepareForBench` with the real validator. First extend that seam only alongside the real producer so raw observation time and current evaluation time cannot be confused. The production issuer should stay withheld until the accepted validation/release boundary is met. An extra receipt containing only IDs or a boolean cannot close this gap.
++
++### Explicit proposed types — design only, no constructors shipped
++
++`HistoricalFloorObservation` would own the original AR session/recovery epoch, frame ID/time, raw raster and validity mask, intrinsics, full optical transform, source revision and independently characterized measurement errors. Immutable acquisition fields never change when the observation is re-used. It describes measured surface samples, not proof that a surface is semantically floor, stable, or load-bearing.
++
++`CurrentSupportEstimate` would own the exact current localization candidate ID/time, body/mount/calibration/geometry revisions, all referenced historical observations and their ages, the query region, propagated errors, observed-versus-unknown coverage, contradictions, the estimated support geometry and the expiry/domain. It has no public conversion to a route lease or `SpatialFloorSupport`. A current estimate is not a claim of current direct visibility of every source sample.
++
++`SupportValidationContext` would resolve actual retained records and the separately frozen sensor/mount/domain validation protocol. Only a reviewed producer plus trusted validator could turn the estimate into the existing bench measurement summary; the current physical release boundary would still apply. A valid current pose plus an old map ID cannot construct an estimate. This separates two clocks without turning equality removal into a permission switch.
++
++### Noise and context assumptions that must be measured
++
++The inspected upstream [motion updater](https://github.com/ANYbotics/elevation_mapping/blob/f4b082c64a3e660980da53b33c7936a8f2a2ea22/elevation_mapping/src/RobotMotionMapUpdater.cpp) uses previous/current poses and covariance to update height and horizontal variance; its state-estimation assumptions are not supplied by ARKit tracking status. Its [structured-light processor](https://github.com/ANYbotics/elevation_mapping/blob/f4b082c64a3e660980da53b33c7936a8f2a2ea22/elevation_mapping/src/sensor_processors/StructuredLightSensorProcessor.cpp) propagates rotation/sensor variance and contains a Kinect-derived parametric noise model. Those coefficients and confidence-ratio semantics are not iPhone LiDAR calibration.
++
++For this app, measure error as a function of range, incidence angle, material, lighting, motion and mounting; measure temporally correlated pose drift and discontinuities, not just per-frame residuals. Mount flex and time synchronization need their own bounds. Validate the chosen error-envelope coverage on held-out sequences; a variance is not an automatic worst-case safety bound. Distinguish multi-level terrain from the estimator's supported representation. Even a perfect geometric covariance model cannot account for an unseen physical surface that changed after acquisition: its bounded-persistence assumption must be explicit and tested in the operating domain. These are proposed local validation requirements, not claims about completed upstream validation.
++
++## Required local observations / decisive next experiment
++
++Use a seated or sighted-supervised bench setup, not a child walking test. Record on-phone only: original synchronized depth/confidence/pose/intrinsics, measured mount/body reference and a separate reference measurement of known floor/edge geometry. Include a visible patch becoming body-occluded, revisit after motion/turn, tracking loss/recovery, mount slip, stop/restart, reflective/absorbing floor, a controlled removable *simulated* support patch and a new obstacle. No actual drop/stair or unsupervised eyes-closed walking.
++
++Pre-register the supported domain, independent reference accuracy, source/model versions, frozen calibration split and held-out validation split, the relevant false-accept/unknown metrics, and reviewer-approved acceptance criteria before evaluating. Do not choose a convenient expiry after seeing the held-out failures. For a frozen upstream-backed temporal producer, compare current evaluation against independent reference and explicitly measure unknown coverage, error growth, stale acceptance, changed-surface withdrawal and latency. Retain failures. The decision is whether bounded reuse can support the defined footprint/domain—not whether an idealized flat sample yields a route. Exact age/error limits require those observations. Until then the precise blocker is **missing measured producer inputs and validated temporal-support policy**, not a missing permission or a proven hardware impossibility.
++
++## Verification and handoff
++
++`audit.py` checks pinned source and specific connections/exclusions. It is source text inspection only, not Swift execution or geometry accuracy testing. See `RESULTS.json` for its result. There was no Swift toolchain in this executor; Apple build/device tests were not run. Root may record this result under N02/N03, leaving measured localization, support and navigation acceptance open. No tracked source or shared checkout was edited.
+diff --git a/research/live-floor-support-gap-20261030/RESULTS.json b/research/live-floor-support-gap-20261030/RESULTS.json
+new file mode 100644
+--- /dev/null
++++ b/research/live-floor-support-gap-20261030/RESULTS.json
+@@ -0,0 +1,102 @@
++{
++  "scope": "pinned source inspection only",
++  "checks": [
++    {
++      "name": "all exact source pins",
++      "passed": true,
++      "files": 14
++    },
++    {
++      "name": "raw hazard depth/confidence and exact pose",
++      "passed": true
++    },
++    {
++      "name": "current raw sampling limits",
++      "passed": true
++    },
++    {
++      "name": "horizontal heading remains required only for hazard observation",
++      "passed": true
++    },
++    {
++      "name": "hazard near exclusion and retained datum",
++      "passed": true
++    },
++    {
++      "name": "diagnostic patch exclusion and no motion authority",
++      "passed": true
++    },
++    {
++      "name": "look-ahead start not wearer foot",
++      "passed": true
++    },
++    {
++      "name": "hazard receipt has no support authority",
++      "passed": true
++    },
++    {
++      "name": "historical pixels retain original confidence and bounded raster",
++      "passed": true
++    },
++    {
++      "name": "historical full pose and acquisition time",
++      "passed": true
++    },
++    {
++      "name": "history admission does not renew source timestamps",
++      "passed": true
++    },
++    {
++      "name": "missing calibration is explicit",
++      "passed": true
++    },
++    {
++      "name": "original-frame mapping and history offers exist",
++      "passed": true
++    },
++    {
++      "name": "issuer is withheld not a producer",
++      "passed": true
++    },
++    {
++      "name": "actual production measurement prerequisites",
++      "passed": true
++    },
++    {
++      "name": "same-instant source-time restriction exists",
++      "passed": true
++    },
++    {
++      "name": "reference-only owner cannot mint physical bench pair",
++      "passed": true
++    },
++    {
++      "name": "candidate association and exact ownership boundary",
++      "passed": true
++    },
++    {
++      "name": "freshness and evidence expiry mandatory",
++      "passed": true
++    },
++    {
++      "name": "mount metadata is not calibration",
++      "passed": true
++    },
++    {
++      "name": "current pose and historical tiles have separate expiry",
++      "passed": true
++    },
++    {
++      "name": "mapping refuses floor-support authority",
++      "passed": true
++    },
++    {
++      "name": "issuer has no explicit acceptRegisteredCapture call",
++      "passed": true
++    }
++  ],
++  "passed": 23,
++  "swiftExecuted": false,
++  "deviceExecuted": false,
++  "physicalAuthority": false
++}
+diff --git a/research/live-floor-support-gap-20261030/SOURCE_PINS.json b/research/live-floor-support-gap-20261030/SOURCE_PINS.json
+new file mode 100644
+--- /dev/null
++++ b/research/live-floor-support-gap-20261030/SOURCE_PINS.json
+@@ -0,0 +1,91 @@
++{
++  "baseCommit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
++  "reviewed86ManifestSHA256": "e160a0ebf31818e19cf287fc7dea2e15f9ca058ec8cf73c7b1e791af042e26eb",
++  "source28ManifestSHA256": "3ff7e3bfaed5dbb5d127afc5bcdda612b72a8db7963ba51d26fb5f7edbd33f59",
++  "files": [
++    {
++      "path": "ios/BlindAssist/DepthSampler.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "e659262705258516fed4db98b333743c1342b5397087bf0f13ec7941a55f8171",
++      "bytes": 7047
++    },
++    {
++      "path": "ios/BlindAssist/NativeARObservationAdapter.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "73d88b764ec0b3ed4f7672ac1c88ca86afc997d6c25f6cec3dc45d7d6c8a58cb",
++      "bytes": 14678
++    },
++    {
++      "path": "ios/BlindAssist/NativeLocalizationIssuer.swift",
++      "sourceLayer": "source28",
++      "sha256": "25fa457499cd263795a98c43ad210e90b601fdccf7ce48870261d5903f98aa29",
++      "bytes": 3607
++    },
++    {
++      "path": "ios/BlindAssist/NativeMapping.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "81bb9e3bb42ae3eede0f2f81db837ab6faa885b0fad1dbc394189890ce3d6bd2",
++      "bytes": 12033
++    },
++    {
++      "path": "ios/BlindAssist/NavigationModel.swift",
++      "sourceLayer": "source28",
++      "sha256": "a1f0b9ce8084a47378ecdae5e65ae3e64bd18236fb1846fa76ec6a4c1cdebd7d",
++      "bytes": 567216
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "0e6e55ddc3321b6b89998ca43c9fcd3711ec8e54d7395ea99b6edeb52e2b6e7c",
++      "bytes": 2076
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/HazardDetector.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "9bbcdae56f58ed76d8a06f0b03651af24a023c48c0a23111187ec2a511c1d615",
++      "bytes": 8326
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/GroundGeometryEvidence.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "45f089a9c8f6852f41ede3eedbadf5537de7b8c12ff300ac1f9d3cdf8f2e4cf7",
++      "bytes": 12810
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/LocalPlanner.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "04da3a8ca35f4bfa3dd98aa4b4c9c11ae90a291504adf77f8420d51a41deedd8",
++      "bytes": 6505
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/CurrentNavigationHazards.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "7ad37907f0fb752f9a7a328d9f13fff315a7c72221865fec148d8815bd1b2c5d",
++      "bytes": 3590
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/NativeObservationPipeline.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "8b67496c2e58e4eb3a2cab66ecef714fb3e96fb8d86c9878a18a5a17c7fec913",
++      "bytes": 20192
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift",
++      "sourceLayer": "source28",
++      "sha256": "362ce43dbfd7b7821bf1e1a0d6cfc580cffefb28010921d60e8a5068cdcf5dc3",
++      "bytes": 14540
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/BodyProfile.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "61c8f6cb69944433f6dad350619c702e332306c95fee40da30c5232caf18cea4",
++      "bytes": 12351
++    },
++    {
++      "path": "BlindCore/Sources/BlindCore/NativeLocalGrid.swift",
++      "sourceLayer": "ff0f50d",
++      "sha256": "4c607a6df58b155c3b42573c40124911271bbeaeee10dcd4498de29bed809343",
++      "bytes": 17248
++    }
++  ]
++}
+diff --git a/research/live-floor-support-gap-20261030/UPSTREAM_REFERENCES.json b/research/live-floor-support-gap-20261030/UPSTREAM_REFERENCES.json
+new file mode 100644
+--- /dev/null
++++ b/research/live-floor-support-gap-20261030/UPSTREAM_REFERENCES.json
+@@ -0,0 +1,54 @@
++{
++  "inspectedAtUTC": "2026-10-30",
++  "adoptionStatus": "reference-only; no dependency selected, code imported, installs, builds or upstream tests",
++  "repositories": [
++    {
++      "repository": "ANYbotics/elevation_mapping",
++      "revision": "f4b082c64a3e660980da53b33c7936a8f2a2ea22",
++      "license": "BSD-3-Clause",
++      "licenseBlobSHA": "5d62a45504b02f4572114a16db8ae0be52ccd4bc",
++      "sourceFiles": [
++        {
++          "path": "elevation_mapping/src/RobotMotionMapUpdater.cpp",
++          "gitBlobSHA": "9c0506421e4c40aec8f5c0099622b85b7bebab93"
++        },
++        {
++          "path": "elevation_mapping/src/sensor_processors/StructuredLightSensorProcessor.cpp",
++          "gitBlobSHA": "504b5ad49a2038873782246adb17dcd79daf0fba"
++        }
++      ],
++      "limit": "Maintenance explicitly discontinued; ROS/research foundation, not native iOS or safety qualification."
++    },
++    {
++      "repository": "leggedrobotics/traversability_estimation",
++      "revision": "14d24c059e1c43466aadf328280adf6394d78039",
++      "license": "BSD-3-Clause",
++      "licenseBlobSHA": "f1270a9ec04b6f08d6c1c68c92139b6196b8699a",
++      "sourceFiles": [
++        {
++          "path": "README.md",
++          "gitBlobSHA": "f75126c48297ac8926851d22f7409e3f44ba2d31"
++        }
++      ],
++      "limit": "ROS research package; README says no unit tests; unknown-region score is not clearance."
++    }
++  ],
++  "primaryDocumentation": [
++    {
++      "url": "https://developer.apple.com/documentation/arkit/arworldtrackingconfiguration/scenereconstruction",
++      "limit": "Documented estimated/smoothed mesh, not full-footprint support."
++    },
++    {
++      "url": "https://developer.apple.com/documentation/arkit/ardepthdata/confidencemap",
++      "limit": "Ordinal depth confidence, not calibrated metric covariance."
++    }
++  ],
++  "paper": {
++    "doi": "10.1109/LRA.2018.2849506",
++    "title": "Probabilistic Terrain Mapping for Mobile Robots With Uncertain Localization",
++    "year": 2018,
++    "fullTextRead": false,
++    "attemptedURL": "https://www.research-collection.ethz.ch/bitstreams/4c405df7-a90b-4a12-8d48-eb5dd166cc17/download",
++    "result": "HTTP 403; no retry"
++  }
++}
+diff --git a/research/live-floor-support-gap-20261030/audit.py b/research/live-floor-support-gap-20261030/audit.py
+new file mode 100644
+--- /dev/null
++++ b/research/live-floor-support-gap-20261030/audit.py
+@@ -0,0 +1,56 @@
++#!/usr/bin/env python3
++"""Read-only, bounded source audit. Does not execute Swift or authorize movement."""
++import argparse, hashlib, json, pathlib, re
++
++P = argparse.ArgumentParser()
++P.add_argument('--repo', type=pathlib.Path, required=True)
++P.add_argument('--overlay', type=pathlib.Path, action='append', default=[], help='Highest priority first')
++a = P.parse_args()
++here = pathlib.Path(__file__).resolve().parent
++pins = json.loads((here / 'SOURCE_PINS.json').read_text())
++checks = []
++sources = {}
++for pin in pins['files']:
++    matches = [base / pin['path'] for base in [*a.overlay, a.repo] if (base / pin['path']).is_file()]
++    assert matches, pin['path']
++    raw = matches[0].read_bytes()
++    assert len(raw) <= 1_000_000, pin['path']
++    assert hashlib.sha256(raw).hexdigest() == pin['sha256'], 'Source changed: ' + pin['path']
++    sources[pin['path']] = raw.decode()
++checks.append({'name': 'all exact source pins', 'passed': True, 'files': len(sources)})
++
++def has(path, name, *parts):
++    source = sources[path]
++    for part in parts:
++        assert part in source, (name, part)
++    checks.append({'name': name, 'passed': True})
++
++C = 'BlindCore/Sources/BlindCore/'
++I = 'ios/BlindAssist/'
++has(I+'DepthSampler.swift', 'raw hazard depth/confidence and exact pose', 'frame.sceneDepth', 'depth.confidenceMap', 'NativeDepthObservationPolicy.projection(', 'frame.camera.transform', 'timestamp: frame.timestamp')
++has(C+'NativeDepthObservationPolicy.swift', 'current raw sampling limits', 'pixelStride = 2', 'requiredConfidence: UInt8 = 2', 'depthRange = 0.15...5.0', 'minimumHorizontalOpticalLength: Float = 0.25')
++has(I+'DepthSampler.swift', 'horizontal heading remains required only for hazard observation', 'guard let forward = NativeDepthObservationPolicy.horizontalForward(')
++has(C+'HazardDetector.swift', 'hazard near exclusion and retained datum', '(0.3...2.2).contains(c.ahead)', 'floorHeight = sorted[sorted.count / 2]')
++has(C+'GroundGeometryEvidence.swift', 'diagnostic patch exclusion and no motion authority', 'c.ahead >= 0.3', 'authorizesPhysicalGuidance: Bool { false }', 'unvalidated-shadow-v1')
++has(C+'LocalPlanner.swift', 'look-ahead start not wearer foot', 'let start = Cell(x: 0, z: Int((0.6 / resolution).rounded()))', 'unobserved ground directly under the wearer')
++has(C+'CurrentNavigationHazards.swift', 'hazard receipt has no support authority', 'fullFootprintSupportKnown: Bool { false }', 'authorizesPhysicalGuidance: Bool { false }')
++has(I+'NativeARObservationAdapter.swift', 'historical pixels retain original confidence and bounded raster', 'frame.sceneDepth.map', '> 1024', 'NativeDepthPixel(column: column, row: row, metres: metres, confidence: level)')
++has(I+'NativeARObservationAdapter.swift', 'historical full pose and acquisition time', 'cameraToSessionWorld: transform(frame.camera.transform)', 'capturedAt: frame.timestamp')
++has(C+'NativeObservationPipeline.swift', 'history admission does not renew source timestamps', 'capturedAt - lastAdmitted >= 0.5', 'record.capturedAt == capturedAt')
++has(I+'NavigationModel.swift', 'missing calibration is explicit', 'nativeLocalizationCalibrationRevision = "unconfigured"')
++has(I+'NavigationModel.swift', 'original-frame mapping and history offers exist', 'mapping.consume(frame)', 'nativeObservations.offer(frame, sessionID: nativeSessionID', 'defer { offerNativeLocalization(frame, now: ProcessInfo.processInfo.systemUptime) }')
++has(I+'NativeLocalizationIssuer.swift', 'issuer is withheld not a producer', '.localReferenceOnly : .missingCalibration', 'retireRegisteredOutput?(value.owner)', 'invalidate(.physicalReleaseNotApproved)')
++has(C+'NativeLocalizationEvidence.swift', 'actual production measurement prerequisites', 'guard let calibration = measurement.calibration', 'guard let support = measurement.support', 'guard let error = measurement.errorModel', 'case .unvalidated: throw fail(.unvalidatedEvidence)')
++has(C+'NativeLocalizationEvidence.swift', 'same-instant source-time restriction exists', 'support.observedAt == c.capturedAt, error.observedAt == c.capturedAt')
++has(C+'NativeLocalizationEvidence.swift', 'reference-only owner cannot mint physical bench pair', 'currentOwner.selection.kind != .localSavedFrameReference')
++has(C+'NativeLocalizationEvidence.swift', 'candidate association and exact ownership boundary', 'candidate.association.capturedAt == candidate.capturedAt', 'pending == measurement.candidate', 'guard owner == currentOwner')
++has(C+'NativeLocalizationEvidence.swift', 'freshness and evidence expiry mandatory', 'fresh(c.capturedAt, now: now)', '[calibration, support, error].allSatisfy', 'expiresAt: min(c.capturedAt + maximumAge')
++has(C+'BodyProfile.swift', 'mount metadata is not calibration', 'Not a camera-to-map transform, floor measurement, or body-heading calibration.', 'current measured chest-to-body transform')
++has(C+'NativeLocalGrid.swift', 'current pose and historical tiles have separate expiry', 'now - $0.value.capturedAt <= 30', 'now - capturedAt > 0.5', 'Ground/empty labels are not walking support.')
++has(I+'NativeMapping.swift', 'mapping refuses floor-support authority', 'never SpatialFloorSupport', 'navigationEvidence(now: Double)')
++# Absence checks cover explicit constructor/accept spellings only, not arbitrary Swift data flow.
++issuer_code = re.sub(r'//[^\n]*', '', sources[I+'NativeLocalizationIssuer.swift'])
++assert not re.search(r'\bacceptRegisteredCapture\s*\(', issuer_code)
++checks.append({'name': 'issuer has no explicit acceptRegisteredCapture call', 'passed': True})
++print(json.dumps({'scope': 'pinned source inspection only', 'checks': checks, 'passed': len(checks),
++                  'swiftExecuted': False, 'deviceExecuted': False, 'physicalAuthority': False}, indent=2))
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -1040,8 +1040,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+-      "bytes": 56175,
+-      "sha256": "c0633d4c8b580ba749e0d51ea98b8b4584e2a99d7fec9dcae07f685286f4d51b"
++      "bytes": 60813,
++      "sha256": "55355dfc5d8ab037030b85b1d1390eecb57571e6178d31ebd4bf5cb1d8a9d238"
+     },
+     {
+       "path": "ios/BlindAssistUITests/LaunchTests.swift",
+@@ -1114,6 +1114,31 @@
+       "sha256": "e84cd70dd5ac14c9fbb3d28b05f98a7f9c8c7b94940cf820c7ff73f9878d4928"
+     },
+     {
++      "path": "research/live-floor-support-gap-20261030/README.md",
++      "bytes": 16141,
++      "sha256": "8acd7427d206110fa63ce2f5a7e3943603ccf25a3457776e28c6b7c15a0a307f"
++    },
++    {
++      "path": "research/live-floor-support-gap-20261030/RESULTS.json",
++      "bytes": 2362,
++      "sha256": "6b38f0661da1b786474fbe4cc0ab030730c82ce3d134379c09e99d53a0222211"
++    },
++    {
++      "path": "research/live-floor-support-gap-20261030/SOURCE_PINS.json",
++      "bytes": 3307,
++      "sha256": "f201ea4d97887dde0ba6eef31ac9c35bdc92f34b4d4bb33292b8175fd469f2ac"
++    },
++    {
++      "path": "research/live-floor-support-gap-20261030/UPSTREAM_REFERENCES.json",
++      "bytes": 2155,
++      "sha256": "25607bed5004a851bcbdf05295c88f9db40d3f5bdbfcc9a66ed4cf20ae763c29"
++    },
++    {
++      "path": "research/live-floor-support-gap-20261030/audit.py",
++      "bytes": 5718,
++      "sha256": "069e7366d3a1507525c3762b5f837401102000406f1d430626c12a011f9db212"
++    },
++    {
+       "path": "research/live-mesh-bench-proposal-20261028/DEPENDENCY_PINS.json",
+       "bytes": 1839,
+       "sha256": "f549b452952c0b59945ae8bfe65fb842680df53af8c87794a511dfad2359f808"
+@@ -1749,6 +1774,16 @@
+       "sha256": "ded9fbf9922d7d16374d4f55e1f7f76d605e53fb7fc2ef5c9e146bb669ed3d51"
+     },
+     {
++      "path": "research/seated-fixture-owned-drain-20261030/README.md",
++      "bytes": 4815,
++      "sha256": "95e6a3c5d03f3051aca4ce331c58d5430311a0650da06d2f3dd47ee29ec3cfe3"
++    },
++    {
++      "path": "research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json",
++      "bytes": 1326,
++      "sha256": "9aa81ab11b348a28742bd7cbd53c8ade36dd0bfa26708965dda76bc66de96fbb"
++    },
++    {
+       "path": "research/seated-mapped-destination-20261030/README.md",
+       "bytes": 8619,
+       "sha256": "10105730d69cff38eb8abbe02b45b55869bcce414743a6e863e24c1449ba4062"
+@@ -1962,6 +1997,11 @@
+       "path": "tools/test/scene-frame-provenance.test.mjs",
+       "bytes": 6525,
+       "sha256": "984666f888e61dbc87d985037bf7d9863d5b42335fc49e3faaf1c90217816b8a"
++    },
++    {
++      "path": "tools/test/seated-fixture-drain.test.py",
++      "bytes": 10550,
++      "sha256": "aed44d30cb803ade555ef80580f57f1d58494c624ccd8b966b412804f96ee9a5"
+     },
+     {
+       "path": "tools/test/visual-absence-contract.test.mjs",
+@@ -2241,5 +2281,15 @@
+     "authoredSwiftMethodsAdded": 25,
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "seatedOwnedDrainAndFloorResearch": {
++    "scope": "Seated test-family admission only after actual full controller drain; immutable research-only support-gap audit",
++    "projectionMethodCount": 17,
++    "originalFocusedCount": 21,
++    "currentFocusedCount": 26,
++    "newNativeMethods": 0,
++    "nativeExecuted": false,
++    "floorSupportImplementationChanged": false,
++    "physicalAuthority": false
+   }
+ }
+diff --git a/research/seated-fixture-owned-drain-20261030/README.md b/research/seated-fixture-owned-drain-20261030/README.md
+new file mode 100644
+--- /dev/null
++++ b/research/seated-fixture-owned-drain-20261030/README.md
+@@ -0,0 +1,32 @@
++# Seated fixture-owned admission after real full-controller drain
++
++Isolated follow-on to the reviewed94 source; not part of that frozen publication.
++No production controller, worker, priority, dependency, workflow or deadline changes.
++
++## Demonstrated failure and limited diagnosis
++
++Exact source `ff0f50df695bfa48fd72697858c574fda653dc4e`, Apple run41096090593/job124202100531: diagnostics build passed, seated command exited65, and the exact21 synthetic cases were13 passed/8 failed. All4 collision-bridge cases passed. The27 failure records are not27 failing cases. The [original failed Apple job](https://github.com/mischa23v/blind/actions/runs/41096090593/job/124202100531) remains the historical failure evidence; this follow-on does not replace it.
++
++The held-optional-render fixture is identifiable by the unique `controller_drain_wait_finished` call site in the hash-matched ff0 fixture, not by assumed print order. Owner `79FE92A0-BACE-450F-81CE-1FF3A02AD029` returned from that cleanup wait while its native build was still running. Its recorded native build interval was6078–135777ms owner-relative (129699ms wall,81426us matched-thread CPU); discard was requested13803ms and acknowledged136602ms. Four other source callbacks returned stale after14.3–112.4seconds. Metadata does not explicitly bind every random owner ID to a case, and does not establish a QoS, deadlock or computation cause.
++
++native75's process-static serial queue means an unfinished owner can delay later source reads. The Seated fixture already waited asynchronously during cleanup, but an expired cleanup wait did not close admission across subsequent XCTestCase instances. This packet closes that demonstrated isolation hole. It does not cure the original worker delay or retroactively turn a failed deadline into a pass.
++
++The prior reviewed86 Classification fixture repair is family-local. It does not protect Seated owners. The new normal-owner connection is also a separate path, not a fix for the eight old Seated failures.
++
++## Narrow repair
++
++- A small locked, test-only shared reservation is acquired before a Seated fixture backend or actual-session controller is constructed. An occupied reservation throws `previousControllerNotDrained`; the test fails rather than skips, queues new native work, retries, or waits a longer deadline.
++- Release occurs only from the exact controller's `onStopped` callback, after the existing native/source/render/status/route/collision/restoration drain checks. The native-only callback does not release admission. Foreign, duplicate and old tokens cannot release another owner.
++- A constructor that admitted no native work releases only its own reservation. If a real ingress was created but fixture geometry admission fails, its actual `stopAndDiscard` callback releases the reservation; an elapsed timeout cannot do so.
++- Both actual-session lifecycle tests now register independent asynchronous teardown immediately after construction. Existing fixture teardowns remain; every original functional assertion and original10-second timeout is retained.
++- The existing held-renderer lifecycle case now attempts a real second fixture backend after native discard but before the first renderer is released. It must receive the exact admission failure before any second native work is queued. After full controller completion, reservation succeeds. The existing confirmation case also checks foreign/duplicate/stale tokens with a local gate.
++
++The gate is intentionally only the Seated fixture family. It does not serialize unrelated XCTest families or production callers. A permanently stuck owner keeps later same-family native cases failed; that is a truthful blocker, not a successful recovery or safe-use claim.
++
++## Verification and integration
++
++Portable source controls pass53 contracts and reject14 source mutations. They hash-normalize all17 original projection test bodies to the ff0 source, and preserve the backend stop/drain, source, query and timing helpers exactly. No new test identity was added; the original21 cases (and the reviewed26-case focus including5 normal-owner cases) remain unchanged. Strict collector source verification accepts this fixture.
++
++The new native held-owner regression is authored, not executed. This Linux executor has no Swift compiler/Apple SDK; no installs, containers or Apple build were attempted. Original native worker-delay and lifecycle failures remain open pending an exact-source Apple run.
++
++Before publication, root should compose this packet as a new additive reverse layer after reviewed94, update current integrated/bench pins, run strict source/roundtrip controls and preserve all frozen historical layers and failed receipts. No fixture outcome, timer or full-controller-drain claim may be inferred from these source controls alone.
+diff --git a/research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json b/research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json
+new file mode 100644
+--- /dev/null
++++ b/research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json
+@@ -0,0 +1,18 @@
++{
++  "schema": 1,
++  "baseFixtureCommit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
++  "baseFixtureSHA256": "c0633d4c8b580ba749e0d51ea98b8b4584e2a99d7fec9dcae07f685286f4d51b",
++  "source": {
++    "ios/BlindAssistTests/SeatedMeshProjectionTests.swift": "55355dfc5d8ab037030b85b1d1390eecb57571e6178d31ebd4bf5cb1d8a9d238",
++    "tools/test/seated-fixture-drain.test.py": "aed44d30cb803ade555ef80580f57f1d58494c624ccd8b966b412804f96ee9a5",
++    "research/seated-fixture-owned-drain-20261030/README.md": "95e6a3c5d03f3051aca4ce331c58d5430311a0650da06d2f3dd47ee29ec3cfe3"
++  },
++  "unchangedDependencies": {
++    "ios/BlindAssist/SeatedMeshDiagnosticController.swift": "bb6527ad5e018e6316db2f4f103c16faf53cd4e5e142a8e513506c253a505565",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5",
++    "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift": "db8fcf844c97b92e66068fa1dbf10c9dbaeedea96abd666c3c1edfad5cb11b24",
++    "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift": "48a8329aea5dba8486aa2943ef52cbb44df57f422dd447f10d45eb9cf0cfd0b0"
++  },
++  "scope": "same-family test admission only; no runtime scheduler or physical authority",
++  "nativeValidation": "not_run"
++}
+diff --git a/tools/test/seated-fixture-drain.test.py b/tools/test/seated-fixture-drain.test.py
+new file mode 100644
+--- /dev/null
++++ b/tools/test/seated-fixture-drain.test.py
+@@ -0,0 +1,96 @@
++"""Bounded source and negative-mutation controls; no Swift/native execution."""
++from pathlib import Path
++import hashlib,re,unittest
++ROOT=Path(__file__).resolve().parents[2]
++SOURCE=ROOT/'ios/BlindAssistTests/SeatedMeshProjectionTests.swift'
++def digest(s):return hashlib.sha256(s.encode()).hexdigest()
++def block(s,needle):
++ start=s.index(needle);opening=s.index('{',start);depth=0
++ for i in range(opening,len(s)):
++  depth+=(s[i]=='{')-(s[i]=='}')
++  if depth==0:return s[start:i+1]
++ raise ValueError('unclosed block')
++# Filled from the exact ff0 fixture, not guessed test outcomes.
++ORIGINAL_METHODS={'testIdentityKeepsRawARKitAxesAndMetres': '56b924a1926a36377ed4513f352e59faf40de58dc29427448a9ae315f40e319a', 'testColumnMajorRotationTranslationAppliedExactlyOnce': '223924868728bd124129625a5dfd86ebb627f531ef5ab9c5f7c397c6781cff5b', 'testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution': '45c263d2d20462c0730e18816810747b79144becc9709c80f15f2d2e4ba8df0e', 'testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection': '190902dc08cbfaa99a0b6f6a0ca5a3237aabd27d1503d821f5397fbd304aff9b', 'testWholeProjectionRejectsVertexBudgetAndFloatOverflow': '84e2d1ffa07f7025c553bfc610300d96c4b7ed7a7429db963e03c64a34f241a6', 'testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection': 'a3399348847cd4701299817bae955561c25dd26723b4a294c3c88e353d70b458', 'testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision': 'da524e3e44fc1a2a480f042cb718b0c3b468453368e2ff63f27aa1200abb7028', 'testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement': '302dde0351a0ae727e9d47f4ab3c3d794f64fcb082ddc71b33da480fa6bad19a', 'testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain': 'b3f94418f74c5754ee1f5794911632e42edc3dd6d3c534230f6d746a0380d8f3', 'testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns': '8d02e178b86b1032caa24a78f162f8f7e45a025bc387a3c64f5922bb50594d34', 'testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding': '0581a0b9f53fde9e2a7abd45d706a8b8c7a2eff4d1d3a3fb3a252276a5452aeb', 'testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange': '37c57ff4cc2a8006e1cd637b4ed88b69747c37d715fba284318bf8f46aa54594', 'testActualSourceAndStrictQueryCompleteWhileOptionalRenderIsHeld': '84240c0543c15872f3ac3ae0b22968ebbe8a2d6f2b7dbb96ea073df69650c4e4', 'testActualAuditRetirementAndDisposalAfterRealOracleProgress': '1980e8952b8a0725e19a4f3ac095bce61b62b43ae001fa4fd565b50e6a5c052a', 'testMappedDestinationFeedsActualStrictQueryAndCollisionReceipt': '5d17f2bac505ac71aa6f775474590c76a58f9853db34672529601a2d2ca62ecc', 'testMappedDestinationRefusesMissingWrongStaleAndCrossFloorAssociation': '4383e6cdd8cb46ea57067e30691cf8233cedbe93ae01d72667e538e19a31b62c', 'testMappedDestinationRetiresHeldResultsOnRestartMapGoalAndSourceChanges': 'e3914a1eb49c8861a93352af841cc1ad8a4f5190e935b83aa3e13a96374f68ae'}
++UNCHANGED_BACKEND={'    func stopAndDrain(': '276f509f13b2ee6cae682c7b42ed7a585e90994a732490bf90342fcfb15b7a43', '    func requestSourceSnapshot(': 'f5bd56c86add6d3188fa2286c5e5056fe967b451c03e46ef2ceadb5e3b3d3b70', '    func requestPreview(': '87e030c011c123c02cd6aff8b8624ce200135a5a20577d3fdc238acd9c4a5e4b', '    func printTiming(': '43aeefc664c40a8afbadadec3e79cfb37d23257ab66db1c2273607d55a509412', '    private static func printWorkerTiming(': '7e9f5ec975f5c61fe8cf8aad3cf89bd8947491878e7a5d466dd24983313c934a', '    func sourcePhaseRecorder(': '6afad9d28ed3e606004f58c96b4f5da6a558a1dbb30d1791e149222cef5a5b5c'}
++def normalize_method(s):
++ s=s.replace('        try checkFixtureAdmissionTokens()\n','')
++ s=s.replace('try makeSessionController(session:session, expectedDelegate:original)', 'try SeatedMeshDiagnosticController(session:session, expectedDelegate:original)')
++ s=s.replace('        try await assertLaterFixtureRefusedWhileControllerHeld()\n','')
++ s=s.replace('        let reopened=try SeatedFixtureDrainGate.shared.reserve()\n        SeatedFixtureDrainGate.shared.acknowledge(reopened)\n','')
++ return s.replace('backend.acknowledgeControllerDrain();','')
++def contracts(s):
++ checks=0
++ def check(condition,label):
++  nonlocal checks
++  assert condition,label
++  checks+=1
++ names=re.findall(r'^\s*(?:@MainActor\s+)?func\s+(test\w+)\s*\(',s,re.M)
++ check(names==list(ORIGINAL_METHODS),'all17 original projection identities, no additions/skips')
++ for name,want in ORIGINAL_METHODS.items():
++  check(digest(normalize_method(block(s,'func '+name+'(')))==want,'unchanged original assertions/deadlines '+name)
++ for needle,want in UNCHANGED_BACKEND.items():
++  check(digest(block(s,needle))==want,'unchanged backend '+needle)
++ gate=block(s,'private final class SeatedFixtureDrainGate:')
++ check('static let shared=SeatedFixtureDrainGate()' in gate,'shared across testcase instances')
++ check(gate.count('lock.lock();defer {lock.unlock()}')==2,'both transitions locked')
++ check('guard current == nil else {throw Failure.previousControllerNotDrained}' in gate,'busy throws failure notskip')
++ check('let token=UUID();current=token;return token' in gate,'fresh exact lease')
++ check('guard current == token else {return}' in gate,'foreign/late token cannot release')
++ check('timeout' not in gate and 'DispatchQueue' not in gate,'no timeout/scheduler release')
++ backend=block(s,'private final class SeatedCandidateFixtureBackend:')
++ init=block(backend,'    init(savedFrame:')
++ check(init.index('token=try gate.reserve()')<init.index('try LiveMeshBenchIngress(')<init.index('ingress.observe('),'reserve before construction and work')
++ check('fixtureGate=gate;fixtureToken=token' in init,'same exact lease retained')
++ check(init.count('gate.acknowledge(token)')==2,'only constructor throw/failed-admission cleanup release')
++ check('} catch {\n            gate.acknowledge(token)' in init,'no-work constructor failure releases')
++ failed=block(init,'        guard accepted else')
++ check('ingress.stopAndDiscard {gate.acknowledge(token)}' in failed,'real ingress failure awaits native fence')
++ check('func acknowledgeControllerDrain() {fixtureGate.acknowledge(fixtureToken)}' in backend,'controller acknowledgment retains exact token')
++ session=block(s,'    @MainActor private func makeSessionController(')
++ check(session.index('token=try gate.reserve()')<session.index('try SeatedMeshDiagnosticController('),'session reserve before real owner')
++ check('gate.acknowledge(token) // Actual full-controller' in session,'real session full-drain callback only')
++ check('drained.assertForOverFulfill=true' in session,'overfulfill detected')
++ check('addTeardownBlock {' in session and 'await MainActor.run {controller.stop()}' in session,'failure cleanup registered')
++ check('await self.fulfillment(of:[drained],timeout:10)' in session,'cleanup original10s bound')
++ check(session.index('addTeardownBlock {')<session.index('return controller'),'cleanup before fixture escape')
++ check(s.count('onStopped:{backend.acknowledgeControllerDrain();')==6,'all six backend/controller construction sites')
++ check(s.count('try makeSessionController(session:session, expectedDelegate:original)')==2,'both session lifecycle cases covered')
++ check('acknowledgeControllerDrain' not in block(backend,'    func stopAndDrain('),'native-only acknowledgment cannot release full controller')
++ held=block(s,'func testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain(')
++ check(held.index('await fulfillment(of:[native],timeout:10)')<held.index('try await assertLaterFixtureRefusedWhileControllerHeld()')<held.index('        hold.signal()'),'held renderer regression runs after native acknowledgment before release')
++ check(held.index('await fulfillment(of:[done],timeout:10)')<held.index('shared.reserve()'),'admission reopens after full controller ack')
++ later=block(s,'    @MainActor private func assertLaterFixtureRefusedWhileControllerHeld(')
++ check('let unexpected=try SeatedCandidateFixtureBackend()' in later,'attempt actual later backend constructor')
++ check('catch SeatedFixtureDrainGate.Failure.previousControllerNotDrained' in later,'expected exact admission failure')
++ check('XCTFail("A later fixture was admitted before full controller drain")' in later,'accidental admission fails')
++ check('await fulfillment(of:[drained],timeout:10)' in later,'unexpected owner cleanup awaited without widened deadline')
++ tokens=block(s,'    private func checkFixtureAdmissionTokens(')
++ check('gate.acknowledge(UUID())' in tokens and 'gate.acknowledge(first);XCTAssertThrowsError(try gate.reserve())' in tokens,'foreign duplicate and old tokens tested')
++ check('XCTSkip' not in s and 'continueAfterFailure' not in s,'no case suppression')
++ return checks
++class SourceTests(unittest.TestCase):
++ def test_exact_fixture_contracts(self):self.assertGreaterEqual(contracts(SOURCE.read_text()),50)
++ def test_negative_mutations_fail_closed(self):
++  s=SOURCE.read_text()
++  mutations=[
++   ('shared gate','static let shared=SeatedFixtureDrainGate()','let shared=SeatedFixtureDrainGate()'),
++   ('busy owner','guard current == nil else {throw Failure.previousControllerNotDrained}','// accepts another owner'),
++   ('identity','guard current == token else {return}','// accepts any token'),
++   ('locking','lock.lock();defer {lock.unlock()}','defer {}'),
++   ('backend reservation','fixtureGate=gate;fixtureToken=token','fixtureGate=gate;fixtureToken=UUID()'),
++   ('failed constructor real drain','ingress.stopAndDiscard {gate.acknowledge(token)}','gate.acknowledge(token)'),
++   ('full controller binding','onStopped:{backend.acknowledgeControllerDrain();ownerDrained.fulfill()}','onStopped:{ownerDrained.fulfill()}'),
++   ('session callback','gate.acknowledge(token) // Actual full-controller','_ = token // Actual full-controller'),
++   ('async teardown','addTeardownBlock {\n            await MainActor.run {controller.stop()}','Task {\n            await MainActor.run {controller.stop()}'),
++   ('overfulfill','drained.assertForOverFulfill=true','drained.assertForOverFulfill=false'),
++   ('query deadline','await fulfillment(of:[ready],timeout:10)','await fulfillment(of:[ready],timeout:20)'),
++   ('native control','try await assertLaterFixtureRefusedWhileControllerHeld()','// removed later-admission control'),
++   ('cleanup deadline','await self.fulfillment(of:[drained],timeout:10)','await self.fulfillment(of:[drained],timeout:20)'),
++   ('original assertion','XCTAssertTrue(finished); XCTAssertNil(released)','XCTAssertTrue(true)'),
++  ]
++  for name,a,b in mutations:
++   with self.subTest(name=name):
++    self.assertIn(a,s)
++    with self.assertRaises((AssertionError,ValueError)):contracts(s.replace(a,b,1))
++if __name__=='__main__':unittest.main()

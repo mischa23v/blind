@@ -752,10 +752,10 @@ extension ConnectedJourneyRuntimeTests {
         let before = try runtime.snapshot.encoded(), goal = runtime.goal, start = runtime.snapshot.start
         let context = try XCTUnwrap(runtime.nativeLocalizationContext)
         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
-            goalRevision: context.goalRevision))
+            goalRevision: try XCTUnwrap(context.goalRevision)))
         XCTAssertEqual(runtime.expectedSessionID, context.sessionID) // Same-owner replay ledger is retained.
         XCTAssertFalse(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
-            goalRevision: context.goalRevision))
+            goalRevision: try XCTUnwrap(context.goalRevision)))
         XCTAssertThrowsError(try runtime.next(now: 1.4)) // Loss/source history alone is not current pose.
         XCTAssertNil(runtime.diagnosticOwnedRoute)
         XCTAssertEqual(try runtime.snapshot.encoded(), before)
@@ -797,7 +797,7 @@ extension ConnectedJourneyRuntimeTests {
         let (runtime, _, _) = try await preparedPortalRecovery(ambiguousEntry: true)
         let context = try XCTUnwrap(runtime.nativeLocalizationContext), before = try runtime.snapshot.encoded()
         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
-            goalRevision: context.goalRevision))
+            goalRevision: try XCTUnwrap(context.goalRevision)))
         let midLeg = SpatialLocalizationCapture(sessionID: context.sessionID, binding: F.b,
             floorID: "ground", roomID: "hall", position: .init(2,1.3,3), bodyYaw: -.pi/2,
             source: .alignedMapPose, headingSource: .bodyAligned, trackingNormal: true,
@@ -816,7 +816,7 @@ extension ConnectedJourneyRuntimeTests {
         let (runtime, io, departure) = try await preparedPortalRecovery()
         let context = try XCTUnwrap(runtime.nativeLocalizationContext), retained = runtime.goal
         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
-            goalRevision: context.goalRevision))
+            goalRevision: try XCTUnwrap(context.goalRevision)))
         let wrong = SpatialLocalizationCapture(sessionID: departure.sessionID, binding: F.b,
             floorID: "ground", roomID: "hall", position: .init(1,1.3,3), bodyYaw: -.pi/2,
             source: .alignedMapPose, headingSource: .bodyAligned, trackingNormal: true,
@@ -857,7 +857,7 @@ extension ConnectedJourneyRuntimeTests {
         XCTAssertEqual(context.revision.binding, F.a); XCTAssertEqual(returning.purpose, .returnToStart)
         XCTAssertEqual(associations, 1)
         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
-            goalRevision: context.goalRevision))
+            goalRevision: try XCTUnwrap(context.goalRevision)))
         XCTAssertThrowsError(try runtime.next(now: 2))
         try observe(runtime, F.endpoint(F.a,"p"), time: 2, yaw: .pi/2)
         XCTAssertEqual(try runtime.next(now: 2).route.target.id, "m")
@@ -876,7 +876,7 @@ extension ConnectedJourneyRuntimeTests {
         let context = try XCTUnwrap(runtime.nativeLocalizationContext), prior = runtime.goal
         let start = runtime.snapshot.start
         XCTAssertTrue(runtime.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact,
-            goalRevision: context.goalRevision))
+            goalRevision: try XCTUnwrap(context.goalRevision)))
         try runtime.setDestination(binding: F.b, nodeID: "m", origin: .trustedInterface)
         try await completedWork(runtime)
         XCTAssertNotEqual(runtime.goal?.revision, prior?.revision)

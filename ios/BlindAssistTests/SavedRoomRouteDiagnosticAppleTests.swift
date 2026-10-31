@@ -339,4 +339,195 @@ import BlindRoomMesh
         XCTAssertGreaterThan(completedCandidates,0,"No complete candidate route was exercised; no-path is not success")
         XCTAssertEqual(conflictingCompleteCandidates,0,"Original-model body/margin contact is a failed candidate, not a successful stop")
     }
+
+    /// Additive historical-model diagnostic. Original schedules and assertions
+    /// above remain untouched; these new starts never relocate an actual person.
+    func testAdditiveSourceProvedStartsAndUnchangedHallContactPhases() async throws {
+        struct Query: Decodable { let id, room, profile: String; let start, goal: [Double] }
+        struct Addendum: Decodable {
+            let schema: Int
+            let physicalAuthority, nativeExecuted, changesOriginalSchedules: Bool
+            let sourceFixtureSHA256: [String: String]
+            let queries: [Query]
+        }
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "VALID_START_PHASE_ADDENDUM",
+            withExtension: "json", subdirectory: "RoomRouteDiagnostic"))
+        let data = try Data(contentsOf: url)
+        XCTAssertEqual(sha(data), "a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663")
+        let addendum = try JSONDecoder().decode(Addendum.self, from: data)
+        XCTAssertEqual(addendum.schema, 1)
+        XCTAssertFalse(addendum.physicalAuthority); XCTAssertFalse(addendum.nativeExecuted)
+        XCTAssertFalse(addendum.changesOriginalSchedules); XCTAssertEqual(addendum.queries.count, 4)
+        guard addendum.queries.count == 4 else { throw BenchFailure.invalidProtocol }
+        let original = try loadProtocol()
+        XCTAssertEqual(addendum.sourceFixtureSHA256, original.fixtures)
+        let width28 = Profile(id: "declared-width28-assumed-depth20-height120", width: 0.28,
+            depth: 0.20, height: 1.20, margin: 0.15)
+        let profiles = original.profiles + [width28]
+        func phase(_ contacts: SavedRoomRouteCollisionOracle.Contacts) -> [String: Any] {
+            ["obstacleIDs": contacts.obstacleSurfaceIDs.map(\.uuidString).sorted(),
+             "floorIDs": contacts.floorSurfaceIDs.map(\.uuidString).sorted(),
+             "boundIDs": contacts.furnitureBoundIDs.map(\.uuidString).sorted(),
+             "hasObstacleContact": contacts.hasObstacleContact,
+             "details": contacts.details.map { detail -> [String: Any] in
+                 ["featureID": detail.featureID.uuidString, "kind": detail.kind,
+                  "point": detail.point, "normal": detail.normal,
+                  "penetrationDistance": detail.penetrationDistance]
+             }]
+        }
+        func phases(_ result: SavedRoomRouteCollisionOracle.SweepResult) -> [String: Any] {
+            ["initial": phase(result.initial), "swept": phase(result.swept),
+             "terminal": phase(result.terminal), "fullFootprintSupportVerified": false,
+             "physicalAuthority": false, "actualCylinder": result.detailShape ?? [:]]
+        }
+        var rows: [[String: Any]] = []
+        var geometry: [[String: Any]] = []
+        enum DetailFailure: Error { case budgetExceeded }
+        final class DrainFlag: @unchecked Sendable {
+            private let lock = NSLock()
+            private var acknowledged = false
+            func set() { lock.lock(); acknowledged = true; lock.unlock() }
+            func get() -> Bool { lock.lock(); defer { lock.unlock() }; return acknowledged }
+        }
+        func acknowledgedDiscard(_ owner: RoomMeshCandidateRuntime) async -> Bool {
+            let done = expectation(description: "additive contact owner terminal discard")
+            let flag = DrainFlag()
+            owner.stopAndDiscard { flag.set(); done.fulfill() }
+            await fulfillment(of: [done], timeout: 15)
+            return flag.get()
+        }
+        // Transactional prefix retention: reject an over-budget addition, retain
+        // every preceding complete receipt and mark failure. Never a passing truncation.
+        func store(_ key: String, _ value: Any, in row: inout [String: Any]) throws {
+            var candidate = row; candidate[key] = value
+            let retained: [String: Any] = ["outcomes": rows + [candidate], "hallTriangles": geometry]
+            guard try JSONSerialization.data(withJSONObject: retained).count <= 900_000 else {
+                throw DetailFailure.budgetExceeded
+            }
+            row = candidate
+        }
+        var failed = 0
+        var previousOwnerUndrained = false
+        for queryInput in addendum.queries {
+            var row: [String: Any] = ["id": queryInput.id, "room": queryInput.room,
+                "profile": queryInput.profile, "physicalAuthority": false,
+                "fullFootprintSupportVerified": false]
+            if previousOwnerUndrained {
+                row["outcome"] = "not-run-after-undrained-owner"; failed += 1
+                rows.append(row); continue
+            }
+            var retainedOwner: RoomMeshCandidateRuntime?
+            do {
+                let digest = try XCTUnwrap(original.fixtures[queryInput.room])
+                let profile = try XCTUnwrap(profiles.first { $0.id == queryInput.profile })
+                let snapshot = try await mesh(room: queryInput.room, digest: digest)
+                if queryInput.room == "Hallway2" && geometry.isEmpty {
+                    let ids = Set(["0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA", "0CD2F73E-5F0B-444C-BE63-2F9855C59D47"])
+                    for index in snapshot.triangleFeatureIDs.indices where ids.contains(snapshot.triangleFeatureIDs[index].uuidString) {
+                        let triangle = Array(snapshot.triangles[(index * 3)..<(index * 3 + 3)])
+                        let vertices = triangle.map { vertex -> [UInt32] in
+                            let offset = Int(vertex) * 3
+                            return (0..<3).map { Float(snapshot.vertices[offset + $0]).bitPattern }
+                        }
+                        guard geometry.count < 128 else { throw DetailFailure.budgetExceeded }
+                        geometry.append(["triangleIndex": index, "featureID": snapshot.triangleFeatureIDs[index].uuidString,
+                            "indices": triangle, "worldPositionFloat32Bits": vertices])
+                    }
+                }
+                let floor = try XCTUnwrap(snapshot.features.first { $0.kind == .floor })
+                let boxes = snapshot.features.filter { $0.kind == .furniture }.map {
+                    SavedRoomRouteCollisionOracle.FurnitureBox(featureID: $0.id,
+                        dimensions: $0.dimensions, transform: $0.transform)
+                }
+                let oracle = try SavedRoomRouteCollisionOracle(vertices: snapshot.vertices,
+                    triangles: snapshot.triangles, floorSupport: snapshot.floorSupport,
+                    triangleFeatureIDs: snapshot.triangleFeatureIDs, furnitureBoxes: boxes)
+                let a = try point(queryInput.start, floor: floor), b = try point(queryInput.goal, floor: floor)
+                row["sourceSHA256"] = digest; row["requestedStart"] = array(a); row["requestedGoal"] = array(b)
+                row["rawRadius"] = profile.radius; row["rawHeight"] = profile.height
+                row["effectiveRadius"] = profile.effectiveRadius; row["effectiveHeight"] = profile.effectiveHeight
+                let startRaw = try oracle.sweep(from: a, to: a, radius: Float(profile.radius), height: Float(profile.height), recordDetails: true)
+                try store("startRaw", phases(startRaw), in: &row)
+                let startMargin = try oracle.sweep(from: a, to: a, radius: profile.effectiveRadius, height: profile.effectiveHeight, recordDetails: true)
+                try store("startMargin", phases(startMargin), in: &row)
+                let goalRaw = try oracle.sweep(from: b, to: b, radius: Float(profile.radius), height: Float(profile.height), recordDetails: true)
+                try store("goalRaw", phases(goalRaw), in: &row)
+                let goalMargin = try oracle.sweep(from: b, to: b, radius: profile.effectiveRadius, height: profile.effectiveHeight, recordDetails: true)
+                try store("goalMargin", phases(goalMargin), in: &row)
+                if startRaw.all.hasObstacleContact || startMargin.all.hasObstacleContact ||
+                    goalRaw.all.hasObstacleContact || goalMargin.all.hasObstacleContact {
+                    row["outcome"] = "stationary-endpoint-contact"; failed += 1
+                    rows.append(row); continue
+                }
+                // Same original routing mesh and settings. No collision result
+                // selects a different endpoint, repairs or retries a route.
+                let owner = try RoomMeshCandidateRuntime(sessionID: "additive-contact-fixture", supportPolicy: .classifiedFloorOnly)
+                retainedOwner = owner
+                try owner.reset(sessionID: "additive-contact-fixture", generation: 1)
+                let identity: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
+                let accepted = owner.offer(.init(sessionID: "additive-contact-fixture", generation: 1,
+                    anchorID: digest, revision: 1, timestamp: 0, vertices: snapshot.vertices,
+                    triangles: snapshot.triangles, columnMajorTransform: identity, complete: true,
+                    triangleSupport: snapshot.floorSupport.map { $0 ? .floor : .obstacle }))
+                guard accepted else { throw BenchFailure.invalidProtocol }
+                let result = try await query(owner, from: a, to: b, profile: profile)
+                switch result {
+                case .failure:
+                    row["outcome"] = "native-query-failure"; failed += 1
+                case .success(let route):
+                    guard route.points.count <= 128 else { throw BenchFailure.invalidProtocol }
+                    row["nativeComplete"] = route.complete; row["nativeStatus"] = route.nativeStatus
+                    row["routePoints"] = route.points; row["projectedStart"] = route.projectedStart
+                    row["projectedGoal"] = route.projectedGoal
+                    let segments = try scoredSegments(start: a, projectedStart: vector(route.projectedStart),
+                        points: route.points.map(vector), projectedGoal: vector(route.projectedGoal), goal: b, complete: route.complete)
+                    var records: [[String: Any]] = []; var contact = false
+                    for segment in segments {
+                        let raw = try oracle.sweep(from: segment.from, to: segment.to,
+                            radius: Float(profile.radius), height: Float(profile.height), recordDetails: true)
+                        records.append(["kind": segment.kind, "from": array(segment.from), "to": array(segment.to),
+                            "raw": phases(raw), "receiptState": "raw-recorded"])
+                        try store("segments", records, in: &row)
+                        let margin = try oracle.sweep(from: segment.from, to: segment.to,
+                            radius: profile.effectiveRadius, height: profile.effectiveHeight, recordDetails: true)
+                        contact = contact || raw.all.hasObstacleContact || margin.all.hasObstacleContact
+                        records[records.count - 1]["margin"] = phases(margin)
+                        records[records.count - 1]["receiptState"] = "complete"
+                        try store("segments", records, in: &row)
+                    }
+                    row["outcome"] = !route.complete ? "partial-route" : (contact ? "candidate-contact" : "historical-model-no-contact")
+                    if !route.complete || contact { failed += 1 }
+                }
+
+            } catch DetailFailure.budgetExceeded {
+                row["outcome"] = "diagnostic-budget-exceeded"
+                row["detailsComplete"] = false; failed += 1
+            } catch let error as SavedRoomRouteCollisionOracle.Failure {
+                if case .backendUnavailable(let code) = error, code == "contact detail count exceeded" {
+                    row["outcome"] = "contact-detail-budget-exceeded"
+                } else { row["outcome"] = "query-or-oracle-error" }
+                row["detailsComplete"] = false; failed += 1
+            } catch {
+                row["detailsComplete"] = false
+                // No arbitrary error text is emitted; prefix fields retain what
+                // actually ran. An exception is a failure, never a passing subset.
+                row["outcome"] = "query-or-oracle-error"; failed += 1
+            }
+            if let owner = retainedOwner {
+                let drained = await acknowledgedDiscard(owner)
+                row["cleanupAcknowledged"] = drained
+                if !drained { previousOwnerUndrained = true; failed += 1 }
+            }
+            rows.append(row)
+        }
+        let report: [String: Any] = ["schema": 1, "physicalAuthority": false,
+            "fullFootprintSupportVerified": false, "originalSchedulesChanged": false,
+            "outcomes": rows, "hallTriangles": geometry]
+        let bytes = try JSONSerialization.data(withJSONObject: report, options: [.sortedKeys])
+        guard bytes.count <= 1_048_576 else { XCTFail("Additive contact report exceeded bound; no truncation"); return }
+        let attachment = XCTAttachment(data: bytes, uniformTypeIdentifier: "public.json")
+        attachment.name = "APPLE_VALID_START_CONTACT_PHASES.json"; attachment.lifetime = .keepAlways; add(attachment)
+        XCTAssertEqual(rows.count, 4)
+        XCTAssertEqual(failed, 0, "Additive contact/rejection/timeout stays a failure; original failures are unchanged")
+    }
 }

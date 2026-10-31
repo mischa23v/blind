@@ -35,7 +35,16 @@ final class SavedRoomRouteCollisionOracle {
         let transform: [Double]
     }
 
+    /// Opt-in authored-fixture diagnostics only; never private scene capture.
+    struct ContactDetail: Equatable, Sendable {
+        let featureID: UUID
+        let kind: String
+        let point, normal: [Double]
+        let penetrationDistance: Double
+    }
+
     struct Contacts: Equatable, Sendable {
+        var details: [ContactDetail] = []
         var obstacleSurfaceIDs = Set<UUID>()
         var floorSurfaceIDs = Set<UUID>()
         var furnitureBoundIDs = Set<UUID>()
@@ -44,6 +53,7 @@ final class SavedRoomRouteCollisionOracle {
             obstacleSurfaceIDs.formUnion(other.obstacleSurfaceIDs)
             floorSurfaceIDs.formUnion(other.floorSurfaceIDs)
             furnitureBoundIDs.formUnion(other.furnitureBoundIDs)
+            details.append(contentsOf: other.details)
         }
     }
 
@@ -51,6 +61,7 @@ final class SavedRoomRouteCollisionOracle {
         let initial: Contacts
         let swept: Contacts
         let terminal: Contacts
+        let detailShape: [String: Double]?
         /// Whole-footprint support is deliberately NOT inferred from floor contact
         /// or from absence of a non-floor collision. Holes remain unverified here.
         let fullFootprintSupportVerified = false
@@ -193,12 +204,12 @@ final class SavedRoomRouteCollisionOracle {
 
     /// Feet/base-centre positions in the original saved world. Continuous sweep of
     /// a full cylinder, plus explicit initial AND terminal overlap queries.
-    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float) throws -> SweepResult {
+    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float, recordDetails: Bool = false) throws -> SweepResult {
         guard Self.valid(from), Self.valid(to), radius.isFinite, height.isFinite,
               (0.1...2).contains(radius), (0.5...3).contains(height) else { throw Failure.invalidQuery }
         let geometry = SCNCylinder(radius: CGFloat(radius), height: CGFloat(height))
         let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
-        let initial = try overlap(at: from, height: height, shape: shape)
+        let initial = try overlap(at: from, height: height, shape: shape, recordDetails: recordDetails)
         let start = Self.centreTransform(from, height: height), end = Self.centreTransform(to, height: height)
         synchronizePhysics()
         // Query both categories with the identical cylinder/transforms, then
@@ -209,13 +220,16 @@ final class SavedRoomRouteCollisionOracle {
             let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
                 options: [.collisionBitMask: mask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
                           .backfaceCulling: false])
-            swept.formUnion(try contacts(raw))
+            swept.formUnion(try contacts(raw, recordDetails: recordDetails))
         }
-        let terminal = try overlap(at: to, height: height, shape: shape)
-        return SweepResult(initial: initial, swept: swept, terminal: terminal)
+        let terminal = try overlap(at: to, height: height, shape: shape, recordDetails: recordDetails)
+        return SweepResult(initial: initial, swept: swept, terminal: terminal,
+            detailShape: recordDetails ? ["radius": Double(geometry.radius), "height": Double(geometry.height),
+                "radialSegmentCount": Double(geometry.radialSegmentCount),
+                "heightSegmentCount": Double(geometry.heightSegmentCount), "collisionMargin": 0] : nil)
     }
 
-    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape) throws -> Contacts {
+    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape, recordDetails: Bool = false) throws -> Contacts {
         let node = SCNNode()
         node.simdTransform = Self.centreTransform(foot, height: height)
         let body = SCNPhysicsBody(type: .kinematic, shape: shape)
@@ -227,18 +241,37 @@ final class SavedRoomRouteCollisionOracle {
         defer { node.removeFromParentNode(); synchronizePhysics() }
         var result = Contacts()
         for mask in queryMasks {
-            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask])))
+            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask]), recordDetails: recordDetails))
         }
         return result
     }
 
-    private func contacts(_ raw: [SCNPhysicsContact]) throws -> Contacts {
+    private func contacts(_ raw: [SCNPhysicsContact], recordDetails: Bool = false) throws -> Contacts {
+        // Bound each native category response; overflow fails, never truncates.
+        if recordDetails && raw.count > 32 { throw Failure.backendUnavailable("contact detail count exceeded") }
         var result = Contacts()
         for contact in raw {
             var recognized = false
             for node in [contact.nodeA, contact.nodeB] {
                 guard let identity = identities[ObjectIdentifier(node)] else { continue }
                 recognized = true
+                if recordDetails {
+                    let p = contact.contactPoint, n = contact.contactNormal
+                    let point = [Double(p.x), Double(p.y), Double(p.z)]
+                    let normal = [Double(n.x), Double(n.y), Double(n.z)]
+                    let penetration = Double(contact.penetrationDistance)
+                    guard (point + normal + [penetration]).allSatisfy(\.isFinite) else {
+                        throw Failure.backendUnavailable("nonfinite contact detail")
+                    }
+                    let kind: String
+                    switch identity.kind {
+                    case .obstacleSurface: kind = "obstacle-surface"
+                    case .floorSurface: kind = "floor-surface"
+                    case .furnitureBound: kind = "furniture-bound"
+                    }
+                    result.details.append(.init(featureID: identity.id, kind: kind,
+                        point: point, normal: normal, penetrationDistance: penetration))
+                }
                 switch identity.kind {
                 case .obstacleSurface: result.obstacleSurfaceIDs.insert(identity.id)
                 case .floorSurface: result.floorSurfaceIDs.insert(identity.id)

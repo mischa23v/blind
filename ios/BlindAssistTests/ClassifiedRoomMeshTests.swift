@@ -14,6 +14,16 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         func put(_ result: Result<MeshCandidateRoute, MeshCandidateError>) { lock.lock(); stored = result; lock.unlock() }
         func get() -> Result<MeshCandidateRoute, MeshCandidateError>? { lock.lock(); defer { lock.unlock() }; return stored }
     }
+    // This family uses the same process-global native worker as ingress fixtures.
+    // Keep the admitted test owner until its actual discard callback, including throws.
+    static let fixtureDrainGate = ClassificationIngressTests.fixtureDrainGate
+    private final class Acknowledgement: @unchecked Sendable {
+        private let lock = NSLock()
+        private var value = false
+        func mark() { lock.lock(); value = true; lock.unlock() }
+        func get() -> Bool { lock.lock(); defer { lock.unlock() }; return value }
+    }
+    private var discardAcknowledgements: [ObjectIdentifier: (acknowledged: Acknowledgement, token: UUID)] = [:]
     private func event(session: String, support: [MeshTriangleSupport]?) -> MeshAnchorEvent {
         .init(sessionID: session, generation: 0, anchorID: "authored-plane", revision: 1,
               timestamp: 1, vertices: vertices, triangles: triangles, columnMajorTransform: identity,
@@ -47,12 +57,27 @@ final class ClassifiedRoomMeshTests: XCTestCase {
     }
 #endif
     private func makeRuntime(sessionID: String, supportPolicy: MeshSupportPolicy = .legacySlope) throws -> RoomMeshCandidateRuntime {
+        guard let token = Self.fixtureDrainGate.reserve() else {
+            XCTFail("Previous classification fixture native owner has not acknowledged discard")
+            throw MeshCandidateError.unavailable
+        }
+        let runtime: RoomMeshCandidateRuntime
+        do {
 #if DEBUG
-        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true,
-            syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) })
+            runtime = try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true,
+                syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) })
 #else
-        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy)
+            runtime = try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy)
 #endif
+        } catch {
+            Self.fixtureDrainGate.acknowledge(token) // Constructor failed before native admission.
+            throw error
+        }
+        discardAcknowledgements[ObjectIdentifier(runtime)] = (Acknowledgement(), token)
+        addTeardownBlock { [self, runtime] in
+            await discard(runtime) // A thrown query must not bypass owned cleanup.
+        }
+        return runtime
     }
     private enum ReceiptEvent: String { case callback, waitFinished, failureDiscardCompleted, discardCompleted }
     private static func stageReceipt(_ runtime: RoomMeshCandidateRuntime, event: ReceiptEvent) {
@@ -88,8 +113,19 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         return try XCTUnwrap(result, "Native callback did not complete; no passing route inferred; receipt=\(receipt), wait_elapsed_ms=\(elapsedMS), terminal discard requested")
     }
     private func discard(_ runtime: RoomMeshCandidateRuntime) async {
-        let done = expectation(description: "terminal geometry release")
-        runtime.stopAndDiscard { done.fulfill() }
+        guard let receipt = discardAcknowledgements[ObjectIdentifier(runtime)] else {
+            XCTFail("Fixture owner was not registered for acknowledged cleanup")
+            return
+        }
+        guard !receipt.acknowledged.get() else { return }
+        // Fresh standalone expectation if teardown observes an earlier timed-out wait.
+        let done = XCTestExpectation(description: "terminal geometry release")
+        done.assertForOverFulfill = true
+        runtime.stopAndDiscard {
+            receipt.acknowledged.mark()
+            Self.fixtureDrainGate.acknowledge(receipt.token)
+            done.fulfill()
+        }
         await fulfillment(of: [done], timeout: 10)
         Self.stageReceipt(runtime, event: .waitFinished)
     }

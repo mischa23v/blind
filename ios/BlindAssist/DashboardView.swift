@@ -606,6 +606,9 @@ struct AssistantToolsView: View {
                 // The speech gate already holds this back during urgent hazards.
                 Button(t("Repeat answer", "كرر الإجابة")) { model.speakRequested(model.sceneAnswer) }
                     .disabled(model.sceneAnswer.isEmpty)
+                    // Reuse the readable disabled-state style; do not enable empty speech.
+                    .buttonStyle(AskCameraAnswerButtonStyle(tint: accent))
+                    .accessibilityIdentifier("repeat-answer")
                 Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
                     .accessibilityIdentifier("stop-descriptions")
             } header: { Text(t("Answer", "الإجابة")).font(.headline).accessibilityAddTraits(.isHeader) }

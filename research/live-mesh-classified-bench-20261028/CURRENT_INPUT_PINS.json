@@ -490,8 +490,8 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/NativeObservation.swift",
-      "bytes": 20157,
-      "sha256": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45"
+      "bytes": 20518,
+      "sha256": "ec92693545086adc5236ab93fb06e90e8ecc80f58f8736a9e4af3ddf3067fadd"
     },
     {
       "path": "BlindCore/Sources/BlindCore/NativeObservationDurabilityBudget.swift",
@@ -829,6 +829,11 @@
       "sha256": "ff19a650989b15806fc3369818a1d09225e260be33e450503d106b56be0f48ae"
     },
     {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift",
+      "bytes": 13231,
+      "sha256": "bd9fbe493ae7edd1ab83e11b1de06b2bd45396ca65af3de824f954e4c97e9965"
+    },
+    {
       "path": "BlindCore/Tests/BlindCoreTests/SceneFrameProvenanceTests.swift",
       "bytes": 2519,
       "sha256": "4eba63c00c46159fc6ed35e8dc3849c64ac748931b638dc6dfe52d595d4f2286"
@@ -865,8 +870,8 @@
     },
     {
       "path": "ios/BlindAssist/DashboardView.swift",
-      "bytes": 90205,
-      "sha256": "14f497dcc055ef07cec421320f77429df3cfdc1b193f9ea8954f1a4208937615"
+      "bytes": 90434,
+      "sha256": "42244dc19e3c4b0c3eeeea81455dc5e2ba84b1ad23eec47a3530c508ed1b0037"
     },
     {
       "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
@@ -980,8 +985,13 @@
     },
     {
       "path": "ios/BlindAssistTests/ClassificationIngressTests.swift",
-      "bytes": 21084,
-      "sha256": "63069641583f1311081b60b5651a52ca82c608eda013258560c4e1fb69b51b75"
+      "bytes": 21177,
+      "sha256": "078af9324b47cf0fb75cecf511ef6c5ea6f93577ac734f32a13495ea80f7798b"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift",
+      "bytes": 12808,
+      "sha256": "ba282d15ad4d00d43288fc07697cf3044387cac72bd72fb6ee73b705464befb2"
     },
     {
       "path": "ios/BlindAssistTests/CommunityTests.swift",
@@ -990,8 +1000,8 @@
     },
     {
       "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
-      "bytes": 59265,
-      "sha256": "627ac370221c9003a83679a24893be64058d0572958283ada2587a89dbfbb1cc"
+      "bytes": 59355,
+      "sha256": "a744313687fd03bffa3b0eb87333a08875a6a9ede9983c62f673fbb9e309d5af"
     },
     {
       "path": "ios/BlindAssistTests/ConnectedNavigationBenchIntegrationTests.swift",
@@ -1002,6 +1012,11 @@
       "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
       "bytes": 45251,
       "sha256": "cba80b2e7b6e435203ca53514fbd3153eee7657562d5d65c42fa202426f82e73"
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json",
+      "bytes": 2726,
+      "sha256": "a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663"
     },
     {
       "path": "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
@@ -1030,8 +1045,13 @@
     },
     {
       "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
-      "bytes": 33197,
-      "sha256": "9581e63244f89a5183d752124d306e6808bf114dfc5cb3eecf809b03183e9b53"
+      "bytes": 35309,
+      "sha256": "cd0b86b0db9a15973e6b2cf39d2a013a4006d3bf93a2974a161cdaf1a8088140"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift",
+      "bytes": 37825,
+      "sha256": "06a5fa848a9d228cecdd29896f6269c052b293752ee5363b5942693874d7d816"
     },
     {
       "path": "ios/BlindAssistTests/SeatedCollisionBridgeTests.swift",
@@ -1040,13 +1060,13 @@
     },
     {
       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
-      "bytes": 56175,
-      "sha256": "c0633d4c8b580ba749e0d51ea98b8b4584e2a99d7fec9dcae07f685286f4d51b"
+      "bytes": 60813,
+      "sha256": "55355dfc5d8ab037030b85b1d1390eecb57571e6178d31ebd4bf5cb1d8a9d238"
     },
     {
       "path": "ios/BlindAssistUITests/LaunchTests.swift",
-      "bytes": 29513,
-      "sha256": "187bc7f33b843c6f4e17b9a2e610c63a873907b9eb6acd9ac788a0d09d3ebbe3"
+      "bytes": 29818,
+      "sha256": "49210fc74eeda8bfe697da249cf16dd089dc6ee1242c4648e2e77129060bc9e5"
     },
     {
       "path": "research/arkit-mesh-adapter-82/Package.swift",
@@ -1062,6 +1082,21 @@
       "path": "research/arkit-mesh-adapter-82/Sources/MeshSnapshot.swift",
       "bytes": 7626,
       "sha256": "d7318f9a2564c62677abaf53934ea7721a25fe13a1d59ffab9ecd717762b4fdc"
+    },
+    {
+      "path": "research/depth-raster-integrity-20261030/README.md",
+      "bytes": 2512,
+      "sha256": "7afba98b05c5b24a01c70c983e1f455aff972b81d19618cbfa57f2056f9a9e4f"
+    },
+    {
+      "path": "research/depth-raster-integrity-20261030/RESULTS.json",
+      "bytes": 720,
+      "sha256": "011664e839c2be82d0bd6967ee719bf7f859cc7d5ec67843efd715c6c547f4c0"
+    },
+    {
+      "path": "research/depth-raster-integrity-20261030/source_check.py",
+      "bytes": 2653,
+      "sha256": "f0aee87f530aba57d87e147b6f0679c1775a71d8579311bdeca464a4761fcf73"
     },
     {
       "path": "research/ingress-fixture-owned-drain-20261030/OBSERVATIONS.json",
@@ -1110,8 +1145,38 @@
     },
     {
       "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
-      "bytes": 9312,
-      "sha256": "e84cd70dd5ac14c9fbb3d28b05f98a7f9c8c7b94940cf820c7ff73f9878d4928"
+      "bytes": 10076,
+      "sha256": "6896b49ce79a2923516ca01275630253abeb8b98f5cd984b66c0290eb97a4707"
+    },
+    {
+      "path": "research/j01-temp-fixture-portability-20261030/README.md",
+      "bytes": 2447,
+      "sha256": "72bc6f64bf10b2c36d76b25e06b40a495717046457e212d53665cb560e2401d3"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/README.md",
+      "bytes": 16141,
+      "sha256": "8acd7427d206110fa63ce2f5a7e3943603ccf25a3457776e28c6b7c15a0a307f"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/RESULTS.json",
+      "bytes": 2362,
+      "sha256": "6b38f0661da1b786474fbe4cc0ab030730c82ce3d134379c09e99d53a0222211"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/SOURCE_PINS.json",
+      "bytes": 3307,
+      "sha256": "f201ea4d97887dde0ba6eef31ac9c35bdc92f34b4d4bb33292b8175fd469f2ac"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/UPSTREAM_REFERENCES.json",
+      "bytes": 2155,
+      "sha256": "25607bed5004a851bcbdf05295c88f9db40d3f5bdbfcc9a66ed4cf20ae763c29"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/audit.py",
+      "bytes": 5718,
+      "sha256": "069e7366d3a1507525c3762b5f837401102000406f1d430626c12a011f9db212"
     },
     {
       "path": "research/live-mesh-bench-proposal-20261028/DEPENDENCY_PINS.json",
@@ -1439,6 +1504,11 @@
       "sha256": "e03785e97737132e309efdccb90a3763f1241181ea963c3787e79e484870d6ed"
     },
     {
+      "path": "research/repeat-answer-contrast-20261030/README.md",
+      "bytes": 2120,
+      "sha256": "e06c38d2a904a45293e62aa30d4ec71918404d7c0af1ff2dcdfff0ea6181b69d"
+    },
+    {
       "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
       "bytes": 17840,
       "sha256": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
@@ -1749,6 +1819,16 @@
       "sha256": "ded9fbf9922d7d16374d4f55e1f7f76d605e53fb7fc2ef5c9e146bb669ed3d51"
     },
     {
+      "path": "research/seated-fixture-owned-drain-20261030/README.md",
+      "bytes": 4815,
+      "sha256": "95e6a3c5d03f3051aca4ce331c58d5430311a0650da06d2f3dd47ee29ec3cfe3"
+    },
+    {
+      "path": "research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json",
+      "bytes": 1326,
+      "sha256": "9aa81ab11b348a28742bd7cbd53c8ade36dd0bfa26708965dda76bc66de96fbb"
+    },
+    {
       "path": "research/seated-mapped-destination-20261030/README.md",
       "bytes": 8619,
       "sha256": "10105730d69cff38eb8abbe02b45b55869bcce414743a6e863e24c1449ba4062"
@@ -1809,9 +1889,19 @@
       "sha256": "42be731425576c22a166a5fa44a399b8ac3c5a5bb6d75794138d1360aad5c8e4"
     },
     {
+      "path": "tools/ci/native-route-diagnostic-evidence.py",
+      "bytes": 87230,
+      "sha256": "829669d351307c85301a2ec1a471592a5c80983f0f592cb51c44ad09f8876e08"
+    },
+    {
       "path": "tools/ci/test-collect-seated-projection.py",
       "bytes": 22756,
       "sha256": "0440a2b890b18433503ddee0ea930dae96326e88e45df9295f1aabc3446feba3"
+    },
+    {
+      "path": "tools/ci/test-native-route-diagnostic-evidence.py",
+      "bytes": 87512,
+      "sha256": "9c0e26f28c7ea44b6c51f69a796a2ecddaf3150a9b2ff04c8adff7a514e76dc4"
     },
     {
       "path": "tools/ci/test_collect_classified_bench.py",
@@ -1840,8 +1930,13 @@
     },
     {
       "path": "tools/ci/test_j01_actual_model.py",
-      "bytes": 19502,
-      "sha256": "164ac5735170c953fc9c2b52b1a744b8592062150ce9b1d7d938cb8627916f89"
+      "bytes": 20120,
+      "sha256": "043f4f0b96d90796cb2a98d44b4d3cb3e1efbf911fff1c1cc0f77495f6543e4f"
+    },
+    {
+      "path": "tools/ci/test_j01_portable_failure_diagnostic.py",
+      "bytes": 2492,
+      "sha256": "a40f90786ca5c3e2526eb21b20026c493b23058a2dcf0ca4a3fa0fe4fcb1e147"
     },
     {
       "path": "tools/ci/test_j01_project_membership.py",
@@ -1885,13 +1980,18 @@
     },
     {
       "path": "tools/test/classification-fixture-drain.test.py",
-      "bytes": 6924,
-      "sha256": "27d4405d94e8ff71b7c1125fb41f63dcc376c95d483590dd38b75a8e384236bd"
+      "bytes": 12276,
+      "sha256": "010524489712c0079a701b13443810437a4b337da3e70547ed3b20e23de3e314"
     },
     {
       "path": "tools/test/classified-hit-current.test.py",
       "bytes": 5510,
       "sha256": "1c603497b3993f6f3454f7339a23a2e7ef9a077979eaf9e1691ea053370a5d57"
+    },
+    {
+      "path": "tools/test/collision-contact-addendum.test.py",
+      "bytes": 5129,
+      "sha256": "59870d0f3e13d62ae00a3d281a631397fdc8b9c5d3478a2ad0c3b2d3f1542bac"
     },
     {
       "path": "tools/test/connected-beacon-bool.test.py",
@@ -1944,6 +2044,11 @@
       "sha256": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110"
     },
     {
+      "path": "tools/test/repeat-answer-contrast.test.py",
+      "bytes": 3715,
+      "sha256": "3c607e563a6e1f983a04686a7264cc5e7825742e51f74cd60bbaa4a89b1ce7b5"
+    },
+    {
       "path": "tools/test/room-photo-import-bounds.test.mjs",
       "bytes": 3881,
       "sha256": "4b6129f60da6e469aaaf7922e331bf87c6a9d4dc60f9066111f3183486362867"
@@ -1962,6 +2067,11 @@
       "path": "tools/test/scene-frame-provenance.test.mjs",
       "bytes": 6525,
       "sha256": "984666f888e61dbc87d985037bf7d9863d5b42335fc49e3faaf1c90217816b8a"
+    },
+    {
+      "path": "tools/test/seated-fixture-drain.test.py",
+      "bytes": 10550,
+      "sha256": "aed44d30cb803ade555ef80580f57f1d58494c624ccd8b966b412804f96ee9a5"
     },
     {
       "path": "tools/test/visual-absence-contract.test.mjs",
@@ -2239,6 +2349,49 @@
   "localMapPipelineContinuation": {
     "scope": "Exact public venue selection, private paired reference-only normal-camera context, and interrupted portal source recovery; no fabricated walkable geometry",
     "authoredSwiftMethodsAdded": 25,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "seatedOwnedDrainAndFloorResearch": {
+    "scope": "Seated test-family admission only after actual full controller drain; immutable research-only support-gap audit",
+    "projectionMethodCount": 17,
+    "originalFocusedCount": 21,
+    "currentFocusedCount": 26,
+    "newNativeMethods": 0,
+    "nativeExecuted": false,
+    "floorSupportImplementationChanged": false,
+    "physicalAuthority": false
+  },
+  "repeatAnswerContrastAndJ01FixtureRepair": {
+    "scope": "UI disabled Repeat answer source styling and test-created temporary-root identity only; not a rendered or native acceptance result",
+    "uiNativeTestMethods": 19,
+    "newNativeMethods": 0,
+    "j01FixturePacketIncluded": true,
+    "productionAttestationPolicyChanged": false,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "depthRasterIntegrity": {
+    "scope": "Raw depth accounting only; no calibrated floor producer",
+    "newNativeMethodsUnrun": 4,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "classificationCrossFamilyDrain": {
+    "scope": "Shared test-only acknowledged native ownership; first stalled build not repaired",
+    "nativeMethodsRetained": 15,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "collisionContactPhaseAddendum": {
+    "scope": "Separate authored valid-start/contact-phase diagnostic and exact optional collector; original outcomes not replaced",
+    "newNativeMethodsUnrun": 1,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "journeyRequiredGoalUnwrap": {
+    "scope": "Six required goal UUID optional unwraps in existing tests only",
+    "nativeMethodsRetained": 27,
     "nativeExecuted": false,
     "physicalAuthority": false
   }

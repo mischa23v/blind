@@ -74,6 +74,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         let last = try XCTUnwrap(lease.confirm(view:second))
         XCTAssertTrue(lease.close(view:second))
         XCTAssertFalse(lease.consume(view:second, confirmation:last))
+        try checkFixtureAdmissionTokens()
     }
 
     @MainActor func testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain() async throws {
@@ -84,7 +85,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         let hold = DispatchSemaphore(value:0), began = expectation(description:"renderer began")
         defer { hold.signal() }
         var finished = false
-        let controller = try SeatedMeshDiagnosticController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
+        let controller = try makeSessionController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
         controller.onNativeDrainForTesting = { native.fulfill() }
         controller.enqueueSyntheticDisplayWorkForTesting(work: {
             began.fulfill(); hold.wait()
@@ -93,9 +94,12 @@ final class SeatedMeshProjectionTests: XCTestCase {
         controller.stop()
         await fulfillment(of:[native],timeout:10)
         XCTAssertFalse(finished); XCTAssertNil(session.configuration)
+        try await assertLaterFixtureRefusedWhileControllerHeld()
         hold.signal()
         await fulfillment(of:[done],timeout:10)
         XCTAssertTrue(finished); XCTAssertTrue(session.delegate === original)
+        let reopened=try SeatedFixtureDrainGate.shared.reserve()
+        SeatedFixtureDrainGate.shared.acknowledge(reopened)
     }
     @MainActor func testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns() async throws {
         final class Delegate: NSObject, ARSessionDelegate {}
@@ -107,7 +111,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         defer { hold.signal() }
         var finished = false, payload: Payload? = Payload()
         weak var released = payload
-        let controller = try SeatedMeshDiagnosticController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
+        let controller = try makeSessionController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
         controller.onNativeDrainForTesting = { native.fulfill() }
         controller.enqueueSyntheticDisplayWorkForTesting(work: {}, afterEnqueue: { [payload] in
             withExtendedLifetime(payload) { hold.wait() }
@@ -126,7 +130,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         let backend = try SeatedCandidateFixtureBackend()
         let ownerDrained=XCTestExpectation(description:"seated controller ownership drained")
         ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
-        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{ownerDrained.fulfill()})
+        let controller = SeatedMeshDiagnosticController(testBackend: backend, clock: { backend.now },onStopped:{backend.acknowledgeControllerDrain();ownerDrained.fulfill()})
         addTeardownBlock {
             let drained = XCTestExpectation(description: "seated native teardown drained")
             await MainActor.run { controller.stop(); backend.stopAndDrain {
@@ -190,7 +194,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
             let ownerDrained=XCTestExpectation(description:"seated rejection controller ownership drained")
             ownerDrained.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
             var stopped=false
-            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{stopped=true;ownerDrained.fulfill()})
+            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDrained.fulfill()})
             addTeardownBlock {
                 let drained = XCTestExpectation(description: "seated rejection teardown drained")
                 await MainActor.run { controller.stop(); backend.stopAndDrain {
@@ -228,7 +232,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         let ownerDone=XCTestExpectation(description:"held-render controller ownership drained")
         ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
         var stopped=false
-        let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
+        let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
         let hold=DispatchSemaphore(value:0)
         defer {hold.signal()}
         addTeardownBlock {
@@ -282,7 +286,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
             let ownerDone=XCTestExpectation(description:"audit owner drained \(retirement)")
             ownerDone.assertForOverFulfill=true // Cleanup owns its sole wait, after the test method exits.
             var stopped=false,progressed=false
-            let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{stopped=true;ownerDone.fulfill()})
+            let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
             let renderHold=DispatchSemaphore(value:0)
             defer {renderHold.signal();gate.release()}
             addTeardownBlock {
@@ -486,7 +490,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
                 savedWorldRequest:request,restoreLoader:{_ in
                     entered.fulfill();_ = gate.wait(timeout:.now()+10)
                     return .failure(LiveMeshBenchSession.Failure.unavailable) // No forged successful AR archive.
-                },onStopped:{stopped=true;ownerDone.fulfill()})
+                },onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
             let retire: @MainActor () -> Void = {
                 guard !draining else{return};draining=true;controller.stop()
                 backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}}
@@ -517,6 +521,55 @@ final class SeatedMeshProjectionTests: XCTestCase {
         }
     }
 
+    /// Same-family lease covers the native-session lifecycle fixtures too. Their
+    /// body may fail before its final wait, so teardown owns an independent wait.
+    @MainActor private func makeSessionController(session: ARSession,
+        expectedDelegate: any ARSessionDelegate, onStopped: @escaping () -> Void) throws -> SeatedMeshDiagnosticController {
+        let gate=SeatedFixtureDrainGate.shared,token=try gate.reserve()
+        let drained=XCTestExpectation(description:"seated session full controller teardown drained")
+        drained.assertForOverFulfill=true
+        let controller:SeatedMeshDiagnosticController
+        do {
+            controller=try SeatedMeshDiagnosticController(session:session,expectedDelegate:expectedDelegate) {
+                gate.acknowledge(token) // Actual full-controller native/render/source/audit drain only.
+                drained.fulfill();onStopped()
+            }
+        } catch {
+            gate.acknowledge(token) // Constructor failed before session/geometry work was admitted.
+            throw error
+        }
+        addTeardownBlock {
+            await MainActor.run {controller.stop()}
+            await self.fulfillment(of:[drained],timeout:10)
+        }
+        return controller
+    }
+    /// Run while the first real controller's render closure is held AFTER native
+    /// discard. A second backend must throw before constructing/queuing native work.
+    @MainActor private func assertLaterFixtureRefusedWhileControllerHeld() async throws {
+        do {
+            let unexpected=try SeatedCandidateFixtureBackend()
+            // Regression-failure cleanup: this unexpected backend has no controller.
+            let drained=XCTestExpectation(description:"unexpected fixture native cleanup")
+            drained.assertForOverFulfill=true
+            unexpected.stopAndDrain {unexpected.acknowledgeControllerDrain();drained.fulfill()}
+            await fulfillment(of:[drained],timeout:10)
+            XCTFail("A later fixture was admitted before full controller drain")
+        } catch SeatedFixtureDrainGate.Failure.previousControllerNotDrained {
+            // Expected refusal is the assertion here, not a skipped native case.
+        }
+    }
+    private func checkFixtureAdmissionTokens() throws {
+        let gate=SeatedFixtureDrainGate(),first=try gate.reserve()
+        XCTAssertThrowsError(try gate.reserve())
+        gate.acknowledge(UUID());XCTAssertThrowsError(try gate.reserve())
+        gate.acknowledge(first)
+        let second=try gate.reserve();XCTAssertNotEqual(first,second)
+        gate.acknowledge(first);XCTAssertThrowsError(try gate.reserve())
+        gate.acknowledge(second)
+        let third=try gate.reserve();gate.acknowledge(third)
+    }
+
     @MainActor private func requestMappedPreview(_ controller:SeatedMeshDiagnosticController) {
         controller.requestPreview(startText:"",goalText:"99 99 99",radiusText:"0.3",heightText:"1.7",
             declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1",useMappedDestination:true)
@@ -536,7 +589,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         ownerDone.assertForOverFulfill=true
         var stopped=false,stopping=false
         let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},
-            destinationProvider:destinationProvider,onStopped:{stopped=true;ownerDone.fulfill()})
+            destinationProvider:destinationProvider,onStopped:{backend.acknowledgeControllerDrain();stopped=true;ownerDone.fulfill()})
         // Source and audit must NOT wait for optional visualization; preceding real
         // visualization tests remain unchanged, not replaced by this fixture.
         controller.enqueueSyntheticDisplayWorkForTesting(work:{},afterEnqueue:{hold.wait()},delivered:{})
@@ -562,9 +615,31 @@ final class SeatedMeshProjectionTests: XCTestCase {
 
 }
 
+/// Test-only same-family admission. Persist across XCTestCase instances; never
+/// reset on timeout. This is not a runtime scheduling policy or a QoS adjustment.
+private final class SeatedFixtureDrainGate: @unchecked Sendable {
+    enum Failure: Error {case previousControllerNotDrained}
+    static let shared=SeatedFixtureDrainGate()
+    private let lock=NSLock()
+    private var current:UUID?
+    func reserve() throws -> UUID {
+        lock.lock();defer {lock.unlock()}
+        guard current == nil else {throw Failure.previousControllerNotDrained}
+        let token=UUID();current=token;return token
+    }
+    func acknowledge(_ token:UUID) {
+        lock.lock();defer {lock.unlock()}
+        guard current == token else {return}
+        current=nil
+    }
+}
+
 /// Copied synthetic frame scalars + an actual owned classified floor packet.
 /// No ARFrame/ARSession activation, forged route/snapshot, validator or guidance.
 private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
+    private let fixtureGate:SeatedFixtureDrainGate
+    private let fixtureToken:UUID
+    func acknowledgeControllerDrain() {fixtureGate.acknowledge(fixtureToken)}
     private let ingress: LiveMeshBenchIngress
     private let snapshots = MeshBenchCameraSnapshot()
     private let sessionID = UUID(), anchorID = UUID()
@@ -587,9 +662,16 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     var onHeld: (() -> Void)?
     private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
     init(savedFrame: SavedWorldFrame? = nil) throws {
+        let gate=SeatedFixtureDrainGate.shared,token=try gate.reserve()
+        fixtureGate=gate;fixtureToken=token
         let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
-        ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
-            syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
+        do {
+            ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
+                syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
+        } catch {
+            gate.acknowledge(token) // No native/source work admitted by the failed constructor.
+            throw error
+        }
         let values: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
         let bytes = values.flatMap { value in (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0*8)) } }
         let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
@@ -604,7 +686,12 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
                     classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
             } catch { return .unknownGap(.init(context: context,anchorID: id,reason: .invalidDescriptor)) }
         }
-        guard accepted else { throw LiveMeshBenchSession.Failure.unavailable }
+        guard accepted else {
+            // A real ingress exists: even constructor failure must await its exact
+            // native discard, rather than reopen admission from an elapsed timeout.
+            ingress.stopAndDiscard {gate.acknowledge(token)}
+            throw LiveMeshBenchSession.Failure.unavailable
+        }
         decode.sync {}
         self.savedFrame=savedFrame
         if let savedFrame {

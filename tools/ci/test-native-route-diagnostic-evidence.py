@@ -963,5 +963,171 @@ class FloorInventoryTests(unittest.TestCase):
             bad=copy.deepcopy(d);mutation(bad['fixtures'][0])
             with self.assertRaises(m.EvidenceError):self.validate(bad)
 
+
+
+def contact_docs():
+    docs = copy.deepcopy(DOCS); hashes = {}
+    m.contact_phase_source(ROOT, docs, hashes)
+    return docs
+
+
+def contact_phase_fixture(radius, height):
+    contact = {'obstacleIDs':[],'floorIDs':[],'boundIDs':[],'hasObstacleContact':False,'details':[]}
+    return {**{k:copy.deepcopy(contact) for k in ('initial','swept','terminal')},
+            'physicalAuthority':False,'fullFootprintSupportVerified':False,
+            'actualCylinder':{'radius':radius,'height':height,'radialSegmentCount':48,'heightSegmentCount':1,'collisionMargin':0}}
+
+
+def contact_report():
+    docs = contact_docs(); plan=docs[m.CONTACT_PHASE_INPUT]
+    profiles=docs['RoomRouteDiagnostic/PROTOCOL.json']['profiles']+docs['RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json']['profiles']
+    rows=[]
+    for query in plan['queries']:
+        room=query['room']; profile=next(p for p in profiles if p['id']==query['profile'])
+        floor=docs['RoomPlanApple/'+room+'.capturedRoom.json']['floors'][0]
+        a=m.contact_phase_point(query['start'],floor);b=m.contact_phase_point(query['goal'],floor)
+        radius=m.math.hypot(profile['width'],profile['depth'])/2
+        rr,rh=m.float32(radius),m.float32(profile['height']);mr,mh=m.float32(radius+profile['margin']),m.float32(profile['height']+profile['margin'])
+        raw=contact_phase_fixture(rr,rh);margin=contact_phase_fixture(mr,mh)
+        row={'id':query['id'],'room':room,'profile':query['profile'],'physicalAuthority':False,'fullFootprintSupportVerified':False,
+             'sourceSHA256':m.FIXTURES[room],'requestedStart':a,'requestedGoal':b,'rawRadius':radius,'rawHeight':profile['height'],
+             'effectiveRadius':mr,'effectiveHeight':mh,'startRaw':copy.deepcopy(raw),'startMargin':copy.deepcopy(margin),
+             'goalRaw':copy.deepcopy(raw),'goalMargin':copy.deepcopy(margin),'nativeComplete':True,'nativeStatus':1073741824,
+             'routePoints':[a,b],'projectedStart':a,'projectedGoal':b,'cleanupAcknowledged':True,'outcome':'historical-model-no-contact'}
+        row['segments']=[{'kind':k,'from':x,'to':y,'raw':copy.deepcopy(raw),'margin':copy.deepcopy(margin),'receiptState':'complete'}
+                         for k,x,y in [('requested-start-to-projection',a,a),('detour-segment-1',a,b),('projection-to-requested-goal',b,b)]]
+        rows.append(row)
+    return {'schema':1,'physicalAuthority':False,'fullFootprintSupportVerified':False,'originalSchedulesChanged':False,'outcomes':rows,'hallTriangles':[]}
+
+
+class ContactPhaseEvidenceTests(unittest.TestCase):
+    def validate(self, value): return m.validate_contact_phase_report(value, contact_docs())
+    def test_complete_observation_not_physical_acceptance(self):
+        value=contact_report();self.assertEqual(self.validate(value),value)
+        self.assertFalse(value['physicalAuthority']);self.assertFalse(value['fullFootprintSupportVerified'])
+    def test_optional_new_case_exact_identity_only(self):
+        self.assertEqual(m.canonical(m.CONTACT_PHASE_SPEC[0]+'()'),m.CONTACT_PHASE_SPEC[0])
+        self.assertIsNone(m.canonical(m.CONTACT_PHASE_SPEC[0]+'Private'))
+        self.assertEqual(len(m.SPECS),3);self.assertEqual(len(m.DIAGNOSTIC_SPECS),4)
+    def test_unknown_private_fields_and_text_rejected(self):
+        mutations=[lambda d:d.update(private='secret'),lambda d:d['outcomes'][0].update(error='/private/path'),
+                   lambda d:d['outcomes'][0].update(outcome='private string'),lambda d:d['outcomes'][0]['segments'][0].update(extra='secret'),
+                   lambda d:d['outcomes'][0]['startRaw']['initial'].update(private='secret'),
+                   lambda d:d['outcomes'][0]['startRaw']['actualCylinder'].update(path='secret')]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                d=contact_report();mutation(d)
+                with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_schedule_hash_geometry_profile_and_authority_mutations_rejected(self):
+        mutations=[lambda d:d.update(schema=True),lambda d:d.update(originalSchedulesChanged=True),lambda d:d.update(physicalAuthority=True),
+                   lambda d:d['outcomes'].reverse(),lambda d:d['outcomes'].pop(),lambda d:d['outcomes'][0].update(sourceSHA256='0'*64),
+                   lambda d:d['outcomes'][0].update(requestedStart=[0,0,0]),lambda d:d['outcomes'][0].update(rawRadius=.001),
+                   lambda d:d['outcomes'][0].update(effectiveRadius=.001),lambda d:d['outcomes'][0]['startRaw']['actualCylinder'].update(collisionMargin=.1),
+                   lambda d:d['outcomes'][0]['startRaw']['actualCylinder'].update(radialSegmentCount=2),
+                   lambda d:d['outcomes'][0]['startRaw'].update(fullFootprintSupportVerified=True)]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                d=contact_report();mutation(d)
+                with self.assertRaises(m.EvidenceError):self.validate(d)
+    def add_contact(self, phase, room='Hallway2', kind='obstacle-surface'):
+        docs=contact_docs();field={'obstacle-surface':'obstacleIDs','floor-surface':'floorIDs','furniture-bound':'boundIDs'}[kind]
+        identity=sorted(m.contact_phase_feature_sets(room,docs)[field])[0]
+        phase[field]=[identity];phase['hasObstacleContact']=field!='floorIDs'
+        phase['details']=[{'kind':kind,'featureID':identity,'point':[0,0,0],'normal':[1,0,0],'penetrationDistance':.001}]
+    def test_contacts_require_exact_category_details_and_outcome(self):
+        d=contact_report();p=d['outcomes'][0]['segments'][1]['margin']['swept'];self.add_contact(p);d['outcomes'][0]['outcome']='candidate-contact';self.validate(d)
+        mutations=[lambda p:p['details'][0].update(featureID='private'),lambda p:p['details'][0].update(kind='floor-surface'),
+                   lambda p:p['details'][0].update(point=[float('nan'),0,0]),lambda p:p['details'][0].update(normal=[float('inf'),0,0]),
+                   lambda p:p['details'][0].update(penetrationDistance='private'),lambda p:p.update(details=[]),
+                   lambda p:p.update(hasObstacleContact=False),lambda p:p['obstacleIDs'].append(p['obstacleIDs'][0]),
+                   lambda p:p.update(details=p['details']*129)]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                bad=copy.deepcopy(d);mutation(bad['outcomes'][0]['segments'][1]['margin']['swept'])
+                with self.assertRaises(m.EvidenceError):self.validate(bad)
+        d['outcomes'][0]['outcome']='historical-model-no-contact'
+        with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_stationary_contact_stops_native_query(self):
+        d=contact_report();r=d['outcomes'][0];self.add_contact(r['startMargin']['initial']);r['outcome']='stationary-endpoint-contact'
+        for k in ['nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal','segments','cleanupAcknowledged']:r.pop(k)
+        self.validate(d);r['cleanupAcknowledged']=True
+        with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_floor_contact_is_not_obstacle_or_support(self):
+        d=contact_report();self.add_contact(d['outcomes'][0]['startRaw']['initial'],kind='floor-surface');self.validate(d)
+    def test_error_keeps_only_observed_prefix(self):
+        for count in range(5):
+            d=contact_report();r=d['outcomes'][0];r.update(outcome='query-or-oracle-error',detailsComplete=False)
+            for k in ['nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal','segments','cleanupAcknowledged']:r.pop(k)
+            for k in ['startRaw','startMargin','goalRaw','goalMargin'][count:]:r.pop(k)
+            self.validate(d)
+        d=contact_report();r=d['outcomes'][0];r.update(outcome='contact-detail-budget-exceeded',detailsComplete=False)
+        r['segments']=r['segments'][:2];r['segments'][-1].pop('margin');r['segments'][-1]['receiptState']='raw-recorded';self.validate(d)
+        r['outcome']='historical-model-no-contact';r.pop('detailsComplete')
+        with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_partial_prefix_order_and_exact_chain_rejected(self):
+        mutations=[lambda r:r.pop('startRaw'),lambda r:r['segments'].pop(0),lambda r:r['segments'][0].update(to=[99,99,99]),
+                   lambda r:r['segments'][0].update(kind='detour-segment-1'),lambda r:r['segments'][0].update(receiptState='raw-recorded'),
+                   lambda r:r.update(routePoints=[]),lambda r:r.update(nativeComplete=False),lambda r:r.pop('cleanupAcknowledged')]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                d=contact_report();mutation(d['outcomes'][0])
+                with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_undrained_owner_aborts_remaining_without_invented_receipts(self):
+        d=contact_report();d['outcomes'][0]['cleanupAcknowledged']=False
+        fields={'id','room','profile','physicalAuthority','fullFootprintSupportVerified'}
+        for i in range(1,4):d['outcomes'][i]={**{k:v for k,v in d['outcomes'][i].items() if k in fields},'outcome':'not-run-after-undrained-owner'}
+        self.validate(d)
+        d['outcomes'][1]['sourceSHA256']=m.FIXTURES['Hallway2']
+        with self.assertRaises(m.EvidenceError):self.validate(d)
+        d=contact_report();d['outcomes'][0]['cleanupAcknowledged']=False
+        with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_triangles_closed_numeric_capture(self):
+        d=contact_report();triangle={'triangleIndex':4,'featureID':sorted(m.CONTACT_HALL_IDS)[0],'indices':[0,1,2],'worldPositionFloat32Bits':[[0,0,0],[1065353216,0,0],[0,1065353216,0]]}
+        d['hallTriangles']=[triangle];self.validate(d)
+        for mutation in [lambda t:t.update(featureID='private'),lambda t:t.update(triangleIndex=True),lambda t:t.update(indices=[-1,0,1]),
+                         lambda t:t.update(worldPositionFloat32Bits=[[0x7f800000,0,0],[0,0,0],[0,0,0]]),lambda t:t.update(path='secret')]:
+            bad=copy.deepcopy(d);mutation(bad['hallTriangles'][0])
+            with self.assertRaises(m.EvidenceError):self.validate(bad)
+        d['hallTriangles']*=129
+        with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_source_hash_and_alias_refused(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);p=root/'ios/BlindAssistTests/Fixtures'/m.CONTACT_PHASE_INPUT;p.parent.mkdir(parents=True)
+            p.write_text('{}')
+            with self.assertRaises(m.EvidenceError):m.contact_phase_source(root,{}, {})
+            p.unlink();p.symlink_to(ROOT/'ios/BlindAssistTests/Fixtures'/m.CONTACT_PHASE_INPUT)
+            with self.assertRaises(m.EvidenceError):m.contact_phase_source(root,{}, {})
+    def test_collector_optional_eighth_report_preserves_failed_result(self):
+        cases=[{'identifier':k,'result':'Failed'} for k,_,_ in m.SPECS+m.DIAGNOSTIC_SPECS+(m.CONTACT_PHASE_SPEC,)]
+        def exporter(bundle,identifier,destination):
+            key,name,label=next(s for s in m.SPECS+m.DIAGNOSTIC_SPECS+(m.CONTACT_PHASE_SPEC,) if s[0]==m.canonical(identifier))
+            value=contact_report() if label=='valid-start-contact-phases' else diagnostic_report(label) if (key,name,label) in m.DIAGNOSTIC_SPECS else report(label)
+            export_fixture(destination,name,value)
+        with patch.object(m,'export_test',side_effect=exporter):result=m.collect(ROOT,Path('unused'),cases,None)
+        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),8)
+        self.assertEqual(result['reports'][-1]['testResult'],'Failed');self.assertEqual(result['reports'][-1]['report'],contact_report())
+    def test_optional_source_failure_does_not_suppress_old_reports(self):
+        cases=[{'identifier':k,'result':'Failed'} for k,_,_ in m.SPECS+(m.CONTACT_PHASE_SPEC,)]
+        def exporter(bundle,identifier,destination):
+            key,name,label=next(s for s in m.SPECS+(m.CONTACT_PHASE_SPEC,) if s[0]==m.canonical(identifier))
+            export_fixture(destination,name,contact_report() if label=='valid-start-contact-phases' else report(label))
+        # Patch only collector source-load, leaving the authored synthetic payload factory intact.
+        value=contact_report()
+        def fixed_exporter(bundle,identifier,destination):
+            key,name,label=next(s for s in m.SPECS+(m.CONTACT_PHASE_SPEC,) if s[0]==m.canonical(identifier))
+            export_fixture(destination,name,value if label=='valid-start-contact-phases' else report(label))
+        with patch.object(m,'export_test',side_effect=fixed_exporter), patch.object(m,'contact_phase_source',side_effect=m.EvidenceError('contact_phase_source_hash_mismatch')):
+            result=m.collect(ROOT,Path('unused'),cases,None)
+        self.assertEqual([r['status'] for r in result['reports'][:3]],['collected']*3)
+        self.assertEqual(result['reports'][-1]['status'],'contact_phase_source_hash_mismatch')
+
+    def test_private_additive_payload_not_copied_on_failure(self):
+        cases=[{'identifier':m.CONTACT_PHASE_SPEC[0],'result':'Failed'}]
+        value=contact_report();value['secret']='PRIVATE_TOKEN'
+        with patch.object(m,'export_test',side_effect=lambda b,i,d:export_fixture(d,m.CONTACT_PHASE_SPEC[1],value)):
+            result=m.collect(ROOT,Path('unused'),cases,None)
+        self.assertNotIn('PRIVATE_TOKEN',json.dumps(result));self.assertNotIn('report',result['reports'][-1])
+        self.assertEqual(result['reports'][-1]['status'],'unsupported_report_schema')
+
 if __name__=='__main__':unittest.main()
 

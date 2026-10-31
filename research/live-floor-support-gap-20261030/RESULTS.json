@@ -1,0 +1,102 @@
+{
+  "scope": "pinned source inspection only",
+  "checks": [
+    {
+      "name": "all exact source pins",
+      "passed": true,
+      "files": 14
+    },
+    {
+      "name": "raw hazard depth/confidence and exact pose",
+      "passed": true
+    },
+    {
+      "name": "current raw sampling limits",
+      "passed": true
+    },
+    {
+      "name": "horizontal heading remains required only for hazard observation",
+      "passed": true
+    },
+    {
+      "name": "hazard near exclusion and retained datum",
+      "passed": true
+    },
+    {
+      "name": "diagnostic patch exclusion and no motion authority",
+      "passed": true
+    },
+    {
+      "name": "look-ahead start not wearer foot",
+      "passed": true
+    },
+    {
+      "name": "hazard receipt has no support authority",
+      "passed": true
+    },
+    {
+      "name": "historical pixels retain original confidence and bounded raster",
+      "passed": true
+    },
+    {
+      "name": "historical full pose and acquisition time",
+      "passed": true
+    },
+    {
+      "name": "history admission does not renew source timestamps",
+      "passed": true
+    },
+    {
+      "name": "missing calibration is explicit",
+      "passed": true
+    },
+    {
+      "name": "original-frame mapping and history offers exist",
+      "passed": true
+    },
+    {
+      "name": "issuer is withheld not a producer",
+      "passed": true
+    },
+    {
+      "name": "actual production measurement prerequisites",
+      "passed": true
+    },
+    {
+      "name": "same-instant source-time restriction exists",
+      "passed": true
+    },
+    {
+      "name": "reference-only owner cannot mint physical bench pair",
+      "passed": true
+    },
+    {
+      "name": "candidate association and exact ownership boundary",
+      "passed": true
+    },
+    {
+      "name": "freshness and evidence expiry mandatory",
+      "passed": true
+    },
+    {
+      "name": "mount metadata is not calibration",
+      "passed": true
+    },
+    {
+      "name": "current pose and historical tiles have separate expiry",
+      "passed": true
+    },
+    {
+      "name": "mapping refuses floor-support authority",
+      "passed": true
+    },
+    {
+      "name": "issuer has no explicit acceptRegisteredCapture call",
+      "passed": true
+    }
+  ],
+  "passed": 23,
+  "swiftExecuted": false,
+  "deviceExecuted": false,
+  "physicalAuthority": false
+}

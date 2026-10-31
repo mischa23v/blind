@@ -162,4 +162,41 @@ final class NativeObservationTests: XCTestCase {
         XCTAssertEqual(capped, prior)
     }
 
+    func testDepthAccountingRejectsHugeInvalidCountWithoutOverflow() {
+        let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 1, height: 1,
+            samplingStride: 1, sampledPixelCount: 1, invalidPixelCount: Int.max,
+            confidenceAvailable: false,
+            pixels: [NativeDepthPixel(column: 0, row: 0, metres: 1, confidence: nil)])
+        XCTAssertThrowsError(try observation.validate()) { error in
+            XCTAssertEqual(error as? NativeObservationError, .invalidDepth)
+        }
+    }
+    func testDepthAccountingRejectsImpossibleInvalidRasterCoverage() {
+        let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 1, height: 1,
+            samplingStride: 1, sampledPixelCount: 2, invalidPixelCount: 2,
+            confidenceAvailable: false, pixels: [])
+        XCTAssertThrowsError(try observation.validate())
+    }
+    func testDepthAccountingUsesCeilingStrideCapacityAndAllowsSparseSubsets() throws {
+        // 5 by 3 at stride 2 contains six lattice sites, not floor(5/2)*floor(3/2).
+        for count in [0, 1, 6] {
+            let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 5, height: 3,
+                samplingStride: 2, sampledPixelCount: count, invalidPixelCount: count,
+                confidenceAvailable: false, pixels: [])
+            XCTAssertNoThrow(try observation.validate())
+        }
+        let impossible = NativeDepthObservation(source: .arkitSceneDepth, width: 5, height: 3,
+            samplingStride: 2, sampledPixelCount: 7, invalidPixelCount: 7,
+            confidenceAvailable: false, pixels: [])
+        XCTAssertThrowsError(try impossible.validate())
+    }
+    func testDepthAccountingRejectsNegativeAndOverBudgetCounts() {
+        for (sampled, invalid) in [(-1, 0), (0, -1), (0, 1), (4097, 4097), (Int.max, Int.max)] {
+            let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 128, height: 128,
+                samplingStride: 1, sampledPixelCount: sampled, invalidPixelCount: invalid,
+                confidenceAvailable: false, pixels: [])
+            XCTAssertThrowsError(try observation.validate())
+        }
+    }
+
 }

@@ -15,11 +15,11 @@ class Tests(unittest.TestCase):
    with self.subTest(key=key),self.assertRaises(ValueError):m.context(dict(env(),**{key:value}))
  def test_root_exact_and_exclusive(self):
   with tempfile.TemporaryDirectory() as d:
-   root=m.root_path(env(d));self.assertEqual(root.name,'blind-j01-123-1');root.mkdir()
+   root=m.root_path(env(str(pathlib.Path(d).resolve(strict=True))));self.assertEqual(root.name,'blind-j01-123-1');root.mkdir()
    with self.assertRaises(FileExistsError):root.mkdir()
  def test_root_symlink_and_traversal_refused(self):
   with tempfile.TemporaryDirectory() as d:
-   target=pathlib.Path(d);(target/'link').symlink_to(target,target_is_directory=True)
+   target=pathlib.Path(d).resolve(strict=True);(target/'link').symlink_to(target,target_is_directory=True)
    for value in (str(target/'link'),str(target/'x'/'..')):
     with self.subTest(value=value),self.assertRaises(ValueError):m.root_path(env(value))
  def test_fixed_default_build_command(self):
@@ -120,13 +120,13 @@ class Tests(unittest.TestCase):
  def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False):
   import test_collect_j01_metadata as fixtures
   with tempfile.TemporaryDirectory() as d:
-   root=pathlib.Path(d);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
+   root=pathlib.Path(d).resolve(strict=True);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
    scripts=json.loads(json.dumps(m.metadata.SUPPORTED))
    if extra_scripts:scripts['REQ-SC53-1']=[{'unselected':'authored future script'}]
    if changed_selected_script:scripts['REQ-SC02-1'][0]['text']='changed'
    (packet/'SUPPORTED.json').write_text(json.dumps(scripts))
    workflow=repo/'.github/workflows/j01-actual-model.yml';workflow.parent.mkdir(parents=True);workflow.write_text('reviewed fixture')
-   e=env(d);e['GITHUB_WORKSPACE']=str(repo);ctx=m.context(e);calls=[];emitted=[]
+   e=env(str(root));e['GITHUB_WORKSPACE']=str(repo);ctx=m.context(e);calls=[];emitted=[]
    before={'provenance':{'actual_head':SHA,'tracked_source_clean':True}}
    def proof(*args,**kwargs):return dict(verified=True,runtimeLoadedBinaryVerified=False,sourceCommit=SHA,receiptSHA256=args[3],scope='selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested',trustBasis='external reviewed CI receipt digest, not caller source echo')
    def command(argv,log,*args,**kwargs):
@@ -150,6 +150,13 @@ class Tests(unittest.TestCase):
     code=m.run()
    result=json.loads((root/'blind-j01-123-1/RESULT.json').read_text())
    return code,result,calls,emitted
+ def test_owned_temp_alias_does_not_relax_runtime_root_guard(self):
+  with tempfile.TemporaryDirectory() as d:
+   root=pathlib.Path(d).resolve(strict=True);real=root/'real';real.mkdir()
+   alias=root/'alias';alias.symlink_to(real,target_is_directory=True)
+   with mock.patch.object(tempfile,'tempdir',str(alias)):
+    code,r,_,_=self.simulated_run();self.assertEqual(code,0);self.assertFalse(r['fullJourneyComplete'])
+    with self.assertRaises(ValueError):m.root_path(env(str(alias)))
  def test_simulated_same_job_three_script_positive_is_not_journey_success(self):
   code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),4);self.assertEqual(len(r['scriptReceipts']),3)
   self.assertFalse(r['fullJourneyComplete']);self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertNotIn('PRIVATE',json.dumps(emitted))
@@ -184,7 +191,7 @@ class Tests(unittest.TestCase):
 
  def test_actual_checkout_origin_top_level_and_push_event(self):
   with tempfile.TemporaryDirectory() as d:
-   root=pathlib.Path(d);event=root/'event.json';event.write_text(json.dumps({'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}))
+   root=pathlib.Path(d).resolve(strict=True);event=root/'event.json';event.write_text(json.dumps({'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}))
    def query(argv,log,*args,**kwargs):
     log.write_text(str(m.R) if argv[-1]=='--show-toplevel' else 'https://github.com/mischa23v/blind.git' if argv[-1]=='remote.origin.url' else SHA)
     return {'exit_code':0,'reason':'completed'}
@@ -192,7 +199,7 @@ class Tests(unittest.TestCase):
  def test_wrong_local_origin_or_push_identity_refused(self):
   for kind in ('origin','root','head','after','ref','repository','private'):
    with self.subTest(kind=kind),tempfile.TemporaryDirectory() as d:
-    root=pathlib.Path(d);event=root/'event.json';data={'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}
+    root=pathlib.Path(d).resolve(strict=True);event=root/'event.json';data={'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}
     if kind in ('after','ref'):data[kind]='wrong'
     if kind=='repository':data['repository']['full_name']='fork/blind'
     if kind=='private':data['repository']['private']=True

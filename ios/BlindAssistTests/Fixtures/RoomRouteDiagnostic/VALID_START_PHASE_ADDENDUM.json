@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "preparedBeforeFirstNativeExecution": true,
+  "physicalAuthority": false,
+  "nativeExecuted": false,
+  "changesOriginalSchedules": false,
+  "sourceFixtureSHA256": {
+    "Hallway2": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+    "Bedroom3": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e"
+  },
+  "baseProtocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+  "radiusPolicy": "hypot(width,depth)/2 + margin, unchanged",
+  "nativeConfiguration": {
+    "cellSize": 0.025,
+    "cellHeight": 0.025,
+    "maxClimb": 0.025,
+    "maxSlope": 15,
+    "maxCells": 250000,
+    "maxNodes": 4096,
+    "queryHalfExtents": [
+      0.2,
+      0.3,
+      0.2
+    ]
+  },
+  "queries": [
+    {
+      "id": "unchanged-hall-declared-nominal",
+      "room": "Hallway2",
+      "start": [
+        2.8,
+        -0.45,
+        0.0
+      ],
+      "goal": [
+        3.65,
+        0.45,
+        0.0
+      ],
+      "profile": "declared-nominal",
+      "source": "unchanged original pair/profile; separately named detailed-contact diagnostic"
+    },
+    {
+      "id": "unchanged-hall-declared-width28-assumed-depth20-height120",
+      "room": "Hallway2",
+      "start": [
+        2.8,
+        -0.45,
+        0.0
+      ],
+      "goal": [
+        3.65,
+        0.45,
+        0.0
+      ],
+      "profile": "declared-width28-assumed-depth20-height120",
+      "source": "unchanged original pair/profile; separately named detailed-contact diagnostic"
+    },
+    {
+      "id": "additional-bed-start-to-aisle",
+      "room": "Bedroom3",
+      "start": [
+        -0.75,
+        0.0,
+        0.0
+      ],
+      "goal": [
+        -0.6000000000000001,
+        1.1,
+        0.0
+      ],
+      "profile": "declared-width28-assumed-depth20-height120",
+      "source": "separate source-only lattice point; no actual relocation or get-up claim"
+    },
+    {
+      "id": "additional-chair-start-to-aisle",
+      "room": "Bedroom3",
+      "start": [
+        -0.75,
+        -0.35000000000000003,
+        0.0
+      ],
+      "goal": [
+        -0.6000000000000001,
+        1.1,
+        0.0
+      ],
+      "profile": "declared-width28-assumed-depth20-height120",
+      "source": "separate source-only lattice point; no actual relocation or get-up claim"
+    }
+  ],
+  "decisionRules": [
+    "Stationary native initial/end validation must pass before querying; disagreement stops, no alternate-point search.",
+    "Record raw and margin initial/swept/terminal contacts separately with IDs and available point/normal/distance.",
+    "Original failures and expectations remain unchanged.",
+    "Partial/rejected/timeout/contact are separate failures or withholds, never physical arrivals."
+  ]
+}
