@@ -42,13 +42,28 @@ def j01_portable_failure(script, result):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Compose current reviewed contact diagnostics into the strict historical EDT view.
+# Historical source and all older reversal proofs remain immutable.
+pre_edt_contact_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-edt-contact-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeEDTViewContactComposition'])+manifest['edtViewContactCompositionNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'edt-view-contact-composition-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeEDTViewContactComposition'].items():
+        value=(root/name).read_bytes()
+        check('exact source before EDT contact composition '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_edt_contact_source[name]=value
+    for name in manifest['edtViewContactCompositionNewFiles']:
+        check('new EDT contact file absent before repair '+name,not (root/name).exists())
+
 # Six XCTest required-goal UUID unwraps repair the recorded933 compile error.
 # Current source is checked mechanically; reversal preserves all prior evidence.
-pre_journey_goal_source={}
+pre_journey_goal_source=dict(pre_edt_contact_source)
 with tempfile.TemporaryDirectory(prefix='stage85-journey-goal-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeJourneyRequiredGoalUnwrap'])+manifest['journeyRequiredGoalUnwrapNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_edt_contact_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'journey-required-goal-unwrap-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeJourneyRequiredGoalUnwrap'].items():
         value=(root/name).read_bytes()
@@ -814,5 +829,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', journeyRequiredGoalUnwrapSourceApplied=True, journeyRequiredGoalUnwrapNativeExecuted=False, collisionContactPhaseSourceApplied=True, collisionContactPhaseNativeExecuted=False, classificationCrossFamilyDrainSourceApplied=True, classificationCrossFamilyDrainNativeExecuted=False, depthRasterIntegritySourceApplied=True, depthRasterIntegrityNativeExecuted=False, repeatAnswerContrastSourceApplied=True, repeatAnswerRenderedContrastVerified=False, j01TemporaryRootFixtureRepairApplied=True, j01ProductionAttestationPolicyChanged=False, seatedFixtureOwnedAdmissionSourceApplied=True, seatedFixtureOwnedAdmissionNativeExecuted=False, floorSupportResearchOnly=True, floorSupportImplementationChanged=False, localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
+    appleBuild='pending', edtViewContactCompositionSourceApplied=True, edtViewContactCompositionNativeExecuted=False, journeyRequiredGoalUnwrapSourceApplied=True, journeyRequiredGoalUnwrapNativeExecuted=False, collisionContactPhaseSourceApplied=True, collisionContactPhaseNativeExecuted=False, classificationCrossFamilyDrainSourceApplied=True, classificationCrossFamilyDrainNativeExecuted=False, depthRasterIntegritySourceApplied=True, depthRasterIntegrityNativeExecuted=False, repeatAnswerContrastSourceApplied=True, repeatAnswerRenderedContrastVerified=False, j01TemporaryRootFixtureRepairApplied=True, j01ProductionAttestationPolicyChanged=False, seatedFixtureOwnedAdmissionSourceApplied=True, seatedFixtureOwnedAdmissionNativeExecuted=False, floorSupportResearchOnly=True, floorSupportImplementationChanged=False, localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

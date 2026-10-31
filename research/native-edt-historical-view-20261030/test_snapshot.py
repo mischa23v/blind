@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Portable source-only controls. No native/compiler/CI subprocesses."""
 import importlib.util,json,pathlib,tempfile,unittest
+from unittest.mock import patch
 SPEC=importlib.util.spec_from_file_location('snapshot',pathlib.Path(__file__).with_name('run_snapshot.py'))
 m=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(m)
 class Tests(unittest.TestCase):
@@ -47,4 +48,46 @@ class Tests(unittest.TestCase):
   for marker in ["assert head==receipt['sourceCommit']","assert data['candidateRequests']==(25 if data['candidateExecuted'] else 0)","assert data['candidateExecuted']==data['all50OriginalControlsReproduced']","resource.RLIMIT_CPU,(120,120)","128*1024**2","DEADLINE=START+300","assert path.is_file() and sha(path)==digest"]: self.assertIn(marker,adapted)
  def test_changed_runner_rejected(self):
   with self.assertRaises(ValueError): m.transform_runner(b'new runner')
+ def staging_fixture(self):
+  packet=self.root/'packet';packet.mkdir();repo=self.root/'repo';repo.mkdir()
+  pins={};overrides={}
+  lane=repo/m.LANE/'stub';lane.parent.mkdir(parents=True);lane.write_bytes(b'stub');pins[m.LANE+'/stub']=m.digest(b'stub')
+  for n in ['one','two','three']:
+   historical=('historical '+n).encode();current=('current '+n).encode()
+   (packet/n).write_bytes(historical);(repo/n).write_bytes(current);pins[n]=m.digest(historical)
+   overrides[n]={'file':n,'currentSHA256':m.digest(current),'historicalSHA256':pins[n]}
+  (repo/'unchanged').write_bytes(b'unchanged');pins['unchanged']=m.digest(b'unchanged')
+  (packet/'OVERRIDES.json').write_text(json.dumps(overrides))
+  return packet,repo,pins,overrides
+ def stage_fixture(self,packet,repo,pins):
+  # Only the synthetic inventory verification is mocked; all staging gates execute.
+  with patch.object(m,'HERE',packet),patch.object(m,'verify_view') as verify:
+   result=m.stage_view(repo,self.root/'view',pins,b'pins');verify.assert_called_once();return result
+ def test_staging_exact_current_overrides(self):
+  packet,repo,pins,overrides=self.staging_fixture();self.assertEqual(self.stage_fixture(packet,repo,pins),overrides)
+  for name,h in pins.items(): self.assertEqual(m.digest((self.root/'view'/name).read_bytes()),h)
+ def test_staging_changed_current_override_rejected(self):
+  packet,repo,pins,_=self.staging_fixture();(repo/'one').write_bytes(b'unknown current')
+  with self.assertRaisesRegex(ValueError,'Current override source drift'): self.stage_fixture(packet,repo,pins)
+ def test_staging_changed_historical_override_rejected(self):
+  packet,repo,pins,_=self.staging_fixture();(packet/'one').write_bytes(b'unknown historical')
+  with self.assertRaisesRegex(ValueError,'Unchanged historical input drift'): self.stage_fixture(packet,repo,pins)
+ def test_staging_wrong_historical_identity_rejected(self):
+  packet,repo,pins,overrides=self.staging_fixture();overrides['one']['historicalSHA256']='0'*64;(packet/'OVERRIDES.json').write_text(json.dumps(overrides))
+  with self.assertRaisesRegex(ValueError,'Override expected identity differs'): self.stage_fixture(packet,repo,pins)
+ def test_staging_changed_nonoverride_rejected(self):
+  packet,repo,pins,_=self.staging_fixture();(repo/'unchanged').write_bytes(b'unknown')
+  with self.assertRaisesRegex(ValueError,'Unchanged historical input drift'): self.stage_fixture(packet,repo,pins)
+ def test_staging_missing_override_rejected(self):
+  packet,repo,pins,_=self.staging_fixture();(repo/'one').unlink()
+  with self.assertRaisesRegex(ValueError,'Missing input'): self.stage_fixture(packet,repo,pins)
+ def test_changed_contact_reverse_proof_rejected(self):
+  import shutil
+  packet=self.root/'proof';shutil.copytree(m.HERE,packet);(packet/'CURRENT_CONTACT_DELTA.patch').write_bytes(b'altered proof')
+  with patch.object(m,'HERE',packet),self.assertRaisesRegex(ValueError,'Adapter packet mismatch'): m.verify_packet()
+ def test_current_contact_composition_packet(self):
+  m.verify_packet();r=json.loads((m.HERE/'CURRENT_CONTACT_COMPOSITION.json').read_text());overrides=json.loads((m.HERE/'OVERRIDES.json').read_text());o=overrides[r['path']]
+  self.assertEqual(r['currentSHA256'],o['currentSHA256']);self.assertEqual(r['historicalSHA256'],o['historicalSHA256'])
+  self.assertEqual(r['reviewedContactDeltaSHA256'],m.digest((m.HERE/'CURRENT_CONTACT_DELTA.patch').read_bytes()))
+  self.assertEqual(r['historicalPinManifestSHA256'],m.PIN_SHA);self.assertFalse(r['nativeExecuted']);self.assertEqual(r['historicalInputCount'],58)
 if __name__=='__main__': unittest.main()

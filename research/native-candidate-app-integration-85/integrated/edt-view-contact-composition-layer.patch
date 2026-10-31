@@ -1,0 +1,295 @@
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -1354,14 +1354,24 @@
+       "sha256": "f8e1ee663a249056c0767137c7fa9bba6e0bb84b01d69478aea5f67561283320"
+     },
+     {
++      "path": "research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json",
++      "bytes": 1193,
++      "sha256": "38986f45a6c6735bdc1002fe3db17a89b31233474ac931dfb87184df46fbbc04"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch",
++      "bytes": 6425,
++      "sha256": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90"
++    },
++    {
+       "path": "research/native-edt-historical-view-20261030/MANIFEST.json",
+-      "bytes": 1249,
+-      "sha256": "50564b8242917e14d4f97d2b8febba9ff2f25581c27ade89227aa782fb84038a"
++      "bytes": 1460,
++      "sha256": "54275b4a7767696240fcad9c35393c0dfc1b0678518ce9bfa4c38b7f1e28563b"
+     },
+     {
+       "path": "research/native-edt-historical-view-20261030/OVERRIDES.json",
+       "bytes": 1391,
+-      "sha256": "d6c14699e7d8a0a43264f06ea81fee0a4752fc5d1e3e5af8c46130da2ff55dca"
++      "sha256": "91fdeeed54d8e76f3644bbefab2adbdc156df53b8735ad01c2610ab7941bb674"
+     },
+     {
+       "path": "research/native-edt-historical-view-20261030/README.md",
+@@ -1410,8 +1420,8 @@
+     },
+     {
+       "path": "research/native-edt-historical-view-20261030/test_snapshot.py",
+-      "bytes": 3572,
+-      "sha256": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc"
++      "bytes": 7159,
++      "sha256": "45e492c68131f9dbc3b270bbfc0fc28b7bb586271f13818a45be40fb471fc35e"
+     },
+     {
+       "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
+@@ -2394,5 +2404,11 @@
+     "nativeMethodsRetained": 27,
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "edtViewContactComposition": {
++    "scope": "Strict current contact source to historical EDT source composition",
++    "historicalInputsRetained": 58,
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }
+diff --git a/research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json b/research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json
+new file mode 100644
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json
+@@ -0,0 +1,20 @@
++{
++  "schema": 1,
++  "actualComparedCheckoutCommit": "f6731846299b0104979a9f4f4953fa62334656c5",
++  "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
++  "reviewedContactDeltaSHA256": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90",
++  "reviewedContactSourceManifestSHA256": "e598b103b4c3e63f4a38c4083123374543ddea1ba64fb79a3311cbbab82620bc",
++  "priorCurrentSHA256": "9581e63244f89a5183d752124d306e6808bf114dfc5cb3eecf809b03183e9b53",
++  "currentSHA256": "cd0b86b0db9a15973e6b2cf39d2a013a4006d3bf93a2974a161cdaf1a8088140",
++  "historicalSHA256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
++  "exactContactDeltaForwardReverseVerified": true,
++  "historicalBaselineUnchanged": true,
++  "historicalPinManifestSHA256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b",
++  "originalReconstructionReceiptUnchanged": true,
++  "historicalInputCount": 58,
++  "overrideCount": 3,
++  "originalRunnerUnchanged": true,
++  "nativeExecuted": false,
++  "currentNativeSourceCompared": false,
++  "scope": "Only authorizes the reviewed current source identity for unchanged historical staging; not evidence that current collision behavior passes."
++}
+diff --git a/research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch b/research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch
+new file mode 100644
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch
+@@ -0,0 +1,114 @@
++--- a/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift
+++++ b/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift
++@@ -35,7 +35,16 @@
++         let transform: [Double]
++     }
++
+++    /// Opt-in authored-fixture diagnostics only; never private scene capture.
+++    struct ContactDetail: Equatable, Sendable {
+++        let featureID: UUID
+++        let kind: String
+++        let point, normal: [Double]
+++        let penetrationDistance: Double
+++    }
+++
++     struct Contacts: Equatable, Sendable {
+++        var details: [ContactDetail] = []
++         var obstacleSurfaceIDs = Set<UUID>()
++         var floorSurfaceIDs = Set<UUID>()
++         var furnitureBoundIDs = Set<UUID>()
++@@ -44,6 +53,7 @@
++             obstacleSurfaceIDs.formUnion(other.obstacleSurfaceIDs)
++             floorSurfaceIDs.formUnion(other.floorSurfaceIDs)
++             furnitureBoundIDs.formUnion(other.furnitureBoundIDs)
+++            details.append(contentsOf: other.details)
++         }
++     }
++
++@@ -51,6 +61,7 @@
++         let initial: Contacts
++         let swept: Contacts
++         let terminal: Contacts
+++        let detailShape: [String: Double]?
++         /// Whole-footprint support is deliberately NOT inferred from floor contact
++         /// or from absence of a non-floor collision. Holes remain unverified here.
++         let fullFootprintSupportVerified = false
++@@ -193,12 +204,12 @@
++
++     /// Feet/base-centre positions in the original saved world. Continuous sweep of
++     /// a full cylinder, plus explicit initial AND terminal overlap queries.
++-    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float) throws -> SweepResult {
+++    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float, recordDetails: Bool = false) throws -> SweepResult {
++         guard Self.valid(from), Self.valid(to), radius.isFinite, height.isFinite,
++               (0.1...2).contains(radius), (0.5...3).contains(height) else { throw Failure.invalidQuery }
++         let geometry = SCNCylinder(radius: CGFloat(radius), height: CGFloat(height))
++         let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
++-        let initial = try overlap(at: from, height: height, shape: shape)
+++        let initial = try overlap(at: from, height: height, shape: shape, recordDetails: recordDetails)
++         let start = Self.centreTransform(from, height: height), end = Self.centreTransform(to, height: height)
++         synchronizePhysics()
++         // Query both categories with the identical cylinder/transforms, then
++@@ -209,13 +220,16 @@
++             let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
++                 options: [.collisionBitMask: mask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
++                           .backfaceCulling: false])
++-            swept.formUnion(try contacts(raw))
++-        }
++-        let terminal = try overlap(at: to, height: height, shape: shape)
++-        return SweepResult(initial: initial, swept: swept, terminal: terminal)
++-    }
++-
++-    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape) throws -> Contacts {
+++            swept.formUnion(try contacts(raw, recordDetails: recordDetails))
+++        }
+++        let terminal = try overlap(at: to, height: height, shape: shape, recordDetails: recordDetails)
+++        return SweepResult(initial: initial, swept: swept, terminal: terminal,
+++            detailShape: recordDetails ? ["radius": Double(geometry.radius), "height": Double(geometry.height),
+++                "radialSegmentCount": Double(geometry.radialSegmentCount),
+++                "heightSegmentCount": Double(geometry.heightSegmentCount), "collisionMargin": 0] : nil)
+++    }
+++
+++    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape, recordDetails: Bool = false) throws -> Contacts {
++         let node = SCNNode()
++         node.simdTransform = Self.centreTransform(foot, height: height)
++         let body = SCNPhysicsBody(type: .kinematic, shape: shape)
++@@ -227,18 +241,37 @@
++         defer { node.removeFromParentNode(); synchronizePhysics() }
++         var result = Contacts()
++         for mask in queryMasks {
++-            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask])))
+++            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask]), recordDetails: recordDetails))
++         }
++         return result
++     }
++
++-    private func contacts(_ raw: [SCNPhysicsContact]) throws -> Contacts {
+++    private func contacts(_ raw: [SCNPhysicsContact], recordDetails: Bool = false) throws -> Contacts {
+++        // Bound each native category response; overflow fails, never truncates.
+++        if recordDetails && raw.count > 32 { throw Failure.backendUnavailable("contact detail count exceeded") }
++         var result = Contacts()
++         for contact in raw {
++             var recognized = false
++             for node in [contact.nodeA, contact.nodeB] {
++                 guard let identity = identities[ObjectIdentifier(node)] else { continue }
++                 recognized = true
+++                if recordDetails {
+++                    let p = contact.contactPoint, n = contact.contactNormal
+++                    let point = [Double(p.x), Double(p.y), Double(p.z)]
+++                    let normal = [Double(n.x), Double(n.y), Double(n.z)]
+++                    let penetration = Double(contact.penetrationDistance)
+++                    guard (point + normal + [penetration]).allSatisfy(\.isFinite) else {
+++                        throw Failure.backendUnavailable("nonfinite contact detail")
+++                    }
+++                    let kind: String
+++                    switch identity.kind {
+++                    case .obstacleSurface: kind = "obstacle-surface"
+++                    case .floorSurface: kind = "floor-surface"
+++                    case .furnitureBound: kind = "furniture-bound"
+++                    }
+++                    result.details.append(.init(featureID: identity.id, kind: kind,
+++                        point: point, normal: normal, penetrationDistance: penetration))
+++                }
++                 switch identity.kind {
++                 case .obstacleSurface: result.obstacleSurfaceIDs.insert(identity.id)
++                 case .floorSurface: result.floorSurfaceIDs.insert(identity.id)
+diff --git a/research/native-edt-historical-view-20261030/MANIFEST.json b/research/native-edt-historical-view-20261030/MANIFEST.json
+--- a/research/native-edt-historical-view-20261030/MANIFEST.json
++++ b/research/native-edt-historical-view-20261030/MANIFEST.json
+@@ -1,7 +1,7 @@
+ {
+   "schema": 1,
+   "files": {
+-    "OVERRIDES.json": "d6c14699e7d8a0a43264f06ea81fee0a4752fc5d1e3e5af8c46130da2ff55dca",
++    "OVERRIDES.json": "91fdeeed54d8e76f3644bbefab2adbdc156df53b8735ad01c2610ab7941bb674",
+     "README.md": "eae09c8cbb9ebad31500105225140d47668aa58cfe8eec0680c80d9ba115cee5",
+     "RUNNER_ADAPTER.diff": "c8fb1516aff505203220f92a0cfeef1a0cfe1e691b6fa2eace8a2c2d0c1b7598",
+     "SOURCE_RECONSTRUCTION_RECEIPT.json": "18ec5e81213ca0f510d999309fafba5074e7df282f2349b461a4ffad32163e50",
+@@ -11,7 +11,9 @@
+     "baseline/blind_detour_exclusion.cpp.txt": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
+     "baseline/run_native.py.txt": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f",
+     "run_snapshot.py": "50b55900980406b63eb06431a556d55ad4c9edfcb6c73e0b01e59d5f4913ead5",
+-    "test_snapshot.py": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc",
+-    "verify_checkout_view.py": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
++    "test_snapshot.py": "45e492c68131f9dbc3b270bbfc0fc28b7bb586271f13818a45be40fb471fc35e",
++    "verify_checkout_view.py": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4",
++    "CURRENT_CONTACT_DELTA.patch": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90",
++    "CURRENT_CONTACT_COMPOSITION.json": "38986f45a6c6735bdc1002fe3db17a89b31233474ac931dfb87184df46fbbc04"
+   }
+ }
+diff --git a/research/native-edt-historical-view-20261030/OVERRIDES.json b/research/native-edt-historical-view-20261030/OVERRIDES.json
+--- a/research/native-edt-historical-view-20261030/OVERRIDES.json
++++ b/research/native-edt-historical-view-20261030/OVERRIDES.json
+@@ -2,9 +2,9 @@
+   "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": {
+     "file": "baseline/SavedRoomRouteCollisionOracle.swift.txt",
+     "historicalSHA256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
+-    "currentSHA256": "9581e63244f89a5183d752124d306e6808bf114dfc5cb3eecf809b03183e9b53",
++    "currentSHA256": "cd0b86b0db9a15973e6b2cf39d2a013a4006d3bf93a2974a161cdaf1a8088140",
+     "historicalCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d",
+-    "currentComparedCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab"
++    "currentComparedCommit": "f6731846299b0104979a9f4f4953fa62334656c5"
+   },
+   "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": {
+     "file": "baseline/blind_detour_exclusion.cpp.txt",
+diff --git a/research/native-edt-historical-view-20261030/test_snapshot.py b/research/native-edt-historical-view-20261030/test_snapshot.py
+--- a/research/native-edt-historical-view-20261030/test_snapshot.py
++++ b/research/native-edt-historical-view-20261030/test_snapshot.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python3
+ """Portable source-only controls. No native/compiler/CI subprocesses."""
+ import importlib.util,json,pathlib,tempfile,unittest
++from unittest.mock import patch
+ SPEC=importlib.util.spec_from_file_location('snapshot',pathlib.Path(__file__).with_name('run_snapshot.py'))
+ m=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(m)
+ class Tests(unittest.TestCase):
+@@ -47,4 +48,46 @@
+   for marker in ["assert head==receipt['sourceCommit']","assert data['candidateRequests']==(25 if data['candidateExecuted'] else 0)","assert data['candidateExecuted']==data['all50OriginalControlsReproduced']","resource.RLIMIT_CPU,(120,120)","128*1024**2","DEADLINE=START+300","assert path.is_file() and sha(path)==digest"]: self.assertIn(marker,adapted)
+  def test_changed_runner_rejected(self):
+   with self.assertRaises(ValueError): m.transform_runner(b'new runner')
++ def staging_fixture(self):
++  packet=self.root/'packet';packet.mkdir();repo=self.root/'repo';repo.mkdir()
++  pins={};overrides={}
++  lane=repo/m.LANE/'stub';lane.parent.mkdir(parents=True);lane.write_bytes(b'stub');pins[m.LANE+'/stub']=m.digest(b'stub')
++  for n in ['one','two','three']:
++   historical=('historical '+n).encode();current=('current '+n).encode()
++   (packet/n).write_bytes(historical);(repo/n).write_bytes(current);pins[n]=m.digest(historical)
++   overrides[n]={'file':n,'currentSHA256':m.digest(current),'historicalSHA256':pins[n]}
++  (repo/'unchanged').write_bytes(b'unchanged');pins['unchanged']=m.digest(b'unchanged')
++  (packet/'OVERRIDES.json').write_text(json.dumps(overrides))
++  return packet,repo,pins,overrides
++ def stage_fixture(self,packet,repo,pins):
++  # Only the synthetic inventory verification is mocked; all staging gates execute.
++  with patch.object(m,'HERE',packet),patch.object(m,'verify_view') as verify:
++   result=m.stage_view(repo,self.root/'view',pins,b'pins');verify.assert_called_once();return result
++ def test_staging_exact_current_overrides(self):
++  packet,repo,pins,overrides=self.staging_fixture();self.assertEqual(self.stage_fixture(packet,repo,pins),overrides)
++  for name,h in pins.items(): self.assertEqual(m.digest((self.root/'view'/name).read_bytes()),h)
++ def test_staging_changed_current_override_rejected(self):
++  packet,repo,pins,_=self.staging_fixture();(repo/'one').write_bytes(b'unknown current')
++  with self.assertRaisesRegex(ValueError,'Current override source drift'): self.stage_fixture(packet,repo,pins)
++ def test_staging_changed_historical_override_rejected(self):
++  packet,repo,pins,_=self.staging_fixture();(packet/'one').write_bytes(b'unknown historical')
++  with self.assertRaisesRegex(ValueError,'Unchanged historical input drift'): self.stage_fixture(packet,repo,pins)
++ def test_staging_wrong_historical_identity_rejected(self):
++  packet,repo,pins,overrides=self.staging_fixture();overrides['one']['historicalSHA256']='0'*64;(packet/'OVERRIDES.json').write_text(json.dumps(overrides))
++  with self.assertRaisesRegex(ValueError,'Override expected identity differs'): self.stage_fixture(packet,repo,pins)
++ def test_staging_changed_nonoverride_rejected(self):
++  packet,repo,pins,_=self.staging_fixture();(repo/'unchanged').write_bytes(b'unknown')
++  with self.assertRaisesRegex(ValueError,'Unchanged historical input drift'): self.stage_fixture(packet,repo,pins)
++ def test_staging_missing_override_rejected(self):
++  packet,repo,pins,_=self.staging_fixture();(repo/'one').unlink()
++  with self.assertRaisesRegex(ValueError,'Missing input'): self.stage_fixture(packet,repo,pins)
++ def test_changed_contact_reverse_proof_rejected(self):
++  import shutil
++  packet=self.root/'proof';shutil.copytree(m.HERE,packet);(packet/'CURRENT_CONTACT_DELTA.patch').write_bytes(b'altered proof')
++  with patch.object(m,'HERE',packet),self.assertRaisesRegex(ValueError,'Adapter packet mismatch'): m.verify_packet()
++ def test_current_contact_composition_packet(self):
++  m.verify_packet();r=json.loads((m.HERE/'CURRENT_CONTACT_COMPOSITION.json').read_text());overrides=json.loads((m.HERE/'OVERRIDES.json').read_text());o=overrides[r['path']]
++  self.assertEqual(r['currentSHA256'],o['currentSHA256']);self.assertEqual(r['historicalSHA256'],o['historicalSHA256'])
++  self.assertEqual(r['reviewedContactDeltaSHA256'],m.digest((m.HERE/'CURRENT_CONTACT_DELTA.patch').read_bytes()))
++  self.assertEqual(r['historicalPinManifestSHA256'],m.PIN_SHA);self.assertFalse(r['nativeExecuted']);self.assertEqual(r['historicalInputCount'],58)
+ if __name__=='__main__': unittest.main()

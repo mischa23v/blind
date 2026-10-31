@@ -1354,14 +1354,24 @@
       "sha256": "f8e1ee663a249056c0767137c7fa9bba6e0bb84b01d69478aea5f67561283320"
     },
     {
+      "path": "research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json",
+      "bytes": 1193,
+      "sha256": "38986f45a6c6735bdc1002fe3db17a89b31233474ac931dfb87184df46fbbc04"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch",
+      "bytes": 6425,
+      "sha256": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90"
+    },
+    {
       "path": "research/native-edt-historical-view-20261030/MANIFEST.json",
-      "bytes": 1249,
-      "sha256": "50564b8242917e14d4f97d2b8febba9ff2f25581c27ade89227aa782fb84038a"
+      "bytes": 1460,
+      "sha256": "54275b4a7767696240fcad9c35393c0dfc1b0678518ce9bfa4c38b7f1e28563b"
     },
     {
       "path": "research/native-edt-historical-view-20261030/OVERRIDES.json",
       "bytes": 1391,
-      "sha256": "d6c14699e7d8a0a43264f06ea81fee0a4752fc5d1e3e5af8c46130da2ff55dca"
+      "sha256": "91fdeeed54d8e76f3644bbefab2adbdc156df53b8735ad01c2610ab7941bb674"
     },
     {
       "path": "research/native-edt-historical-view-20261030/README.md",
@@ -1410,8 +1420,8 @@
     },
     {
       "path": "research/native-edt-historical-view-20261030/test_snapshot.py",
-      "bytes": 3572,
-      "sha256": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc"
+      "bytes": 7159,
+      "sha256": "45e492c68131f9dbc3b270bbfc0fc28b7bb586271f13818a45be40fb471fc35e"
     },
     {
       "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
@@ -2392,6 +2402,12 @@
   "journeyRequiredGoalUnwrap": {
     "scope": "Six required goal UUID optional unwraps in existing tests only",
     "nativeMethodsRetained": 27,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "edtViewContactComposition": {
+    "scope": "Strict current contact source to historical EDT source composition",
+    "historicalInputsRetained": 58,
     "nativeExecuted": false,
     "physicalAuthority": false
   }
