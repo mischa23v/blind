@@ -1,0 +1,51 @@
+{
+  "status": "admitted",
+  "authorizedBy": "root",
+  "admittedForScoring": true,
+  "recoveryAmendment": true,
+  "originalBatchRemainsQuarantined": true,
+  "allThreeArmsIndependentlyReviewed": true,
+  "sameInputKernelConfiguration": true,
+  "c1StartedEmpty": true,
+  "tsdfResume": false,
+  "fittingPerformed": false,
+  "referenceUsedByMapper": false,
+  "framesPerArm": 265,
+  "meshFreeze": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-d1-n2/RECOVERED_FUSION_OUTPUT_FREEZE.json",
+    "sha256": "b8396f8859d2ae1da6a12b515a7007b4eda729b0515be771f2cf897d1d466ea6"
+  },
+  "originalBatchAdmission": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-d1-n2/OUTPUT_ADMISSION.json",
+    "sha256": "16302c6e872acc74b0873a99644ba14877162f78c8ab4ee2bd2e92ea7d951f67"
+  },
+  "c1RunAdmission": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-c1-recovery/OUTPUT_ADMISSION.json",
+    "sha256": "35074fae6f43600144e8784cab6b35a03a6f0f08076af75d850c7572271d370b"
+  },
+  "c1Resource": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-c1-recovery/RESOURCE.json",
+    "sha256": "fe2c532d28029de9e0796acbe12551145b05249e2cdbd5c7928d0e279b264712"
+  },
+  "c1OutputFreeze": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-c1-recovery/run/FUSION_OUTPUT_FREEZE.json",
+    "sha256": "ac9f896d68dd0f894407abfeca6a898e658c86a40a7ebe301d037dad975995fc"
+  },
+  "independentArmReviews": {
+    "B": {
+      "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-d1-n2/INDEPENDENT_COMPLETED_ARM_CHECKS.json",
+      "sha256": "49b2fc78205fcd3152036849855b4c67fb53e516baf0ec0b579fa6c9b47c1203"
+    },
+    "C0": {
+      "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-d1-n2/INDEPENDENT_COMPLETED_ARM_CHECKS.json",
+      "sha256": "49b2fc78205fcd3152036849855b4c67fb53e516baf0ec0b579fa6c9b47c1203"
+    },
+    "C1": {
+      "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-c1-recovery/INDEPENDENT_COMPLETED_REVIEW.json",
+      "sha256": "e33feab16156350019c959835867a9db375cf9b0d484a3ebe92c412a3dbf5431"
+    }
+  },
+  "note": "Explicit root amendment after independent per-arm review. Pins may point to the same combined independent review for B/C0. Does not rewrite original admission, raise its cap, resume TSDF, or permit score tuning.",
+  "admittedUTC": "2026-10-29T06:21:15Z",
+  "scope": "Offline fixed-protocol geometry scoring only; no physical navigation or raw data publication authority."
+}

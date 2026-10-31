@@ -1,0 +1,247 @@
+{
+  "schema": 1,
+  "status": "diagnostic-completed-route-not-accepted",
+  "sourceCommit": "3d6b7a6fdb4ae80f8fe99060a17f93573c0477d8",
+  "runManifestSHA256": "9ee9ad130a163b2ab38a1c4abb5ee4ea7fac2fd834538a709d5fe385259cc835",
+  "routePinsSHA256": "c3bc697f314192ef03a72aa3b8bb2f08aeefc820e4b180a1583ec23f3c10a0d7",
+  "scheduleSHA256": "19bc3032e46b7218e62c1481d54be9a978c3233cbf19c19d1400ba4234d44d40",
+  "proposalSHA256": "7209ec5bd3f3f1e89ac7ecfba7ddb4c9b4551cbc183e7bb59238d1fd0d2e219e",
+  "route": {
+    "pair": [
+      0,
+      8
+    ],
+    "points": 144,
+    "segments": 143,
+    "scheduledEvents": 1644
+  },
+  "verification": {
+    "inputPinsChecked": 75,
+    "beforeAfterAndCurrentPinsMatch": true,
+    "commandsExitedZeroAndRetired": 6,
+    "nativeBoundaryChecks": 6,
+    "terminalInventoryFilesVerified": 16,
+    "terminalPayloadBytes": 291594,
+    "sourceControlsPassed": 6,
+    "nativeControlsPassed": 67,
+    "all1644EventRawCountsEqualBetweenAandB": true
+  },
+  "aggregate": {
+    "cpuSeconds": 22.337979,
+    "wallSeconds": 22.413492805000715,
+    "peakObservedRSSBytes": 208969728,
+    "limits": {
+      "cpuSeconds": 120,
+      "wallSeconds": 180,
+      "observedRSSBytes": 1073741824,
+      "outputBytes": 67108864
+    }
+  },
+  "recountedQueryCounters": {
+    "boxes": 6618,
+    "triangles": 2547270,
+    "rays": 189
+  },
+  "contactRows": 3301,
+  "arms": {
+    "A_raw_identity": {
+      "events": 1644,
+      "modes": {
+        "actualBody": {
+          "sweepQueries": 1644,
+          "eventsWithRawOverlaps": 0,
+          "eventsWithGroundOverlaps": 0,
+          "eventsWithNonGroundOverlaps": 0,
+          "sweepsWithNonGroundOverlaps": 0,
+          "rawTriangleQueryOverlapOccurrences": 0,
+          "groundTriangleQueryOverlapOccurrences": 0,
+          "nonGroundTriangleQueryOverlapOccurrences": 0,
+          "candidateTriangleQueryOccurrences": 250931,
+          "nonGroundEventKinds": {},
+          "firstNonGroundWitness": null
+        },
+        "horizontalMargin": {
+          "sweepQueries": 1644,
+          "eventsWithRawOverlaps": 426,
+          "eventsWithGroundOverlaps": 0,
+          "eventsWithNonGroundOverlaps": 426,
+          "sweepsWithNonGroundOverlaps": 426,
+          "rawTriangleQueryOverlapOccurrences": 17102,
+          "groundTriangleQueryOverlapOccurrences": 0,
+          "nonGroundTriangleQueryOverlapOccurrences": 17102,
+          "candidateTriangleQueryOccurrences": 1011301,
+          "nonGroundEventKinds": {
+            "turn": 362,
+            "translate": 63,
+            "terminal": 1
+          },
+          "firstNonGroundWitness": {
+            "eventZeroBased": 14,
+            "eventKind": "turn",
+            "segmentZeroBased": 1,
+            "sweepPartZeroBased": 0,
+            "originalFaceID": 45802,
+            "wholeTriangleHeightAboveSweepStartFootMetres": [
+              1.4680729188842774,
+              1.6534049188842774
+            ],
+            "sourceFloat64SignedSlopeDegrees": 90.36240088213259,
+            "memberOfSavedGroundComponent": false,
+            "heightIsNotContactPoint": true,
+            "firstIsLocatorOrderNotContactTime": true
+          }
+        }
+      }
+    },
+    "B_translated_labels_only": {
+      "events": 1644,
+      "modes": {
+        "actualBody": {
+          "sweepQueries": 1644,
+          "eventsWithRawOverlaps": 0,
+          "eventsWithGroundOverlaps": 0,
+          "eventsWithNonGroundOverlaps": 0,
+          "sweepsWithNonGroundOverlaps": 0,
+          "rawTriangleQueryOverlapOccurrences": 0,
+          "groundTriangleQueryOverlapOccurrences": 0,
+          "nonGroundTriangleQueryOverlapOccurrences": 0,
+          "candidateTriangleQueryOccurrences": 250931,
+          "nonGroundEventKinds": {},
+          "firstNonGroundWitness": null
+        },
+        "horizontalMargin": {
+          "sweepQueries": 1644,
+          "eventsWithRawOverlaps": 426,
+          "eventsWithGroundOverlaps": 2,
+          "eventsWithNonGroundOverlaps": 426,
+          "sweepsWithNonGroundOverlaps": 426,
+          "rawTriangleQueryOverlapOccurrences": 17102,
+          "groundTriangleQueryOverlapOccurrences": 18,
+          "nonGroundTriangleQueryOverlapOccurrences": 17084,
+          "candidateTriangleQueryOccurrences": 1011301,
+          "nonGroundEventKinds": {
+            "turn": 362,
+            "translate": 63,
+            "terminal": 1
+          },
+          "firstNonGroundWitness": {
+            "eventZeroBased": 14,
+            "eventKind": "turn",
+            "segmentZeroBased": 1,
+            "sweepPartZeroBased": 0,
+            "originalFaceID": 45802,
+            "wholeTriangleHeightAboveSweepStartFootMetres": [
+              1.4680729188842774,
+              1.6534049188842774
+            ],
+            "sourceFloat64SignedSlopeDegrees": 90.36240088213259,
+            "memberOfSavedGroundComponent": false,
+            "heightIsNotContactPoint": true,
+            "firstIsLocatorOrderNotContactTime": true
+          }
+        }
+      }
+    },
+    "C_ground_follow": {
+      "events": 11,
+      "modes": {
+        "actualBody": {
+          "sweepQueries": 21,
+          "eventsWithRawOverlaps": 0,
+          "eventsWithGroundOverlaps": 0,
+          "eventsWithNonGroundOverlaps": 0,
+          "sweepsWithNonGroundOverlaps": 0,
+          "rawTriangleQueryOverlapOccurrences": 0,
+          "groundTriangleQueryOverlapOccurrences": 0,
+          "nonGroundTriangleQueryOverlapOccurrences": 0,
+          "candidateTriangleQueryOccurrences": 2268,
+          "nonGroundEventKinds": {},
+          "firstNonGroundWitness": null
+        },
+        "horizontalMargin": {
+          "sweepQueries": 21,
+          "eventsWithRawOverlaps": 8,
+          "eventsWithGroundOverlaps": 8,
+          "eventsWithNonGroundOverlaps": 1,
+          "sweepsWithNonGroundOverlaps": 2,
+          "rawTriangleQueryOverlapOccurrences": 41,
+          "groundTriangleQueryOverlapOccurrences": 38,
+          "nonGroundTriangleQueryOverlapOccurrences": 3,
+          "candidateTriangleQueryOccurrences": 20538,
+          "nonGroundEventKinds": {
+            "turn": 1
+          },
+          "firstNonGroundWitness": {
+            "eventZeroBased": 10,
+            "eventKind": "turn",
+            "segmentZeroBased": 1,
+            "sweepPartZeroBased": 0,
+            "originalFaceID": 27557,
+            "wholeTriangleHeightAboveSweepStartFootMetres": [
+              0.002735887183350272,
+              0.014674887183350194
+            ],
+            "sourceFloat64SignedSlopeDegrees": 16.89479806677912,
+            "memberOfSavedGroundComponent": false,
+            "heightIsNotContactPoint": true,
+            "firstIsLocatorOrderNotContactTime": true
+          }
+        }
+      }
+    }
+  },
+  "groundInitialization": {
+    "supportHits": 9,
+    "allInitialSeedsRequired": true,
+    "componentFaceCount": 4827,
+    "semanticFloorEstablished": false
+  },
+  "CProgress": {
+    "events": 11,
+    "attemptedEvents": 11,
+    "status": "nonGroundCandidateContactStopped",
+    "refusalPhase": "proposedIncrementContact",
+    "acceptedModeledTranslationIncrements": 1,
+    "acceptedModeled3DDistanceMetres": 8.7271663854747e-08,
+    "acceptedModeledXZDistanceMetres": 8.727166233481274e-08,
+    "acceptedTurnVerticalAdjustmentMetres": 0.0,
+    "completedFrozenSchedule": false,
+    "arrivalClaimed": false,
+    "physicalTravelObserved": false
+  },
+  "CAdditionalProgressScope": {
+    "acceptedTurns": 8,
+    "initialVerticalCorrectionMetres": 0.00035441793998214344,
+    "initialCorrectionCountsAsTravel": false,
+    "acceptedTranslationIsOnlyTinyInitialConnector": true,
+    "meaningfulRouteTravelEstablished": false
+  },
+  "manual2DComparison": {
+    "savedChecks": 286,
+    "contacts": 0,
+    "minimumResidualMetres": 0.12958363049834276,
+    "circleRadiusMetres": 0.42041634565979924,
+    "scope": "two manual exclusions only, not measured complete tables",
+    "threeDMarginBoxHalfExtentsMetres": [
+      0.3,
+      0.375
+    ],
+    "threeDMarginBoxCornerRadiusBeforeSweepPaddingMetres": 0.4802343178074636,
+    "identicalMarginShape": false,
+    "identicalObstacleScope": false
+  },
+  "evidenceDigests": {
+    "GUARD_RUN/RESULT.json": "3fa967cfc4d871932a13f0cd2aa31dc579d642f40acdf91234f83096ffa6547d",
+    "comparison/RECEIPT.json": "f3e0881536a80d2222d33e5f54617efc38914b532a6c644a2a327c8f7643ab2f",
+    "comparison/CONTACTS.jsonl.gz": "8cbcb6fbc5fd87c4dd22cba1d82d03131e2ce3eb394ce54f425adc290298534e"
+  },
+  "limitations": [
+    "Counts are repeated triangle-query overlap occurrences, not unique obstacles or physical impacts.",
+    "Margin query includes the nominal body volume; it is not a disjoint shell.",
+    "Conservative swept enclosure overlaps are not exact-body time-of-impact measurements.",
+    "First witness is locator order within a query, not first physical contact; whole-triangle height is not a contact point.",
+    "Only first non-ground face identity per mode/sweep is logged; other hit identities/heights are not reconstructible from counts.",
+    "Witness slope is source-float64 arithmetic only, not a rerun of the float32 native classifier.",
+    "No semantic object/floor labels, complete support, missing-mesh coverage, physical travel, clearance or device acceptance."
+  ]
+}

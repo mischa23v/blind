@@ -1,0 +1,33 @@
+{
+  "paths": [
+    "research/live-mesh-classified-bench-20261028/.gitignore",
+    "research/live-mesh-classified-bench-20261028/ACTIVATION_HANDOFF.md",
+    "research/live-mesh-classified-bench-20261028/BOUNDED_RECOVERY_DESIGN.md",
+    "research/live-mesh-classified-bench-20261028/FINAL_REVIEW.md",
+    "research/live-mesh-classified-bench-20261028/GAP_AUDIT.md",
+    "research/live-mesh-classified-bench-20261028/INITIAL_SOURCE_CHECK_FAILURE.txt",
+    "research/live-mesh-classified-bench-20261028/INPUT_PINS.json",
+    "research/live-mesh-classified-bench-20261028/PUBLICATION_ALLOWLIST.json",
+    "research/live-mesh-classified-bench-20261028/PUBLICATION_MANIFEST.json",
+    "research/live-mesh-classified-bench-20261028/PUBLICATION_MANIFEST.sha256",
+    "research/live-mesh-classified-bench-20261028/Package.swift",
+    "research/live-mesh-classified-bench-20261028/README.md",
+    "research/live-mesh-classified-bench-20261028/REMOTE_SOURCE_RECEIPT.json",
+    "research/live-mesh-classified-bench-20261028/SOURCE_RESULT.json",
+    "research/live-mesh-classified-bench-20261028/SOURCE_TESTS.txt",
+    "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+    "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+    "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift",
+    "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchSessionTests.swift",
+    "research/live-mesh-classified-bench-20261028/check_source.py",
+    "research/live-mesh-classified-bench-20261028/classified-consumer.patch",
+    "research/live-mesh-classified-bench-20261028/test_source_contract.py"
+  ],
+  "excludes": [
+    "__pycache__/**",
+    "*.pyc",
+    ".build/**",
+    ".swiftpm/**"
+  ],
+  "scope": "Only this new staged folder; no app/dependency/frozen source changes."
+}

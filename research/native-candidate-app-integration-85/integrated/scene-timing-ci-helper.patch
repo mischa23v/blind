@@ -1,0 +1,12 @@
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -33,6 +33,9 @@
+       # Keep bounded windows belonging to FAILING tests, not the last successful tests.
+       # Only synthetic test start/end and metadata-only phase records are admitted.
+       python3 tools/ci/extract-native-unit-failures.py "$out/$label.log" || true
++      echo 'OBSERVED_SCENE_TIMING_BEGIN (at most 8 metadata lines; 1500 characters each)'
++      grep -E '^OBSERVED_SCENE_FENCE_(PHASE|LATENCY) ' "$out/$label.log" | head -8 | cut -c 1-1500 || true
++      echo 'OBSERVED_SCENE_TIMING_END'
+     fi
+     # The finite practice session can expire while XCTest waits for UI idleness.
+     # Preserve its synthetic action chronology without changing the app or assertions.

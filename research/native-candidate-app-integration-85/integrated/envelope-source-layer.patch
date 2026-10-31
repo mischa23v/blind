@@ -1,0 +1,1251 @@
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp
+@@ -3,6 +3,7 @@
+ #include "include/blind_detour.h"
+ #include "Recast.h"
+ #include "exact_seed_radius_veto.h"
++#include "exact_seed_radius_envelope.h"
+ #include "DetourNavMesh.h"
+ #include "DetourNavMeshBuilder.h"
+ #include "DetourNavMeshQuery.h"
+@@ -41,9 +42,12 @@
+ extern "C" const char* bn_last_error() { return error_message; }
+ extern "C" void bn_destroy(void* handle) { delete static_cast<BNHandle*>(handle); }
+ static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly,
+-                        unsigned long long maximumSeedTests = 0, BNSeedRadiusVetoReceipt* seedReceipt = 0) {
++                        unsigned long long maximumSeedTests = 0, BNSeedRadiusVetoReceipt* seedReceipt = 0,
++                        unsigned long long maximumEnvelopeWork = 0, BNSeedRadiusEnvelopeReceipt* envelopeReceipt = 0) {
+     error_message[0] = 0;
+     if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_INVALID_INPUT;
++    if (envelopeReceipt) envelopeReceipt->status = BN_SEED_RADIUS_INVALID_INPUT;
++    if (seedReceipt && envelopeReceipt) { fail("mutually exclusive seed policies"); return 0; }
+     if (!v || !t || !c || nv < 3 || nv > 250000 || nt < 1 || nt > 500000) { fail("invalid/count-limited mesh input"); return 0; }
+     if (classifiedFloorOnly && !triangleSupport) { fail("missing triangle support"); return 0; }
+     if (classifiedFloorOnly) for (int i=0; i<nt; ++i) if (triangleSupport[i]>1) { fail("invalid triangle support"); return 0; }
+@@ -85,6 +89,7 @@
+     for (int i=0; i<nv*3; ++i) if (!std::isfinite(v[i]) || std::fabs(v[i]) > 10000.f) { fail("invalid vertex"); return 0; }
+     for (int i=0; i<nt*3; ++i) if (t[i] < 0 || t[i] >= nv) { fail("invalid triangle index"); return 0; }
+     if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
++    if (envelopeReceipt) envelopeReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
+     rcContext context(false);
+     rcConfig config; std::memset(&config, 0, sizeof(config));
+     config.cs = c->cell_size; config.ch = c->cell_height;
+@@ -147,17 +152,25 @@
+         excludedSpanCount=before-after;
+     }
+     BNSeedRadiusVeto seedVeto;
++    BNSeedRadiusEnvelope envelopeVeto;
+     // Capture only the original pre-erosion seeds. Stock erosion stays intact.
+     // The opt-in policy can remove additional spans; it cannot promote support.
+     if (seedReceipt && !seedVeto.prepare(*b.compact, config.walkableRadius, maximumSeedTests, *seedReceipt)) {
+         fail("seed-radius preparation refused"); return 0;
+     }
++    if (envelopeReceipt && !envelopeVeto.prepare(*b.compact, config.walkableRadius, maximumEnvelopeWork, *envelopeReceipt)) {
++        fail("envelope preparation refused"); return 0;
++    }
+     if (!rcErodeWalkableArea(&context, config.walkableRadius, *b.compact)) {
+         if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
++        if (envelopeReceipt) envelopeReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
+         fail("Recast build stage"); return 0;
+     }
+     if (seedReceipt && !seedVeto.apply(*b.compact, *seedReceipt)) {
+         fail("seed-radius work or topology refused"); return 0;
++    }
++    if (envelopeReceipt && !envelopeVeto.apply(*b.compact, *envelopeReceipt)) {
++        fail("envelope work or topology refused"); return 0;
+     }
+     if (!rcBuildDistanceField(&context, *b.compact) ||
+         !rcBuildRegions(&context, *b.compact, 0, config.minRegionArea, config.mergeRegionArea) ||
+@@ -190,6 +203,10 @@
+         if (seedReceipt->status != BN_SEED_RADIUS_APPLIED) { delete h; fail("seed-radius receipt incomplete"); return 0; }
+         seedReceipt->build_succeeded = 1;
+     }
++    if (envelopeReceipt) {
++        if (envelopeReceipt->status != BN_SEED_RADIUS_APPLIED) { delete h; fail("envelope receipt incomplete"); return 0; }
++        envelopeReceipt->build_succeeded = 1;
++    }
+     return h;
+ }
+ extern "C" int bn_path(void* handle,const float* start,const float* goal,const float* ext,float* points,int cap,
+@@ -288,6 +305,20 @@
+ extern "C" void* bn_build(const float* v, int nv, const int* t, int nt, const BNConfig* c) {
+     return bn_build_excluded(v,nv,t,nt,c,0,0,0.f,0.f);
+ }
++extern "C" void* bn_build_classified_seed_radius_envelope(const float* v,int nv,const int* t,int nt,
++    const BNConfig* c,const unsigned char* triangleSupport,unsigned long long maximumEnvelopeWork,
++    BNSeedRadiusEnvelopeReceipt* receipt) {
++    error_message[0]=0;
++    if(!receipt){fail("missing envelope receipt");return 0;}
++    std::memset(receipt,0,sizeof(*receipt));receipt->schema=2;
++    receipt->algorithm=BN_ENVELOPE_MAURER_INT64_V1;
++    receipt->work_unit=BN_ENVELOPE_LOOP_VISIT_OR_COMPARISON_V1;
++    receipt->work_limit=maximumEnvelopeWork;
++    if(!maximumEnvelopeWork||maximumEnvelopeWork>10000000ULL){
++        receipt->status=BN_SEED_RADIUS_WORK_LIMIT;fail("invalid envelope work budget");return 0;
++    }
++    return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true,0,0,maximumEnvelopeWork,receipt);
++}
+ extern "C" int bn_excluded_span_count(void* handle) {
+     return handle ? static_cast<BNHandle*>(handle)->excludedSpanCount : -1;
+ }
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h
+@@ -40,6 +40,27 @@
+     const int* triangles, int triangle_count, const BNConfig* config,
+     const unsigned char* triangle_support, unsigned long long maximum_seed_tests,
+     BNSeedRadiusVetoReceipt* receipt);
++/* Separate schema2 policy. Does NOT reinterpret schema1 seed-test budgets.
++   Same flat-layer original-seed predicate; different envelope work units. */
++enum BNEnvelopeAlgorithm { BN_ENVELOPE_MAURER_INT64_V1 = 1 };
++enum BNEnvelopeWorkUnit { BN_ENVELOPE_LOOP_VISIT_OR_COMPARISON_V1 = 1 };
++enum BNEnvelopeExtraStatus { BN_ENVELOPE_MEMORY_LIMIT = -7, BN_ENVELOPE_KERNEL_REFUSED = -8 };
++typedef struct BNSeedRadiusEnvelopeReceipt {
++    int schema, algorithm, work_unit;
++    int status, width, height, span_count, radius_cells, common_y_voxel;
++    int real_seed_count, exterior_seed_count, stock_keep_count, exact_keep_count;
++    int additional_rejected_count, build_succeeded;
++    unsigned long long work_limit, work_bound, work_performed;
++    unsigned long long padded_cell_count, workspace_bytes_declared;
++} BNSeedRadiusEnvelopeReceipt;
++/* maximum_envelope_work counts only kernel init/commit visits, line input/output
++   visits and envelope comparisons; excludes topology/seed packing/build stages.
++   Limit1...10M. Typed refusal/no handle; never fallback to disk or stock.
++   Status codes0..2 and-1..-6 share BNSeedRadiusStatus meanings, not schema/units. */
++void* bn_build_classified_seed_radius_envelope(const float* vertices, int vertex_count,
++    const int* triangles, int triangle_count, const BNConfig* config,
++    const unsigned char* triangle_support, unsigned long long maximum_envelope_work,
++    BNSeedRadiusEnvelopeReceipt* receipt);
+ void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
+ int bn_excluded_span_count(void* handle);
+ void bn_destroy(void* handle);
+--- /dev/null
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h
+@@ -0,0 +1,157 @@
++#ifndef BLIND_EXACT_SEED_RADIUS_ENVELOPE_H
++#define BLIND_EXACT_SEED_RADIUS_ENVELOPE_H
++#include "include/blind_detour.h"
++#include "Recast.h"
++#include "RecastAlloc.h"
++#include "Envelope/candidate/seed_distance_maurer.h"
++#include <cmath>
++#include <cstring>
++
++// New policy only. Old integer-disk helper and schema1 are retained unchanged.
++// Original topology checks and seed loops below copied from the frozen old helper.
++class BNSeedRadiusEnvelope {
++    unsigned char *seeds_=0, *originalAreas_=0, *stockGrid_=0, *keepGrid_=0;
++    research_maurer::I *distance_=0,*g_=0,*h_=0;
++    int width_=0,height_=0,spans_=0,radius_=0;
++    size_t padded_=0,lineLength_=0;
++    bool prepared_=false,attempted_=false;
++    const rcCompactCell* cells_=0;
++    const rcCompactSpan* spanData_=0;
++    static bool refuse(BNSeedRadiusEnvelopeReceipt& r,int status){r.status=status;return false;}
++public:
++    BNSeedRadiusEnvelope()=default;
++    BNSeedRadiusEnvelope(const BNSeedRadiusEnvelope&)=delete;
++    BNSeedRadiusEnvelope& operator=(const BNSeedRadiusEnvelope&)=delete;
++    ~BNSeedRadiusEnvelope(){rcFree(seeds_);rcFree(originalAreas_);rcFree(stockGrid_);rcFree(keepGrid_);rcFree(distance_);rcFree(g_);rcFree(h_);}
++    bool prepare(const rcCompactHeightfield& c,int radius,unsigned long long maxWork,
++                 BNSeedRadiusEnvelopeReceipt& r){
++        r.schema=2;r.algorithm=BN_ENVELOPE_MAURER_INT64_V1;
++        r.work_unit=BN_ENVELOPE_LOOP_VISIT_OR_COMPARISON_V1;r.work_limit=maxWork;
++        if(attempted_)return refuse(r,BN_SEED_RADIUS_INVALID_INPUT);
++        attempted_=true; // One owner/attempt, including partially allocated failures.
++        if (prepared_ || seeds_ || !c.cells || !c.spans || !c.areas ||
++            c.width < 1 || c.height < 1 || c.spanCount < 1 || c.spanCount > 65536 ||
++            static_cast<unsigned long long>(c.width) * c.height > 250000 ||
++            radius < 1 || radius > 80 || !std::isfinite(c.cs) || !std::isfinite(c.ch) ||
++            c.cs <= 0 || c.ch <= 0 || !std::isfinite(c.bmin[0]) ||
++            !std::isfinite(c.bmin[1]) || !std::isfinite(c.bmin[2]))
++            return refuse(r, BN_SEED_RADIUS_INVALID_INPUT);
++        if (!maxWork || maxWork > 10000000ULL) return refuse(r, BN_SEED_RADIUS_WORK_LIMIT);
++        width_ = c.width; height_ = c.height; spans_ = c.spanCount; radius_ = radius;
++        r.width = width_; r.height = height_; r.span_count = spans_; r.radius_cells = radius_;
++        int cursor = 0, commonY = -1;
++        // Match the captured domain exactly. Do not flatten stacked spans,
++        // choose a convenient floor, repair connectivity, or invent support.
++        for (int z = 0; z < height_; ++z) for (int x = 0; x < width_; ++x) {
++            const rcCompactCell& cell = c.cells[x + z * width_];
++            if (cell.count > 1) return refuse(r, BN_SEED_RADIUS_UNSUPPORTED_LAYER);
++            if (static_cast<unsigned long long>(cell.index) + cell.count > static_cast<unsigned>(spans_))
++                return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            if (!cell.count) continue; // Absent columns are NOT independent seeds.
++            const int i = static_cast<int>(cell.index);
++            if (i != cursor++ || c.areas[i] > RC_WALKABLE_AREA)
++                return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            const rcCompactSpan& span = c.spans[i];
++            if (commonY < 0) commonY = span.y;
++            if (commonY != span.y) return refuse(r, BN_SEED_RADIUS_UNSUPPORTED_LAYER);
++            for (int d = 0; d < 4; ++d) {
++                const int connection = rcGetCon(span, d);
++                if (connection == RC_NOT_CONNECTED) continue;
++                const int nx = x + rcGetDirOffsetX(d), nz = z + rcGetDirOffsetY(d);
++                if (nx < 0 || nx >= width_ || nz < 0 || nz >= height_)
++                    return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++                const rcCompactCell& neighbor = c.cells[nx + nz * width_];
++                if (neighbor.count != 1 || connection != 0 || neighbor.index >= static_cast<unsigned>(spans_))
++                    return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++                const rcCompactSpan& next = c.spans[neighbor.index];
++                if (next.y != span.y) return refuse(r, BN_SEED_RADIUS_UNSUPPORTED_LAYER);
++                if (rcGetCon(next, (d + 2) % 4) != 0)
++                    return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            }
++        }
++        if (cursor != spans_) return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++        r.common_y_voxel = commonY;
++
++        const unsigned long long padded=static_cast<unsigned long long>(width_+2)*(height_+2);
++        const unsigned long long length=width_>height_?width_+2:height_+2;
++        if(padded>250000) return refuse(r,BN_ENVELOPE_MEMORY_LIMIT);
++        // Seven allocations: reserve64 bytes bookkeeping each, not a heap/RSS proof.
++        const unsigned long long bytes=11ULL*padded+16ULL*length+spans_+448ULL;
++        r.padded_cell_count=padded;r.workspace_bytes_declared=bytes;r.work_bound=14ULL*padded;
++        if(bytes>2ULL*1024*1024) return refuse(r,BN_ENVELOPE_MEMORY_LIMIT);
++        if(r.work_bound>maxWork) return refuse(r,BN_SEED_RADIUS_WORK_LIMIT);
++        padded_=static_cast<size_t>(padded);lineLength_=static_cast<size_t>(length);
++        seeds_=static_cast<unsigned char*>(rcAlloc(padded_,RC_ALLOC_TEMP));
++        originalAreas_=static_cast<unsigned char*>(rcAlloc(spans_,RC_ALLOC_TEMP));
++        stockGrid_=static_cast<unsigned char*>(rcAlloc(padded_,RC_ALLOC_TEMP));
++        keepGrid_=static_cast<unsigned char*>(rcAlloc(padded_,RC_ALLOC_TEMP));
++        distance_=static_cast<research_maurer::I*>(rcAlloc(8*padded_,RC_ALLOC_TEMP));
++        g_=static_cast<research_maurer::I*>(rcAlloc(8*lineLength_,RC_ALLOC_TEMP));
++        h_=static_cast<research_maurer::I*>(rcAlloc(8*lineLength_,RC_ALLOC_TEMP));
++        if(!seeds_||!originalAreas_||!stockGrid_||!keepGrid_||!distance_||!g_||!h_)
++            return refuse(r,BN_SEED_RADIUS_ALLOCATION_FAILED);
++        std::memset(seeds_,0,padded_);std::memset(stockGrid_,0,padded_);
++        std::memcpy(originalAreas_,c.areas,spans_);
++        const int stride = width_ + 2;
++        for (int z = 0; z < height_ + 2; ++z) for (int x = 0; x < width_ + 2; ++x)
++            if (x == 0 || z == 0 || x == width_ + 1 || z == height_ + 1) {
++                seeds_[x + z * stride] = 1; ++r.exterior_seed_count;
++            }
++        for (int z = 0; z < height_; ++z) for (int x = 0; x < width_; ++x) {
++            const rcCompactCell& cell = c.cells[x + z * width_];
++            if (!cell.count) continue;
++            const int i = static_cast<int>(cell.index);
++            bool seed = c.areas[i] == RC_NULL_AREA;
++            for (int d = 0; d < 4; ++d) {
++                if (rcGetCon(c.spans[i], d) == RC_NOT_CONNECTED) { seed = true; continue; }
++                const int nx = x + rcGetDirOffsetX(d), nz = z + rcGetDirOffsetY(d);
++                if (c.areas[c.cells[nx + nz * width_].index] == RC_NULL_AREA) seed = true;
++            }
++            if (seed) { seeds_[(x + 1) + (z + 1) * stride] = 1; ++r.real_seed_count; }
++        }
++
++        cells_=c.cells;spanData_=c.spans;prepared_=true;
++        r.status=BN_SEED_RADIUS_PREPARED;return true;
++    }
++    bool apply(rcCompactHeightfield& c,BNSeedRadiusEnvelopeReceipt& r){
++        if(!prepared_||r.schema!=2||r.algorithm!=BN_ENVELOPE_MAURER_INT64_V1||
++           r.work_unit!=BN_ENVELOPE_LOOP_VISIT_OR_COMPARISON_V1||
++           r.status!=BN_SEED_RADIUS_PREPARED||c.width!=width_||c.height!=height_||
++           c.spanCount!=spans_||c.cells!=cells_||c.spans!=spanData_||!c.areas)
++            return refuse(r,BN_SEED_RADIUS_INVALID_TOPOLOGY);
++        for(int i=0;i<spans_;++i){
++            if(c.areas[i]!=RC_NULL_AREA&&c.areas[i]!=originalAreas_[i])
++                return refuse(r,BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            if(c.areas[i]!=RC_NULL_AREA)++r.stock_keep_count;
++        }
++        const int stride=width_+2;
++        for(int z=0;z<height_;++z)for(int x=0;x<width_;++x){
++            const rcCompactCell& cell=c.cells[x+z*width_];
++            if(cell.count)stockGrid_[(x+1)+(z+1)*stride]=c.areas[cell.index]!=RC_NULL_AREA;
++        }
++        research_maurer::Buffers b{seeds_,stockGrid_,keepGrid_,distance_,g_,h_,padded_,padded_,lineLength_};
++        research_maurer::Receipt k;
++        const auto status=research_maurer::transform(width_+2,height_+2,radius_,r.work_limit,
++            static_cast<unsigned long long>(spans_)+448ULL,b,k);
++        r.work_bound=k.bound;r.work_performed=k.work;r.workspace_bytes_declared=k.accountedBytes;
++        if(status!=research_maurer::Status::ok)
++            return refuse(r,status==research_maurer::Status::work_limit?BN_SEED_RADIUS_WORK_LIMIT:
++                status==research_maurer::Status::memory_limit?BN_ENVELOPE_MEMORY_LIMIT:BN_ENVELOPE_KERNEL_REFUSED);
++        for(int z=0;z<height_;++z)for(int x=0;x<width_;++x){
++            const rcCompactCell& cell=c.cells[x+z*width_];if(!cell.count)continue;
++            if(keepGrid_[(x+1)+(z+1)*stride])++r.exact_keep_count;
++        }
++        // Only commit after every transform and validation succeeded.
++        for(int z=0;z<height_;++z)for(int x=0;x<width_;++x){
++            const rcCompactCell& cell=c.cells[x+z*width_];if(!cell.count)continue;
++            if(!keepGrid_[(x+1)+(z+1)*stride])c.areas[cell.index]=RC_NULL_AREA;
++        }
++        r.additional_rejected_count=r.stock_keep_count-r.exact_keep_count;
++        r.status=BN_SEED_RADIUS_APPLIED;prepared_=false;return true;
++    }
++#ifdef BN_ENVELOPE_TEST_OBSERVER
++    const unsigned char* frozenSeeds()const{return seeds_;}
++    size_t paddedCells()const{return padded_;}
++#endif
++};
++#endif
+--- /dev/null
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE
+@@ -0,0 +1,203 @@
++
++                                 Apache License
++                           Version 2.0, January 2004
++                        https://www.apache.org/licenses/
++
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
++
++   1. Definitions.
++
++      "License" shall mean the terms and conditions for use, reproduction,
++      and distribution as defined by Sections 1 through 9 of this document.
++
++      "Licensor" shall mean the copyright owner or entity authorized by
++      the copyright owner that is granting the License.
++
++      "Legal Entity" shall mean the union of the acting entity and all
++      other entities that control, are controlled by, or are under common
++      control with that entity. For the purposes of this definition,
++      "control" means (i) the power, direct or indirect, to cause the
++      direction or management of such entity, whether by contract or
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
++      outstanding shares, or (iii) beneficial ownership of such entity.
++
++      "You" (or "Your") shall mean an individual or Legal Entity
++      exercising permissions granted by this License.
++
++      "Source" form shall mean the preferred form for making modifications,
++      including but not limited to software source code, documentation
++      source, and configuration files.
++
++      "Object" form shall mean any form resulting from mechanical
++      transformation or translation of a Source form, including but
++      not limited to compiled object code, generated documentation,
++      and conversions to other media types.
++
++      "Work" shall mean the work of authorship, whether in Source or
++      Object form, made available under the License, as indicated by a
++      copyright notice that is included in or attached to the work
++      (an example is provided in the Appendix below).
++
++      "Derivative Works" shall mean any work, whether in Source or Object
++      form, that is based on (or derived from) the Work and for which the
++      editorial revisions, annotations, elaborations, or other modifications
++      represent, as a whole, an original work of authorship. For the purposes
++      of this License, Derivative Works shall not include works that remain
++      separable from, or merely link (or bind by name) to the interfaces of,
++      the Work and Derivative Works thereof.
++
++      "Contribution" shall mean any work of authorship, including
++      the original version of the Work and any modifications or additions
++      to that Work or Derivative Works thereof, that is intentionally
++      submitted to Licensor for inclusion in the Work by the copyright owner
++      or by an individual or Legal Entity authorized to submit on behalf of
++      the copyright owner. For the purposes of this definition, "submitted"
++      means any form of electronic, verbal, or written communication sent
++      to the Licensor or its representatives, including but not limited to
++      communication on electronic mailing lists, source code control systems,
++      and issue tracking systems that are managed by, or on behalf of, the
++      Licensor for the purpose of discussing and improving the Work, but
++      excluding communication that is conspicuously marked or otherwise
++      designated in writing by the copyright owner as "Not a Contribution."
++
++      "Contributor" shall mean Licensor and any individual or Legal Entity
++      on behalf of whom a Contribution has been received by Licensor and
++      subsequently incorporated within the Work.
++
++   2. Grant of Copyright License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      copyright license to reproduce, prepare Derivative Works of,
++      publicly display, publicly perform, sublicense, and distribute the
++      Work and such Derivative Works in Source or Object form.
++
++   3. Grant of Patent License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      (except as stated in this section) patent license to make, have made,
++      use, offer to sell, sell, import, and otherwise transfer the Work,
++      where such license applies only to those patent claims licensable
++      by such Contributor that are necessarily infringed by their
++      Contribution(s) alone or by combination of their Contribution(s)
++      with the Work to which such Contribution(s) was submitted. If You
++      institute patent litigation against any entity (including a
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
++      or a Contribution incorporated within the Work constitutes direct
++      or contributory patent infringement, then any patent licenses
++      granted to You under this License for that Work shall terminate
++      as of the date such litigation is filed.
++
++   4. Redistribution. You may reproduce and distribute copies of the
++      Work or Derivative Works thereof in any medium, with or without
++      modifications, and in Source or Object form, provided that You
++      meet the following conditions:
++
++      (a) You must give any other recipients of the Work or
++          Derivative Works a copy of this License; and
++
++      (b) You must cause any modified files to carry prominent notices
++          stating that You changed the files; and
++
++      (c) You must retain, in the Source form of any Derivative Works
++          that You distribute, all copyright, patent, trademark, and
++          attribution notices from the Source form of the Work,
++          excluding those notices that do not pertain to any part of
++          the Derivative Works; and
++
++      (d) If the Work includes a "NOTICE" text file as part of its
++          distribution, then any Derivative Works that You distribute must
++          include a readable copy of the attribution notices contained
++          within such NOTICE file, excluding those notices that do not
++          pertain to any part of the Derivative Works, in at least one
++          of the following places: within a NOTICE text file distributed
++          as part of the Derivative Works; within the Source form or
++          documentation, if provided along with the Derivative Works; or,
++          within a display generated by the Derivative Works, if and
++          wherever such third-party notices normally appear. The contents
++          of the NOTICE file are for informational purposes only and
++          do not modify the License. You may add Your own attribution
++          notices within Derivative Works that You distribute, alongside
++          or as an addendum to the NOTICE text from the Work, provided
++          that such additional attribution notices cannot be construed
++          as modifying the License.
++
++      You may add Your own copyright statement to Your modifications and
++      may provide additional or different license terms and conditions
++      for use, reproduction, or distribution of Your modifications, or
++      for any such Derivative Works as a whole, provided Your use,
++      reproduction, and distribution of the Work otherwise complies with
++      the conditions stated in this License.
++
++   5. Submission of Contributions. Unless You explicitly state otherwise,
++      any Contribution intentionally submitted for inclusion in the Work
++      by You to the Licensor shall be under the terms and conditions of
++      this License, without any additional terms or conditions.
++      Notwithstanding the above, nothing herein shall supersede or modify
++      the terms of any separate license agreement you may have executed
++      with Licensor regarding such Contributions.
++
++   6. Trademarks. This License does not grant permission to use the trade
++      names, trademarks, service marks, or product names of the Licensor,
++      except as required for reasonable and customary use in describing the
++      origin of the Work and reproducing the content of the NOTICE file.
++
++   7. Disclaimer of Warranty. Unless required by applicable law or
++      agreed to in writing, Licensor provides the Work (and each
++      Contributor provides its Contributions) on an "AS IS" BASIS,
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
++      implied, including, without limitation, any warranties or conditions
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
++      PARTICULAR PURPOSE. You are solely responsible for determining the
++      appropriateness of using or redistributing the Work and assume any
++      risks associated with Your exercise of permissions under this License.
++
++   8. Limitation of Liability. In no event and under no legal theory,
++      whether in tort (including negligence), contract, or otherwise,
++      unless required by applicable law (such as deliberate and grossly
++      negligent acts) or agreed to in writing, shall any Contributor be
++      liable to You for damages, including any direct, indirect, special,
++      incidental, or consequential damages of any character arising as a
++      result of this License or out of the use or inability to use the
++      Work (including but not limited to damages for loss of goodwill,
++      work stoppage, computer failure or malfunction, or any and all
++      other commercial damages or losses), even if such Contributor
++      has been advised of the possibility of such damages.
++
++   9. Accepting Warranty or Additional Liability. While redistributing
++      the Work or Derivative Works thereof, You may choose to offer,
++      and charge a fee for, acceptance of support, warranty, indemnity,
++      or other liability obligations and/or rights consistent with this
++      License. However, in accepting such obligations, You may act only
++      on Your own behalf and on Your sole responsibility, not on behalf
++      of any other Contributor, and only if You agree to indemnify,
++      defend, and hold each Contributor harmless for any liability
++      incurred by, or claims asserted against, such Contributor by reason
++      of your accepting any such warranty or additional liability.
++
++   END OF TERMS AND CONDITIONS
++
++   APPENDIX: How to apply the Apache License to your work.
++
++      To apply the Apache License to your work, attach the following
++      boilerplate notice, with the fields enclosed by brackets "[]"
++      replaced with your own identifying information. (Don't include
++      the brackets!)  The text should be enclosed in the appropriate
++      comment syntax for the file format. We also recommend that a
++      file or class name and description of purpose be included on the
++      same "printed page" as the copyright notice for easier
++      identification within third-party archives.
++
++   Copyright [yyyy] [name of copyright owner]
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       https://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
++
+--- /dev/null
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE
+@@ -0,0 +1,16 @@
++ITK Software Licenses
++=====================
++
++The copyright of the Insight Toolkit (ITK) is held by:
++
++> Copyright 1999-2019    Insight Software Consortium
++>
++> Copyright 2020-present NumFOCUS
++
++This software is distributed under the Apache 2.0 License.
++
++See [LICENSE](../../LICENSE) file for details.
++
++Vendored third party software are copyrighted with licenses compatible with the Apache 2.0 License.
++For details, see the [licenses.md file](Documentation/docs/licenses.md).
++
+--- /dev/null
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h
+@@ -0,0 +1,123 @@
++// Copyright NumFOCUS. Licensed under Apache-2.0; see ../LICENSE and ../NOTICE.
++// MODIFIED 2026-10-29: research-only adaptation of ITK Voronoi/Remove at
++// 2e353bf3975631defae25f1432e3333d97ff0a95. Not an upstream ITK integer API.
++// Removed image/contour/sign/spacing/thread framework; supplied original binary
++// seeds, two integer passes, caller-owned buffers and explicit resource guards.
++// UNCOMPILED / UNVALIDATED. No production caller or fallback.
++#ifndef RESEARCH_SEED_DISTANCE_MAURER_H
++#define RESEARCH_SEED_DISTANCE_MAURER_H
++#include <cstddef>
++#include <cstdint>
++#include <limits>
++
++namespace research_maurer {
++using I = std::int64_t;
++using U = std::uint64_t;
++constexpr I infinity = (std::numeric_limits<I>::max)();
++enum class Status { ok, invalid, capacity, memory_limit, work_limit };
++struct Receipt { U work = 0, bound = 0, accountedBytes = 0; };
++struct Buffers {
++    // All six buffers must be mutually disjoint, correctly aligned and live.
++    // Counted capacities are element counts, not bytes. No allocation occurs.
++    const std::uint8_t* seeds; const std::uint8_t* originalKeep;
++    std::uint8_t* keep; I* distance; I* g; I* h;
++    std::size_t maskCapacity, distanceCapacity, lineCapacity;
++};
++
++// Upstream Remove predicate, specialized to finite nonnegative squared costs.
++// Input checks below bound all four terms and every partial sum by 4*L^3.
++inline bool remove(I d1, I d2, I df, I x1, I x2, I xf) noexcept {
++    const I a = x2-x1, b = xf-x2, c = xf-x1;
++    const I value = c*d2 - b*d1 - a*df - a*b*c;
++    return value > 0; // Preserve upstream strict tie semantics.
++}
++inline bool tick(Receipt& r, U limit) noexcept {
++    if (r.work == limit) return false;
++    ++r.work; return true;
++}
++inline bool line(I* d, std::size_t n, std::size_t stride, I* g, I* h,
++                 Receipt& r, U limit) noexcept {
++    I l = -1;
++    for (std::size_t i=0; i<n; ++i) {
++        if (!tick(r,limit)) return false;
++        const I di=d[i*stride], iw=static_cast<I>(i);
++        if (di==infinity) continue;
++        if (l>=1) {
++            while (l>=1) {
++                if (!tick(r,limit)) return false;
++                if (!remove(g[l-1],g[l],di,h[l-1],h[l],iw)) break;
++                --l;
++            }
++        }
++        ++l; g[l]=di; h[l]=iw;
++    }
++    if (l==-1) return true; // No finite site: leave sentinel line unchanged.
++    const I ns=l; l=0;
++    for (std::size_t i=0; i<n; ++i) {
++        if (!tick(r,limit)) return false;
++        const I iw=static_cast<I>(i), delta=h[l]-iw;
++        I d1=g[l]+delta*delta;
++        while (l<ns) {
++            if (!tick(r,limit)) return false;
++            const I delta2=h[l+1]-iw, d2=g[l+1]+delta2*delta2;
++            if (d1<=d2) break; // Keep upstream tie behavior, not nearest labels.
++            ++l; d1=d2;
++        }
++        d[i*stride]=d1;
++    }
++    return true;
++}
++
++// Dimensions include the caller's unchanged one-cell exterior seed perimeter.
++// Caller must retain existing Recast flat-layer/topology/span checks BEFORE this
++// helper. originalKeep is stock keep projected to the same padded grid; absent
++// columns and padding have originalKeep=0. No geometry is accepted by this API.
++// additionalLiveBytes accounts for caller-owned original span areas/other live
++// adapter scratch, so the existing 2 MiB total temporary-memory limit is retained.
++// It MUST include capacity slack, canaries and allocation overhead. The receipt
++// is declared buffer accounting, not actual RSS or a heap sandbox guarantee.
++// On non-ok, keep is untouched; scratch distance/g/h may be modified.
++inline Status transform(std::size_t width, std::size_t height, unsigned radius,
++                        U maxWork, U additionalLiveBytes, Buffers b,
++                        Receipt& r) noexcept {
++    r=Receipt{};
++    if (!width || !height || width>250000 || height>250000 ||
++        !radius || radius>80 || !b.seeds || !b.originalKeep || !b.keep ||
++        !b.distance || !b.g || !b.h) return Status::invalid;
++    // Deliberately stricter than current unpadded cell cap, never an expansion.
++    if (width>250000/height) return Status::capacity;
++    const std::size_t n=width*height, length=width>height?width:height;
++    if (b.maskCapacity<n || b.distanceCapacity<n || b.lineCapacity<length)
++        return Status::capacity;
++    const U L=static_cast<U>(length), imax=static_cast<U>(infinity);
++    // Checked cubic bound, not merely checking final squared distances.
++    if (L>imax/L || L*L>imax/L || L*L*L>imax/4) return Status::capacity;
++    const U bytes=11ULL*n+16ULL*length; // three byte masks + int64 image + g/h
++    constexpr U byteLimit=2ULL*1024*1024;
++    if (bytes>byteLimit || additionalLiveBytes>byteLimit-bytes)
++        return Status::memory_limit;
++    r.accountedBytes=bytes+additionalLiveBytes;
++    r.bound=14ULL*n; // init + 2*(build + <=2 prune + eval + <=2 advance) + commit
++    if (!maxWork || maxWork>10000000ULL || r.bound>maxWork)
++        return Status::work_limit;
++    for (std::size_t i=0; i<n; ++i) {
++        if (!tick(r,maxWork)) return Status::work_limit;
++        if (b.seeds[i]>1 || b.originalKeep[i]>1) return Status::invalid;
++        b.distance[i]=b.seeds[i]?0:infinity;
++    }
++    for (std::size_t y=0; y<height; ++y)
++        if (!line(b.distance+y*width,width,1,b.g,b.h,r,maxWork))
++            return Status::work_limit;
++    for (std::size_t x=0; x<width; ++x)
++        if (!line(b.distance+x,height,width,b.g,b.h,r,maxWork))
++            return Status::work_limit;
++    if (r.work>maxWork-n) return Status::work_limit;
++    const I r2=static_cast<I>(radius)*radius;
++    for (std::size_t i=0; i<n; ++i) {
++        b.keep[i]=static_cast<std::uint8_t>(b.originalKeep[i] && b.distance[i]>=r2);
++    }
++    r.work+=n;
++    return Status::ok;
++}
++} // namespace research_maurer
++#endif
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift
+@@ -137,6 +137,7 @@
+ final class Native {
+  let handle:UnsafeMutableRawPointer
+  let seedRadiusReceipt:MeshSeedRadiusVetoReceipt?
++ let seedRadiusEnvelopeReceipt:MeshSeedRadiusEnvelopeReceipt?
+  init(_ vertices:[Double],_ triangles:[Int32],exclusion:Exclusion?=nil,radius:Float=0.225,height:Float=1.75,triangleSupport:[MeshTriangleSupport]?=nil,seedRadiusPolicy:MeshSeedRadiusPolicy = .stock)throws {
+   guard vertices.count%3==0,triangles.count%3==0,vertices.count/3<=200000,triangles.count/3<=100000,vertices.allSatisfy({$0.isFinite && Float($0).isFinite}),triangles.allSatisfy({$0>=0 && Int($0)<vertices.count/3}) else {throw Failure.invalid("native input")}
+   let packed:[Float]=vertices.map(Float.init)
+@@ -144,6 +145,7 @@
+   guard seedRadiusPolicy.valid, seedRadiusPolicy == .stock || (triangleSupport != nil && exclusion == nil) else {throw MeshCandidateError.invalidInput}
+   let supportBytes=triangleSupport?.map(\.rawValue)
+   var seedReceipt=BNSeedRadiusVetoReceipt()
++  var envelopeReceipt=BNSeedRadiusEnvelopeReceipt()
+   var c=BNConfig(radius:radius,height:height,cell_size:0.025,cell_height:0.025,max_climb:0.025,max_slope:15,max_cells:250000,max_nodes:4096)
+   let polygon=try exclusion?.validatedPolygon(expectedFrame:"phone-corrected-level-game-yup-v1")
+   let h=packed.withUnsafeBufferPointer{v in triangles.withUnsafeBufferPointer{t -> UnsafeMutableRawPointer? in
+@@ -151,12 +153,16 @@
+     if let limit=seedRadiusPolicy.maximumSeedTests {
+      return bn_build_classified_seed_radius(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress,limit,&seedReceipt)
+     }
++    if let limit=seedRadiusPolicy.maximumEnvelopeWork {
++     return bn_build_classified_seed_radius_envelope(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress,limit,&envelopeReceipt)
++    }
+     return bn_build_classified(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress)
+    }}
+    if let e=exclusion,let polygon=polygon{return polygon.withUnsafeBufferPointer{p in bn_build_excluded(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,p.baseAddress,Int32(polygon.count/3),Float(e.observedTopHeightRange[0]),Float(e.observedTopHeightRange[1]))}}
+    return bn_build(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c)
+   }}
+   if seedRadiusPolicy.maximumSeedTests != nil {
++   seedRadiusEnvelopeReceipt=nil
+    let receipt=MeshSeedRadiusVetoReceipt(schema:Int(seedReceipt.schema),
+     status:MeshSeedRadiusVetoStatus(rawValue:Int(seedReceipt.status)) ?? .invalidInput,
+     width:Int(seedReceipt.width),height:Int(seedReceipt.height),spanCount:Int(seedReceipt.span_count),
+@@ -172,8 +178,35 @@
+     bn_destroy(h);throw MeshCandidateError.seedRadiusUnavailable(receipt)
+    }
+    handle=h
++  } else if let limit=seedRadiusPolicy.maximumEnvelopeWork {
++   seedRadiusReceipt=nil
++   guard let schema=MeshSeedRadiusEnvelopeSchema(rawValue:Int(envelopeReceipt.schema)),
++    let algorithm=MeshSeedRadiusEnvelopeAlgorithm(rawValue:Int(envelopeReceipt.algorithm)),
++    let unit=MeshSeedRadiusEnvelopeWorkUnit(rawValue:Int(envelopeReceipt.work_unit)),
++    let status=MeshSeedRadiusEnvelopeStatus(rawValue:Int(envelopeReceipt.status)) else {
++     if let h {bn_destroy(h)};throw MeshCandidateError.invalidInput
++   }
++   let receipt=MeshSeedRadiusEnvelopeReceipt(schema:schema,algorithm:algorithm,workUnit:unit,status:status,
++    width:Int(envelopeReceipt.width),height:Int(envelopeReceipt.height),spanCount:Int(envelopeReceipt.span_count),
++    radiusCells:Int(envelopeReceipt.radius_cells),commonYVoxel:Int(envelopeReceipt.common_y_voxel),
++    realSeedCount:Int(envelopeReceipt.real_seed_count),exteriorSeedCount:Int(envelopeReceipt.exterior_seed_count),
++    stockKeepCount:Int(envelopeReceipt.stock_keep_count),exactKeepCount:Int(envelopeReceipt.exact_keep_count),
++    additionalRejectedCount:Int(envelopeReceipt.additional_rejected_count),buildSucceeded:envelopeReceipt.build_succeeded != 0,
++    workLimit:envelopeReceipt.work_limit,workBound:envelopeReceipt.work_bound,workPerformed:envelopeReceipt.work_performed,
++    paddedCellCount:envelopeReceipt.padded_cell_count,workspaceBytesDeclared:envelopeReceipt.workspace_bytes_declared)
++   seedRadiusEnvelopeReceipt=receipt
++   guard let h else {throw MeshCandidateError.seedRadiusEnvelopeUnavailable(receipt)}
++   guard receipt.status == .applied,receipt.buildSucceeded,receipt.workLimit==limit,
++    receipt.workPerformed<=receipt.workBound,receipt.workBound<=receipt.workLimit,
++    receipt.workspaceBytesDeclared<=2*1024*1024,receipt.paddedCellCount<=250000,
++    receipt.exactKeepCount>=0,receipt.exactKeepCount<=receipt.stockKeepCount,
++    receipt.additionalRejectedCount==receipt.stockKeepCount-receipt.exactKeepCount else {
++     bn_destroy(h);throw MeshCandidateError.seedRadiusEnvelopeUnavailable(receipt)
++   }
++   handle=h
+   } else {
+    seedRadiusReceipt=nil
++   seedRadiusEnvelopeReceipt=nil
+    guard let h else {throw Failure.invalid("native build")};handle=h
+   }
+  }
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -9,14 +9,46 @@
+  case invalidInput, unavailable, stale, nativeFailure
+  case endpointAssociationRejected(MeshEndpointAdmissionReceipt)
+  case seedRadiusUnavailable(MeshSeedRadiusVetoReceipt)
++ case seedRadiusEnvelopeUnavailable(MeshSeedRadiusEnvelopeReceipt)
+ }
+ /// Opt-in additional discrete-mask exclusion. Stock diagnostics stay unchanged.
+ /// Exact policy requires classified support + strict requested-XZ admission.
+ public enum MeshSeedRadiusPolicy: Equatable, Sendable {
+  case stock
+  case exactFlatLayer(maximumSeedTests: UInt64)
++ case exactFlatLayerEnvelope(maximumEnvelopeWork: UInt64)
+  var maximumSeedTests: UInt64? { if case .exactFlatLayer(let value) = self { return value }; return nil }
+- var valid: Bool { maximumSeedTests.map { (1...10_000_000).contains($0) } ?? true }
++ var maximumEnvelopeWork: UInt64? { if case .exactFlatLayerEnvelope(let value) = self { return value }; return nil }
++ var valid: Bool {
++  switch self {
++  case .stock: return true
++  case .exactFlatLayer(let value), .exactFlatLayerEnvelope(let value): return (1...10_000_000).contains(value)
++  }
++ }
++}
++public enum MeshSeedRadiusEnvelopeSchema: Int, Codable, Sendable { case version2 = 2 }
++public enum MeshSeedRadiusEnvelopeAlgorithm: Int, Codable, Sendable { case maurerIntegerV1 = 1 }
++public enum MeshSeedRadiusEnvelopeWorkUnit: Int, Codable, Sendable { case loopVisitOrComparisonV1 = 1 }
++public enum MeshSeedRadiusEnvelopeStatus: Int, Codable, Sendable {
++ case notRequested = 0, prepared = 1, applied = 2
++ case invalidInput = -1, unsupportedLayer = -2, invalidTopology = -3
++ case workLimit = -4, allocationFailed = -5, buildFailed = -6
++ case memoryLimit = -7, kernelRefused = -8
++}
++/// Distinct schema2 units; never reinterpret the historical disk schema1 receipt.
++/// Typed Codable discriminators reject unknown schema/algorithm/work-unit values.
++public struct MeshSeedRadiusEnvelopeReceipt: Codable, Sendable {
++ public let schema: MeshSeedRadiusEnvelopeSchema
++ public let algorithm: MeshSeedRadiusEnvelopeAlgorithm, workUnit: MeshSeedRadiusEnvelopeWorkUnit
++ public let status: MeshSeedRadiusEnvelopeStatus
++ public let width: Int, height: Int, spanCount: Int, radiusCells: Int, commonYVoxel: Int
++ public let realSeedCount: Int, exteriorSeedCount: Int, stockKeepCount: Int, exactKeepCount: Int
++ public let additionalRejectedCount: Int, buildSucceeded: Bool
++ public let workLimit: UInt64, workBound: UInt64, workPerformed: UInt64
++ public let paddedCellCount: UInt64, workspaceBytesDeclared: UInt64
++ public var authorizesPhysicalGuidance: Bool { false }
++ public var continuousSourceClearanceVerified: Bool { false }
++ public var fullFootprintSupportVerified: Bool { false }
+ }
+ public enum MeshSeedRadiusVetoStatus: Int, Codable, Sendable {
+  case notRequested = 0, prepared = 1, applied = 2
+@@ -94,6 +126,7 @@
+  public let endpointPolicy: MeshEndpointPolicy
+  public let endpointAdmission: MeshEndpointAdmissionReceipt?
+  public let seedRadiusReceipt: MeshSeedRadiusVetoReceipt?
++ public let seedRadiusEnvelopeReceipt: MeshSeedRadiusEnvelopeReceipt?
+  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
+ }
+ /// Opt-in delivery bookkeeping only. Legacy callers retain their sticky losses.
+@@ -626,7 +659,7 @@
+ #endif
+     finish(.failure(.stale));return}
+     var unknown=Array(owner.unknown.union(view.unknown)).sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
+-    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission,seedRadiusReceipt:native.seedRadiusReceipt)))
++    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission,seedRadiusReceipt:native.seedRadiusReceipt,seedRadiusEnvelopeReceipt:native.seedRadiusEnvelopeReceipt)))
+    } catch MeshCandidateError.seedRadiusUnavailable(let receipt) {
+ #if DEBUG
+     recordDiagnosticStage(.nativeFailure,workerCPU:true)
+@@ -638,6 +671,17 @@
+      finish(.failure(.stale));return
+     }
+     finish(.failure(.seedRadiusUnavailable(receipt)))
++   } catch MeshCandidateError.seedRadiusEnvelopeUnavailable(let receipt) {
++#if DEBUG
++    recordDiagnosticStage(.nativeFailure,workerCPU:true)
++#endif
++    guard locked({matches(s,g,r)}) else {
++#if DEBUG
++     recordDiagnosticStage(.requestRetired,workerCPU:true)
++#endif
++     finish(.failure(.stale));return
++    }
++    finish(.failure(.seedRadiusEnvelopeUnavailable(receipt)))
+    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
+ #if DEBUG
+     recordDiagnosticStage(.nativeFailure,workerCPU:true)
+--- a/ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift
++++ b/ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift
+@@ -207,3 +207,109 @@
+         await discard(runtime)
+     }
+ }
++
++import XCTest
++import BlindRoomMesh
++
++/// Authored candidate integration tests. No speech, camera, haptics or movement.
++/// Add only to an explicitly admitted native validation target; unrun at staging.
++@MainActor final class SeedRadiusEnvelopeAppleTests: XCTestCase {
++    private let identity:[Double]=[1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
++    private let plane:[Double]=[-2,0,-2, -2,0,2, 2,0,2, 2,0,-2]
++    private final class Box:@unchecked Sendable {
++        private let lock=NSLock()
++        private var value:Result<MeshCandidateRoute,MeshCandidateError>?
++        func set(_ v:Result<MeshCandidateRoute,MeshCandidateError>){lock.lock();value=v;lock.unlock()}
++        func get()->Result<MeshCandidateRoute,MeshCandidateError>?{lock.lock();defer{lock.unlock()};return value}
++    }
++    private func owner(policy:MeshSeedRadiusPolicy = .stock,vertices:[Double]?=nil,
++                       triangles:[Int32]=[0,1,2,0,2,3],support:[MeshTriangleSupport]=[.floor,.floor])throws->RoomMeshCandidateRuntime {
++        let session=UUID().uuidString
++        let runtime=try RoomMeshCandidateRuntime(sessionID:session,supportPolicy:.classifiedFloorOnly,
++            endpointPolicy:.requireSuppliedXZOverPolygon,seedRadiusPolicy:policy)
++        XCTAssertTrue(runtime.offer(.init(sessionID:session,generation:0,anchorID:"authored-seed-veto-plane",
++            revision:1,timestamp:1,vertices:vertices ?? plane,triangles:triangles,columnMajorTransform:identity,
++            complete:true,triangleSupport:support)))
++        return runtime
++    }
++    private func query(_ runtime:RoomMeshCandidateRuntime)async throws->Result<MeshCandidateRoute,MeshCandidateError>{
++        let done=expectation(description:"actual envelope schema2 C ABI build/query completion"),box=Box()
++        runtime.request(start:[-1,0,0],goal:[1,0,0],body:try .init(radius:0.225,height:1.75)){
++            box.set($0);done.fulfill()
++        }
++        await fulfillment(of:[done],timeout:10)
++        return try XCTUnwrap(box.get())
++    }
++    private func discard(_ runtime:RoomMeshCandidateRuntime)async{
++        let done=expectation(description:"terminal release")
++        runtime.stopAndDiscard{done.fulfill()};await fulfillment(of:[done],timeout:10)
++    }
++    func testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget()throws{
++        let policy=MeshSeedRadiusPolicy.exactFlatLayerEnvelope(maximumEnvelopeWork:10_000_000)
++        XCTAssertThrowsError(try RoomMeshCandidateRuntime(sessionID:"legacy",seedRadiusPolicy:policy))
++        XCTAssertThrowsError(try RoomMeshCandidateRuntime(sessionID:"projection",supportPolicy:.classifiedFloorOnly,seedRadiusPolicy:policy))
++        for limit in [UInt64(0),10_000_001] {
++            XCTAssertThrowsError(try RoomMeshCandidateRuntime(sessionID:"budget",supportPolicy:.classifiedFloorOnly,
++                endpointPolicy:.requireSuppliedXZOverPolygon,seedRadiusPolicy:.exactFlatLayerEnvelope(maximumEnvelopeWork:limit)))
++        }
++    }
++    func testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance()async throws{
++        let stock=try owner(),exact=try owner(policy:.exactFlatLayerEnvelope(maximumEnvelopeWork:10_000_000))
++        defer{stock.stopAndDiscard{};exact.stopAndDiscard{}}
++        let a=try await query(stock).get(),b=try await query(exact).get()
++        XCTAssertNil(a.seedRadiusEnvelopeReceipt);XCTAssertNil(b.seedRadiusReceipt);XCTAssertTrue(a.complete);XCTAssertTrue(b.complete)
++        XCTAssertEqual(a.points.flatMap{$0}.map(\.bitPattern),b.points.flatMap{$0}.map(\.bitPattern))
++        let r=try XCTUnwrap(b.seedRadiusEnvelopeReceipt)
++        XCTAssertEqual(r.schema,.version2);XCTAssertEqual(r.algorithm,.maurerIntegerV1);XCTAssertEqual(r.workUnit,.loopVisitOrComparisonV1);XCTAssertEqual(r.status,.applied);XCTAssertTrue(r.buildSucceeded)
++        XCTAssertLessThanOrEqual(r.exactKeepCount,r.stockKeepCount)
++        XCTAssertEqual(r.additionalRejectedCount,r.stockKeepCount-r.exactKeepCount)
++        XCTAssertLessThanOrEqual(r.workPerformed,r.workBound);XCTAssertLessThanOrEqual(r.workBound,r.workLimit)
++        XCTAssertFalse(r.authorizesPhysicalGuidance);XCTAssertFalse(r.continuousSourceClearanceVerified)
++        XCTAssertFalse(r.fullFootprintSupportVerified);XCTAssertFalse(b.authorizesPhysicalGuidance)
++        XCTAssertEqual(b.endpointPolicy,.requireSuppliedXZOverPolygon)
++        XCTAssertTrue(try XCTUnwrap(b.endpointAdmission).start.isOverPolygon)
++        await discard(stock);await discard(exact)
++    }
++    func testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute()async throws{
++        let runtime=try owner(policy:.exactFlatLayerEnvelope(maximumEnvelopeWork:1));defer{runtime.stopAndDiscard{}}
++        let result=try await query(runtime)
++        guard case .failure(.seedRadiusEnvelopeUnavailable(let r))=result else{return XCTFail("No legacy route fallback")}
++        XCTAssertEqual(r.status,.workLimit);XCTAssertFalse(r.buildSucceeded)
++        XCTAssertGreaterThan(r.workBound,r.workLimit);XCTAssertEqual(r.workPerformed,0)
++        await discard(runtime)
++    }
++    func testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne()async throws{
++        let vertices:[Double]=[-3,0,-3,-3,0,3,-0.5,0,3,-0.5,0,-3,
++                              0.5,1,-3,0.5,1,3,3,1,3,3,1,-3]
++        let runtime=try owner(policy:.exactFlatLayerEnvelope(maximumEnvelopeWork:10_000_000),vertices:vertices,
++            triangles:[0,1,2,0,2,3,4,5,6,4,6,7],support:[.floor,.floor,.floor,.floor])
++        defer{runtime.stopAndDiscard{}}
++        let result=try await query(runtime)
++        guard case .failure(.seedRadiusEnvelopeUnavailable(let r))=result else{return XCTFail("Unsupported layer must not emit a path")}
++        XCTAssertEqual(r.status,.unsupportedLayer);XCTAssertFalse(r.buildSucceeded)
++        await discard(runtime)
++    }
++    func testAllObstacleClassificationCannotBorrowSlopeSupport()async throws{
++        let runtime=try owner(policy:.exactFlatLayerEnvelope(maximumEnvelopeWork:10_000_000),support:[.obstacle,.obstacle])
++        defer{runtime.stopAndDiscard{}}
++        let result=try await query(runtime)
++        guard case .failure(.seedRadiusEnvelopeUnavailable(let r))=result else{return XCTFail("No support means no exact-policy handle")}
++        XCTAssertFalse(r.buildSucceeded);XCTAssertFalse(r.authorizesPhysicalGuidance)
++        await discard(runtime)
++    }
++    func testEnvelopeReceiptRejectsUnknownSchemaAlgorithmAndWorkUnit()async throws{
++        let runtime=try owner(policy:.exactFlatLayerEnvelope(maximumEnvelopeWork:10_000_000))
++        defer{runtime.stopAndDiscard{}}
++        let route=try await query(runtime).get(),receipt=try XCTUnwrap(route.seedRadiusEnvelopeReceipt)
++        let data=try JSONEncoder().encode(receipt)
++        XCTAssertEqual(try JSONDecoder().decode(MeshSeedRadiusEnvelopeReceipt.self,from:data).schema,.version2)
++        let original=try XCTUnwrap(JSONSerialization.jsonObject(with:data) as? [String:Any])
++        for key in ["schema","algorithm","workUnit"] {
++            var changed=original;changed[key]=999
++            let altered=try JSONSerialization.data(withJSONObject:changed)
++            XCTAssertThrowsError(try JSONDecoder().decode(MeshSeedRadiusEnvelopeReceipt.self,from:altered))
++        }
++        await discard(runtime)
++    }
++
++}
+--- a/ios/BlindAssistTests/RecordedRouteStoreTests.swift
++++ b/ios/BlindAssistTests/RecordedRouteStoreTests.swift
+@@ -349,39 +349,144 @@
+         XCTAssertFalse(result.capacityReached)
+         XCTAssertTrue(result.preview?.gaps.contains(.retentionLoss) == true)
+     }
++    // A callback is not necessarily worker progress: a second read can be
++    // answered inline with a busy/withheld Snapshot while the first is queued.
++    private func isCompletedRestartSnapshot(_ value: RecordedRouteStore.Snapshot?) -> Bool {
++        guard let value else { return false }
++        return !value.busy && !value.loadFailed && !value.persistenceFailed
++    }
++    private func completedRestartSnapshot(_ store: RecordedRouteStore) -> RecordedRouteStore.Snapshot? {
++        let failuresBefore = testRun?.failureCount ?? 0
++        let value = snapshot(store) // Preserve the original five-second wait/failure.
++        guard (testRun?.failureCount ?? 0) == failuresBefore else { return nil }
++        guard isCompletedRestartSnapshot(value) else {
++            if let value {
++                print("RECORDED_ROUTE_RESTART_REFUSED busy=\(value.busy) loadFailed=\(value.loadFailed) persistenceFailed=\(value.persistenceFailed) durable=\(value.durableSampleCount) volatile=\(value.volatileSampleCount)")
++            }
++            XCTFail("Restart fixture requires a completed, non-withheld snapshot without storage failure")
++            return nil
++        }
++        return value
++    }
++    // Functional owner fence, never a substitute for the snapshot latency test.
++    // Finite input only; callers must release injected blockers before cleanup.
++    private func stopAndDrainRestartOwner(_ store: RecordedRouteStore) -> Bool {
++        store.stop()
++        var completed = false
++        let done = expectation(description: "restart owner drained")
++        let failuresBefore = testRun?.failureCount ?? 0
++        store.drainTestSavesForTesting { completed = true; done.fulfill() }
++        wait(for: [done], timeout: 5)
++        return completed && (testRun?.failureCount ?? 0) == failuresBefore
++    }
+     func testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages() throws {
+         timingFixture = .activeTrip
+         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+-        defer { try? FileManager.default.removeItem(at: directory) }
+         let url = directory.appendingPathComponent("routes.sqlite"), clock = Clock(), session = UUID()
+-        let store = RecordedRouteStore(url: url, now: clock.read)
+-        store.enableOperationTimingForTesting()
+-        store.begin(sessionID: session); clock.set(60)
++        var store: RecordedRouteStore? = RecordedRouteStore(url: url, now: clock.read)
++        var reopened: RecordedRouteStore?
++        weak var firstOwner = store
++        weak var secondOwner: RecordedRouteStore?
++        defer {
++            let firstDrained = store.map { stopAndDrainRestartOwner($0) } ?? true
++            let secondDrained = reopened.map { stopAndDrainRestartOwner($0) } ?? true
++            store = nil; reopened = nil
++            if firstDrained && secondDrained && firstOwner == nil && secondOwner == nil {
++                try? FileManager.default.removeItem(at: directory)
++            } else {
++                // A failed/late owner keeps its storage. Never delete underneath
++                // in-flight work or wait indefinitely just to make cleanup pass.
++                print("RECORDED_ROUTE_CLEANUP retainedOwnedDirectory=true")
++            }
++        }
++        store!.enableOperationTimingForTesting()
++        store!.begin(sessionID: session); clock.set(60)
+         for i in 0..<90 {
+             let time = 60 + Double(i)*0.21; clock.set(time)
+-            let sample = record(session, time: time); store.offer(sessionID: session, at: time) { sample }; _ = snapshot(store)
+-        }
+-        store.stop(); let prior = try XCTUnwrap(snapshot(store))
+-        let reopened = RecordedRouteStore(url: url, now: clock.read)
+-        reopened.enableOperationTimingForTesting()
+-        reopened.begin(sessionID: UUID())
++            let sample = record(session, time: time)
++            store!.offer(sessionID: session, at: time) { sample }
++            guard completedRestartSnapshot(store!) != nil else { return }
++        }
++        guard stopAndDrainRestartOwner(store!) else { return }
++        guard let prior = completedRestartSnapshot(store!) else { return }
++        let priorTrip = try XCTUnwrap(prior.trip)
++        XCTAssertEqual(prior.durableSampleCount, 90)
++        XCTAssertEqual(prior.volatileSampleCount, 0)
++        guard prior.durableSampleCount == 90, prior.volatileSampleCount == 0 else { return }
++        store = nil // The first finite owner has drained before a new owner opens.
++        reopened = RecordedRouteStore(url: url, now: clock.read)
++        secondOwner = reopened
++        reopened!.enableOperationTimingForTesting()
++        reopened!.begin(sessionID: UUID())
+         let restartFailuresBefore = testRun?.failureCount ?? 0
+-        let current = try XCTUnwrap(snapshot(reopened))
+-        let restartReceipt = reopened.diagnosticLastOperationForTesting(.read)
+-        XCTAssertEqual(current.trip?.id, prior.trip?.id)
++        guard let current = completedRestartSnapshot(reopened!) else { return }
++        let restartReceipt = reopened!.diagnosticLastOperationForTesting(.read)
++        XCTAssertEqual(current.trip?.id, priorTrip.id)
+         XCTAssertLessThanOrEqual(current.preview?.reverseSamples.count ?? 0, 64)
+         XCTAssertNotNil(current.nextPage)
+-        if (testRun?.failureCount ?? 0) > restartFailuresBefore { reportOperation(restartReceipt, wait: "reopenedSnapshot") }
++        if (testRun?.failureCount ?? 0) > restartFailuresBefore {
++            reportOperation(restartReceipt, wait: "reopenedSnapshot")
++            return
++        }
+         let page = expectation(description: "earlier page")
+         let pageFailuresBefore = testRun?.failureCount ?? 0
+-        reopened.page(cursor: current.nextPage, reference: nil) { next in
++        reopened!.page(cursor: current.nextPage, reference: nil) { next in
++            XCTAssertTrue(self.isCompletedRestartSnapshot(next))
+             XCTAssertLessThanOrEqual(next.preview?.reverseSamples.count ?? 0, 64)
+             XCTAssertEqual(next.preview?.reverseSamples.last?.sourceID, "frame-60.0")
+             page.fulfill()
+         }
+-        let pageReceipt = reopened.diagnosticLastOperationForTesting(.read)
++        let pageReceipt = reopened!.diagnosticLastOperationForTesting(.read)
+         wait(for: [page], timeout: 5)
+         if (testRun?.failureCount ?? 0) > pageFailuresBefore { reportOperation(pageReceipt, wait: "earlierPage") }
++    }
++    func testBusySnapshotCannotAcknowledgeStoppedOwnerDrainBeforeBlockedFactoryReturns() throws {
++        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
++        let entered = expectation(description: "factory entered")
++        let factoryReleased = expectation(description: "factory explicitly released")
++        let release = DispatchSemaphore(value: 0)
++        let clock = Clock(), session = UUID()
++        var store: RecordedRouteStore? = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read,
++            factory: { path in
++                entered.fulfill()
++                // Released by this test and unconditionally by cleanup. A finite
++                // safety bound also prevents an abandoned injected worker hang.
++                guard release.wait(timeout: .now() + 5) == .success else { throw RecordedRouteRepositoryError.invalid }
++                factoryReleased.fulfill()
++                return try RecordedRouteRepository(path: path)
++            })
++        weak var owner = store
++        defer {
++            release.signal()
++            let drained = store.map { stopAndDrainRestartOwner($0) } ?? true
++            store = nil
++            if drained && owner == nil { try? FileManager.default.removeItem(at: directory) }
++            else { print("RECORDED_ROUTE_CLEANUP retainedOwnedDirectory=true") }
++        }
++        store!.begin(sessionID: session); clock.set(60)
++        let sample = record(session, time: 60)
++        store!.offer(sessionID: session, at: 60) { sample }
++        let failuresBefore = testRun?.failureCount ?? 0
++        wait(for: [entered], timeout: 5)
++        guard (testRun?.failureCount ?? 0) == failuresBefore else { return }
++        var late: RecordedRouteStore.Snapshot?, busy: RecordedRouteStore.Snapshot?
++        let firstRead = expectation(description: "old read retired after worker release")
++        store!.preview { late = $0; firstRead.fulfill() }
++        store!.preview { busy = $0 }
++        XCTAssertTrue(busy?.busy == true)
++        XCTAssertFalse(isCompletedRestartSnapshot(busy))
++        XCTAssertFalse(isCompletedRestartSnapshot(nil))
++        XCTAssertNil(late)
++        store!.stop()
++        var drained = false
++        let actualDrain = expectation(description: "actual worker fence")
++        store!.drainTestSavesForTesting { drained = true; actualDrain.fulfill() }
++        XCTAssertFalse(drained) // Inline busy callback did not release the worker.
++        release.signal()
++        wait(for: [factoryReleased, firstRead, actualDrain], timeout: 5, enforceOrder: true)
++        XCTAssertTrue(drained)
++        XCTAssertTrue(late?.busy == true) // stop retired the original read's generation.
++        XCTAssertFalse(isCompletedRestartSnapshot(late))
+     }
+     func testTrackingLossAndSameSessionRestartWithdrawPinUntilFreshCapture() throws {
+         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+--- a/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
++++ b/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
+@@ -41,17 +41,21 @@
+     "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h",
+     "BlindRoomMesh/Sources/CEarcut/upstream/mapbox/earcut.hpp",
+     "BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift",
+-    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h"
++    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
++    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
++    "BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
++    "BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
++    "BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
+   ],
+   "files": {
+     "BlindRoomMesh/LICENSE-Recast.txt": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e",
+     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
+-    "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
++    "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
+-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
+-    "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
++    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4",
++    "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
+     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+-    "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4",
++    "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
+     "BlindRoomMesh/Sources/CDetour/include/module.modulemap": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460",
+     "BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71",
+     "BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794",
+@@ -104,7 +108,11 @@
+     "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h": "42febc3208e25671a7eab5a8d3d1b26168ad4038b02de4eaae118654d42d54dd",
+     "BlindRoomMesh/Sources/CEarcut/upstream/mapbox/earcut.hpp": "ded9fbf9922d7d16374d4f55e1f7f76d605e53fb7fc2ef5c9e146bb669ed3d51",
+     "BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift": "100ea24417bd1f10cd3706ac4e984516c6a1f9fadc3987fc6dd7ea1821500ecb",
+-    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5"
++    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
++    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h": "cae4eab88d01ee6331623c95f20a68b5b944a3f7b75a97471c043c48d293b567",
++    "BlindRoomMesh/Sources/CDetour/Envelope/LICENSE": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
++    "BlindRoomMesh/Sources/CDetour/Envelope/NOTICE": "e5747cdfed2266316c820853df9307cfee1217f0bf74c4e822e63945721df4a6",
++    "BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf"
+   },
+   "immutable_snapshot_layer": {
+     "scope": "current source only; new native tests authored, not executed",
+@@ -148,5 +156,24 @@
+       "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+     },
+     "defaultCallerActivation": false
++  },
++  "optional_envelope_layer": {
++    "beforeManifestSHA256": "a12d61b6119ca3c8fc0707aa846db26794011193643d07ae858e50cb8e158b80",
++    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
++    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
++    "before": {
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
++    },
++    "added": [
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
++    ],
++    "defaultCallerActivation": false,
++    "nativeSwiftExecuted": false
+   }
+ }
+--- a/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
+@@ -43,7 +43,7 @@
+     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
+     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
+     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
+-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "a12d61b6119ca3c8fc0707aa846db26794011193643d07ae858e50cb8e158b80"
++    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "0e3d03c681912e58aef1c9c55086fb8acba2e003d4aa3e3aea2761c32386b749"
+   },
+   "immutable_snapshot_layer": {
+     "scope": "current source only; new native tests authored, not executed",
+@@ -84,5 +84,16 @@
+       "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "d8bd86678228d95c6f5be767faf9e1045342e2582f1f793a1ce66bf160f262d5"
+     },
+     "defaultCallerActivation": false
++  },
++  "optional_envelope_layer": {
++    "beforeManifestSHA256": "67ba14e6f1ba1ef98d69556715c14f8d90871b014b89443984b12efd3c585a56",
++    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
++    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
++    "before": {
++      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "a12d61b6119ca3c8fc0707aa846db26794011193643d07ae858e50cb8e158b80"
++    },
++    "added": [],
++    "defaultCallerActivation": false,
++    "nativeSwiftExecuted": false
+   }
+ }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -145,8 +145,8 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+-      "bytes": 16392,
+-      "sha256": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21"
++      "bytes": 18877,
++      "sha256": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
+@@ -155,13 +155,13 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+-      "bytes": 37391,
+-      "sha256": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd"
++      "bytes": 39802,
++      "sha256": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+-      "bytes": 19814,
+-      "sha256": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5"
++      "bytes": 21712,
++      "sha256": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp",
+@@ -170,8 +170,8 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+-      "bytes": 4428,
+-      "sha256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
++      "bytes": 5874,
++      "sha256": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/module.modulemap",
+@@ -452,6 +452,26 @@
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+       "sha256": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
+       "bytes": 9092
++    },
++    {
++      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
++      "sha256": "cae4eab88d01ee6331623c95f20a68b5b944a3f7b75a97471c043c48d293b567",
++      "bytes": 9664
++    },
++    {
++      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
++      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
++      "bytes": 11361
++    },
++    {
++      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
++      "sha256": "e5747cdfed2266316c820853df9307cfee1217f0bf74c4e822e63945721df4a6",
++      "bytes": 473
++    },
++    {
++      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h",
++      "sha256": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf",
++      "bytes": 5742
+     }
+   ],
+   "changes": [
+@@ -589,5 +609,24 @@
+       "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+     },
+     "defaultCallerActivation": false
++  },
++  "optional_envelope_layer": {
++    "beforeManifestSHA256": "440af8deebef6b826bb9d6308b8f348b2218bbb618ec7d00444a432863005e42",
++    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
++    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
++    "before": {
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
++    },
++    "added": [
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
++    ],
++    "defaultCallerActivation": false,
++    "nativeSwiftExecuted": false
+   }
+ }

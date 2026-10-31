@@ -1,0 +1,85 @@
+{
+  "kind": "source-contract-checks-not-Swift-compilation",
+  "baselineCommit": "dc32a9bad9a75566f27924fb9f7aa8fe50a46e95",
+  "checks": [
+    {
+      "name": "dc32_typed_SIMD_transform_repair_unchanged",
+      "passed": true
+    },
+    {
+      "name": "all_six_existing_tests_unchanged",
+      "passed": true
+    },
+    {
+      "name": "retained_renderer_and_deterministic_clock",
+      "passed": true
+    },
+    {
+      "name": "unpaused_zero_gravity_world",
+      "passed": true
+    },
+    {
+      "name": "static_and_kinematic_only",
+      "passed": true
+    },
+    {
+      "name": "candidate_does_not_override_source_collision_mask",
+      "passed": true
+    },
+    {
+      "name": "explicit_query_source_mask_retained",
+      "passed": true
+    },
+    {
+      "name": "zero_collision_margin_all_three_shapes",
+      "passed": true
+    },
+    {
+      "name": "full_cylinder_dimensions_unchanged",
+      "passed": true
+    },
+    {
+      "name": "initial_continuous_swept_terminal_order_retained",
+      "passed": true
+    },
+    {
+      "name": "both_backfaces_and_all_contacts_retained",
+      "passed": true
+    },
+    {
+      "name": "mandatory_fail_closed_control_gate",
+      "passed": true
+    },
+    {
+      "name": "matrix_exact_four_cells",
+      "passed": true
+    },
+    {
+      "name": "matrix_exact_ten_ordered_controls",
+      "passed": true
+    },
+    {
+      "name": "every_query_recorded_without_short_circuit",
+      "passed": true
+    },
+    {
+      "name": "error_records_fail_with_empty_contacts",
+      "passed": true
+    },
+    {
+      "name": "candidate_attachment_precedes_assertion",
+      "passed": true
+    },
+    {
+      "name": "attachment_bound_and_no_authority",
+      "passed": true
+    }
+  ],
+  "passed": 18,
+  "failed": 0,
+  "nativeExecution": "not-run-no-Swift-Xcode-or-Apple-SDK",
+  "sourceSHA256": {
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "5954b3e7d2da4cf2ce2c0cbd85f80c52524a8282d1abac73d504a8f12d810d51",
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift": "64affe88925c19a97af9227291824890e5c34beffaebe43d806ae9b6a777e814"
+  }
+}

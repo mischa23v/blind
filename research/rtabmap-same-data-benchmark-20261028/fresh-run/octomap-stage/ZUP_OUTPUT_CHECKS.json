@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "checks": {
+    "leafRecordCount": true,
+    "finiteCoordinatesAndProbabilities": true,
+    "nativeProbabilityDeterminesOccupied": true,
+    "observedProbabilityBounds": true,
+    "positiveLeafSizes": true,
+    "occupied_leaf_indices": true,
+    "free_leaf_indices": true,
+    "native_ground_occupied_leaf_indices": true,
+    "other_occupied_leaf_indices": true,
+    "all265OccupancyFrames": true,
+    "onlyRayTracingParameterChanged": true,
+    "sameFrozenReferenceSamples": true,
+    "referenceCount127774": true,
+    "forwardDistanceMetres_summary": true,
+    "reverseReferencePointDistanceMetres_summary": true
+  },
+  "parameterChanges": {
+    "Grid/RayTracing": [
+      "false",
+      "true"
+    ]
+  },
+  "freeLeavesWithHistoricalObstacleType": 174769,
+  "freeLeavesWithHistoricalGroundType": 17686,
+  "doesNotEstablishPhysicalSafety": true
+}

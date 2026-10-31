@@ -1,0 +1,184 @@
+{
+  "createdUTC": "2026-10-27T21:25:01.954195+00:00",
+  "primaryForPendingEpisodeIndices": [
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99
+  ],
+  "episode31Rerun": false,
+  "episode31TerminalOutcome": "unknown",
+  "episode31KnownPartialMovement": {
+    "status": "timeout",
+    "lastCommittedTick": 123,
+    "leg": 0,
+    "completedLegs": 0,
+    "actualDistanceMetres": 0.0,
+    "actual3DDistanceMetres": 0.007186692166332578,
+    "position": [
+      -0.9024904099661475,
+      0.0025814746728485237,
+      3.796214579425151
+    ],
+    "yaw": -4.734514442243151,
+    "arrival": false,
+    "actualTraceCSVFlushed": true
+  },
+  "previousRootsUntouched": true,
+  "previousProducersAuthoritativelyTerminated": false,
+  "briefOverlapRiskAcknowledged": true,
+  "previousEvidenceUnchangedThroughDeadlinePlus60Seconds": true,
+  "watches": {
+    "/workspace/scratch/90f3f6703064/blind/research/journey-benchmark-readiness-84/evaluator-forward": {
+      "EPISODE_LEDGER.json": {
+        "bytes": 24101,
+        "mtimeNs": 1793126367985451685,
+        "sha256": "916105367282f1a92512750a3582794aeee009143d68d472efb44c90b86db771"
+      },
+      "runs/episode-008/HEARTBEAT.jsonl": {
+        "bytes": 178182,
+        "mtimeNs": 1793126533497395071,
+        "sha256": "e19ffe6dc1b61abfe8cab2da00e274919be15b288c3ec48e21d68ba7c6d823c2"
+      },
+      "episodes/episode-008/result/LIVE_PROGRESS.json": {
+        "bytes": 356,
+        "mtimeNs": 1793126533284412344,
+        "sha256": "9c0743e5d525b8e809577407f853a7b9ed643d6f575b92f6dc4a8f97f2ab67e5"
+      },
+      "episodes/episode-008/result/ACTUAL_TRACE_PARTIAL.csv": {
+        "bytes": 70994,
+        "mtimeNs": 1793126533573391592,
+        "sha256": "37a56424ce65951b67251cb0473a04f9eefab83bd10aaa8362472d3fec49f457"
+      }
+    },
+    "/workspace/scratch/90f3f6703064/blind/research/journey-benchmark-readiness-84/evaluator-forward-recovery-01": {
+      "EPISODE_LEDGER.json": {
+        "bytes": 30747,
+        "mtimeNs": 1793130369619618378,
+        "sha256": "8eb49f6dac5b44fa30da49df938be9148b70e1e655a2055ef38487840d1cb433"
+      },
+      "runs/episode-015/HEARTBEAT.jsonl": {
+        "bytes": 109396,
+        "mtimeNs": 1793130474696845792,
+        "sha256": "ea0bbb010fb7cf254061e4d446117f61ecb94bd262662f6e230ace42cd5efda1"
+      },
+      "episodes/episode-015/result/LIVE_PROGRESS.json": {
+        "bytes": 363,
+        "mtimeNs": 1793130474775703046,
+        "sha256": "6086944bcad9028526fa7eadba80c8e796af93a97ab8531eabadfdca8e2d6b3d"
+      },
+      "episodes/episode-015/result/ACTUAL_TRACE_PARTIAL.csv": {
+        "bytes": 36282,
+        "mtimeNs": 1793130474760842861,
+        "sha256": "de8dee1f50ca087fb699ab49b981ce591aafc4f7f393fe0b60a2aebb0ca9b98c"
+      }
+    },
+    "/workspace/scratch/90f3f6703064/blind/research/journey-benchmark-readiness-84/evaluator-forward-recovery-02": {
+      "EPISODE_LEDGER.json": {
+        "bytes": 45950,
+        "mtimeNs": 1793135023152376048,
+        "sha256": "72ce5a0810887e1f2bf8111fd4853423281c25835ef1ad20e2f515ad8a8f728a"
+      },
+      "runs/episode-031/HEARTBEAT.jsonl": {
+        "bytes": 65825,
+        "mtimeNs": 1793135126999723360,
+        "sha256": "2321fccb4590f9d5d999a3e573a1e5f8288430607524f2591016dd7424d2f9db"
+      },
+      "episodes/episode-031/result/LIVE_PROGRESS.json": {
+        "bytes": 346,
+        "mtimeNs": 1793135126940402498,
+        "sha256": "cc36489954ab49f1a5f61aefc4d3ee3b89d1568d6ace815bba4823a09da36d9d"
+      },
+      "episodes/episode-031/result/ACTUAL_TRACE_PARTIAL.csv": {
+        "bytes": 27134,
+        "mtimeNs": 1793135126915727214,
+        "sha256": "4a6bd9818cd6bcbcc60a896d71ea16be529cd1e5b5da53c1954aeed49d44722b"
+      }
+    }
+  },
+  "frozenManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+  "cacheManifestSHA256": "01fd57f962f2c57ee8e7aae8f60504ec1bc3514d2a01650e3b9374345152c6b6",
+  "sharedImmutableDirectories": {
+    "inputs": {
+      "target": "/workspace/scratch/90f3f6703064/blind/research/journey-benchmark-readiness-84/evaluator-forward-recovery-02/inputs",
+      "bytesAlreadyAccountedAtPhysicalPath": 660552048,
+      "withinSameAccountedStage": true
+    },
+    "caches": {
+      "target": "/workspace/scratch/90f3f6703064/blind/research/journey-benchmark-readiness-84/evaluator-forward-recovery-02/caches",
+      "bytesAlreadyAccountedAtPhysicalPath": 36256695,
+      "withinSameAccountedStage": true
+    }
+  },
+  "unusedArchiveOmittedOnlyFromNewRoot": true,
+  "newOwnedCopiedBytesEstimate": 41148795,
+  "combinedStageBytes": 3731201134,
+  "stageCapBytes": 4294967296,
+  "minimumAvailableRAMBytes": 4617089843,
+  "physicalAuthority": false,
+  "execution": "one bounded episode per live exec session; no daemon or detach; previous-root watches every1s; original frozen code unchanged"
+}

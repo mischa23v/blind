@@ -1,0 +1,109 @@
+{
+  "scalemaster-axis-diagnostic": {
+    "archive_identity_reference": "3aea83a4ab6cfcf5818ce8b68f16768545d2923e35f359fb829d941518d8f6af",
+    "family": "24 proper signed permutation rotations; dev-only global C and scale; no direction inversion or continuous fit",
+    "holdout_status_before_new_run": "run-001 decoded for shape/type/mask audits but neither heldout geometry scored",
+    "input_identity_digests": [
+      {
+        "basename": "SOURCE_FREEZE.json",
+        "label": "frozen_input_00",
+        "sha256": "1dcd6a6e101a7cb4ea42fd17e1171ed8b644e5fbb9f3dc148f137d8e7b4d0e20"
+      },
+      {
+        "basename": "diagnostic.py",
+        "label": "frozen_input_01",
+        "sha256": "9f774ff9d152f0485fc1fd762d8068ee9abe561cf1898f080f11989fb77432ee"
+      },
+      {
+        "basename": "extract_selected.py",
+        "label": "frozen_input_02",
+        "sha256": "f1777e4156fe4aeb1e71e67414b59f9c8ebad782a802c77f94c7ee4d15ee2b3a"
+      },
+      {
+        "basename": "freeze_pairs.py",
+        "label": "frozen_input_03",
+        "sha256": "ff91a20b1ba629258973fc6ff1678cb66ebbfaac9cbf54f757c1207221c5ab08"
+      },
+      {
+        "basename": "run_bounded.py",
+        "label": "frozen_input_04",
+        "sha256": "eec80ce45992016f8cde80ec17f8d12fcbe3c23a5f61556364fc79bbd17b4003"
+      },
+      {
+        "basename": "camera_matrix.csv",
+        "label": "frozen_input_05",
+        "sha256": "559dab31bec6ecb42386bc776df68086ab169606122e5af2263591484ba18955"
+      },
+      {
+        "basename": "odometry.csv",
+        "label": "frozen_input_06",
+        "sha256": "98c6ae69f19c57afdb87679a1aeb053301f77f1de4ca04ee39378cc95b409321"
+      },
+      {
+        "basename": "diagnostic-result.json",
+        "label": "frozen_input_07",
+        "sha256": "945cfd9c7ec7a3e22e6fd97b03c14c8ee61d53e494557293c873382f1c7c945c"
+      },
+      {
+        "basename": "execution-receipt.json",
+        "label": "frozen_input_08",
+        "sha256": "770d182bf1a96ae1b16c9f82535680169543ab80f54f882519c4ae604e444404"
+      },
+      {
+        "basename": "frozen-pairs.json",
+        "label": "frozen_input_09",
+        "sha256": "06821c1a57a082ba9404fedc30d2a3d26380c6f500806e6581009c8f38b9af99"
+      },
+      {
+        "basename": "receipt.json",
+        "label": "frozen_input_10",
+        "sha256": "7bf2f9a85b86c7c3bfb0e4c5699c0a3958f59f1466ff2e0159cebd583e713efa"
+      },
+      {
+        "basename": "interpretation.json",
+        "label": "frozen_input_11",
+        "sha256": "c59a6c3cf35ba9f551b2bd3938306fe832cd663e0cdce8542a8ec51e70ea17c9"
+      },
+      {
+        "basename": "synthetic-checks.json",
+        "label": "frozen_input_12",
+        "sha256": "b7423582b88178741ad96e496cc07ab7da713fba1538cc0ae721d9745f51899f"
+      }
+    ],
+    "note": "Input identities only; absolute paths and raw inputs omitted. This is not a runnable replacement SOURCE_FREEZE.json.",
+    "original_source_freeze_sha256": "30ca5d9b480ce920f604707b9a31009ee88d836b89a805e6e31609819dbe35ed",
+    "source_file_sha256": {
+      "PREREGISTRATION.txt": "90eebc01ac943c1f7fd4f6750c2c7413655024c79a901e80f0bf19a77651e9e3",
+      "axis_diagnostic.py": "23502f094323be831385dc958d815955bb3b575eb62348b8bb53e9f9c5ace3a9",
+      "run_bounded.py": "e66b2cb5ec291fc8929f88efb4f3fae77b8fa95372cab78b9f60eb51937db6ff"
+    }
+  },
+  "scalemaster-scale-diagnostic": {
+    "input_identity_digests": [
+      {
+        "label": "audit.json",
+        "sha256": "06832715f74e061bb3e1d4ed5c10cc16290e37278a841a14853b68eea29b9359"
+      },
+      {
+        "label": "camera_matrix.csv",
+        "sha256": "559dab31bec6ecb42386bc776df68086ab169606122e5af2263591484ba18955"
+      },
+      {
+        "label": "member-inventory.json",
+        "sha256": "9a8ffcee341ebf5a8807460338650301b7371c40131c852c343f8edacf1a36bb"
+      },
+      {
+        "label": "odometry.csv",
+        "sha256": "98c6ae69f19c57afdb87679a1aeb053301f77f1de4ca04ee39378cc95b409321"
+      }
+    ],
+    "note": "Input identities only; absolute paths and raw inputs omitted. This is not a runnable replacement SOURCE_FREEZE.json.",
+    "original_source_freeze_sha256": "1dcd6a6e101a7cb4ea42fd17e1171ed8b644e5fbb9f3dc148f137d8e7b4d0e20",
+    "source_file_sha256": {
+      "diagnostic.py": "9f774ff9d152f0485fc1fd762d8068ee9abe561cf1898f080f11989fb77432ee",
+      "extract_selected.py": "f1777e4156fe4aeb1e71e67414b59f9c8ebad782a802c77f94c7ee4d15ee2b3a",
+      "freeze_pairs.py": "ff91a20b1ba629258973fc6ff1678cb66ebbfaac9cbf54f757c1207221c5ab08",
+      "run_bounded.py": "eec80ce45992016f8cde80ec17f8d12fcbe3c23a5f61556364fc79bbd17b4003"
+    }
+  }
+}

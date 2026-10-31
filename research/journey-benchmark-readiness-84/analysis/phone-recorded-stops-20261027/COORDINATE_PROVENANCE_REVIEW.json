@@ -1,0 +1,188 @@
+{
+  "createdUTC": "2026-10-27T22:14:58.051454+00:00",
+  "conclusion": "Documented conditional offline chain; no assumed raw OBJ/pose identity and no independently proven physical pixel-surface correspondence",
+  "rawPolycamOBJReadByPixelDiagnostic": false,
+  "sourcePlannerUsesSeparateHistoricalRigidOBJFit": true,
+  "selectedOriginalVsAuthorAssociatedPoseEquality": [
+    {
+      "frame": "frame_00024",
+      "allComparedFieldsExactlyEqual": true,
+      "fields": [
+        "transform_matrix",
+        "fl_x",
+        "fl_y",
+        "cx",
+        "cy",
+        "w",
+        "h",
+        "file_path",
+        "depth_file_path"
+      ]
+    },
+    {
+      "frame": "frame_00119",
+      "allComparedFieldsExactlyEqual": true,
+      "fields": [
+        "transform_matrix",
+        "fl_x",
+        "fl_y",
+        "cx",
+        "cy",
+        "w",
+        "h",
+        "file_path",
+        "depth_file_path"
+      ]
+    },
+    {
+      "frame": "frame_00248",
+      "allComparedFieldsExactlyEqual": true,
+      "fields": [
+        "transform_matrix",
+        "fl_x",
+        "fl_y",
+        "cx",
+        "cy",
+        "w",
+        "h",
+        "file_path",
+        "depth_file_path"
+      ]
+    }
+  ],
+  "projectionFormula": "camera = inverse(C_i) * inverse(A) * M * model; for reference hit f=M*model, camera=inverse(C_i)*inverse(A)*f",
+  "modelFormula": "phone=transpose(R_original)*(B*model-t_original); B=[[1,0,0],[0,0,-1],[0,1,0]]",
+  "localSourcePins": [
+    {
+      "path": "research/journey-benchmark-readiness-84/source-forward/pair_planner.py",
+      "bytes": 7092,
+      "sha256": "4a8607606b324b72252b4dca67f33a3245c1a93cdf27acb02bf584e6bbb234bd"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/prepare_original_geometry.py",
+      "bytes": 4279,
+      "sha256": "9b994febce1bfa4bc858d26859718bf68c703e0ff810aae6bcf742826806b0cc"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/source-forward/inputs/PHONE_FRAME_METADATA_ONLY.json",
+      "bytes": 1514,
+      "sha256": "716a65dba4e8e6f83548d78e6ce2b10b643a39ebfb273b988c0f420a4627ea2b"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/source-forward/inputs/CANDIDATE_RIGID_TRANSFORM.npz",
+      "bytes": 732,
+      "sha256": "4085c76c14e1e97acd939a302daf1a9cd1f258b86d97e8e08ea6e6e9aae8da8f"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/source-forward/inputs/HISTORICAL_MESH_INPUT_RECEIPT.json",
+      "bytes": 3545,
+      "sha256": "028ce9f2d3afdded93b86f6c4061af53c08fafe65680aceff0fafe8aa040b1ba"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/source-forward/inputs/transformations.json",
+      "bytes": 239937,
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/evaluator-forward-recovery-02/physics_primitives.py",
+      "bytes": 5482,
+      "sha256": "087849005941a3c488aec984e7e25e52d7fe87c230934cd781f3c46a0f3cf79e"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/evaluator-forward-recovery-02/inputs/icp_iphone.json",
+      "bytes": 449,
+      "sha256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/transformations_colmap.json",
+      "bytes": 239934,
+      "sha256": "6f523cef70f1f97d4be4ef4d15650c3d242b9c70613b94ca13970951bc13ebdc"
+    },
+    {
+      "path": "research/tools/koivu-pose-mask-fixed-routes-v1/blind-pose-experiments-review-17/upstream/scripts/pipeline.py",
+      "bytes": 12110,
+      "sha256": "32a2fc27bb23421d2192005a9aa99ff15e3936ad4c20161592c1d85fab337dfc"
+    },
+    {
+      "path": "research/tools/koivu-pose-mask-fixed-routes-v1/blind-pose-experiments-review-17/upstream/scripts/pipeline2.py",
+      "bytes": 9609,
+      "sha256": "b6077b4ac1a6db6519491ea7ab51c49b7b3e508fb698ad728f6bb56ded48f4ce"
+    }
+  ],
+  "historicalSourceArchiveMembers": [
+    {
+      "archive": "research/tools/public-mushroom-polycam-comparator-v1/public-mushroom-polycam-comparator.zip",
+      "member": "blind-polycam-rigid-registration-37/register.py",
+      "bytes": 11518,
+      "sha256": "ea96a79bea06fc89f7589468c4783d68bcb03c7557086cfa0fc7e88a8c737a4f"
+    },
+    {
+      "archive": "research/tools/public-mushroom-polycam-comparator-v1/public-mushroom-polycam-comparator.zip",
+      "member": "blind-polycam-rigid-registration-37/PROTOCOL.md",
+      "bytes": 2529,
+      "sha256": "8770ca083a03aea148c7dbf1741643590c9db09d94efca9a80d3042bf38a9c16"
+    },
+    {
+      "archive": "research/tools/public-mushroom-polycam-comparator-v1/public-mushroom-polycam-comparator.zip",
+      "member": "blind-polycam-rigid-registration-37/FROZEN.json",
+      "bytes": 1486,
+      "sha256": "1ff8087bb624b0c0462b2578913974961579a3ddd032c6f0c575772708f58692"
+    },
+    {
+      "archive": "research/tools/public-mushroom-polycam-comparator-v1/public-mushroom-polycam-comparator.zip",
+      "member": "blind-polycam-rigid-registration-37/run-01/RESULT.json",
+      "bytes": 2057,
+      "sha256": "89653e85c7686aea4aef67b440d72d01d25494ebeea8891ef232be6b935592cb"
+    },
+    {
+      "archive": "research/tools/public-mushroom-polycam-comparator-v1/public-mushroom-polycam-comparator.zip",
+      "member": "blind-polycam-comparator-publication-42/PHONE_FRAME_METADATA_ONLY.json",
+      "bytes": 1514,
+      "sha256": "716a65dba4e8e6f83548d78e6ce2b10b643a39ebfb273b988c0f420a4627ea2b"
+    }
+  ],
+  "originalDatasetLicenseReceipts": [
+    {
+      "path": "research/koivu-reference-comparison/phone-input-provenance/zenodo-record-10230733.json",
+      "bytes": 6118,
+      "sha256": "c094fb33f07ce32b8a422f84a6961666232b69814a7ba10833a6f1f74b1aac8b",
+      "recordID": 10230733,
+      "license": {
+        "id": "cc-by-4.0"
+      },
+      "descriptionRelevantToRegistration": "Original iPhone Basic Data record retained unchanged"
+    },
+    {
+      "path": "research/koivu-reference-comparison/workspaces/blind-koivu-faro-acquisition-04/zenodo-record-10222321.json",
+      "bytes": 6131,
+      "sha256": "147ea028701494eeb1e267bf2ec575c683a87bfab606fafe306ca8d603dc803b",
+      "recordID": 10222321,
+      "license": {
+        "id": "cc-by-4.0"
+      },
+      "descriptionRelevantToRegistration": "<p>Data Structure</p><p>gt_mesh.ply (cleaned reference mesh)</p><p>gt_pd.ply (reference faro scanner point cloud)</p><p>icp_kinect (the transformation matrix that is used to transform Kinect pose stored in transformation_colmap.json to align with the gt_mesh/pd )</p><p>icp_iphone (the transformation matrix that is used to transform iPhone pose stored in transformation_colmap.json to align with the gt_mesh/pd )</p>"
+    }
+  ],
+  "primarySources": [
+    {
+      "url": "https://github.com/TUTvision/MuSHRoom#data-structure",
+      "review": "directly read; unaligned visualization-only OBJ warning confirmed"
+    },
+    {
+      "url": "https://arxiv.org/html/2311.02778v3",
+      "review": "directly read; iPhone cropped/upscaled exports, Faro triangulation/manual cleanup/hole completion, device-derived registration"
+    },
+    {
+      "url": "https://openaccess.thecvf.com/content/WACV2024/papers/Ren_MuSHRoom_Multi-Sensor_Hybrid_Room_Dataset_for_Joint_3D_Reconstruction_and_WACV_2024_paper.pdf",
+      "review": "direct open403; search-index text confirms iPhone preprocessing; same author-paper post-processing section read through arXiv"
+    },
+    {
+      "url": "https://arxiv.org/html/2311.02778v3",
+      "review": "directly read supplement \u00a71.2: failed Koivu/activity COLMAP and Polycam loops"
+    }
+  ],
+  "newFramesExtracted": 0,
+  "heavyGeometryLoaded": false,
+  "frozenInputsChanged": false,
+  "physicalAuthority": false
+}

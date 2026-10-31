@@ -1,0 +1,56 @@
+--- blind/research/detour-height-follow-source-20261030/vtk_worker.py	2026-10-30 05:08:54.746295531 +0300
++++ blind/research/detour-height-follow-compact-source-20261030/vtk_worker.py	2026-10-30 05:23:06.681026959 +0300
+@@ -18,6 +18,7 @@
+  sys.path.insert(0,str(H))  # Pinned local schedule dependency under isolated Python.
+  spec=importlib.util.spec_from_file_location('frozen_schedule',H/'schedule_contract.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+  schedules=module.load_schedules(REPO)
++ from contact_codec import HEADER,encode_record
+  # Final height row schema is verified below before importing native libraries.
+  heights=[json.loads(x)for x in a.height_events.read_text().splitlines()]
+  expected=[(s,e,i)for s in schedules for i,e in enumerate(s['events'])]
+@@ -33,7 +34,7 @@
+    for k in ('a','b'):
+     p=h[k];need(len(p)==3 and all(math.isfinite(v)for v in p),'finite native foot')
+     need(p[0]==e[k][0] and p[2]==e[k][2],'native arm changed horizontal route')
+- a.output.mkdir(exist_ok=False);began=time.monotonic();count=queries=triangles=payload=0;current_hits=[];catalog={};summary={'status':'started','movementApplied':False,'physicalAuthority':False,'groundExemptions':False,'semanticFloorEstablished':False,'supportEstablished':False,'arrivalEstablished':False,'heightEventsSHA256':height_sha,'sourceMeshHashes':MESH_SHA,'allContactIDsRetained':True,'wholeTriangleHeightsNotContactPoints':True,'lowerTrimArmsMetres':[0,.002],'invalidNativeEventsRetained':True,'nominalBodyMetres':[.45,.30,1.60],'horizontalMarginMetres':.15}
++ a.output.mkdir(exist_ok=False);header_bytes=encoded(HEADER);(a.output/'CONTACT_ENCODING.json').write_bytes(header_bytes);began=time.monotonic();count=queries=triangles=0;payload=len(header_bytes);current_hits=[];catalog={};summary={'status':'started','movementApplied':False,'physicalAuthority':False,'groundExemptions':False,'semanticFloorEstablished':False,'supportEstablished':False,'arrivalEstablished':False,'heightEventsSHA256':height_sha,'sourceMeshHashes':MESH_SHA,'allContactIDsRetained':True,'wholeTriangleHeightsNotContactPoints':True,'lowerTrimArmsMetres':[0,.002],'invalidNativeEventsRetained':True,'nominalBodyMetres':[.45,.30,1.60],'horizontalMarginMetres':.15}
+  try:
+   up=REPO/'research/coffee-room-journey-recovery-20261029/collision-protocol/upstream'
+   for p in [up/'blind-split-candidate-game-03/source',up/'blind-split-candidate-game-03/ground-follow-v2',up/'blind-opus-reference-scoring-audit-02/source',up/'blind-koivu-reference-comparison-06']:sys.path.insert(0,str(p))
+@@ -49,7 +50,7 @@
+     result=super().is_ground(cell_id);need(not result,'ground exemption forbidden');current_hits.append(int(cell_id));return result
+   def emit(stream,row):
+    nonlocal payload,count
+-   b=encoded(row);payload+=len(b);need(payload<=MAX_BYTES,'uncompressed evidence byte budget');stream.write(b);count+=1
++   b=encoded(encode_record(row));need(payload+len(b)<=MAX_BYTES-65536,'uncompressed encoded evidence byte budget');stream.write(b);payload+=len(b);count+=1
+   with (a.output/'contacts.jsonl.gz').open('xb')as raw:
+    with gzip.GzipFile(filename='',mode='wb',fileobj=raw,mtime=0,compresslevel=1)as out:
+     for s in schedules:
+@@ -92,11 +93,23 @@
+   need(count==MAX_RECORDS,'incomplete fixed VTK inventory');summary['status']='completed_full_route_diagnostic_only'
+  except BaseException as e:summary.update(status='failed',error=type(e).__name__+': '+str(e));raise
+  finally:
++  # Never replace the original worker error with a catalog/finalizer error.
++  finalization_errors=[]
+   try:
+    verify();need(sha(a.height_events)==height_sha,'native event bytes changed');summary['inputHashesAfterMatch']=True
+-  finally:
++  except BaseException as error:finalization_errors.append(type(error).__name__+': '+str(error))
++  catalog_bytes=None
++  try:
+    catalog_bytes=encoded({'triangles':catalog,'relativeHeightRule':'subtract each record startFoot[1] or endFoot[1] from modelHeightRange; whole triangle, not contact point'})
+-   need(payload+len(catalog_bytes)<=MAX_BYTES,'total uncompressed evidence budget')
+-   (a.output/'TRIANGLE_CATALOG.json').write_bytes(catalog_bytes);summary.update(records=count,queries=queries,triangleTests=triangles,uncompressedEvidenceBytes=payload+len(catalog_bytes),wallSeconds=time.monotonic()-began,uniqueContactTriangles=len(catalog),nativeEventProvenance='Every height row, including invalid/clamped status, is retained byte-for-byte in pinned height/events.jsonl; keyed by scene/name/eventIndex')
+-   (a.output/'SUMMARY.json').write_bytes(encoded(summary))
++   need(payload+len(catalog_bytes)<=MAX_BYTES-65536,'total uncompressed encoded evidence budget')
++   with (a.output/'TRIANGLE_CATALOG.json').open('xb')as f:f.write(catalog_bytes)
++   summary['catalogWritten']=True
++  except BaseException as error:
++   summary['catalogWritten']=False;finalization_errors.append(type(error).__name__+': '+str(error))
++  summary.update(records=count,queries=queries,triangleTests=triangles,uncompressedEvidenceBytes=payload+(len(catalog_bytes)if summary.get('catalogWritten')else 0),wallSeconds=time.monotonic()-began,uniqueContactTriangles=len(catalog),nativeEventProvenance='Every height row, including invalid/clamped status, is retained byte-for-byte in pinned height/events.jsonl; keyed by scene/name/eventIndex',contactEncoding='lossless-contact-defaults-v1',contactEncodingSHA256=sha(a.output/'CONTACT_ENCODING.json'))
++  if finalization_errors:
++   summary['finalizationErrors']=finalization_errors
++   if summary['status']!='failed':summary.update(status='failed',error='Finalization failed: '+finalization_errors[0])
++  with(a.output/'SUMMARY.json').open('xb')as f:f.write(encoded(summary))
++  if finalization_errors and sys.exc_info()[0]is None:raise RuntimeError('Finalization failed; original worker status retained in SUMMARY.json')
+ if __name__=='__main__':main()

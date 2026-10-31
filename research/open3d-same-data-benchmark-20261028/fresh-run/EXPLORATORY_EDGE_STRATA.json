@@ -1,0 +1,134 @@
+{
+  "cannotDistinguishRealChangePoseRegistrationOrReconstructionCauses": true,
+  "edgeDefinition": "existing 4-neighbour difference on stride4 reference-depth raster; excludes no rays from main score",
+  "postHocDiagnostic": true,
+  "rows": [
+    {
+      "absoluteDifferenceAbove10cm": 0,
+      "absoluteDifferenceAbove50cm": 0,
+      "code": -1,
+      "label": "missing_centre",
+      "paired": 0,
+      "scheduled": 141341,
+      "statistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      }
+    },
+    {
+      "absoluteDifferenceAbove10cm": 3985,
+      "absoluteDifferenceAbove50cm": 1956,
+      "code": 0,
+      "label": "scheduled_raster_boundary",
+      "paired": 20265,
+      "scheduled": 20592,
+      "statistics": {
+        "MAE": 0.1987826628777886,
+        "absoluteP50": 0.032707547063440146,
+        "absoluteP90": 0.446843461784216,
+        "absoluteP95": 1.2733995545821541,
+        "absoluteP99": 3.162948908672539,
+        "count": 20265,
+        "maximumAbsolute": 5.088139687580065,
+        "meanSigned": 0.009715183247413326,
+        "signedP05": -0.19682412509422273,
+        "signedP50": 0.006529623840563881,
+        "signedP95": 0.5689369132507318
+      }
+    },
+    {
+      "absoluteDifferenceAbove10cm": 4003,
+      "absoluteDifferenceAbove50cm": 1505,
+      "code": 1,
+      "label": "missing_neighbour",
+      "paired": 16417,
+      "scheduled": 16843,
+      "statistics": {
+        "MAE": 0.21752430076025134,
+        "absoluteP50": 0.04222372035929034,
+        "absoluteP90": 0.4438702337118526,
+        "absoluteP95": 1.468643788196986,
+        "absoluteP99": 3.16620876657774,
+        "count": 16417,
+        "maximumAbsolute": 5.673540611571635,
+        "meanSigned": -0.026079395924223748,
+        "signedP05": -0.4624779177377977,
+        "signedP50": 0.002801114325703402,
+        "signedP95": 0.41345321206853275
+      }
+    },
+    {
+      "absoluteDifferenceAbove10cm": 111606,
+      "absoluteDifferenceAbove50cm": 48420,
+      "code": 2,
+      "label": "delta_le_002",
+      "paired": 765894,
+      "scheduled": 770114,
+      "statistics": {
+        "MAE": 0.14878869633973923,
+        "absoluteP50": 0.02999822875622482,
+        "absoluteP90": 0.16374981416823858,
+        "absoluteP95": 0.6945075243532206,
+        "absoluteP99": 3.089171132935127,
+        "count": 765894,
+        "maximumAbsolute": 5.164749548996479,
+        "meanSigned": 0.01204154982240542,
+        "signedP05": -0.12795696333559148,
+        "signedP50": 0.006226836483700704,
+        "signedP95": 0.2344776707253057
+      }
+    },
+    {
+      "absoluteDifferenceAbove10cm": 59099,
+      "absoluteDifferenceAbove50cm": 21218,
+      "code": 3,
+      "label": "delta_gt002_le010",
+      "paired": 277011,
+      "scheduled": 277921,
+      "statistics": {
+        "MAE": 0.18038763827125315,
+        "absoluteP50": 0.032689713508873286,
+        "absoluteP90": 0.25102727655156376,
+        "absoluteP95": 1.2216725661605752,
+        "absoluteP99": 2.7992764190450403,
+        "count": 277011,
+        "maximumAbsolute": 6.0450778416812865,
+        "meanSigned": -0.0330364011956049,
+        "signedP05": -0.4436118296028877,
+        "signedP50": 0.007938381841366304,
+        "signedP95": 0.17292531716119552
+      }
+    },
+    {
+      "absoluteDifferenceAbove10cm": 60602,
+      "absoluteDifferenceAbove50cm": 26188,
+      "code": 4,
+      "label": "delta_gt010",
+      "paired": 108401,
+      "scheduled": 109074,
+      "statistics": {
+        "MAE": 0.46152967868830336,
+        "absoluteP50": 0.12658727717226537,
+        "absoluteP90": 1.487744344580527,
+        "absoluteP95": 2.202141945190488,
+        "absoluteP99": 3.690783481014717,
+        "count": 108401,
+        "maximumAbsolute": 6.277549303446032,
+        "meanSigned": -0.002000655326113646,
+        "signedP05": -1.6668031820912108,
+        "signedP50": 0.015419776737870983,
+        "signedP95": 1.3573584171715218
+      }
+    }
+  ],
+  "usedForFilteringOrRetuning": false
+}

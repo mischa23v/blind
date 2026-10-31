@@ -1,0 +1,115 @@
+{
+  "asOfUTC": "2026-10-29T05:01:10Z",
+  "overall": "INCOMPLETE_RESOURCE_AND_SEMANTIC_FAILURES",
+  "sourceRevision": "78ee6403720e0aed87f4720c04c813bb38a3b260",
+  "coreSourcesBuiltUnchanged": 26,
+  "upstreamTargets": {
+    "total": 10,
+    "passed": 9,
+    "resourceBlocked": [
+      "upstream_layer_utils"
+    ],
+    "allPassed": false
+  },
+  "oldAdapterFixtures": {
+    "passed": 13,
+    "total": 13
+  },
+  "N1": {
+    "assertionsPassed": 1303,
+    "ASanBounds": "passed",
+    "UBSan": "passed",
+    "LeakSanitizer": "UNAVAILABLE_runtime_fatal_retained",
+    "areaUnitControls": [
+      {
+        "fixture": "normal_area_units",
+        "depth_m": 0.3,
+        "fx_px": 810.825,
+        "expected_cross_area_m2": 1.36895e-07,
+        "threshold_m2": 1e-06,
+        "admitted": 12,
+        "valid": 0,
+        "degenerate": 6,
+        "boundary": 6
+      },
+      {
+        "fixture": "normal_area_units",
+        "depth_m": 1,
+        "fx_px": 810.825,
+        "expected_cross_area_m2": 1.52106e-06,
+        "threshold_m2": 1e-06,
+        "admitted": 12,
+        "valid": 6,
+        "degenerate": 0,
+        "boundary": 6
+      },
+      {
+        "fixture": "normal_area_units",
+        "depth_m": 3,
+        "fx_px": 810.825,
+        "expected_cross_area_m2": 1.36895e-05,
+        "threshold_m2": 1e-06,
+        "admitted": 12,
+        "valid": 6,
+        "degenerate": 0,
+        "boundary": 6
+      }
+    ]
+  },
+  "NP": {
+    "checksPassed": 24,
+    "failure": "grazing control missing disabled observation",
+    "unreached": [
+      "gradient-loss serialization",
+      "normal-array/nonfinite preconditions"
+    ]
+  },
+  "recordedFramesProcessed": 0,
+  "accuracyResult": null,
+  "physicalSafetyClaim": false,
+  "finalResources": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 2.471952694002539,
+    "peakSummedRSSBytes": 364859392,
+    "peakCumulativeCPUSeconds": 2.32,
+    "aggregateConservativeCPUSeconds": 191.93,
+    "originalFreezeToEndWallSeconds": 627.646213054657,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 15,
+      "wallSeconds": 30,
+      "originalCumulativeCPUWallCap": 900,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "26-file native build + upstream tests + synthetic-only fixtures; no recorded inputs"
+  },
+  "noFurtherRunAuthorizedInThisLedger": true,
+  "rayDiagnostic": {
+    "executed": [
+      "fork_original_axis",
+      "fork_oblique_nonzero_xyz"
+    ],
+    "notExecuted": [
+      "stock_binary",
+      "translated_axis",
+      "translated_oblique"
+    ],
+    "originalAxis": {
+      "expectedUniqueIndices": 31,
+      "actualCalls": 31,
+      "actualUniqueIndices": 1,
+      "probeObserved": false
+    },
+    "oblique": {
+      "expectedAndActualIndicesMatch": true,
+      "count": 40,
+      "normalOffWeight": 0.9175153375,
+      "normalOnWeight": 0
+    },
+    "doesNotOverrideNPFailure": true
+  },
+  "coreLibrarySHA256": "644a34b8f3c33ef82f4818fa6f494f317da864fc310b50d6b4b45f4060b3a8f0"
+}

@@ -1,0 +1,9 @@
+# Local map pipeline source continuation — 2026-10-30
+
+This continues existing N02/N04/venue work, not a new tracker ID or accepted journey. The local public venue picker uses exact package digest/revision and existing import ownership. Private saved-world observations use the real local paired archive and RoomPlan decoder, one retained utility worker, and the current normal-camera receipt. The explicit goal-free context is reference-only: no route nodes, edges, floors, calibration, measured uncertainty, support or physical output is supplied. Interrupted portal intent may replan only from a newly accepted unique current endpoint; no missing crossing is fabricated.
+
+The source identity inventory preserves all existing methods and explicitly appends the authored cases. The current navigation checker now requires the exact original twenty plus seven named N04 cases, not a lower bound. The additional current-source checker covers actual producer/consumer seams and rejects deliberate source mutations. These are source checks, **not Swift execution or device acceptance**.
+
+The standard Apple workflow's existing full BlindCore and BlindAssistTests runs include the affected files/classes; no new runner, paid resource, retry, time limit relaxation or optional flag is added. The integrated preflight runs current source controls and exact pin checks before reversing this outer layer only in a temporary directory to retain the earlier reviewed86 and published Boolean-repair provenance. Earlier passing or failing native results are not assigned to this continuation.
+
+Required next evidence: compile the exact combined source, execute all new Core/hosted identities with failures/skips retained, validate actual archive/recovery and lifecycle behavior, and separately measure localization, body/floor support and supervised device journeys. No walking or child-safety approval is granted.

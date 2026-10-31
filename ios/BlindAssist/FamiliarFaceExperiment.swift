@@ -7,6 +7,7 @@ import Combine
 import BlindCore
 import ImageIO
 import UIKit
+import PhotosUI
 
 struct FamiliarCapture {
     let image: CVPixelBuffer
@@ -187,6 +188,11 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     @Published private(set) var enabled = false
     @Published private(set) var busy = false
+    @Published private(set) var photoImportInFlight = false
+    // The physical slot belongs to this experiment, not a replaceable helper view.
+    // Only narrow MainActor entry/completion methods may acquire or release it.
+    @MainActor private var photoImportLease: UUID?
+    @MainActor private var photoImportRevision = UUID()
     @Published private(set) var dualPipeline = false
     @Published private(set) var status = "Experimental comparison is off." { didSet { if !silenceStatus { onStatus?(status) } } }
     @Published private(set) var people: [FamiliarTemplate] = []
@@ -629,28 +635,65 @@ final class FamiliarFaceExperiment: ObservableObject {
         showPicker = true
         status = "Choose up to \(remainingExamples) photos of the same consented person alone in Apple's accessible photo picker. Voice commands cannot select its photos; use VoiceOver or the picker controls."
     }
-    /// Called by the local system picker, one bounded image at a time. Not a live recognition route.
-    func importPhotos(_ photos: [Data]) {
-        guard !photos.isEmpty else { status = "No selected photos loaded. Retry with an available local still photo."; return }
-        guard enabled, draft != nil, !busy, !photos.isEmpty, photos.count <= remainingExamples else { status = "No import started. Select no more than the remaining example slots."; return }
+    /// Retire selected-photo publication only. A transfer/native reader already
+    /// running keeps its physical slot until it returns, including after leaving
+    /// and reopening this view. Consent/generation changes are checked separately.
+    @MainActor func cancelSelectedPhotoImport() { photoImportRevision = UUID() }
+
+    /// The trusted system picker supplies references, never six retained originals.
+    /// One capped transfer and its existing serial inference finish before the next
+    /// is loaded. This does not alter face thresholds, consent or gallery storage.
+    @MainActor @discardableResult func importSelectedPhotos(_ photos: [PhotosPickerItem], enrollmentToken: UUID) -> Bool {
+        guard photoImportLease == nil else {
+            status = "The previous photo import is still finishing. Choose the photos again shortly."
+            return false
+        }
+        guard enabled, draft?.token == enrollmentToken, !busy,
+              !photos.isEmpty, photos.count <= 6, photos.count <= remainingExamples else {
+            status = "No import started. Begin consented enrollment and select no more than the remaining example slots."
+            return false
+        }
+        let lease = UUID(); photoImportLease = lease; photoImportInFlight = true
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
-        let token = generation, useVision = dualPipeline; busy = true
-        task = Task { @MainActor [weak self] in
+        let token = generation, revision = UUID(), useVision = dualPipeline
+        photoImportRevision = revision; busy = true
+        Task { @MainActor [weak self] in
             guard let self else { return }
-            var rejected = 0
-            for (index, photo) in photos.enumerated() {
-                guard generation == token, !Task.isCancelled, enabled else { return }
-                status = "Checking selected photo \(index + 1) of \(photos.count) locally."
-                do {
-                    let result = try await inference.inspectPhoto(photo, dualPipeline: useVision)
-                    guard generation == token, !Task.isCancelled, enabled else { return }
-                    try accept(result, source: "selected-photo")
-                } catch { rejected += 1 }
+            defer {
+                if self.photoImportLease == lease {
+                    self.photoImportLease = nil; self.photoImportInFlight = false
+                }
+                if self.generation == token { self.busy = false }
             }
-            guard generation == token, !Task.isCancelled else { return }
-            busy = false; task = nil
+            var rejected = 0
+            for (index, item) in photos.enumerated() {
+                guard generation == token, photoImportRevision == revision, enabled,
+                      draft?.token == enrollmentToken, !Task.isCancelled else { return }
+                status = "Checking selected photo \(index + 1) of \(photos.count) locally."
+                let result = await inspectSelectedPhoto(item, lease: lease, revision: revision,
+                    ownerGeneration: token, enrollmentToken: enrollmentToken, dualPipeline: useVision)
+                guard generation == token, photoImportRevision == revision, enabled,
+                      draft?.token == enrollmentToken, !Task.isCancelled else { return }
+                if let result {
+                    do { try accept(result, source: "selected-photo") } catch { rejected += 1 }
+                } else { rejected += 1 }
+            }
             status = "Import review: \(draftExamples.count) examples in the draft; \(rejected) selected photos rejected for missing, multiple, small, low-quality, duplicate or unusable faces. Review every accepted face and label before finishing."
         }
+        return true
+    }
+    /// This scope releases the original before the batch requests another one.
+    /// Recheck consent/draft ownership after the potentially long system transfer
+    /// and BEFORE enqueueing inference. Already-running native work must return.
+    @MainActor private func inspectSelectedPhoto(_ item: PhotosPickerItem, lease: UUID, revision: UUID,
+        ownerGeneration: UUID, enrollmentToken: UUID, dualPipeline: Bool) async -> FamiliarAnalysis? {
+        let loaded = await Task.detached(priority: .utility) {
+            try? await item.loadTransferable(type: SelectedPhotoTransfer.self)
+        }.value
+        guard photoImportLease == lease, photoImportRevision == revision,
+              generation == ownerGeneration, enabled, draft?.token == enrollmentToken,
+              !Task.isCancelled, let loaded, loaded.data.count <= 20_000_000 else { return nil }
+        return try? await inference.inspectPhoto(loaded.data, dualPipeline: dualPipeline)
     }
     private func showFaceGuidance() {
         let text = "I can’t get a clear face view. You can call out to the person you’re looking for and ask them to look toward you. Then try again."

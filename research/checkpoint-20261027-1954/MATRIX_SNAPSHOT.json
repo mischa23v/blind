@@ -1,0 +1,39 @@
+{
+  "observedAtUTC": "2026-10-27T19:55:22.536916+00:00",
+  "sourceCommit": "0babd78d14eafe8b818e3b15be1ebe84aaf04caf",
+  "ledgerSHA256": "8eb49f6dac5b44fa30da49df938be9148b70e1e655a2055ef38487840d1cb433",
+  "statusCounts": {
+    "completeOrderedPairSyntheticEpisode": 14,
+    "interruptedUnknown": 1,
+    "running": 1,
+    "notRun": 84
+  },
+  "actualSimulatedArrivalIndices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "unknownEpisodeIndices": [
+    8
+  ],
+  "markedRunningIndices": [
+    15
+  ],
+  "runningLiveness": "Under investigation; ledger state alone does not prove a live process.",
+  "limits": [
+    "Recorded real-room geometry; simulated actor movement, not device or human trials.",
+    "Reference-world veto, supplied poses, reference/manual floor support, manual unknown tabletop ROI, zero body margin; floor contacts exempt/unmeasured.",
+    "Incomplete matrix. Interrupted outcomes are not passes or known navigation failures."
+  ]
+}

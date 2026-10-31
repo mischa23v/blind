@@ -1,0 +1,57 @@
+{
+  "RGB_synchronization": "unresolved; RGB not used",
+  "adapter_changes": [
+    "NoColor/no actual RGB because sync unknown",
+    "confidence2 and numeric masks before native integration",
+    "selected identity optical axes; no original ARKit sign flip",
+    "no author-style cumulative random cloud, retain native final mesh and separate endpoint ledger"
+  ],
+  "coverage_semantics": "Observed endpoint counts/recurrence only, not complete free/unknown-volume or native TSDF-weight coverage",
+  "cpu_accounting_caveat": "Guard subtracts initial startup sample; sampled RSS plus conservative peak postcheck, not hard cgroup enforcement",
+  "geometry_counts_only": {
+    "endpoint_cells_seen_in_at_least2_frames": 21256,
+    "endpoint_cells_seen_in_at_least5_frames": 14128,
+    "observed_endpoint_pixel_hits": 726447,
+    "triangles": 16986,
+    "unique_endpoint_cells": 24948,
+    "vertices": 9069
+  },
+  "independent_recount": "PASS; see reviews/prefix60-completed.json",
+  "integrated_frames": 60,
+  "metric_accuracy_measured": false,
+  "no_physical_authority": true,
+  "parameters": {
+    "color": "NoColor; zero placeholder ignored",
+    "depth_sampling_stride": 4,
+    "depth_scale": 1000.0,
+    "depth_trunc_m": 4.0,
+    "sdf_trunc_m": 0.2,
+    "volume_unit_resolution": 16,
+    "voxel_m": 0.04
+  },
+  "provenance_sha256": {
+    "EXECUTION_RECEIPT.json": "61290308aecb2a1d6d7bb56f70cc666f6f64e3998de70c7d6a65972a47694cd6",
+    "PREFLIGHT.json": "d963232ca1cadf2e525897ac0c475b5bc1fb029ab4a910714fc55af857f53a66",
+    "RESULT.json": "1c1cad6da5ac206d0c81121ea01bf538ef70ad7536abba640beb620b64cb2fd4",
+    "SOFTWARE_CONTROLS.json": "48d18e59f8ef7ce67ef3447cfca03e05870e1b5448aad8620f226482bbd01dad"
+  },
+  "raster_totals": {
+    "accepted_endpoint_pixels": 726447,
+    "code65535_depth": 0,
+    "confidence_0_not_selected": 1890261,
+    "confidence_1_not_selected": 166199,
+    "confidence_2": 892660,
+    "high_confidence_4m_clipped": 166213,
+    "numeric_high_confidence_before_range_clip": 892660,
+    "raster_pixels": 2949120,
+    "unrecognized_confidence_codes": 0,
+    "zero_after_mask": 2222673,
+    "zero_depth": 0
+  },
+  "raw_and_derived_geometry_private": true,
+  "scope": "engineering replay of fixed Stairs_02 prefix0..59, not a stair detector evaluation",
+  "stair_detection_executed": false,
+  "status": "completed_with_surface",
+  "visual_scope": "Private preview inspected separately. Broad partial surface and small fragments do not establish a complete flight, stair detection or reliable landing label. Preview is deliberately excluded here.",
+  "world_up_direction": "unverified; plotting used arbitrary recorded world XYZ, not gravity-aligned floor axes"
+}

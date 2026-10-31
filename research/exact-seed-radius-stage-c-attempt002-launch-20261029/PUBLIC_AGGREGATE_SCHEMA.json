@@ -1,0 +1,312 @@
+{
+  "schema": 1,
+  "aggregateSchema": "blind.exact-seed-radius-stage-c.aggregate.v1",
+  "maximumBytes": 131072,
+  "maximumCandidateReceipts": 25,
+  "minimumCandidateReceipts": 0,
+  "candidateCountsAllowed": [
+    0,
+    25
+  ],
+  "candidateIdentitySource": "exact frozen REQUESTS_49A.json in INPUT_TRANSFER_SCOPE.json",
+  "requiredTopLevel": [
+    "schema",
+    "status",
+    "nativeCommandsCompleted",
+    "sourcePinsBefore",
+    "sourcePinsAfter",
+    "toolPinsBefore",
+    "toolPinsAfter",
+    "physicalAuthority",
+    "appActivation",
+    "frozenInputSHA256"
+  ],
+  "optionalTopLevel": [
+    "resources",
+    "routeAcceptance",
+    "observerGroupsPassed",
+    "candidateReceipts",
+    "pathDigestEncoding",
+    "failureEvidence",
+    "matrixObservation"
+  ],
+  "statusAllowed": [
+    "failed-or-inconclusive",
+    "passed-fixed-source-route-matrix"
+  ],
+  "candidateExactKeysAndObservedTypeShapes": {
+    "requestID": [
+      "str"
+    ],
+    "fixtureSHA256": [
+      "str"
+    ],
+    "bodyProfileID": [
+      "str"
+    ],
+    "bodyFloat32Bits": [
+      "dict"
+    ],
+    "requestedStartFloat32SHA256": [
+      "str"
+    ],
+    "requestedGoalFloat32SHA256": [
+      "str"
+    ],
+    "projectedStartFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "projectedGoalFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "nativeStatus": [
+      "NoneType",
+      "int"
+    ],
+    "nativeSucceeded": [
+      "bool"
+    ],
+    "nativeComplete": [
+      "NoneType",
+      "bool"
+    ],
+    "buildFailed": [
+      "NoneType",
+      "bool"
+    ],
+    "endpointAdmissionRejected": [
+      "NoneType",
+      "bool"
+    ],
+    "fullLayoutValidated": [
+      "bool"
+    ],
+    "routeQueryAttempted": [
+      "bool"
+    ],
+    "initialBodyContact": [
+      "bool"
+    ],
+    "initialMarginContact": [
+      "bool"
+    ],
+    "bodyContact": [
+      "NoneType",
+      "bool"
+    ],
+    "marginContact": [
+      "NoneType",
+      "bool"
+    ],
+    "pathAvailable": [
+      "bool"
+    ],
+    "pathPointCount": [
+      "int"
+    ],
+    "orderedPathFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "detourPathLength3DMetres": [
+      "NoneType",
+      "float"
+    ],
+    "detourPathLengthXZMetres": [
+      "NoneType",
+      "float"
+    ],
+    "connectorInclusiveSegmentLength3DMetres": [
+      "NoneType",
+      "float"
+    ],
+    "connectorInclusiveSegmentLengthXZMetres": [
+      "NoneType",
+      "float"
+    ],
+    "orderedSegmentEndpointsFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "routeContactCounts": [
+      "dict"
+    ],
+    "initialContactCounts": [
+      "dict"
+    ],
+    "publishedReferencePathSHA256": [
+      "dict"
+    ],
+    "matchesPublishedReferencePath": [
+      "dict"
+    ]
+  },
+  "bodyFloat32BitsExactKeys": [
+    "rawRadius",
+    "rawHeight",
+    "effectiveRadius",
+    "effectiveHeight"
+  ],
+  "contactCountExactKeys": [
+    "segmentCount",
+    "bodyContactSegmentCount",
+    "marginContactSegmentCount",
+    "uniqueMarginObstacleSurfaceCount",
+    "uniqueMarginFurnitureBoundCount",
+    "uniqueFloorSurfaceCount"
+  ],
+  "referenceExactKeys": [
+    "legacy",
+    "strict"
+  ],
+  "coordinateAndFeatureIDArraysAllowed": false,
+  "allSHA256Fields": "lowercase 64 hexadecimal characters or explicitly nullable digest",
+  "allLengths": "finite nonnegative number or null when absent",
+  "allContactCounts": "bounded nonnegative integers; segmentCount <=259",
+  "pathPointCount": "integer 0..256, zero/null digest for absent path only",
+  "warning": "Observed union shapes here are from unchanged published reference parser fixtures, not native candidate results. Validate optional native status/booleans as nullable even if current fixture inventory did not exercise every null.",
+  "resourceExactKeysAndTypes": {
+    "wallSeconds": "finite nonnegative number",
+    "observedAggregateCPUSeconds": "finite nonnegative number",
+    "observedPeakRSSBytes": "nonnegative integer",
+    "observedPeakOutputBytes": "nonnegative integer",
+    "finalOwnedOutputBytes": "nonnegative integer",
+    "terminalObservationCompleted": "boolean",
+    "measurementBoundary": "terminal-guard-observation-before-bounded-metadata-export-refresh",
+    "limitBreached": "exact object with cpu, wall, rss, output boolean fields",
+    "exportReserveUnavailable": "boolean"
+  },
+  "encodedByteCapEnforced": true,
+  "failureEvidence": {
+    "exactKeys": [
+      "phase",
+      "guardCommandIndex",
+      "recipeCommandIndex",
+      "commandLabel",
+      "processStarted",
+      "processCompleted",
+      "returnCode",
+      "commandWasFailureSite",
+      "reasonCode",
+      "compilerDiagnostic"
+    ],
+    "phases": [
+      "preflight",
+      "cxx-compile",
+      "archive",
+      "observer-compile",
+      "observer-test",
+      "swift-compile",
+      "route-matrix",
+      "matrix-validation",
+      "postcheck",
+      "terminal-export"
+    ],
+    "guardCommandIndex": "null or1-based integer1..128",
+    "recipeCommandIndex": "null or1-based integer1..31 for last guard label in immutable recipe",
+    "commandLabel": "null or exact frozen recipe/preflight allowlisted label; ASCII letters/digits/hyphen<=80",
+    "processStarted": "Popen succeeded",
+    "processCompleted": "process reaped with known returnCode, including nonzero/killed; not success claim",
+    "returnCode": "null or integer -128..255",
+    "commandWasFailureSite": "boolean; last guard command had controlled failure reason",
+    "reasonCode": [
+      "CANDIDATE_CRITERION_FAILED",
+      "COMMAND_EXIT_NONZERO",
+      "COMMAND_LABEL_REFUSED",
+      "COMMAND_TEXT_LIMIT",
+      "CONTROL_BASELINE_MISMATCH",
+      "CPU_LIMIT",
+      "DESCENDANTS_REMAIN",
+      "EXPORT_RESERVE_UNAVAILABLE",
+      "GENERATED_SOURCE_CHANGED",
+      "INTERRUPTED",
+      "JSON_DECODE_FAILED",
+      "LAUNCHER_EXCEPTION",
+      "MATRIX_STRUCTURE_REFUSED",
+      "OUTPUT_LIMIT",
+      "PROCESS_OBSERVATION_UNAVAILABLE",
+      "PUBLIC_EXPORT_LIMIT",
+      "RESULT_INPUT_DIGEST_MISMATCH",
+      "RETIREMENT_UNCONFIRMED",
+      "ROUTE_ACCEPTANCE_FAILED",
+      "RSS_LIMIT",
+      "SOURCE_PIN_MISMATCH",
+      "SUBPROCESS_TIMEOUT",
+      "TOOL_EXECUTABLE_CHANGED",
+      "TOOL_SELECTION_CHANGED",
+      "VALIDATION_REFUSED",
+      "WALL_LIMIT"
+    ],
+    "compilerDiagnostic": {
+      "exactKeys": [
+        "status",
+        "stderrBytes",
+        "sampleBytes",
+        "lines",
+        "truncated"
+      ],
+      "status": [
+        "notCompilerPhase",
+        "notStarted",
+        "pinsNotVerified",
+        "exported",
+        "emptyStderr",
+        "noAllowlistedDiagnostics",
+        "readUnavailable"
+      ],
+      "stderrBytes": "null or nonnegative integer <=134217728",
+      "sampleBytes": "integer0..65536",
+      "lines": "at most20 ASCII printable strings each<=384bytes, combined newline-inclusive<=4096bytes; only verified public compiler diagnostic records, no source snippets",
+      "truncated": "boolean",
+      "phaseGate": [
+        "cxx-compile",
+        "observer-compile",
+        "swift-compile"
+      ],
+      "never": [
+        "observer-test stderr",
+        "route-matrix stderr",
+        "stdout",
+        "coordinates",
+        "source snippets",
+        "environment/admission dumps"
+      ],
+      "pinGate": "source/tool/generated build pins must all be verified before AND after"
+    }
+  },
+  "matrixObservation": {
+    "exactKeys": [
+      "status",
+      "candidateRequests",
+      "all50OriginalControlsReproduced",
+      "candidateExecuted",
+      "candidateGoalsMet",
+      "allCandidateInitialContactsUnchanged",
+      "allCandidateLayoutsMatched",
+      "retainedSixNoContactCorridors",
+      "completeNoContactCorners",
+      "retainedThreeTypedRefusals",
+      "preservedOtherFourteenFailures",
+      "legacyControlsMatched",
+      "strictControlsMatched",
+      "legacy49aControlsMatched",
+      "controlChecks",
+      "candidateAcceptanceChecks"
+    ],
+    "statuses": [
+      "original-controls-mismatch-candidate-not-executed",
+      "fixed-public-fixture-seed-radius-candidate-met-declared-goals",
+      "fixed-public-fixture-seed-radius-candidate-failed-declared-goals"
+    ],
+    "validation": "strict schema/four frozen input hashes/exact input-body IDs/configuration/policy/order/counter-and-status consistency; goals may be false",
+    "candidateRequests": [
+      0,
+      25
+    ],
+    "controlChecks": "25 exact fixed IDs; exact keys requestID,legacyMatch,strictMatch; booleans",
+    "candidateAcceptanceChecks": "0or25 exact fixed IDs/groups; exact keys requestID,group,criterionPassed,initialSourceContactUnchanged,fullLayoutValidated; booleans",
+    "acceptanceFailure": "always launcher failed/nonzero; never relabelled pass to export evidence"
+  }
+}

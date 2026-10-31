@@ -1,0 +1,211 @@
+{
+  "label": "review",
+  "arm": "utility",
+  "expected_sha": "e9e18d15fe1fdac1ff1487b3c2a8a2e731607427",
+  "limitation": "Instrumented one-shot diagnostic, not a fix or an uninstrumented timing result. No physical navigation safety claim.",
+  "phases": {
+    "preflight": {
+      "status": "passed"
+    },
+    "build": {
+      "status": "passed",
+      "wall_limit_seconds": 1080,
+      "started_utc": "2026-10-27T18:53:58.698915+00:00",
+      "command": [
+        "xcodebuild",
+        "-project",
+        "ios/BlindAssist.xcodeproj",
+        "-scheme",
+        "BlindAssist",
+        "-configuration",
+        "Debug",
+        "-jobs",
+        "2",
+        "-derivedDataPath",
+        "/Users/runner/work/_temp/indoor-io-buffered-diagnostic-utility/DerivedData",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-destination",
+        "generic/platform=iOS Simulator",
+        "build"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 207.535,
+      "diagnostic_lines_total": 2,
+      "diagnostic_lines_retained": 2,
+      "phase_markers_retained": 0
+    },
+    "single-1": {
+      "status": "timed_out",
+      "wall_limit_seconds": 360,
+      "started_utc": "2026-10-27T18:57:26.353707+00:00",
+      "command": [
+        "xcodebuild",
+        "-project",
+        "ios/BlindAssist.xcodeproj",
+        "-scheme",
+        "BlindAssist",
+        "-configuration",
+        "Debug",
+        "-jobs",
+        "2",
+        "-derivedDataPath",
+        "/Users/runner/work/_temp/indoor-io-buffered-diagnostic-utility/DerivedData",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-destination",
+        "platform=iOS Simulator,id=0ABF0917-9F5C-4AD4-914D-D5F62AD1EEE1",
+        "-destination-timeout",
+        "120",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "-only-testing:BlindAssistTests/IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame",
+        "-resultBundlePath",
+        "/Users/runner/work/_temp/indoor-io-buffered-diagnostic-utility/single-1.xcresult",
+        "test"
+      ],
+      "exit_code": -9,
+      "elapsed_seconds": 362.095,
+      "diagnostic_lines_total": 92,
+      "diagnostic_lines_retained": 92,
+      "test_outcomes": {
+        "testTrackingLossStillInvalidatesRetainedMapFrame": "failed"
+      },
+      "test_executions": {
+        "testTrackingLossStillInvalidatesRetainedMapFrame": 1
+      },
+      "expected_test_count": 1,
+      "expected_tests": [
+        "testTrackingLossStillInvalidatesRetainedMapFrame"
+      ],
+      "coverage_complete_and_passed": false,
+      "buffer_receipts": [
+        "INDOOR_IO_BUFFER snapshot=closed cutoff=1590.6696966250001 retained=55 dropped=0 capacity=256 late_events=censored missing_events=inconclusive",
+        "INDOOR_IO_BUFFER flush=complete retained=55"
+      ],
+      "buffer_capture_complete_before_close": true,
+      "late_or_missing_events": "censored; absence does not establish nonexecution",
+      "missing_success_markers": [
+        "test.completion",
+        "write.end"
+      ],
+      "phase_markers_retained": 55
+    }
+  },
+  "generated_resolution": {
+    "before": {
+      "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "status": "absent"
+    },
+    "build": {
+      "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "status": "validated_public_exact_pin",
+      "bytes": 388,
+      "sha256": "5e09067398b07621845e4118e9c69adb5387e5c7b78fae4b692e98130c485ed3",
+      "schema_version": 3,
+      "pins": [
+        {
+          "identity": "grdb.swift",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/groue/GRDB.swift.git",
+          "state": {
+            "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+            "version": "7.11.1"
+          }
+        }
+      ]
+    },
+    "single-1": {
+      "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "status": "validated_public_exact_pin",
+      "bytes": 388,
+      "sha256": "5e09067398b07621845e4118e9c69adb5387e5c7b78fae4b692e98130c485ed3",
+      "schema_version": 3,
+      "pins": [
+        {
+          "identity": "grdb.swift",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/groue/GRDB.swift.git",
+          "state": {
+            "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+            "version": "7.11.1"
+          }
+        }
+      ]
+    },
+    "after": {
+      "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "status": "validated_public_exact_pin",
+      "bytes": 388,
+      "sha256": "5e09067398b07621845e4118e9c69adb5387e5c7b78fae4b692e98130c485ed3",
+      "schema_version": 3,
+      "pins": [
+        {
+          "identity": "grdb.swift",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/groue/GRDB.swift.git",
+          "state": {
+            "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+            "version": "7.11.1"
+          }
+        }
+      ]
+    }
+  },
+  "expected_instrumented_paths": [
+    "ios/BlindAssist/IndoorNavigator.swift",
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift",
+    "ios/BlindAssist/SpatialMapIO.swift",
+    "ios/BlindAssistTests/CommunityTests.swift"
+  ],
+  "owned_simulator_cleanup": {
+    "shutdown": "timed_out",
+    "delete": 0
+  },
+  "git_status_after": [
+    "M ios/BlindAssist/IndoorNavigator.swift",
+    " M ios/BlindAssist/RegisteredIndoorNavigation.swift",
+    " M ios/BlindAssist/SpatialMapIO.swift",
+    " M ios/BlindAssistTests/CommunityTests.swift",
+    "?? ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+  ],
+  "git_status_after_total_paths": 5,
+  "source_head_after": "e9e18d15fe1fdac1ff1487b3c2a8a2e731607427",
+  "all_changes_from_pristine": {
+    "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
+      "before": null,
+      "after": "5e09067398b07621845e4118e9c69adb5387e5c7b78fae4b692e98130c485ed3:mode=0o644"
+    },
+    "ios/BlindAssist/IndoorNavigator.swift": {
+      "before": "6790f5cfb8976dbc3616490c35ae05442277ca9e6cb419e6d1fa12fc8c252789:mode=0o644",
+      "after": "f01aa2b8ba67b65bab1a0a7074e6a4c54cf4827f985d24ff38ca02abbefaf497:mode=0o644"
+    },
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift": {
+      "before": "e60e60dd80d791a0e2a8b1a147e671f72052e6b678a5cdd0ca8ce8d0c3467656:mode=0o644",
+      "after": "2a894fc4974fb470bf5fc9c1822161c337ffbb34c96ad6b5e6f57a91671cbe4b:mode=0o644"
+    },
+    "ios/BlindAssist/SpatialMapIO.swift": {
+      "before": "7db70037087b1421d6b0188dc061f3d5f2e4b320f43d14c36f9aed6a00fda8be:mode=0o644",
+      "after": "b8502a039e000b71c2fe61afd96ca910bff4427b9bc67899be89b763db929b58:mode=0o644"
+    },
+    "ios/BlindAssistTests/CommunityTests.swift": {
+      "before": "24930b5106810a9a6929e08243ce4164cb0cb40693259e5e93a788cc593cf7b6:mode=0o644",
+      "after": "a5ed0781a493f3170f04c623ec79aeb386adc822cdf5e2b3474d5e5e86a582e6:mode=0o644"
+    }
+  },
+  "changes_after_instrumentation": {
+    "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
+      "before": null,
+      "after": "5e09067398b07621845e4118e9c69adb5387e5c7b78fae4b692e98130c485ed3:mode=0o644"
+    }
+  },
+  "unintended_changes": {},
+  "validated_generated_metadata": {
+    "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
+      "before": null,
+      "after": "5e09067398b07621845e4118e9c69adb5387e5c7b78fae4b692e98130c485ed3:mode=0o644"
+    }
+  },
+  "exact_instrumented_state_preserved": false,
+  "source_preserved_except_validated_metadata": true
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "frozenBeforeNativeExecution": true,
+  "scope": "Original Apple CapturedRoom historical model; candidate routes, nonphysical waypoint sink and independent native-model collision scoring only",
+  "physicalAuthority": false,
+  "sourceGeometryExpanded": false,
+  "supportPolicy": "classifiedFloorOnly",
+  "fixtures": {
+    "Hallway2": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+    "Bedroom3": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e"
+  },
+  "profiles": [
+    {"id": "declared-nominal", "width": 0.45, "depth": 0.30, "height": 1.60, "margin": 0.15},
+    {"id": "declared-wide", "width": 0.70, "depth": 0.50, "height": 1.80, "margin": 0.15}
+  ],
+  "profileMeaning": "Explicit synthetic full-body cylinder bounds, not a child's measurements/calibration; radius=hypot(width,depth)/2; effective planner radius=radius+margin and height=height+margin, once",
+  "coordinates": "Triples below are original local floor-plane x,y,z; multiply the fixture floor transform exactly once. Not camera positions, live poses or a room registration.",
+  "pairs": [
+    {"id": "hall-long", "room": "Hallway2", "start": [-3.0,-0.45,0.0], "goal": [2.8,-0.45,0.0]},
+    {"id": "hall-corner", "room": "Hallway2", "start": [2.8,-0.45,0.0], "goal": [3.65,0.45,0.0]},
+    {"id": "hall-missing-floor", "room": "Hallway2", "start": [-3.0,-0.45,0.0], "goal": [0.0,0.50,0.0]},
+    {"id": "bedroom-aisle", "room": "Bedroom3", "start": [-0.60,-0.55,0.0], "goal": [-0.60,1.10,0.0]},
+    {"id": "bedroom-around-bed", "room": "Bedroom3", "start": [-0.70,1.10,0.0], "goal": [1.00,1.10,0.0]},
+    {"id": "bedroom-contained-start", "room": "Bedroom3", "startFeatureFootCenter": "45597D99-3218-4419-A2E4-2ADFA824D033", "goal": [-0.60,1.10,0.0]}
+  ],
+  "schedule": "All six pairs with both profiles: twelve fixed outcomes. No pair/profile replacement based on route or oracle results.",
+  "nativeConfiguration": {"cellSize":0.025,"cellHeight":0.025,"maxClimb":0.025,"maxSlope":15,"maxCells":250000,"maxNodes":4096,"queryHalfExtents":[0.2,0.3,0.2]},
+  "geometryPreconditions": ["Complete original-floor export with upward support triangles and preserved concavity", "Known UUID metadata for every retained geometry node", "Original mesh wall cutouts; historically closed doors retain blocking geometry", "No custom model provider, omitted furniture, invented ceiling or inferred inter-room floor"],
+  "guidance": "Actual Detour route waypoint sequence delivered only into a test-owned nonphysical sink after current-generation check. Revocation tests reject stale output. No fabricated spatial ticket, speech/haptic output or claimed live controller.",
+  "collision": "Independent Apple physics continuous cylinder sweeps against original exported nonfloor triangle shells; original furniture box bounds separately identify contained starts. Raw body and margin envelope scored separately; source geometry and simulator collision margin are not expanded. Floor contacts are reported separately, never a positive full-footprint support certificate.",
+  "endpointHandling": "Requested A/B, native projected endpoints and each displacement retained separately. No teleporting/snap. Association connector and requested goal connector scored as separate segments; native completion means reaching projected goal only.",
+  "outcomes": ["unsupported-geometry", "native-query-failure", "partial-route", "invalid-start-contact", "candidate-contact", "candidate-model-route-no-contact"],
+  "reporting": "No-path, rejected starts, withheld candidates and stops are not arrivals. A collision cannot be renamed a successful stop. Zero model contacts is not unseen real-world safety, supported floor/head coverage or child/device acceptance.",
+  "expansion": "Delay/jitter and a sustained actor/controller loop are subsequent protocol increments, not silently included in this initial candidate-segment test. Preserve every initial outcome."
+}

@@ -3,9 +3,92 @@ import UniformTypeIdentifiers
 import MapKit
 import BlindCore
 
+#if DEBUG
+/// Synthetic UI diagnostics only. Never adds an accessibility element or changes fonts.
+@MainActor
+private enum AskLayoutTrace {
+    static let enabled = ProcessInfo.processInfo.arguments.contains("--ui-testing") &&
+        ProcessInfo.processInfo.arguments.contains("--ask-layout-trace")
+    private static var count = 0
+    static func record(_ event: String, role: String, category: DynamicTypeSize, frame: CGRect) {
+        guard enabled, count < 64 else { return }
+        count += 1
+        print("ASK_LAYOUT_TRACE schema=1 sequence=\(count) uptime=\(ProcessInfo.processInfo.systemUptime) event=\(event) role=\(role) category=\(category) frame=\(frame) provenance=app_callback_not_audit_failure_state")
+        if count == 64 { print("ASK_LAYOUT_TRACE truncated=true limit=64") }
+    }
+}
+
+@MainActor
+private struct AskLayoutTraceBackground: View {
+    @Environment(\.dynamicTypeSize) private var category
+    let role: String
+    var body: some View {
+        GeometryReader { proxy in
+            let frame = proxy.frame(in: .global)
+            Color.clear
+                .onAppear { AskLayoutTrace.record("appear", role: role, category: category, frame: frame) }
+                .onDisappear { AskLayoutTrace.record("disappear", role: role, category: category, frame: frame) }
+                .onChange(of: category) { value in
+                    AskLayoutTrace.record("category", role: role, category: value, frame: frame)
+                }
+                .onChange(of: frame) { value in
+                    AskLayoutTrace.record("geometry", role: role, category: category, frame: value)
+                }
+        }
+        .accessibilityHidden(true)
+        .allowsHitTesting(false)
+    }
+}
+
+private extension View {
+    @MainActor @ViewBuilder
+    func askLayoutTrace(_ role: String) -> some View {
+        if AskLayoutTrace.enabled {
+            self.background(AskLayoutTraceBackground(role: role))
+        } else {
+            self
+        }
+    }
+}
+#endif
+
 struct DashboardView: View {
     @ObservedObject var model: NavigationModel
     var body: some View { AssistantToolsView(model: model, initialTab: "companion") }
+}
+
+/// Camera-only buttons retain a full-width touch target outside Form rows.
+/// Minimum height allows multiline and accessibility-size labels to grow.
+private struct CameraControlButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
+            .foregroundStyle(.tint)
+            .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
+            .contentShape(Rectangle())
+            .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.5)
+    }
+}
+
+/// Keep the unavailable camera action readable instead of relying on dim text.
+/// The actual Button remains disabled; its nearby explanation carries the reason.
+private struct AskCameraAnswerButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    let tint: Color
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .fixedSize(horizontal: false, vertical: true)
+            .multilineTextAlignment(.leading)
+            .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(isEnabled ? tint : Color.primary)
+            .contentShape(Rectangle())
+            .opacity(isEnabled && configuration.isPressed ? 0.9 : 1)
+    }
 }
 
 /// The child's first tab contains one settled reply and the shared tab navigation only.
@@ -65,6 +148,9 @@ private struct CompanionControlsView: View {
                 if !model.textOnly {
                     VStack(alignment: .leading, spacing: 12) {
                         if model.assistantSession.state == .active {
+                            if model.voice.requiresExplicitRestart {
+                                HomeAction(title: t("Reconnect microphone", "إعادة توصيل الميكروفون"), symbol: "mic", identifier: "reconnect-conversation", prominent: true, action: model.reconnectListening)
+                            }
                             HomeAction(title: t("Mute microphone", "كتم الميكروفون"), symbol: "mic.slash", identifier: "mute-conversation", action: model.muteConversation)
                         } else {
                             HomeAction(title: model.assistantSession.state == .muted ? t("Unmute microphone", "تشغيل الميكروفون") : t("Start voice conversation", "بدء المحادثة الصوتية"), symbol: "mic", identifier: "start-conversation", prominent: true, action: model.startConversation)
@@ -82,6 +168,12 @@ private struct CompanionControlsView: View {
                             .font(.footnote).accessibilityIdentifier("camera-status")
                     }
                 }
+                Button(model.ambientDescriptions ? t("Quiet descriptions, keep alerts", "أوقف الأوصاف وأبقِ التنبيهات") : t("Resume descriptions", "استأنف الأوصاف")) {
+                    if model.ambientDescriptions { model.stopDescriptions() } else { model.resumeDescriptions() }
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("conversation-descriptions")
+                .accessibilityValue(model.ambientDescriptions ? t("Descriptions on", "الأوصاف مفعّلة") : t("Descriptions quiet", "الأوصاف متوقفة"))
                 // Alternative access remains available when speech cannot be used.
                 Button(t("Write a message", "اكتب رسالة")) { pendingTypedSubmission = nil; writing = true }
                     .buttonStyle(.bordered).accessibilityIdentifier("write-message")
@@ -102,6 +194,10 @@ private struct CompanionControlsView: View {
                         .font(.footnote).fixedSize(horizontal: false, vertical: true)
                 }
                 .onChange(of: model.selectedDocumentPageCount) { _, _ in pdfPage = 1 }
+                NavigationLink(t("Local recipe reference", "مرجع وصفة محلي")) { LocalRecipeView(model: model) }
+                    .accessibilityIdentifier("open-local-recipe")
+                NavigationLink(t("Email draft", "مسودة بريد")) { LocalEmailDraftView(model: model) }
+                    .accessibilityIdentifier("open-local-email-draft")
                 HomeToolButtons(model: model)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -300,6 +396,14 @@ struct AssistantToolsView: View {
         .sheet(isPresented: $model.showPhotoReference) {
             NavigationStack { ExplorePictureView(model: model) }
         }
+        // Only the source-owned native delegate or lifecycle may retire this
+        // handoff. A late presentation binding callback cannot clear a newer one.
+        .sheet(item: Binding(get: { model.localEmailDraft.handoff }, set: { _ in })) { draft in
+            LocalMailComposer(draft: draft,
+                isCurrent: { model.ownsLocalEmailHandoff(draft) },
+                finish: model.finishLocalEmailHandoff)
+                .interactiveDismissDisabled()
+        }
         .sheet(item: $model.selectedDocumentPickerRequest) { owner in
             SelectedDocumentPicker(ownerID: owner.id,
                 onPicked: { id, url in model.selectedDocumentPickerPicked(id, url: url) },
@@ -314,113 +418,172 @@ struct AssistantToolsView: View {
 
     /// Camera and safety: live monitoring status, calibration, return guidance and practice.
     private var monitor: some View {
-        Form {
-            Section {
-                if model.simulation {
-                    Text(t("SIMULATION · generated readings", "محاكاة · قراءات مولدة"))
-                        .font(.headline).foregroundStyle(accent)
-                }
-                Text(GuidanceText.detection(model.detection, arabic: model.arabic))
-                    .font(.title2.weight(.bold)).accessibilityAddTraits(.isHeader)
-                if let distance = model.detection.distance {
-                    Text(t("Measured distance", "المسافة المقاسة") + " " + String(format: model.arabic ? "%.1f متر" : "%.1f metres", distance))
-                }
-                // Camera monitoring never starts or unmutes a separate voice conversation.
-                Button(model.simulation ? t("End practice", "أنهِ التدريب") :
-                    model.cameraAwareness ? t("Stop monitoring", "أوقف المراقبة") : t("Start monitoring", "ابدأ المراقبة")) {
-                    if model.simulation { model.endPractice() } else { model.cameraAwareness.toggle() }
-                }
-                .font(.headline)
-                .accessibilityIdentifier("monitor-toggle")
-                if model.running && !model.places.scanning {
-                    Button(t("Repeat status", "كرر الحالة")) { model.repeatMonitoringStatus() }
-                        .accessibilityIdentifier("repeat-monitoring-status")
-                    Button(t("Calibrate on level ground", "المعايرة على أرض مستوية")) { model.calibrate() }
-                    if model.detection.hazard == .calibrating {
-                        ProgressView(value: model.calibrationProgress)
-                            .accessibilityLabel(t("Floor calibration", "معايرة الأرض"))
-                            .accessibilityValue("\(Int(model.calibrationProgress * 100))%")
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Section {
+                    if model.simulation {
+                        Text(t("SIMULATION · generated readings", "محاكاة · قراءات مولدة"))
+                            .font(.headline).foregroundStyle(accent)
                     }
-                }
-                Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
-                if !model.message.isEmpty { Text(model.message) }
-                if model.running && !model.simulation { Text(model.visualStairs.status(arabic: model.arabic)) }
-            } header: { Text(t("Safety alerts", "تنبيهات السلامة")) }
-            Section {
-                Button(model.hasReturnIntent ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Guide me back to where I started", "أرشدني إلى نقطة البداية")) {
-                    if model.hasReturnIntent { model.cancelReturnIntent() } else { model.startReturn() }
-                }
-                .disabled(model.simulation)
-                .accessibilityIdentifier("retrace-session")
-                if model.hasReturnIntent { Button(t("Repeat direction", "كرر الاتجاه")) { model.indoorBeacon() } }
-                if !model.returnStatus.isEmpty { Text(model.returnStatus) }
-                ConversationMemoryPersistenceView(model: model)
-                ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
-            } header: { Text(t("Return to start", "العودة إلى البداية")) }
-            Section {
-                if model.simulation {
-                    Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
-                        .accessibilityIdentifier("end-practice")
-                } else {
-                    Button { model.startSimulation() } label: {
-                        Text(t("Try practice (2 minutes)", "جرب التدريب (دقيقتان)"))
+                    Text(GuidanceText.detection(model.detection, arabic: model.arabic))
+                        .font(.title2.weight(.bold)).accessibilityAddTraits(.isHeader)
+                    if let distance = model.detection.distance {
+                        Text(t("Measured distance", "المسافة المقاسة") + " " + String(format: model.arabic ? "%.1f متر" : "%.1f metres", distance))
+                    }
+                    // Camera monitoring never starts or unmutes a separate voice conversation.
+                    Button(model.simulation ? t("End practice", "أنهِ التدريب") :
+                        model.cameraAwareness ? t("Stop monitoring", "أوقف المراقبة") : t("Start monitoring", "ابدأ المراقبة")) {
+                        if model.simulation { model.endPractice() } else { model.cameraAwareness.toggle() }
+                    }
+                    .font(.headline)
+                    .accessibilityIdentifier("monitor-toggle")
+                    if model.running && !model.places.scanning {
+                        Button(t("Repeat status", "كرر الحالة")) { model.repeatMonitoringStatus() }
+                            .accessibilityIdentifier("repeat-monitoring-status")
+                        Button(t("Calibrate on level ground", "المعايرة على أرض مستوية")) { model.calibrate() }
+                        if model.detection.hazard == .calibrating {
+                            ProgressView(value: model.calibrationProgress)
+                                .accessibilityLabel(t("Floor calibration", "معايرة الأرض"))
+                                .accessibilityValue("\(Int(model.calibrationProgress * 100))%")
+                        }
+                    }
+                    Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
+                    if !model.message.isEmpty { Text(model.message) }
+                    if model.running && !model.simulation { Text(model.visualStairs.status(arabic: model.arabic)) }
+                } header: { Text(t("Safety alerts", "تنبيهات السلامة")) }
+                Section {
+                    Button(model.hasReturnIntent ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Guide me back to where I started", "أرشدني إلى نقطة البداية")) {
+                        if model.hasReturnIntent { model.cancelReturnIntent() } else { model.startReturn() }
+                    }
+                    .disabled(model.simulation)
+                    .accessibilityIdentifier("retrace-session")
+                    if model.hasReturnIntent { Button(t("Repeat direction", "كرر الاتجاه")) { model.indoorBeacon() } }
+                    if !model.returnStatus.isEmpty { Text(model.returnStatus) }
+                    ConversationMemoryPersistenceView(model: model)
+                    ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
+                } header: { Text(t("Return to start", "العودة إلى البداية")) }
+                Section {
+                    if model.simulation {
+                        Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
                             .font(.body)
-                            .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
+                            .accessibilityIdentifier("practice-active-status")
+                        Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
+                            .accessibilityIdentifier("end-practice")
+                    } else {
+                        Button { model.startSimulation() } label: {
+                            Text(t("Try practice (2 minutes)", "جرب التدريب (دقيقتان)"))
+                                .font(.body)
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .accessibilityIdentifier("start-simulation")
                     }
-                    .accessibilityIdentifier("start-simulation")
-                }
-                if model.simulation {
-                    ForEach([Hazard.observing, .drop, .obstacle, .overhead, .uncertain], id: \.self) { hazard in
-                        Button(t("Practice: ", "تدريب: ") + model.feedback.message(for: hazard)) { model.simulate(hazard) }
+                    if model.simulation {
+                        ForEach([Hazard.observing, .drop, .obstacle, .overhead, .uncertain], id: \.self) { hazard in
+                            Button(t("Practice: ", "تدريب: ") + model.feedback.message(for: hazard)) { model.simulate(hazard) }
+                        }
                     }
+                } header: {
+                    Text(t("Practice", "التدريب"))
+                        .font(.body.weight(.semibold))
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
+                } footer: {
+                    Text(t("Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.", "التدريب يوقف الحساسات الحقيقية وينتهي وحده بعد دقيقتين. تستأنف المراقبة فقط إذا كانت الكاميرا مفعّلة، وتحتاج إلى المعايرة. واصل استخدام العصا أو كلب الإرشاد."))
+                        .font(.body)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
                 }
-            } header: {
-                Text(t("Practice", "التدريب"))
-                    .font(.body.weight(.semibold))
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
-            } footer: {
-                Text(t("Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.", "التدريب يوقف الحساسات الحقيقية وينتهي وحده بعد دقيقتين. تستأنف المراقبة فقط إذا كانت الكاميرا مفعّلة، وتحتاج إلى المعايرة. واصل استخدام العصا أو كلب الإرشاد."))
-                    .font(.body)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
         }
+        .buttonStyle(CameraControlButtonStyle())
         .navigationTitle(t("Camera and safety", "الكاميرا والسلامة"))
+    }
+
+    private var localAnswerDisabledReason: String {
+        if model.simulation {
+            return t("Practice uses generated readings, not a live camera view.", "التدريب يستخدم قراءات مولّدة، وليس صورة مباشرة من الكاميرا.")
+        }
+        if !model.running {
+            return t("Camera monitoring is not running. Open Camera and safety to start it.", "مراقبة الكاميرا لا تعمل. افتح الكاميرا والسلامة لبدئها.")
+        }
+        if model.busy {
+            return t("Another request is in progress. Wait for it to finish.", "هناك طلب آخر قيد التنفيذ. انتظر حتى ينتهي.")
+        }
+        return ""
     }
 
     /// Ask about the camera view, hear the answer, and set an ongoing goal.
     private var assistant: some View {
-        Form {
+        // Small, finite screen: use the Camera screen's eager layout so every
+        // row participates in reflow. Native Dynamic Type audit is still required;
+        // this does not establish the cause of the earlier Form audit failure.
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
             if let offer = model.companionOffer {
                 // The same answer can be spoken: say yes or no.
                 Section {
                     Text(offer.prompt)
                     Button(t("Yes", "نعم")) { model.answerCompanionOffer(.yes) }.accessibilityIdentifier("offer-yes")
                     Button(t("No", "لا")) { model.answerCompanionOffer(.no) }.accessibilityIdentifier("offer-no")
-                } header: { Text(t("The assistant asked", "سؤال من المساعد")) }
+                } header: { Text(t("The assistant asked", "سؤال من المساعد")).font(.headline).accessibilityAddTraits(.isHeader) }
             }
             Section {
-                TextField(t("Your question", "سؤالك"), text: $model.assistantQuestion, axis: .vertical)
+                TextField(t("Your question", "سؤالك"), text: $model.assistantQuestion,
+                    prompt: Text(t("Your question", "سؤالك")).foregroundColor(.primary), axis: .vertical)
                     .accessibilityLabel(t("Question or target", "السؤال أو الهدف"))
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("ask-question")
                 Picker(t("Look at", "انظر إلى"), selection: $focus) {
                     Text(t("Everything in view", "كل ما في الصورة")).tag("surroundings")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("Room layout", "تخطيط الغرفة")).tag("room")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("People", "الأشخاص")).tag("people")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("One object", "غرض واحد")).tag("object")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("Path features", "معالم المسار")).tag("path")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("Read text", "قراءة النص")).tag("text")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                // Give each option a full row instead of squeezing the selected
+                // value beside "Look at". Keep native selection and text scaling.
+                .pickerStyle(.inline)
+                .accessibilityIdentifier("ask-focus")
                 Button(t("Ask about the camera view", "اسأل عن صورة الكاميرا")) {
                     model.readScene(cloud: false, question: sceneQuestion, focus: focus)
                 }
                 .font(.headline)
                 .disabled(model.busy || model.simulation || !model.running)
+                .buttonStyle(AskCameraAnswerButtonStyle(tint: accent))
                 .accessibilityIdentifier("local-answer")
+                .accessibilityHint(localAnswerDisabledReason)
+                if !localAnswerDisabledReason.isEmpty {
+                    Text(localAnswerDisabledReason)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
+                        .accessibilityIdentifier("local-answer-unavailable-reason")
+                        #if DEBUG
+                        .askLayoutTrace("reason")
+                        #endif
+                }
                 Button(model.voice.listening ? t("Finish question", "إنهاء السؤال") : t("Talk", "تحدث")) {
                     if model.voice.listening { model.voice.finish() } else { model.startVoiceQuestion() }
                 }
@@ -433,7 +596,7 @@ struct AssistantToolsView: View {
                     .disabled(model.busy || model.simulation || !model.running || model.offlineOnly)
                     .accessibilityIdentifier("cloud-answer")
                 #endif
-            } header: { Text(t("Ask", "اسأل")) }
+            } header: { Text(t("Ask", "اسأل")).font(.headline).accessibilityAddTraits(.isHeader) }
             Section {
                 if model.busy { ProgressView(t("Looking…", "أنظر…")) }
                 if !model.message.isEmpty { Text(model.message) }
@@ -443,9 +606,12 @@ struct AssistantToolsView: View {
                 // The speech gate already holds this back during urgent hazards.
                 Button(t("Repeat answer", "كرر الإجابة")) { model.speakRequested(model.sceneAnswer) }
                     .disabled(model.sceneAnswer.isEmpty)
+                    // Reuse the readable disabled-state style; do not enable empty speech.
+                    .buttonStyle(AskCameraAnswerButtonStyle(tint: accent))
+                    .accessibilityIdentifier("repeat-answer")
                 Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
                     .accessibilityIdentifier("stop-descriptions")
-            } header: { Text(t("Answer", "الإجابة")) }
+            } header: { Text(t("Answer", "الإجابة")).font(.headline).accessibilityAddTraits(.isHeader) }
             Section {
                 Button(t("Read text as it appears", "اقرأ النص عند ظهوره")) { model.startReadingTool(.liveText) }
                 Button(t("Read a whole page", "اقرأ صفحة كاملة")) { model.startReadingTool(.document) }
@@ -456,11 +622,14 @@ struct AssistantToolsView: View {
                 if model.readingTool != nil {
                     Button(t("Stop reading tool", "أوقف أداة القراءة")) { model.stopReadingTool(announce: true) }
                 }
-            } header: { Text(t("Reading tools", "أدوات القراءة")) }
+            } header: { Text(t("Reading tools", "أدوات القراءة")).font(.headline).accessibilityAddTraits(.isHeader) }
             Section {
                 if !model.assistantDialogue.goal.isEmpty { Text(t("Current goal: ", "الهدف الحالي: ") + model.assistantDialogue.goal) }
-                TextField(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام"), text: $model.objectiveDraft, axis: .vertical)
+                TextField(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام"), text: $model.objectiveDraft,
+                    prompt: Text(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام")).foregroundColor(.primary), axis: .vertical)
                     .accessibilityLabel(t("New goal", "هدف جديد"))
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("ask-goal")
                 Button(t("Set goal", "حدد الهدف")) { model.setAssistantObjective() }
                 Button(t("Find my question on the saved map", "ابحث عن سؤالي في الخريطة المحفوظة")) { model.findMapDestination() }
                     .disabled(model.busy || model.indoor.map == nil || model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -468,10 +637,17 @@ struct AssistantToolsView: View {
                 ConversationMemoryPersistenceView(model: model)
                 ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
                 Button(t("Clear goal and conversation", "امسح الهدف والمحادثة"), role: .destructive) { confirmClearConversation = true }
-            } header: { Text(t("Goal", "الهدف")) } footer: {
+            } header: { Text(t("Goal", "الهدف")).font(.headline).accessibilityAddTraits(.isHeader) } footer: {
                 Text(t("Answers cover what the camera sees now. For directions, use Routes.", "الإجابات عما تراه الكاميرا الآن. للاتجاهات استخدم المسارات."))
             }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
         }
+        .buttonStyle(CameraControlButtonStyle())
+        #if DEBUG
+        .askLayoutTrace("ask-form")
+        #endif
         .navigationTitle(t("Ask and goals", "الأسئلة والأهداف"))
         .confirmationDialog(t("Clear the goal and recent conversation?", "مسح الهدف والمحادثة الأخيرة؟"), isPresented: $confirmClearConversation, titleVisibility: .visible) {
             Button(t("Clear", "امسح"), role: .destructive) { model.clearAssistantConversation() }
@@ -509,6 +685,24 @@ struct AssistantToolsView: View {
                     .frame(minHeight: 44)
                 }
                 .onDelete { offsets in placesToDelete = offsets.map { model.places.places[$0] } }
+            }
+            Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
+                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+                NavigationLink(t("Seated live mesh diagnostic", "تشخيص الشبكة الحية أثناء الجلوس")) {
+                    SeatedMeshDiagnosticView(model: model)
+                }
+                .frame(minHeight: 44)
+                .disabled(model.places.scanning || model.places.finishing)
+                .accessibilityIdentifier("seated-mesh-open")
+                #endif
+
+                NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
+                    model.makeNavigationTestRecordingView()
+                }
+                .frame(minHeight: 44)
+                .disabled(model.places.scanning)
+                .accessibilityIdentifier("navigation-test-open")
+                Text(t("No saved room is required. Uses the existing camera session; recording does not start camera monitoring or prove a clear path.", "لا تحتاج إلى غرفة محفوظة. يستخدم جلسة الكاميرا الحالية؛ لا يبدأ التسجيل مراقبة الكاميرا ولا يثبت خلو المسار."))
             }
             Section(t("Scan a new room", "امسح غرفة جديدة")) {
                 if model.places.scanning {
@@ -582,6 +776,21 @@ struct AssistantToolsView: View {
             Section {
                 Text(StatusText.localized(model.mapping.status, arabic: model.arabic))
                 Text(model.observedSceneStatus).accessibilityIdentifier("observed-scene-planner-status")
+                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+                Text("Seated developer test only. Full-buffer copying and synchronous collision checks may delay camera alerts. Do not use this diagnostic while walking.")
+                Toggle("Developer: full observed-anchor diagnostic (not guidance)", isOn: Binding(
+                    get: { model.meshCandidateDiagnosticsEnabled },
+                    set: { model.setMeshCandidateDiagnosticsEnabled($0) }))
+                    .disabled(!model.meshCandidateDiagnosticsCanEnable)
+                Button("Release full-mesh ownership (no camera handoff)") { model.releaseFullObservedMeshDiagnostic() }
+                    .disabled(!model.meshCandidateDiagnosticsCanRelease)
+                Text(model.fullObservedMeshDiagnosticStatus).accessibilityIdentifier("normal-owner-full-mesh-status")
+                DisclosureGroup("Historical native look-ahead coordinates — not wearer position") {
+                    ForEach(Array(model.fullObservedMeshDiagnosticPoints.enumerated()), id: \.offset) { _, point in Text(point) }
+                }
+                Button("Check frozen look-ahead candidate against admitted mesh") { model.checkFullObservedMeshCandidate() }
+                    .disabled(!model.meshCandidateDiagnosticsEnabled || !model.running || model.simulation || model.places.scanning)
+                #endif
                 NavigationLink(t("Mapping progress", "تقدم رسم الخريطة")) { SurveyProgressView(model: model) }
                 // No export: the 3D map database can hold camera pictures of the home (privacy rule).
                 if model.mapping.exportURL != nil {

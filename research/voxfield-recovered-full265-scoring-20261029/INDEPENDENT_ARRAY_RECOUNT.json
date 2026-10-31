@@ -1,0 +1,154 @@
+{
+  "review": "independent savedarray recount, no query",
+  "arms": {
+    "B": {
+      "availability": {
+        "scheduled": 1335885,
+        "paired": 1189925,
+        "referenceOnly": 4619,
+        "TSDFOnly": 138669,
+        "neither": 2672
+      },
+      "metrics": {
+        "all": {
+          "absoluteP50": 0.031788121924869905,
+          "absoluteP90": 0.30190773941038423,
+          "absoluteP95": 1.0329429990920633,
+          "MAE": 0.1694891137061575
+        },
+        "referenceBelow4m": {
+          "absoluteP50": 0.031606363402520765,
+          "absoluteP90": 0.31213109181607995,
+          "absoluteP95": 1.0228991494636024,
+          "MAE": 0.1658813039871879
+        },
+        "referenceAtLeast4m": {
+          "absoluteP50": 0.03306684436617813,
+          "absoluteP90": 0.2561124768563912,
+          "absoluteP95": 1.1474195332402124,
+          "MAE": 0.194208366512558
+        }
+      },
+      "freshResource": {
+        "arm": "B",
+        "exitCode": 0,
+        "stopReason": null,
+        "wallSeconds": 23.40997230799985,
+        "peakSummedRSSBytes": 273682432,
+        "peakCumulativeCPUSeconds": 23.382975000000002,
+        "finalActualChildPlusGuardCPUSeconds": 23.382975000000002,
+        "monitorAndPrechecksIncluded": true,
+        "samplingSeconds": 0.1,
+        "caps": {
+          "cpuSeconds": 60,
+          "wallSeconds": 90,
+          "RSSBytes": 1073741824,
+          "diskBytes": 1073741824,
+          "logicalCPUs": 1
+        },
+        "scope": "immutable source/output/cache checks + same-protocol heldout score + summary; no mapping",
+        "partialOutputsAdmissible": false
+      }
+    },
+    "C0": {
+      "availability": {
+        "scheduled": 1335885,
+        "paired": 1189959,
+        "referenceOnly": 4585,
+        "TSDFOnly": 138738,
+        "neither": 2603
+      },
+      "metrics": {
+        "all": {
+          "absoluteP50": 0.03181704148144404,
+          "absoluteP90": 0.30144896369180507,
+          "absoluteP95": 1.0336317084474778,
+          "MAE": 0.16952986468442
+        },
+        "referenceBelow4m": {
+          "absoluteP50": 0.03165772127891597,
+          "absoluteP90": 0.31161108587252917,
+          "absoluteP95": 1.0232709912555555,
+          "MAE": 0.16591126123568692
+        },
+        "referenceAtLeast4m": {
+          "absoluteP50": 0.032903430223209185,
+          "absoluteP90": 0.2567064288187365,
+          "absoluteP95": 1.1533489851269723,
+          "MAE": 0.1943244460224622
+        }
+      },
+      "freshResource": {
+        "arm": "C0",
+        "exitCode": 0,
+        "stopReason": null,
+        "wallSeconds": 22.873124757999904,
+        "peakSummedRSSBytes": 273690624,
+        "peakCumulativeCPUSeconds": 22.795608,
+        "finalActualChildPlusGuardCPUSeconds": 22.795608,
+        "monitorAndPrechecksIncluded": true,
+        "samplingSeconds": 0.1,
+        "caps": {
+          "cpuSeconds": 60,
+          "wallSeconds": 90,
+          "RSSBytes": 1073741824,
+          "diskBytes": 1073741824,
+          "logicalCPUs": 1
+        },
+        "scope": "immutable source/output/cache checks + same-protocol heldout score + summary; no mapping",
+        "partialOutputsAdmissible": false
+      }
+    },
+    "C1": {
+      "availability": {
+        "scheduled": 1335885,
+        "paired": 1190482,
+        "referenceOnly": 4062,
+        "TSDFOnly": 138895,
+        "neither": 2446
+      },
+      "metrics": {
+        "all": {
+          "absoluteP50": 0.03308397326969981,
+          "absoluteP90": 0.29564830679236354,
+          "absoluteP95": 1.0131193576971838,
+          "MAE": 0.16919514445899808
+        },
+        "referenceBelow4m": {
+          "absoluteP50": 0.03289514055726572,
+          "absoluteP90": 0.2996774179394363,
+          "absoluteP95": 0.9976035476113121,
+          "MAE": 0.16481973994618276
+        },
+        "referenceAtLeast4m": {
+          "absoluteP50": 0.0344452074074546,
+          "absoluteP90": 0.2692564544644177,
+          "absoluteP95": 1.2048295159770785,
+          "MAE": 0.1991700081174671
+        }
+      },
+      "freshResource": {
+        "arm": "C1",
+        "exitCode": 0,
+        "stopReason": null,
+        "wallSeconds": 23.703560261994426,
+        "peakSummedRSSBytes": 267083776,
+        "peakCumulativeCPUSeconds": 23.628173,
+        "finalActualChildPlusGuardCPUSeconds": 23.628173,
+        "monitorAndPrechecksIncluded": true,
+        "samplingSeconds": 0.1,
+        "caps": {
+          "cpuSeconds": 60,
+          "wallSeconds": 90,
+          "RSSBytes": 1073741824,
+          "diskBytes": 1073741824,
+          "logicalCPUs": 1
+        },
+        "scope": "immutable source/output/cache checks + same-protocol heldout score + summary; no mapping",
+        "partialOutputsAdmissible": false
+      }
+    }
+  },
+  "scope": "all29row-column identities,87NPZhashes, availability + pooled/below4/atleast4 stats and2/5/10cm bands",
+  "noWinnerOrSafetyClaim": true
+}

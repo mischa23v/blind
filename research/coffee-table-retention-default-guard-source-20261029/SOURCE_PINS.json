@@ -1,0 +1,21 @@
+{
+  "variant": "restored-20261029-v3-default-guard",
+  "physicalAuthority": false,
+  "librarySHA256": "0a044001b1455634ab881cc42fb5954362d960abf5cd851b7b6dc99b6c3eb963",
+  "buildReceiptSHA256": "bd329fc48bd5e3e7dee4c0ef1c6bd30d556c4c58fa46e0da90c671f40fc3e077",
+  "originalControlsReceiptSHA256": "f8cd851c7afc3896b53f32720a725d4e81de55ca62ad42c2fa001528b6753bf6",
+  "previousBindingPinsSHA256": "2d8d7367d40dd42c0412c6321ce9ba4bed1c42ade27d90af8c1d0dc2538deb70",
+  "previousRetentionSHA256": "96c7c6c7d1559692cd1785c9a094fa5dbbd7fd0e5cd2c19b4c69756df565e7a5",
+  "preservedFailedStageBReceiptSHA256": "a8ece6ca766853628ce6bfdf10e0b4be3acad2e9c4889ad01e0dfa6188e4c107",
+  "changes": [
+    "three probability default comparisons changed from strict 1e-12 to absolute inclusive 1e-7, matching original native controls",
+    "one explanatory source comment"
+  ],
+  "rebuiltBinding": {
+    "retention.py": "52027afeb32a38f49d69e25713fa434d01291e4fc8a75d111daf151b5f44d7d4",
+    "octomap_engine.py": "09645bd4065ccef13d28353d5a05e54c75f5ea284ca8e5c4439c58cc45aa4621"
+  },
+  "authoredSourceControlSHA256": "040ebbdac5bae3ad15ef782dddb44b85452d6673689dbce7c473051ddfd534e7",
+  "authoredSourceControlCount": 7,
+  "verification": "AST parsed only; authored controls and corrected native Stage B not run by preparer"
+}

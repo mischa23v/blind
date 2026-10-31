@@ -1,0 +1,54 @@
+--- a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -174,7 +174,8 @@
+         for retireSource in [false,true] {
+             let backend = try SeatedCandidateFixtureBackend()
+             let ownerDrained=expectation(description:"seated rejection controller ownership drained")
+-            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{ownerDrained.fulfill()})
++            var stopped=false
++            let controller = SeatedMeshDiagnosticController(testBackend: backend,clock: { backend.now },onStopped:{stopped=true;ownerDrained.fulfill()})
+             addTeardownBlock {
+                 let drained = XCTestExpectation(description: "seated rejection teardown drained")
+                 await MainActor.run { controller.stop(); backend.stopAndDrain {
+@@ -203,7 +204,7 @@
+             controller.stop(); XCTAssertNil(controller.scene)
+             let drained = expectation(description: "rejection iteration native drain")
+             backend.stopAndDrain { DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting();drained.fulfill()} }
+-            await fulfillment(of: [drained,ownerDrained], timeout: 10)
++            await fulfillment(of: [drained,XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)], timeout: 10)
+         }
+     }
+ 
+@@ -253,7 +254,7 @@
+         await fulfillment(of:[nativeDone],timeout:10)
+         XCTAssertFalse(stopped,"Native drain alone cannot release exclusive ownership")
+         hold.signal()
+-        await fulfillment(of:[ownerDone],timeout:10)
++        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)],timeout:10)
+         XCTAssertTrue(stopped);XCTAssertFalse(controller.hasPendingRenderForTesting)
+     }
+ 
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -475,8 +475,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+-      "bytes": 28764,
+-      "sha256": "3aa1a99d15714caa7e3446e808f24b52d0eb75889e07d9f8eab759c3574b2480"
++      "bytes": 28938,
++      "sha256": "86e159105291609bad2b8651ab77bae41402714fdf2122ffdc5f59a3b782b359"
+     },
+     {
+       "path": ".github/workflows/native-apple.yml",
+@@ -748,5 +748,10 @@
+     "baseCommit": "276b1c522bd5ff4ff26df23ba83a7728bdce3df9",
+     "status": "isolated_unexecuted_proposal",
+     "scope": "actual source admission independent of optional SceneKit rendering; no physical authority"
++  },
++  "single_wait_fixture_repair": {
++    "baseCommit": "74dd3e6f71da19a5df7c522384281eec88d2157a",
++    "status": "source_review_only_native_not_executed",
++    "scope": "teardown owns one expectation wait; body uses new stopped predicate from actual full controller drain"
+   }
+ }

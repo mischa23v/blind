@@ -1,0 +1,245 @@
+{
+  "status": "FAILED_ANALYTIC_CONTROLS_PARTIAL",
+  "sourceCommit": "3be40379c861e8a580643f2cdbec69a6164b5a9a",
+  "sourceManifestSHA256": "97b4a2abbb8c95578425f761079654ad1df1ff13eb5520294f5ab6e6eec92289",
+  "wrapperRecords": 53,
+  "nestedProbeRows": 73,
+  "controllerCalls": 71,
+  "precedingWrapperChecksCompleted": 52,
+  "failedWrapper": {
+    "envelope": "horizontal_margin",
+    "fixture": "down_step_1cm",
+    "arm": "raw_trimesh"
+  },
+  "unrunWrappers": [
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "down_step_1cm",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "support_gap",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "support_gap",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "zero_input_overlap",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "zero_input_overlap",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "low_ceiling",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "low_ceiling",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "turn_unsupported",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "turn_unsupported",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "yaw_45_diagonal_wall",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "yaw_45_diagonal_wall",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_14.9",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_14.9",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_15",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_15",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_15.1",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_15.1",
+      "arm": "two_sided_internal_edges"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_16.89",
+      "arm": "raw_trimesh"
+    },
+    {
+      "envelope": "horizontal_margin",
+      "fixture": "slope_16.89",
+      "arm": "two_sided_internal_edges"
+    }
+  ],
+  "unrunNestedRows": 35,
+  "unrunControllerCalls": 33,
+  "failedRow": {
+    "id": "down_step_1cm",
+    "kind": "translation",
+    "arm": "raw_trimesh",
+    "envelope": "horizontal_margin",
+    "inputArm": "exact_xyz",
+    "originalFoot": [
+      -0.14999999999999997,
+      0.002,
+      0
+    ],
+    "originalYawRadians": 0,
+    "originalDesiredDelta": [
+      0.025,
+      0,
+      0
+    ],
+    "independentEvidence": {
+      "origin": "authored analytic fixture",
+      "nativeOracleExecuted": false,
+      "status": "independent_oracle_required",
+      "hazardsMayNotBeSuppressed": true
+    },
+    "support": "unknown",
+    "semanticFloor": "unknown",
+    "physicalAuthority": false,
+    "movementApplied": false,
+    "arrivalEstablished": false,
+    "queryBandDifference": "KCC full nominal cuboid includes foot-to-foot+0.002m; existing VTK excludes that lower slice",
+    "frozenHalfExtents": [
+      0.3,
+      0.8,
+      0.375
+    ],
+    "engineHalfExtentsFloat32": [
+      0.30000001192092896,
+      0.800000011920929,
+      0.375
+    ],
+    "status": "proposal_only",
+    "controllerCalled": true,
+    "requestedCenter": [
+      -0.14999999999999997,
+      0.802,
+      0
+    ],
+    "queryPoseFloat32": [
+      -0.15000000596046448,
+      0.8019999861717224,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "numericalPoseConversionOnly": true,
+    "requestedDelta": [
+      0.025,
+      0,
+      0
+    ],
+    "requestedDeltaFloat32": [
+      0.02500000037252903,
+      0,
+      0
+    ],
+    "proposedMovement": [
+      0.01966019719839096,
+      9.532194235362113e-05,
+      0
+    ],
+    "proposalWasNotApplied": true,
+    "zeroInputDepenetrationProposal": null,
+    "computedGrounded": true,
+    "computedGroundedIsNotSupportEvidence": true,
+    "collisions": [
+      {
+        "colliderHandle": 0,
+        "toi": 0.01969042420387268,
+        "translationApplied": [
+          0.01969042420387268,
+          0,
+          0
+        ],
+        "translationRemaining": [
+          0.005309576168656349,
+          0,
+          0
+        ],
+        "witness1": [
+          0.17024308443069458,
+          3.80147248506546e-05,
+          0.37493520975112915
+        ],
+        "witness2": [
+          0.1696385145187378,
+          0.001999974250793457,
+          0.374935120344162
+        ],
+        "normal1": [
+          -0.30227896571159363,
+          0.9532194137573242,
+          0
+        ],
+        "normal2": [
+          0.30227896571159363,
+          -0.9532194137573242,
+          0
+        ],
+        "originalTriangleID": null,
+        "originalTriangleIDReason": "not exposed by upstream CharacterCollision"
+      }
+    ],
+    "independentHazardsMustNotBeSuppressed": true
+  },
+  "measuredContactNormalAngleDegrees": 17.594536227417088,
+  "frozenMaxSlopeDegrees": 15,
+  "forwardShortfallMetres": 0.005339802801609041,
+  "sourceDerivedProposalAfterWallSlopeGateAndNudge": [
+    0.019660196307301522,
+    9.532194137573243e-05,
+    0.0
+  ],
+  "sourcePredictionMaxAbsResidualMetres": 8.910894383484802e-10,
+  "interpretation": "The returned lip contact normal exceeds the frozen 15-degree slope threshold. Upstream compute_hit_info treats it as a wall; handle_slopes removes remaining climb and adds the fixed normal nudge. Source-derived output matches the saved proposal within Float32 rounding. Exact reason the cast returned that edge normal remains unisolated; no sole-cause claim about GJK, topology, offset or fixture construction.",
+  "inputHashesUnchanged": true,
+  "realRoomQueries": 0,
+  "physicalAuthority": false,
+  "movementApplied": false,
+  "toleranceChanged": false,
+  "rerunPerformedByReviewer": false,
+  "nextDiagnostic": "Keep all existing expectations. Record each fixture assertion failure and continue to the next independent wrapper, then fail the aggregate if any failed. This would reveal the currently unrun alternate flag/profile results without tuning geometry, tolerances or safety gates."
+}

@@ -1,0 +1,1167 @@
+--- /dev/null
++++ b/.github/workflows/j01-actual-model.yml
+@@ -0,0 +1,53 @@
++name: Explicit isolated J01 model observations
++on:
++  push:
++    branches: [codex/recovery-hazard-order-20261027]
++    paths:
++      - '.github/workflows/j01-actual-model.yml'
++      - 'research/j01-hosted-app-adapter-20261030/**'
++      - 'research/j01-actual-model-lane-20261030/**'
++      - 'ios/BlindAssistTests/HostedNonvisualJourneyTests.swift'
++      - 'tools/ci/j01-actual-model.py'
++      - 'tools/ci/test_j01_actual_model.py'
++      - 'tools/ci/collect_j01_metadata.py'
++      - 'tools/ci/test_collect_j01_metadata.py'
++permissions:
++  contents: read
++# No uploads, cache, service, runtime/model download, or account setup.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
++concurrency:
++  group: isolated-j01-model-${{ github.ref }}
++  cancel-in-progress: false
++jobs:
++  j01-observation:
++    if: github.event_name == 'push' && github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
++    runs-on: xcode-27
++    timeout-minutes: 35
++    env:
++      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
++        with:
++          ref: ${{ github.sha }}
++          persist-credentials: false
++          fetch-depth: 1
++          lfs: false
++          submodules: false
++      - name: Validate portable current-source boundaries
++        timeout-minutes: 2
++        run: |
++          python3 -B research/native-candidate-app-integration-85/integrated/check.py
++          python3 -B tools/ci/test_j01_actual_model.py
++          python3 -B tools/ci/test_collect_j01_metadata.py
++      - name: Verify installed default Apple project and toolchain
++        timeout-minutes: 3
++        run: bash tools/ci/native-apple.sh preflight
++      - name: Build once and observe three exact scripts on separate empty simulators
++        id: observe
++        timeout-minutes: 28
++        run: python3 -B tools/ci/j01-actual-model.py run
++      - name: Preserve bounded failure status in normal logs and summary
++        if: always()
++        timeout-minutes: 1
++        run: python3 -B tools/ci/j01-actual-model.py report
+--- /dev/null
++++ b/research/j01-hosted-app-adapter-20261030/ATTESTATION.md
+@@ -0,0 +1,34 @@
++# J01 selected prebuilt build/source receipt layer
++
++This is an additive overlay on reviewed J01 manifest `6038c57204ca96482722b40a647156fc02748fd4a72c07d732e9fc8dc3a42e43`. That original packet is unchanged. This overlay strengthens its prebuilt wrapper: it refuses execution without an independently trusted build-receipt digest, and verifies selected descriptor/app/test bytes before launch and after observation. The earlier README's claim-only path is historical; it is no longer sufficient to run this overlay.
++
++## What is verified, and what is NOT
++
++The recorder **does not build or run anything**. Its `begin`/`finish` commands reuse exact existing `tools/ci/export-native-unit-statuses.py:provenance` plus its exact reviewed lock-file parser. These enforce expected workflow SHA equals actual Git HEAD, clean tracked source, no unexpected untracked source in existing CI scopes and only existing reviewed dependency-lock exceptions. Before/after source and CI run/job identity must match. Finish additionally requires an actual successful `xcodebuild build-for-testing` command receipt from the surrounding reviewed build job.
++
++It records full regular-file inventories of the selected app and hosted test bundles, their executable bytes/modes, Info.plists and descriptor hash. File/directory symlinks, any parent-traversal components, canonically escaped paths, unsupported descriptor placeholders, missing files, unknown targets and oversized input fail closed. Hashing checks regular-file type before opening and after obtaining a no-follow/nonblocking descriptor, then uses bounded streaming reads and file-change checks. Regular filesystem I/O can still block; the time check is observational, not a hard syscall deadline. Both executable headers must be Mach-O; this is a format sanity check, **not proof the synthetic tests built an executable**. Count/size limits:8192 files and8192 directories per bundle,256MiB/file,2GiB combined selected bundle data,4MiB descriptor,8MiB receipt. Legitimate builds exceeding bounds or using unsupported layouts need a separate reviewed change, not bypass.
++
++**A JSON receipt is not self-authenticating.** The generated receipt explicitly says untrusted. Environment variables and a claimed command are not independent proof of CI execution. The integration/review owner must obtain the receipt digest from authenticated, reviewed CI build evidence and independently authorize that exact digest. Do not compute `trusted_build_receipt_sha256` from an arbitrary downloaded or caller-provided receipt and call it trusted. No approved native receipt exists from this source-only work.
++
++Only after that external trust decision does `sourceAttestation.verified:true` mean: **selected prebuilt bytes match the externally trusted clean-source build receipt**. It does not mean runtime-loaded binary attestation, signed provenance, model correctness, test success, physical safety or completed journeys. `runtimeLoadedBinaryVerified:false` and the native test's original claim-only attestation remain in the output. Runtime/system frameworks and model assets are outside this selected-bundle identity scope. This is not hardened against a malicious concurrent writer; pre/post checks detect ordinary mutation but do not remove the time-of-check/use interval. Use the reviewed isolated build workspace.
++
++## Exact future build interface (no execution during preparation)
++
++On the existing authorized disposable public Apple CI job, using a complete clean checkout (including the existing lock parser):
++
++1. Before the reviewed build, run `python3 -B research/j01-hosted-app-adapter-20261030/build_attestation.py begin --repo . --out <fresh-outside-repo>/begin.json`.
++2. Run the separately reviewed default unsigned simulator **build-for-testing** command. Do not change normal jobs or introduce model downloads/paid runners. The surrounding shell captures its actual argv and exit status as `{"argv":[...],"exit_code":0}` (nonzero exits remain failures).
++3. Only after that command completes, run `... build_attestation.py finish --repo . --before <begin.json> --command <actual-command.json> --build-root <Build/Products> --descriptor <relative.xctestrun> --out <fresh-receipt.json>`.
++4. Review real build/job provenance and approve the resulting digest externally. Receipt-only producer controls or a fabricated fixture receipt cannot satisfy this trust step.
++
++Required CI context is `GITHUB_ACTIONS=true`, exact repository `mischa23v/blind`, real `GITHUB_SHA`, run ID/attempt/job/workflow reference. No environment dump, credentials, signing identity or account access is requested. Receipts contain public source/build-relative filenames and bounded build-command metadata; keep outside public logs unless reviewed. This packet adds no workflow, upload or paid storage.
++
++In addition to the existing J01 config fields, the prebuilt wrapper now requires `build_root`, `build_receipt_path`, and **independently approved** `trusted_build_receipt_sha256`. Descriptor selection must be inside that build root. It validates at initial selection, immediately before launching the explicit test, and again before exporting the result. Native output's echoed commit is retained only as a claim; the wrapper adds the separately checked artifact receipt evidence. Any missing trust, byte change or invalid receipt refuses execution/result export. The existing55-second wrapper observation budget now starts before identity checking, with each verification also capped at20seconds checked between bounded reads; a slow scan leaves less native time or fails closed. Blocking individual filesystem/native calls are not hard-preempted. Original log bounds, fresh retained attempt directory, explicit ephemeral-simulator flags and three-script allowlist remain unchanged.
++
++## Evidence actually obtained
++
++Twenty-two portable test methods passed, including real invocation of the existing Git provenance implementation in a newly authored clean Git fixture, wrong SHA/untracked-source/helper-mutation negatives; full synthetic artifact-tree positive identity and added/removed/mutated executable/resource/symlink/command/receipt/CI/budget negatives. A begin/finish contract fixture used an explicitly authored command receipt, **not an actual native build**. No trusted build receipt, Swift compilation, simulator run or model response was produced. The baseline11 portable adapter controls also pass in the combined overlay.
++
++## Next reusable nonvisual app family
++
++SC53 ordinary-speech quiet/resume is already routed by `receiveCompanionUtterance` through `AssistantControl.parse` and `handleAssistantControl`/existing narration policy. A later exact-script adapter can observe those actual owned-state changes without injecting replies. SC03 has an existing code-owned clock lane, but time alone cannot establish daylight/weather. Neither family is enabled by this overlay; their original obligations remain unexecuted. Request-correlated controller evidence is required before expanding beyond the three reviewed SC02 scripts.
+--- a/research/j01-hosted-app-adapter-20261030/app_adapter.py
++++ b/research/j01-hosted-app-adapter-20261030/app_adapter.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python3
+ """Explicit prebuilt simulator XCTest bridge. No build/download; authorized execution deploys only to the declared test simulator."""
+ import hashlib,json,os,pathlib,plistlib,re,signal,subprocess,sys,time
++import build_attestation as attestation
+ HERE=pathlib.Path(__file__).resolve().parent
+ CASE='BlindAssistTests/HostedNonvisualJourneyTests/testExplicitHostedJSONLJourney'
+ def require(ok,msg):
+@@ -40,13 +41,28 @@
+   if isinstance(x,dict):return {k:relocate(v) for k,v in x.items()}
+   return x
+  return plistlib.dumps(relocate(obj))
++def owned_parent_group():
++ # Only the fixed same-job runner selects this mode. The wrapper is the leader
++ # of its own new session/group; xcodebuild stays inside that owned group so the
++ # parent can contain it even if this wrapper is killed before its finally.
++ marker=os.environ.get('BLIND_J01_OWNED_PARENT_PID')
++ if marker is None:return False
++ require(re.fullmatch('[1-9][0-9]{0,19}',marker) is not None,'owned parent PID shape')
++ require(int(marker)==os.getppid() and os.getpgrp()==os.getpid() and os.getsid(0)==os.getpid(),'exclusive parent-owned wrapper group required')
++ return True
++
+ def main():
++ deadline=time.monotonic()+55
+  require(os.environ.get('BLIND_J01_EXECUTE_PREBUILT')=='1','explicit execution disabled')
+  require(sys.platform=='darwin','Apple simulator host required')
+  config=json.loads(read(os.environ['BLIND_J01_CONFIG'],65536));raw=sys.stdin.buffer.read(65537);require(len(raw)<=65536,'request budget')
+  request=json.loads(raw);validate(request,config)
+  path=pathlib.Path(config['xctestrun_path']).resolve();data=read(path,4*1024*1024)
+  require(hashlib.sha256(data).hexdigest()==config['xctestrun_sha256'],'prebuilt descriptor pin mismatch')
++ build_root=pathlib.Path(config['build_root']).absolute()
++ require(path.is_relative_to(build_root),'descriptor outside attested build root')
++ descriptor=str(path.relative_to(build_root))
++ proof=attestation.verify(build_root,descriptor,config['build_receipt_path'],config['trusted_build_receipt_sha256'],config['source_commit'],max_seconds=min(20,deadline-time.monotonic()))
+  tmp=pathlib.Path(config['attempt_dir']);require(not tmp.exists(),'fresh retained attempt directory required');tmp.mkdir(mode=0o700,parents=False)
+  input=tmp/'request.json';output=tmp/'response.json';run=tmp/'run.xctestrun';log=tmp/'native.log'
+  input.write_text(canonical(request));run.write_bytes(prepare_xctestrun(data,path.parent,input,output,config['source_commit']))
+@@ -54,23 +70,33 @@
+  # Descriptor pin identifies a selected build, not independent binary/source
+  # attestation. Caller must preserve its reviewed build receipt separately.
+  with log.open('wb') as f:
+-  p=subprocess.Popen(cmd,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
++  # Recheck immediately before launch; bytes can change after descriptor preparation.
++  require(attestation.verify(build_root,descriptor,config['build_receipt_path'],config['trusted_build_receipt_sha256'],config['source_commit'],max_seconds=min(20,deadline-time.monotonic()))==proof,'prelaunch identity changed')
++  owned=owned_parent_group()
++  p=subprocess.Popen(cmd,stdout=f,stderr=subprocess.STDOUT,start_new_session=not owned)
+   try:
+-   deadline=time.monotonic()+55
+    while p.poll() is None:
+     require(time.monotonic()<deadline,'host timeout; native drain unknown, no automatic retry')
+     require(log.stat().st_size<=8*1024*1024,'host log budget')
+     time.sleep(.05)
+    require(p.returncode==0,'hosted XCTest failed; no success receipt')
+   finally:
+-   try:os.killpg(p.pid,signal.SIGKILL)
+-   except ProcessLookupError:pass
++   if owned:
++    # The parent owns the whole group; do not SIGKILL this wrapper before it
++    # records bounded status. Parent always kills that group on every exit.
++    if p.poll() is None:p.kill()
++   else:
++    try:os.killpg(p.pid,signal.SIGKILL)
++    except ProcessLookupError:pass
+    p.wait(timeout=3)
+    (tmp/'PROCESS.json').write_text(canonical({'exit_code':p.returncode,'log_bytes':log.stat().st_size,'native_drain_acknowledged':False,'fullJourneyComplete':False}))
+  response=json.loads(read(output,1024*1024))
+  require(response.get('scenario_id')==request['scenario_id'] and response.get('source_commit')==request['source_commit'],'output identity')
+  require(response.get('fullJourneyComplete') is False and response.get('physical_actions_applied') is False,'output authority')
+  require(response.get('claimedSourceCommit')==config['source_commit'] and response.get('sourceAttestation',{}).get('verified') is False,'source claim must remain unattested')
++ require(attestation.verify(build_root,descriptor,config['build_receipt_path'],config['trusted_build_receipt_sha256'],config['source_commit'],max_seconds=min(20,deadline-time.monotonic()))==proof,'artifact identity changed during run')
++ response['nativeReportedSourceAttestation']=response['sourceAttestation']
++ response['sourceAttestation']=proof
+  print(canonical(response))
+ if __name__=='__main__':
+  try:main()
+--- /dev/null
++++ b/research/j01-hosted-app-adapter-20261030/build_attestation.py
+@@ -0,0 +1,155 @@
++#!/usr/bin/env python3
++"""Source/selected-binary identity, NOT a self-authenticating build certificate."""
++import contextvars
++import argparse,hashlib,importlib.util,json,os,pathlib,plistlib,re,stat,sys,time
++HELPER='tools/ci/export-native-unit-statuses.py'
++HELPER_SHA='75b18b4b00b02b7da42453a4decec7ec043fb9672f66f463b5a0f5778f1dedfe'
++LOCK='research/indoor-io-buffered-diagnostic/resolution.py'
++LOCK_SHA='6590d0a2c60c3675cb131c4f8be2766c51147f0f3f009f40b41bc5db4801a740'
++MAX_FILE=256*1024*1024;MAX_TOTAL=2*1024*1024*1024;MAX_FILES=8192
++CASE='HostedNonvisualJourneyTests/testExplicitHostedJSONLJourney'
++DEADLINE=contextvars.ContextVar('hash_deadline',default=float('inf'))
++def within_budget():require(time.monotonic()<DEADLINE.get(),'artifact observation time budget')
++def require(ok,message):
++ if not ok:raise ValueError(message)
++def canonical(x):return json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
++def no_links(path):
++ raw=pathlib.Path(path);require('..' not in raw.parts,'parent traversal refused')
++ p=raw.absolute()
++ for parent in [p,*p.parents]:require(not parent.is_symlink(),'symlink component refused')
++ return p.resolve(strict=True)
++def digest(path,cap=MAX_FILE):
++ p=no_links(path);pre=p.lstat();require(stat.S_ISREG(pre.st_mode) and pre.st_size<=cap,'regular bounded file required before open')
++ fd=os.open(p,os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
++ try:
++  a=os.fstat(fd);require(stat.S_ISREG(a.st_mode) and a.st_size<=cap,'regular bounded file required')
++  h=hashlib.sha256();n=0
++  while True:
++   within_budget()
++   chunk=os.read(fd,min(1024*1024,cap+1-n))
++   if not chunk:break
++   n+=len(chunk);require(n<=cap,'file grew beyond cap');h.update(chunk)
++  b=os.fstat(fd);after=p.lstat()
++  key=lambda s:(s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns,s.st_mode)
++  require(key(a)==key(b)==key(after) and n==a.st_size,'file changed during hashing')
++  return {'sha256':h.hexdigest(),'bytes':n,'executable':bool(a.st_mode&0o111)}
++ finally:os.close(fd)
++def stable_bytes(path,cap):
++ expected=digest(path,cap);fd=os.open(no_links(path),os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
++ try:
++  info=os.fstat(fd);require(stat.S_ISREG(info.st_mode) and info.st_size<=cap,'regular bounded descriptor required')
++  chunks=[];size=0
++  while True:
++   within_budget()
++   b=os.read(fd,min(1024*1024,cap+1-size))
++   if not b:break
++   size+=len(b);require(size<=cap,'read budget');chunks.append(b)
++  data=b''.join(chunks)
++  require(len(data)==expected['bytes'] and hashlib.sha256(data).hexdigest()==expected['sha256'],'bytes changed between identity and read')
++  return data
++ finally:os.close(fd)
++def read_json(path,cap=8*1024*1024):
++ def unique(pairs):
++  d={}
++  for k,v in pairs:require(k not in d,'duplicate JSON key');d[k]=v
++  return d
++ return json.loads(stable_bytes(path,cap),object_pairs_hook=unique)
++def relpath(value):
++ require(isinstance(value,str) and 0<len(value)<=512 and '\\' not in value,'relative path shape')
++ p=pathlib.PurePosixPath(value);require(not p.is_absolute() and all(x not in ('','.','..') for x in p.parts) and str(p)==value,'unsafe relative path')
++ return p
++def tree(root):
++ root=no_links(root);require(root.is_dir(),'bundle directory required');files=[];total=0;directories=0
++ for base,dirs,names in os.walk(root,followlinks=False):
++  within_budget()
++  directories+=1;require(directories<=MAX_FILES,'directory count budget')
++  require(len(dirs)+len(names)<=MAX_FILES,'directory width budget')
++  for name in dirs:require(not (pathlib.Path(base)/name).is_symlink(),'bundle directory symlink')
++  for name in sorted(names):
++   path=pathlib.Path(base)/name;relative=str(path.relative_to(root));relpath(relative)
++   require(len(files)<MAX_FILES,'bundle file-count budget');item=digest(path);total+=item['bytes'];require(total<=MAX_TOTAL,'bundle byte budget')
++   files.append(dict(path=relative,**item))
++ files.sort(key=lambda x:x['path']);require(files,'empty bundle')
++ return {'files':files,'bytes':total,'treeSHA256':hashlib.sha256(canonical(files)).hexdigest()}
++def source_provenance(repo,expected):
++ repo=no_links(repo)
++ require(digest(repo/HELPER,1024*1024)['sha256']==HELPER_SHA,'reviewed provenance helper changed')
++ require(digest(repo/LOCK,1024*1024)['sha256']==LOCK_SHA,'reviewed dependency lock parser changed')
++ spec=importlib.util.spec_from_file_location('j01_existing_ci_provenance',repo/HELPER);module=importlib.util.module_from_spec(spec)
++ old=sys.dont_write_bytecode
++ try:sys.dont_write_bytecode=True;spec.loader.exec_module(module);return module.provenance(repo,expected)
++ finally:sys.dont_write_bytecode=old
++def ci_context(env):
++ require(env.get('GITHUB_ACTIONS')=='true' and env.get('GITHUB_REPOSITORY')=='mischa23v/blind','reviewed CI context required')
++ d={k:env.get(k,'') for k in ['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_JOB','GITHUB_WORKFLOW_REF']}
++ require(re.fullmatch('[0-9a-f]{40}',d['GITHUB_SHA']) is not None,'workflow SHA')
++ require(all(re.fullmatch('[1-9][0-9]{0,19}',d[k]) for k in ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT']),'CI run identity')
++ require(re.fullmatch('[A-Za-z0-9_-]{1,100}',d['GITHUB_JOB']) is not None,'job identity')
++ require(d['GITHUB_WORKFLOW_REF'].startswith('mischa23v/blind/.github/workflows/') and len(d['GITHUB_WORKFLOW_REF'])<=300,'workflow identity')
++ return d
++def _selection(root,descriptor):
++ root=no_links(root);path=root/relpath(descriptor);raw=stable_bytes(path,4*1024*1024)
++ obj=plistlib.loads(raw);targets=[t for c in obj.get('TestConfigurations',[]) for t in c.get('TestTargets',[]) if t.get('BlueprintName')=='BlindAssistTests'];require(len(targets)==1,'one hosted test target')
++ t=targets[0]
++ def resolve(v,host=None):
++  require(isinstance(v,str),'artifact path')
++  allowed={'__TESTROOT__'} | ({'__TESTHOST__'} if host is not None else set())
++  require(set(re.findall(r'__[A-Z_]+__',v))<=allowed,'unsupported artifact placeholder')
++  v=v.replace('__TESTROOT__',str(path.parent))
++  if host is not None:v=v.replace('__TESTHOST__',str(host))
++  p=no_links(v);require(p.is_relative_to(root),'artifact outside selected build root');return p
++ host=resolve(t.get('TestHostPath'));app=host.parent;bundle=resolve(t.get('TestBundlePath'),app)
++ require(app.suffix=='.app' and bundle.suffix=='.xctest','app/test bundle shapes')
++ for directory,executable in [(app,host),(bundle,None)]:
++  info=directory/'Info.plist';d=plistlib.loads(stable_bytes(info,1024*1024));name=d.get('CFBundleExecutable');require(isinstance(name,str) and '/' not in name and name not in ('','.','..'),'bundle executable name')
++  selected=directory/name;require(executable is None or selected==executable,'host executable differs from Info.plist')
++  identity=digest(selected);require(identity['executable'],'bundle executable mode')
++  fd=os.open(no_links(selected),os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
++  try:
++   require(stat.S_ISREG(os.fstat(fd).st_mode),'regular executable descriptor required');magic=os.read(fd,4)
++  finally:os.close(fd)
++  require(magic in [b'\xcf\xfa\xed\xfe',b'\xfe\xed\xfa\xcf',b'\xca\xfe\xba\xbe',b'\xbe\xba\xfe\xca',b'\xca\xfe\xba\xbf',b'\xbf\xba\xfe\xca'],'Mach-O executable required')
++ app_tree=tree(app);test_tree=tree(bundle);require(app_tree['bytes']+test_tree['bytes']<=MAX_TOTAL,'combined artifact byte budget')
++ return {'descriptor':{'path':str(path.relative_to(root)),**digest(path,4*1024*1024)},'app':{'path':str(app.relative_to(root)),**app_tree},'tests':{'path':str(bundle.relative_to(root)),**test_tree}}
++def selection(root,descriptor):
++ token=DEADLINE.set(min(DEADLINE.get(),time.monotonic()+20))
++ try:return _selection(root,descriptor)
++ finally:DEADLINE.reset(token)
++def begin(repo,env):
++ context=ci_context(env);return {'schema':'j01-build-begin-v1','ci':context,'provenance':source_provenance(repo,context['GITHUB_SHA']),'createdAt':time.time()}
++def finish(repo,env,before,command,root,descriptor):
++ context=ci_context(env);require(before.get('schema')=='j01-build-begin-v1' and before.get('ci')==context,'build begin context mismatch')
++ after=source_provenance(repo,context['GITHUB_SHA']);require(before.get('provenance')==after,'source changed across build')
++ require(type(command.get('exit_code')) is int and command['exit_code']==0,'actual build command did not succeed')
++ argv=command.get('argv');require(type(argv) is list and 1<=len(argv)<=128 and all(type(x) is str and len(x)<=4096 for x in argv),'command shape')
++ require(pathlib.Path(argv[0]).name=='xcodebuild' and 'build-for-testing' in argv,'actual build-for-testing command required')
++ require(0<=time.time()-before.get('createdAt',0)<=3600,'begin age')
++ artifacts=selection(root,descriptor)
++ require(source_provenance(repo,context['GITHUB_SHA'])==after,'source changed during artifact capture')
++ return {'schema':'j01-build-receipt-v1','sourceCommit':context['GITHUB_SHA'],'ci':context,'before':before,'after':after,'buildCommand':command,'artifacts':artifacts,'producerTrust':'untrusted until independently authenticated build evidence and receipt digest approved','nativeTestExecutedByRecorder':False,'provenanceHelperSHA256':HELPER_SHA,'lockParserSHA256':LOCK_SHA}
++def _verify(root,descriptor,receipt_path,trusted_sha,source):
++ require(re.fullmatch('[0-9a-f]{64}',trusted_sha or '') is not None,'independently trusted receipt digest required')
++ require(digest(receipt_path,8*1024*1024)['sha256']==trusted_sha,'receipt digest mismatch')
++ receipt_bytes=stable_bytes(receipt_path,8*1024*1024);require(hashlib.sha256(receipt_bytes).hexdigest()==trusted_sha,'receipt changed after approved digest check')
++ receipt=read_json(receipt_path);require(hashlib.sha256(canonical(receipt)).hexdigest()==hashlib.sha256(canonical(json.loads(receipt_bytes))).hexdigest(),'receipt content changed during parse');require(receipt.get('schema')=='j01-build-receipt-v1' and receipt.get('sourceCommit')==source,'receipt source mismatch')
++ context=ci_context(dict(receipt['ci'],GITHUB_ACTIONS='true'))
++ require(context['GITHUB_SHA']==source and receipt['before']['ci']==context and receipt['before']['provenance']==receipt['after'],'receipt provenance mismatch')
++ require(receipt['after'].get('actual_head')==source and receipt['after'].get('tracked_source_clean') is True,'source clean proof missing')
++ require(type(receipt['buildCommand'].get('exit_code')) is int and receipt['buildCommand']['exit_code']==0,'build failed')
++ argv=receipt['buildCommand'].get('argv');require(type(argv) is list and 1<=len(argv)<=128 and all(type(x) is str and len(x)<=4096 for x in argv),'build command shape')
++ require(pathlib.Path(argv[0]).name=='xcodebuild' and 'build-for-testing' in argv,'build command identity')
++ require(receipt.get('provenanceHelperSHA256')==HELPER_SHA and receipt.get('lockParserSHA256')==LOCK_SHA,'provenance implementation pins')
++ require(receipt['before'].get('schema')=='j01-build-begin-v1','begin schema')
++ actual=selection(root,descriptor);require(actual==receipt['artifacts'],'selected descriptor/app/test bytes differ from trusted build')
++ return {'verified':True,'scope':'selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested','sourceCommit':source,'receiptSHA256':trusted_sha,'trustBasis':'external reviewed CI receipt digest, not caller source echo','runtimeLoadedBinaryVerified':False}
++def verify(root,descriptor,receipt_path,trusted_sha,source,*,max_seconds=20):
++ require(type(max_seconds) in (int,float) and 0<max_seconds<=20,'bounded verification time required')
++ token=DEADLINE.set(time.monotonic()+max_seconds)
++ try:return _verify(root,descriptor,receipt_path,trusted_sha,source)
++ finally:DEADLINE.reset(token)
++def main():
++ a=argparse.ArgumentParser();a.add_argument('action',choices=['begin','finish']);a.add_argument('--repo',type=pathlib.Path,required=True);a.add_argument('--out',type=pathlib.Path,required=True);a.add_argument('--before',type=pathlib.Path);a.add_argument('--command',type=pathlib.Path);a.add_argument('--build-root',type=pathlib.Path);a.add_argument('--descriptor');args=a.parse_args()
++ require(not args.out.exists(),'fresh receipt output required')
++ result=begin(args.repo,os.environ) if args.action=='begin' else finish(args.repo,os.environ,read_json(args.before),read_json(args.command),args.build_root,args.descriptor)
++ with args.out.open('xb') as f:f.write(canonical(result)+b'\n')
++if __name__=='__main__':main()
+--- /dev/null
++++ b/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
+@@ -0,0 +1,130 @@
++"""Portable identity/tamper controls, not a native build or authenticated CI run."""
++import copy,hashlib,importlib.util,json,os,pathlib,plistlib,subprocess,tempfile,unittest,time
++P=pathlib.Path(__file__).resolve().parent
++spec=importlib.util.spec_from_file_location('a',P/'build_attestation.py');a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
++class IdentityTests(unittest.TestCase):
++ def setUp(self):
++  self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=pathlib.Path(self.temp.name)
++  app=self.root/'Product/App.app';bundle=app/'PlugIns/BlindAssistTests.xctest'
++  for directory,name in [(app,'App'),(bundle,'Tests')]:
++   directory.mkdir(parents=True);(directory/'Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':name}))
++   exe=directory/name;exe.write_bytes(b'\xcf\xfa\xed\xfe'+b'authored fixture NOT native code');exe.chmod(0o700)
++  self.app=app;self.bundle=bundle
++  self.run=self.root/'build.xctestrun';self.run.write_bytes(plistlib.dumps({'TestConfigurations':[{'TestTargets':[{'BlueprintName':'BlindAssistTests','TestHostPath':'__TESTROOT__/Product/App.app/App','TestBundlePath':'__TESTHOST__/PlugIns/BlindAssistTests.xctest'}]}]}))
++  self.ci={'GITHUB_ACTIONS':'true','GITHUB_REPOSITORY':'mischa23v/blind','GITHUB_SHA':'a'*40,'GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_JOB':'fixture','GITHUB_WORKFLOW_REF':'mischa23v/blind/.github/workflows/native-apple.yml@refs/heads/main'}
++  context=a.ci_context(self.ci);provenance={'actual_head':'a'*40,'tracked_source_clean':True}
++  self.receipt={'schema':'j01-build-receipt-v1','sourceCommit':'a'*40,'ci':context,'before':{'schema':'j01-build-begin-v1','ci':context,'provenance':provenance},'after':provenance,'buildCommand':{'exit_code':0,'argv':['xcodebuild','build-for-testing']},'artifacts':a.selection(self.root,'build.xctestrun'),'provenanceHelperSHA256':a.HELPER_SHA,'lockParserSHA256':a.LOCK_SHA}
++  self.file=self.root/'receipt.json';self.pin=self.save(self.receipt)
++ def save(self,r):
++  self.file.write_bytes(a.canonical(r));return hashlib.sha256(self.file.read_bytes()).hexdigest()
++ def verify(self,pin=None):return a.verify(self.root,'build.xctestrun',self.file,pin or self.pin,'a'*40)
++ def test_synthetic_identity_only(self):
++  proof=self.verify();self.assertTrue(proof['verified']);self.assertFalse(proof['runtimeLoadedBinaryVerified']);self.assertIn('extern',proof['trustBasis'])
++ def test_untrusted_or_wrong_receipt_digest(self):
++  for pin in ['', 'b'*64]:
++   with self.assertRaises(ValueError):a.verify(self.root,'build.xctestrun',self.file,pin,'a'*40)
++ def test_executable_mutation(self):
++  (self.app/'App').write_bytes(b'changed')
++  with self.assertRaises(ValueError):self.verify()
++ def test_test_executable_mutation(self):
++  (self.bundle/'Tests').write_bytes(b'\xcf\xfa\xed\xfechanged')
++  with self.assertRaises(ValueError):self.verify()
++ def test_added_bundle_resource(self):
++  (self.app/'extra').write_text('new')
++  with self.assertRaises(ValueError):self.verify()
++ def test_removed_resource(self):
++  (self.bundle/'Info.plist').unlink()
++  with self.assertRaises((ValueError,OSError)):self.verify()
++ def test_symlink_bundle_file(self):
++  (self.app/'link').symlink_to(self.file)
++  with self.assertRaises(ValueError):self.verify()
++ def test_symlink_directory(self):
++  (self.app/'linkdir').symlink_to(self.root,target_is_directory=True)
++  with self.assertRaises(ValueError):self.verify()
++ def test_unsafe_relative_paths(self):
++  for p in ['../escape','/absolute','a/../b','a\\b','a//b','']:
++   with self.subTest(p=p),self.assertRaises(ValueError):a.relpath(p)
++ def test_wrong_receipt_fields_even_reapproved_fixture(self):
++  for key,val in [('sourceCommit','b'*40),('schema','other'),('lockParserSHA256','b'*64)]:
++   r=copy.deepcopy(self.receipt);r[key]=val;pin=self.save(r)
++   with self.assertRaises(ValueError):self.verify(pin)
++ def test_command_failure(self):
++  for code in [1,False]:
++   r=copy.deepcopy(self.receipt);r['buildCommand']['exit_code']=code;pin=self.save(r)
++   with self.assertRaises(ValueError):self.verify(pin)
++ def test_wrong_command(self):
++  for argv in [[],['true'],['xcodebuild','test']]:
++   r=copy.deepcopy(self.receipt);r['buildCommand']['argv']=argv;pin=self.save(r)
++   with self.assertRaises(ValueError):self.verify(pin)
++ def test_before_after_mismatch(self):
++  r=copy.deepcopy(self.receipt);r['after']['actual_head']='b'*40;pin=self.save(r)
++  with self.assertRaises(ValueError):self.verify(pin)
++ def test_duplicate_json_keys(self):
++  self.file.write_text('{"a":1,"a":2}')
++  with self.assertRaises(ValueError):a.read_json(self.file)
++ def test_bounds(self):
++  with self.assertRaises(ValueError):a.digest(self.app/'App',1)
++ def test_escaping_host_and_test_bundle_paths(self):
++  original=plistlib.loads(self.run.read_bytes())
++  for key,value in [('TestHostPath','__TESTROOT__/../outside/App.app/App'),('TestBundlePath','__TESTROOT__/../outside/Tests.xctest')]:
++   bad=copy.deepcopy(original);bad['TestConfigurations'][0]['TestTargets'][0][key]=value;self.run.write_bytes(plistlib.dumps(bad))
++   with self.subTest(key=key),self.assertRaises(ValueError):a.selection(self.root,'build.xctestrun')
++ def test_absolute_outside_artifact_rejected(self):
++  original=plistlib.loads(self.run.read_bytes());original['TestConfigurations'][0]['TestTargets'][0]['TestHostPath']='/tmp/outside/App.app/App';self.run.write_bytes(plistlib.dumps(original))
++  with self.assertRaises((ValueError,OSError)):a.selection(self.root,'build.xctestrun')
++ def test_fifo_refused_before_open(self):
++  from unittest.mock import patch
++  fifo=self.root/'fifo';os.mkfifo(fifo)
++  with patch.object(a.os,'open',side_effect=AssertionError('must reject FIFO before opening')):
++   with self.assertRaises(ValueError):a.digest(fifo)
++ def test_regular_open_is_nonblocking_and_nofollow(self):
++  from unittest.mock import patch
++  actual=os.open;flags=[]
++  def recording(path,value):flags.append(value);return actual(path,value)
++  with patch.object(a.os,'open',side_effect=recording):a.stable_bytes(self.app/'App',1024)
++  self.assertTrue(flags)
++  for flag in flags:self.assertTrue(flag & os.O_NONBLOCK);self.assertTrue(flag & os.O_NOFOLLOW)
++ def test_expired_hash_budget(self):
++  token=a.DEADLINE.set(time.monotonic()-1)
++  try:
++   with self.assertRaises(ValueError):a.digest(self.app/'App')
++  finally:a.DEADLINE.reset(token)
++  with self.assertRaises(ValueError):a.verify(self.root,'build.xctestrun',self.file,self.pin,'a'*40,max_seconds=0)
++ def test_wrong_ci(self):
++  for key,value in [('GITHUB_ACTIONS','false'),('GITHUB_REPOSITORY','other/repo'),('GITHUB_RUN_ID','no'),('GITHUB_SHA','no')]:
++   with self.assertRaises(ValueError):a.ci_context(dict(self.ci,**{key:value}))
++class ActualProvenanceTests(unittest.TestCase):
++ def test_existing_checker_real_clean_dirty_git(self):
++  repo=pathlib.Path(os.environ.get('BLIND_SOURCE_REPO',pathlib.Path(__file__).resolve().parents[2]))
++  with tempfile.TemporaryDirectory() as tmp:
++   root=pathlib.Path(tmp)
++   for name in [a.HELPER,a.LOCK]:
++    data=(repo/name).read_bytes() # actual-current bytes, never an old Git HEAD fallback
++    self.assertEqual(hashlib.sha256(data).hexdigest(),{a.HELPER:a.HELPER_SHA,a.LOCK:a.LOCK_SHA}[name])
++    path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++   # Use the EXACT reviewed helper, not a mock provenance return.
++   for cmd in [['git','init','-q'],['git','add','.'],['git','-c','user.name=Fixture','-c','user.email=fixture@invalid.local','commit','-qm','authored checker fixture']]:subprocess.run(cmd,cwd=root,check=True,timeout=5,stdout=subprocess.DEVNULL)
++   sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,timeout=5).decode().strip()
++   self.assertTrue(a.source_provenance(root,sha)['tracked_source_clean'])
++   env={'GITHUB_ACTIONS':'true','GITHUB_REPOSITORY':'mischa23v/blind','GITHUB_SHA':sha,'GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_JOB':'fixture','GITHUB_WORKFLOW_REF':'mischa23v/blind/.github/workflows/native-apple.yml@refs/heads/main'}
++   before=a.begin(root,env)
++   artifact=IdentityTests(methodName='test_synthetic_identity_only');artifact.setUp()
++   try:
++    # No actual build: this is explicitly an authored producer contract fixture.
++    command={'exit_code':0,'argv':['xcodebuild','build-for-testing']}
++    receipt=a.finish(root,env,before,command,artifact.root,'build.xctestrun')
++    self.assertEqual(receipt['sourceCommit'],sha)
++    self.assertIn('untrusted',receipt['producerTrust'])
++    self.assertFalse(receipt['nativeTestExecutedByRecorder'])
++    for bad in [dict(command,exit_code=1),dict(command,exit_code=False),dict(command,argv=[])]:
++     with self.assertRaises(ValueError):a.finish(root,env,before,bad,artifact.root,'build.xctestrun')
++    stale=copy.deepcopy(before);stale['createdAt']=0
++    with self.assertRaises(ValueError):a.finish(root,env,stale,command,artifact.root,'build.xctestrun')
++   finally:artifact.doCleanups()
++
++   with self.assertRaises(ValueError):a.source_provenance(root,'0'*40)
++   (root/'ios').mkdir();(root/'ios/untracked.swift').write_text('// untracked')
++   with self.assertRaises(ValueError):a.source_provenance(root,sha)
++   (root/'ios/untracked.swift').unlink();(root/a.LOCK).write_text('changed')
++   with self.assertRaises(ValueError):a.source_provenance(root,sha)
++if __name__=='__main__':unittest.main()
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -14,6 +14,11 @@
+       "sha256": "6ae2cbbd53db447bc4a286d2d2c8f9378423dc1f2edea017fe0eb1081ef56476"
+     },
+     {
++      "path": ".github/workflows/j01-actual-model.yml",
++      "bytes": 2144,
++      "sha256": "ce52163a3d4c307779e8d2000c5cdf833cbd4ec40fc8bd713ad978cdc98ad7e6"
++    },
++    {
+       "path": ".github/workflows/mesh-candidate-ingress.yml",
+       "bytes": 2196,
+       "sha256": "b0c137ce1ced087b5b9967e6693b8473c4620742ad104620aeb75c4443c6ceb5"
+@@ -984,6 +989,11 @@
+       "sha256": "b9bc93647e600839af37fbf0094b27f887ad9673079634a223f0a48c4248f2d4"
+     },
+     {
++      "path": "research/j01-hosted-app-adapter-20261030/ATTESTATION.md",
++      "bytes": 7050,
++      "sha256": "ead87e93b41bc538c70489757f6718a08c2cecbcf2f35cce310501cfcf495346"
++    },
++    {
+       "path": "research/j01-hosted-app-adapter-20261030/README.md",
+       "bytes": 6135,
+       "sha256": "390d261fdb2862599dfa9169a14e57fe8d47e5450cd0c9d40c38312e90b419a3"
+@@ -995,8 +1005,13 @@
+     },
+     {
+       "path": "research/j01-hosted-app-adapter-20261030/app_adapter.py",
+-      "bytes": 5459,
+-      "sha256": "00f3d5bdad292af12a7b7bdcea36093706b7c2df9a9998000b610021b91e41e9"
++      "bytes": 7368,
++      "sha256": "9b4b2f5f5e995664dd885d669bae6d5a6be8c1c34d43fcabbb6ef0bc3c67d6b0"
++    },
++    {
++      "path": "research/j01-hosted-app-adapter-20261030/build_attestation.py",
++      "bytes": 12374,
++      "sha256": "9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff"
+     },
+     {
+       "path": "research/j01-hosted-app-adapter-20261030/test_adapter.py",
+@@ -1004,6 +1019,11 @@
+       "sha256": "7c5a0e2e135fd7eea15efa85ec60940651f9fd88af8018bb79bc3829d5e5f5c3"
+     },
+     {
++      "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
++      "bytes": 9312,
++      "sha256": "e84cd70dd5ac14c9fbb3d28b05f98a7f9c8c7b94940cf820c7ff73f9878d4928"
++    },
++    {
+       "path": "research/live-mesh-bench-proposal-20261028/DEPENDENCY_PINS.json",
+       "bytes": 1839,
+       "sha256": "f549b452952c0b59945ae8bfe65fb842680df53af8c87794a511dfad2359f808"
+@@ -1629,6 +1649,11 @@
+       "sha256": "a1bff7b54627e6ed44a45128503e8817f5f5353dba44131b4b005d8dbc70a621"
+     },
+     {
++      "path": "tools/ci/collect_j01_metadata.py",
++      "bytes": 9454,
++      "sha256": "49d388c88a9fba379c0aa9d521bdcceada0fd13b5783d58bad4fa3cbe94f20e1"
++    },
++    {
+       "path": "tools/ci/emit-ci-log-receipts.py",
+       "bytes": 9637,
+       "sha256": "364611854efb39a84709d0eb041a395ecc21abeb6c622d983c63eea7f4787cc8"
+@@ -1649,6 +1674,11 @@
+       "sha256": "7fb1d0574b5e94f28f5f96074d5dc38ce12257fbcd49ebe11d7ce2022e521358"
+     },
+     {
++      "path": "tools/ci/j01-actual-model.py",
++      "bytes": 13897,
++      "sha256": "a727735827b6d5935baafa9e1c2d9ebc6206d5d2818d568ccbc885f70c7d9264"
++    },
++    {
+       "path": "tools/ci/native-apple.sh",
+       "bytes": 12940,
+       "sha256": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a"
+@@ -1669,6 +1699,11 @@
+       "sha256": "d09225d11a9edc1b62c40cc93dd4a02dccac844c9ca443d6672ae1f222d65b24"
+     },
+     {
++      "path": "tools/ci/test_collect_j01_metadata.py",
++      "bytes": 6775,
++      "sha256": "ed5b79d34ea497567af27aadf3e1af82bce68980e128d32625f0b261440ea6d6"
++    },
++    {
+       "path": "tools/ci/test_emit_ci_log_receipts.py",
+       "bytes": 15395,
+       "sha256": "8aada3114a663af91bec088e5230d4b06e0d71fc0b2f0118ba78789541202498"
+@@ -1682,6 +1717,11 @@
+       "path": "tools/ci/test_extract_seated_candidate_timing.py",
+       "bytes": 17921,
+       "sha256": "3cdc44c19bccf756c3025ffcfee74a902fc0e3006a9b77d5a9c2af4794a62e30"
++    },
++    {
++      "path": "tools/ci/test_j01_actual_model.py",
++      "bytes": 18744,
++      "sha256": "680ddb47d5db846f5f1216670856e7a18b6bc1a6f8a012d4dfeb3727fc93a584"
+     },
+     {
+       "path": "tools/ci/test_j01_project_membership.py",
+@@ -1997,5 +2037,13 @@
+     "j01RealExecutionDefaultEnabled": false,
+     "j01SourceAttestationVerified": false,
+     "historicalResultsUnchanged": true
++  },
++  "j01SameJobObservationLane": {
++    "status": "source_only_native_unrun",
++    "requiresNext40ManifestSHA256": "70cba571bbcf7044299cc93ee7c9fa6b3f99b94b8f17c7667f49d1fe1882cc3d",
++    "explicitPublicationTriggersExecution": true,
++    "actualBuildReceiptProduced": false,
++    "fullJourneyComplete": false,
++    "runtimeLoadedBinaryVerified": false
+   }
+ }
+--- /dev/null
++++ b/tools/ci/collect_j01_metadata.py
+@@ -0,0 +1,96 @@
++"""Closed metadata only; observed response is not semantic/audio/journey success.
++Call collect(response, scenario, source_commit, trusted_receipt_sha256) from the
++reviewed same-job runner. Never print exception strings or raw input. No CLI
++trust configuration. Input acquisition remains the runner's bounded job.
++"""
++import hashlib
++import json
++import math
++import re
++
++SUPPORTED = {'REQ-SC02-1': [{'event_id': 'REQ-SC02-1:0', 'offset_ms': 0, 'kind': 'user_utterance', 'origin': 'authored_direct_user', 'text': 'Tell me a joke, then help me with my homework.'}, {'event_id': 'REQ-SC02-1:control', 'offset_ms': 500, 'kind': 'test_control', 'operation': 'continue', 'origin': 'test_harness_not_sensor', 'value': {}}, {'event_id': 'REQ-SC02-1:1', 'offset_ms': 1000, 'kind': 'user_utterance', 'origin': 'authored_direct_user', 'text': 'Okay, what comes next?'}], 'REQ-SC02-3': [{'event_id': 'REQ-SC02-3:0', 'offset_ms': 0, 'kind': 'user_utterance', 'origin': 'authored_direct_user', 'text': 'Tell me a joke, then help me with my homework.'}, {'event_id': 'REQ-SC02-3:control', 'offset_ms': 500, 'kind': 'test_control', 'operation': 'interrupt', 'origin': 'test_harness_not_sensor', 'value': {}}, {'event_id': 'REQ-SC02-3:1', 'offset_ms': 1000, 'kind': 'user_utterance', 'origin': 'authored_direct_user', 'text': 'Wait. Now continue what we were doing.'}], 'REQ-SC02-4': [{'event_id': 'REQ-SC02-4:0', 'offset_ms': 0, 'kind': 'user_utterance', 'origin': 'authored_direct_user', 'text': 'Tell me a joke, then help me with my homework.'}, {'event_id': 'REQ-SC02-4:control', 'offset_ms': 500, 'kind': 'test_control', 'operation': 'replace_request', 'origin': 'test_harness_not_sensor', 'value': {'new_request_id': 'REQ-SC02-4:replacement'}}, {'event_id': 'REQ-SC02-4:1', 'offset_ms': 1000, 'kind': 'user_utterance', 'origin': 'authored_direct_user', 'text': 'No, I mean this other one, not the first one.'}]}
++AVAILABILITY = frozenset(('available','deviceNotEligible','appleIntelligenceNotEnabled','modelNotReady','unknownUnavailable','unknownAvailability','apiUnavailable','frameworkUnavailable'))
++FAILURES = frozenset(('none','generationFailed','modelUnavailable'))
++class InvalidEvidence(ValueError): pass
++
++def require(ok):
++    if not ok: raise InvalidEvidence('invalid J01 evidence')
++def boolean(value):
++    require(type(value) is bool); return value
++def count(value, limit=100000):
++    require(type(value) is int and 0 <= value <= limit); return value
++def finite(value):
++    require(type(value) in (int,float) and math.isfinite(value) and 0 <= value <= 60000); return value
++def ident(value):
++    require(type(value) is str and 0 < len(value) <= 128); return value
++def text(value):
++    require(type(value) is str and len(value) <= 4096); return value
++
++def collect(response, scenario, source_commit, trusted_receipt_sha256):
++    require(scenario in SUPPORTED and re.fullmatch('[0-9a-f]{40}',source_commit or '') and re.fullmatch('[0-9a-f]{64}',trusted_receipt_sha256 or ''))
++    require(type(response) is dict)
++    require(len(json.dumps(response,allow_nan=False).encode()) <= 1048576)
++    require(response.get('schema') == 'instrumented-app-jsonl-v1' and response.get('scenario_id') == scenario)
++    require(response.get('source_commit') == source_commit == response.get('claimedSourceCommit'))
++    for key in ('physical_actions_applied','fullJourneyComplete','actual_audio_delivery','model_drain_acknowledged'):
++        require(response.get(key) is False)
++    require(response.get('semantic_scoring') == 'not performed')
++    proof=response.get('sourceAttestation',{})
++    require(proof.get('verified') is True and proof.get('runtimeLoadedBinaryVerified') is False)
++    require(proof.get('sourceCommit') == source_commit and proof.get('receiptSHA256') == trusted_receipt_sha256)
++    require(proof.get('scope') == 'selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested')
++    require(proof.get('trustBasis') == 'external reviewed CI receipt digest, not caller source echo')
++    final=response['final_snapshot']; require(type(final) is dict)
++    require(final.get('physical_authority') is False and final.get('audio_delivered') is False)
++    timed=boolean(response['observation_timed_out']); require(boolean(final['busy']) == timed)
++    returns=final['model_returns']; displays=final['accepted_displays']
++    require(type(returns) is list and len(returns)<=8 and type(displays) is list and len(displays)<=64)
++    capped=boolean(final['accepted_display_cap_reached']); require(capped == (len(displays)>=64))
++    rows=response['events']; require(type(rows) is list and len(rows)==3)
++    summaries=[]; request_ids=[]; last_ms=-1; failed=False
++    for i,(row,expected) in enumerate(zip(rows,SUPPORTED[scenario])):
++        require(type(row) is dict and json.dumps(row.get('actual_input'),sort_keys=True,allow_nan=False)==json.dumps(expected,sort_keys=True,allow_nan=False) and row.get('event_id')==expected['event_id'])
++        status=row['status']; require(status in ('observed','unavailable'))
++        ms=finite(row['elapsed_ms']); require(ms >= last_ms and ms >= expected['offset_ms']); last_ms=ms
++        availability=row['model_identity']['provider_availability_before_dispatch']; require(availability in AVAILABILITY)
++        receipts=row['delivery_receipts']; require(type(receipts) is list and len(receipts)==1 and receipts[0].get('kind')=='controller_snapshot' and receipts[0].get('audio_delivered') is False)
++        snapshot=receipts[0]['snapshot']; rid=ident(snapshot['request_id']); request_ids.append(rid)
++        returned=row.get('model_return'); actual=row.get('actual_reply'); require(actual is None or type(actual) is str)
++        failure='not_returned'; cancelled=False; current=False; model_present=False; accepted=False
++        if returned is not None:
++            require(type(returned) is dict and returned in returns and returned.get('request_id')==rid)
++            failure=returned['runtime_failure']; require(failure in FAILURES)
++            cancelled=boolean(returned['cancelled']); current=boolean(returned['current_request'])
++            model_present=boolean(returned['text_present']); boolean(returned['text_truncated']); text(returned['text'])
++            require(status == ('observed' if failure=='none' else 'unavailable'))
++            if failure!='none': failed=True
++        if expected['kind']=='user_utterance':
++            if returned is None: require(status=='unavailable')
++            if actual is not None:
++                text(actual); require(bool(actual.strip()))
++                require(row.get('actual_reply_kind')=='accepted_settled_display_not_audio')
++                cur=final.get('current_accepted_display'); require(type(cur) is dict)
++                require(cur.get('request_id')==rid==final.get('request_id') and cur.get('session_generation')==final.get('session_generation'))
++                count(cur['session_generation'],2**64-1); count(final['session_generation'],2**64-1); ident(cur['lease_id']); ident(cur['revision'])
++                require(cur.get('text_truncated') is False and cur.get('text')==actual)
++                matches=[d for d in displays if all(type(d.get(k)) is type(cur.get(k)) and d.get(k)==cur.get(k) for k in ('request_id','session_generation','lease_id','revision','text','text_truncated')) and d.get('settled') is True]
++                require(matches and any(d in row.get('accepted_display_receipts',[]) for d in matches))
++                require(returned is not None and failure=='none' and not cancelled and current)
++                require(model_present and returned['text_truncated'] is False and bool(returned['text'].strip()))
++                accepted=True
++        else:
++            require(returned is None and actual is None and status=='observed')
++        if availability!='available': failed=True
++        summaries.append({'event_id':expected['event_id'],'kind':expected['kind'],'status':status,'provider_availability':availability,'runtime_failure':failure,'model_return_present':returned is not None,'model_text_present':model_present,'accepted_reply_present':accepted,'cancelled_return':cancelled,'return_current_request':current})
++    require(request_ids[0] != request_ids[2])
++    finite(response['elapsed_ms']); require(response['elapsed_ms'] >= last_ms)
++    complete_observation=not failed and not timed and not capped and summaries[-1]['accepted_reply_present'] and summaries[-1]['status']=='observed'
++    # Earlier interrupted/replaced/retired reply may legitimately be absent.
++    # The final request must still have its own accepted settled receipt.
++    return {'schema':'j01-closed-metadata-v1','scenario_id':scenario,'source_commit':source_commit,'receipt_sha256':trusted_receipt_sha256,
++      'status':'observed' if complete_observation else 'incomplete',
++      'observation_status':'accepted_final_reply_observed' if complete_observation else 'incomplete',
++      'lane_observation_ok':complete_observation,'events':summaries,'model_return_count':len(returns),'accepted_display_count':len(displays),
++      'queued_count':count(final['queued_count']),'started_count':count(final['started_count']),'pending_count':count(final['pending_count']),
++      'observation_timed_out':timed,'display_cap_reached':capped,'model_drain_acknowledged':False,'fullJourneyComplete':False,
++      'semantic_quality_verified':False,'audio_delivery_verified':False,'runtimeLoadedBinaryVerified':False,'selected_artifact_bytes_verified':True}
+--- /dev/null
++++ b/tools/ci/j01-actual-model.py
+@@ -0,0 +1,193 @@
++#!/usr/bin/env python3
++"""Reviewed same-job build producer/consumer; no externally supplied receipt/config."""
++import hashlib,importlib.util,json,os,pathlib,re,signal,subprocess,sys,time
++R=pathlib.Path(__file__).resolve().parents[2]
++P=R/'research/j01-hosted-app-adapter-20261030'
++sys.path.insert(0,str(P));import build_attestation as attestation
++import collect_j01_metadata as metadata
++BRANCH='refs/heads/codex/recovery-hazard-order-20261027'
++WORKFLOW='mischa23v/blind/.github/workflows/j01-actual-model.yml@'+BRANCH
++SCENARIOS=('REQ-SC02-1','REQ-SC02-3','REQ-SC02-4')
++RUNTIME='com.apple.CoreSimulator.SimRuntime.iOS-27-0'
++TYPE='com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max'
++RUN_SECONDS=1560
++CLEANUP_RESERVE=100
++RUN_DEADLINE=float('inf')
++class Refused(ValueError):pass
++def require(ok,message):
++ if not ok:raise Refused(message)
++def canonical(x):return json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False)
++def write(path,value):
++ with path.open('x',encoding='utf-8') as f:f.write(canonical(value)+'\n')
++def context(env):
++ c=attestation.ci_context(env)
++ require(env.get('GITHUB_EVENT_NAME')=='push' and env.get('GITHUB_REF')==BRANCH,'exact push branch required')
++ require(env.get('GITHUB_WORKFLOW_REF')==WORKFLOW and env.get('GITHUB_WORKFLOW_SHA')==c['GITHUB_SHA'],'exact reviewed workflow source required')
++ require(env.get('GITHUB_JOB')=='j01-observation' and env.get('GITHUB_SERVER_URL')=='https://github.com','exact hosted job context required')
++ require(env.get('RUNNER_ENVIRONMENT')=='github-hosted','standard hosted environment required')
++ # Config/receipt inputs never come from an environment or caller override.
++ require(not any(k.startswith('BLIND_J01_') for k in env),'external J01 override refused')
++ require(not any(k in env for k in ('XCODE_XCCONFIG_FILE','OTHER_SWIFT_FLAGS','SWIFT_ACTIVE_COMPILATION_CONDITIONS','SDKROOT','TOOLCHAINS','DYLD_INSERT_LIBRARIES','PYTHONPATH','GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE','GIT_CONFIG','GIT_CONFIG_GLOBAL','GIT_CONFIG_SYSTEM','GIT_CONFIG_PARAMETERS','GIT_CONFIG_COUNT')),'external build/loader override refused')
++ return c
++def root_path(env):
++ c=context(env);root=attestation.no_links(env['RUNNER_TEMP'])
++ require(root.is_dir(),'runner temp directory required')
++ return root/('blind-j01-'+c['GITHUB_RUN_ID']+'-'+c['GITHUB_RUN_ATTEMPT'])
++def emit(value):
++ payload=canonical(value);require(len(payload.encode())<=65536,'bounded scalar receipt required')
++ print('J01_CI_RECEIPT='+payload,flush=True)
++ summary=os.environ.get('GITHUB_STEP_SUMMARY')
++ if summary:
++  with open(summary,'a',encoding='utf-8') as f:f.write('```json\n'+payload+'\n```\n')
++def command(argv,log,seconds,cap,*,env=None,input_bytes=None,cleanup=False):
++ """One owned process group. Sampled output/time bounds, never a native drain proof."""
++ require(0<seconds<=900 and 0<cap<=64*1024*1024,'command budgets')
++ require(input_bytes is None or type(input_bytes) is bytes and len(input_bytes)<=4096,'fixed request pipe cap')
++ seconds=min(seconds,RUN_DEADLINE-time.monotonic()-(0 if cleanup else CLEANUP_RESERVE))
++ require(seconds>0,'global runner budget exhausted')
++ start=time.monotonic();reason='completed'
++ with log.open('xb') as output:
++  p=subprocess.Popen(argv,cwd=R,stdout=output,stderr=subprocess.STDOUT,stdin=subprocess.PIPE if input_bytes is not None else subprocess.DEVNULL,env=env,start_new_session=True)
++  try:
++   if input_bytes is not None:
++    p.stdin.write(input_bytes);p.stdin.close()
++   while p.poll() is None:
++    if time.monotonic()-start>=seconds:reason='deadline';break
++    if log.stat().st_size>cap:reason='output_cap';break
++    time.sleep(.05)
++  finally:
++   # Stop owned descendants even if the leader exited first. This is process
++   # containment, not proof of a native/model cancellation acknowledgment.
++   try:os.killpg(p.pid,signal.SIGKILL)
++   except ProcessLookupError:pass
++   try:p.wait(timeout=3)
++   except subprocess.TimeoutExpired:
++    try:os.killpg(p.pid,signal.SIGKILL)
++    except ProcessLookupError:pass
++    p.wait(timeout=3)
++   if p.stdin is not None and not p.stdin.closed:p.stdin.close()
++ size=log.stat().st_size
++ if size>cap:reason='output_cap'
++ result={'argv':argv,'exit_code':p.returncode,'reason':reason,'wall_ms':int((time.monotonic()-start)*1000),'log_bytes':size}
++ write(log.with_suffix('.command.json'),result)
++ return result
++def good(result):return type(result.get('exit_code')) is int and result['exit_code']==0 and result['reason']=='completed'
++def tool(argv,folder,label,seconds=30,*,cleanup=False):
++ log=folder/(label+'.log');result=command(['/usr/bin/xcrun','simctl',*argv],log,seconds,4*1024*1024,cleanup=cleanup)
++ require(good(result),'simulator command failed')
++ return attestation.stable_bytes(log,4*1024*1024)
++def build_argv(folder):
++ return ['/usr/bin/xcodebuild','-project','ios/BlindAssist.xcodeproj','-scheme','BlindAssist','-configuration','Debug','-jobs','2','-derivedDataPath',str(folder/'DerivedData'),'CODE_SIGNING_ALLOWED=NO','-destination','generic/platform=iOS Simulator','-parallel-testing-enabled','NO','build-for-testing']
++def select_descriptor(products):
++ paths=sorted(products.glob('*.xctestrun'));require(len(paths)==1,'one fresh descriptor required')
++ return paths[0]
++def create_simulator(folder,index,creation_attempted):
++ # Exact installed type/runtime; never download or reuse a caller's device.
++ types=json.loads(tool(['list','devicetypes','--json'],folder,'types'))
++ runtimes=json.loads(tool(['list','runtimes','--json'],folder,'runtimes'))
++ require(any(x.get('identifier')==TYPE for x in types.get('devicetypes',[])),'installed phone type required')
++ require(any(x.get('identifier')==RUNTIME and x.get('isAvailable') is True for x in runtimes.get('runtimes',[])),'installed runtime required')
++ creation_attempted()
++ raw=tool(['create','Blind-J01-'+str(index),TYPE,RUNTIME],folder,'create').decode().strip()
++ require(re.fullmatch('[A-Fa-f0-9]{8}(?:-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}',raw) is not None,'created UUID required')
++ return raw
++
++def cleanup_simulator(folder,udid):
++ # Only the UUID returned by this invocation's successful create is accepted.
++ result=command(['/usr/bin/xcrun','simctl','shutdown',udid],folder/'shutdown.log',30,4*1024*1024,cleanup=True)
++ deleted=command(['/usr/bin/xcrun','simctl','delete',udid],folder/'delete.log',30,4*1024*1024,cleanup=True)
++ if not good(deleted):return False
++ devices=json.loads(tool(['list','devices','--json'],folder,'deleted-devices',cleanup=True))
++ return not any(d.get('udid')==udid for group in devices.get('devices',{}).values() for d in group)
++def verify_checkout(folder,label,ctx):
++ # Checkout is intentionally detached at github.sha. Verify local repository
++ # identity plus authenticated push ref/after, rather than inventing a branch.
++ queries=[('root',['rev-parse','--show-toplevel'],str(R)),
++          ('origin',['config','--local','--get','remote.origin.url'],'https://github.com/mischa23v/blind'),
++          ('head',['rev-parse','HEAD'],ctx['GITHUB_SHA'])]
++ for suffix,args,expected in queries:
++  log=folder/(label+'-'+suffix+'.log')
++  result=command(['/usr/bin/git','-C',str(R),*args],log,5,8192)
++  require(good(result),'checkout identity query failed')
++  actual=attestation.stable_bytes(log,8192).decode().strip()
++  require(actual==expected or suffix=='origin' and actual==expected+'.git','checkout identity differs')
++ event=attestation.read_json(os.environ['GITHUB_EVENT_PATH'],4*1024*1024)
++ require(event.get('after')==ctx['GITHUB_SHA'] and event.get('ref')==BRANCH,'actual push ref/commit differs')
++ require(event.get('repository',{}).get('full_name')=='mischa23v/blind' and event['repository'].get('private') is False,'public source repository required')
++
++def run():
++ global RUN_DEADLINE
++ require(sys.platform=='darwin','Apple host required');ctx=context(os.environ)
++ require(attestation.no_links(os.environ['GITHUB_WORKSPACE'])==R,'actual checkout path required')
++ RUN_DEADLINE=time.monotonic()+RUN_SECONDS
++ out=root_path(os.environ);out.mkdir(mode=0o700)
++ report={'schema':1,'sourceCommit':ctx['GITHUB_SHA'],'ci':ctx,'status':'incomplete','buildSucceeded':False,'scriptReceipts':[],'fullJourneyComplete':False,'runtimeLoadedBinaryVerified':False}
++ try:
++  verify_checkout(out,'before-build',ctx)
++  before=attestation.begin(R,os.environ);write(out/'begin.json',before)
++  result=command(build_argv(out),out/'build.log',900,64*1024*1024);write(out/'build-command.json',result)
++  report['buildCommandExit']=result['exit_code'];report['buildCommandReason']=result['reason']
++  require(good(result),'actual default build-for-testing failed')
++  products=out/'DerivedData/Build/Products';descriptor=select_descriptor(products)
++  verify_checkout(out,'after-build',ctx)
++  receipt=attestation.finish(R,os.environ,before,result,products,descriptor.name)
++  require(receipt['ci']==ctx and receipt['sourceCommit']==ctx['GITHUB_SHA'],'same run/job source required')
++  receipt_path=out/'build-receipt.json';write(receipt_path,receipt)
++  # Trust comes from this reviewed authenticated CI producer executing the fixed
++  # command, not from any caller's JSON/digest. Parent authenticates the real run.
++  receipt_sha=attestation.digest(receipt_path,8*1024*1024)['sha256']
++  proof=attestation.verify(products,descriptor.name,receipt_path,receipt_sha,ctx['GITHUB_SHA'])
++  report.update(buildSucceeded=True,buildReceiptSHA256=receipt_sha,workflowSHA256=hashlib.sha256((R/'.github/workflows/j01-actual-model.yml').read_bytes()).hexdigest(),sourceAttestation=proof)
++  emit({k:v for k,v in report.items() if k!='scriptReceipts'})
++  scripts=attestation.read_json(P/'SUPPORTED.json',65536);require(tuple(sorted(scripts))==SCENARIOS,'exact three scripts required')
++  for index,scenario in enumerate(SCENARIOS):
++   case=out/('case-'+str(index));case.mkdir(mode=0o700);udid=None;acquisition={'attempted':False}
++   row={'scenario_id':scenario,'status':'unavailable','wrapper_exit':None,'cleanup_completed':False,'fullJourneyComplete':False}
++   try:
++    verify_checkout(case,'before-script',ctx)
++    require(attestation.source_provenance(R,ctx['GITHUB_SHA'])==before['provenance'],'source changed before script')
++    udid=create_simulator(case,index,lambda:acquisition.update(attempted=True))
++    tool(['boot',udid],case,'boot',30);tool(['bootstatus',udid,'-b'],case,'bootstatus',120)
++    config={'source_commit':ctx['GITHUB_SHA'],'simulator_udid':udid,'ephemeral_simulator_no_accounts':True,'xctestrun_path':str(descriptor),'xctestrun_sha256':attestation.digest(descriptor,4*1024*1024)['sha256'],'attempt_dir':str(case/'attempt'),'build_root':str(products),'build_receipt_path':str(receipt_path),'trusted_build_receipt_sha256':receipt_sha}
++    config_path=case/'config.json';write(config_path,config)
++    request={'schema':'instrumented-app-jsonl-v1','source_commit':ctx['GITHUB_SHA'],'scenario_id':scenario,'events':scripts[scenario],'constraints':{'physical_actions':False,'network':False,'paid_services':False}}
++    env=dict(os.environ,BLIND_J01_EXECUTE_PREBUILT='1',BLIND_J01_CONFIG=str(config_path),BLIND_J01_OWNED_PARENT_PID=str(os.getpid()),PYTHONDONTWRITEBYTECODE='1')
++    result=command([sys.executable,'-B',str(P/'app_adapter.py')],case/'wrapper.log',60,2*1024*1024,env=env,input_bytes=(canonical(request)+'\n').encode())
++    row['wrapper_exit']=result['exit_code'];row['wrapper_reason']=result['reason']
++    if good(result):
++     response=attestation.read_json(case/'wrapper.log',1024*1024)
++     # Collector emits only bounded closed metadata, never model/utterance text.
++     row.update(metadata.collect(response,scenario,ctx['GITHUB_SHA'],receipt_sha))
++    verify_checkout(case,'after-script',ctx)
++    require(attestation.source_provenance(R,ctx['GITHUB_SHA'])==before['provenance'],'source changed after script')
++    require(attestation.verify(products,descriptor.name,receipt_path,receipt_sha,ctx['GITHUB_SHA'])==proof,'selected bytes changed after script')
++   except Exception as error:
++    row.update(status='unavailable',error_type=type(error).__name__ if type(error).__name__ in ('OSError','ValueError','KeyError','TypeError','Refused','TimeoutExpired','CalledProcessError') else 'refused')
++   finally:
++    if udid is not None:
++     try:row['cleanup_completed']=cleanup_simulator(case,udid)
++     except Exception:row['cleanup_completed']=False
++    else:row['cleanup_completed']=not acquisition['attempted'] # Failed/ambiguous create is NOT cleanup proof.
++    row['simulator_creation_attempted']=acquisition['attempted']
++   report['scriptReceipts'].append(row);emit(row)
++   require(row['cleanup_completed'],'owned simulator cleanup failed; later scripts withheld')
++  # Process/test success is not model success. Collector must observe an actual
++  # final accepted reply and no unavailable/failing final return, without scoring semantics.
++  report['status']='observed' if len(report['scriptReceipts'])==3 and all(x.get('status')=='observed' for x in report['scriptReceipts']) else 'incomplete'
++ except Exception as error:
++  report.update(status='incomplete',error_type=type(error).__name__ if type(error).__name__ in ('OSError','ValueError','KeyError','TypeError','Refused','TimeoutExpired','CalledProcessError') else 'refused')
++ finally:
++  write(out/'RESULT.json',report);emit(report)
++ return 0 if report['status']=='observed' else 1
++
++def main():
++ require(len(sys.argv)==2 and sys.argv[1] in ('run','report'),'exact mode required')
++ if sys.argv[1]=='run':return run()
++ out=root_path(os.environ)
++ if (out/'RESULT.json').exists():emit(attestation.read_json(out/'RESULT.json',65536))
++ else:emit({'schema':1,'status':'unavailable','reason':'no_terminal_runner_receipt','fullJourneyComplete':False})
++ return 0
++if __name__=='__main__':
++ try:raise SystemExit(main())
++ except Exception as error:
++  print('J01_CI_REFUSED='+canonical({'status':'unavailable','error_type':type(error).__name__ if type(error).__name__ in ('OSError','ValueError','KeyError','TypeError','Refused') else 'refused'}),flush=True);raise SystemExit(1)
+--- /dev/null
++++ b/tools/ci/test_collect_j01_metadata.py
+@@ -0,0 +1,81 @@
++import copy
++import json
++import unittest
++import collect_j01_metadata as m
++
++S='a'*40; H='b'*64
++
++def fixture(scenario='REQ-SC02-3'):
++    current={'request_id':'final-private-id','session_generation':1,'lease_id':'private-lease','revision':'private-revision','text':'PRIVATE REPLY','text_truncated':False}
++    display={**current,'settled':True}
++    returned={'request_id':current['request_id'],'text':'PRIVATE REPLY','text_present':True,'text_truncated':False,'runtime_failure':'none','cancelled':False,'current_request':True}
++    final={'request_id':current['request_id'],'session_generation':1,'current_accepted_display':current,'accepted_displays':[display],'model_returns':[returned],'physical_authority':False,'audio_delivered':False,'busy':False,'accepted_display_cap_reached':False,'queued_count':1,'started_count':0,'pending_count':0}
++    rows=[]
++    for i,event in enumerate(m.SUPPORTED[scenario]):
++        row={'event_id':event['event_id'],'actual_input':copy.deepcopy(event),'status':'observed' if i else 'unavailable','model_identity':{'provider_availability_before_dispatch':'available'},'elapsed_ms':event['offset_ms']+1,'delivery_receipts':[{'kind':'controller_snapshot','audio_delivered':False,'snapshot':{'request_id':'old-private-id' if i<2 else current['request_id']}}],'actual_reply':None}
++        if i==2: row.update(model_return=returned,actual_reply='PRIVATE REPLY',actual_reply_kind='accepted_settled_display_not_audio',accepted_display_receipts=[display])
++        rows.append(row)
++    return {'schema':'instrumented-app-jsonl-v1','scenario_id':scenario,'source_commit':S,'claimedSourceCommit':S,'physical_actions_applied':False,'fullJourneyComplete':False,'actual_audio_delivery':False,'model_drain_acknowledged':False,'semantic_scoring':'not performed','observation_timed_out':False,'elapsed_ms':1100,'sourceAttestation':{'verified':True,'runtimeLoadedBinaryVerified':False,'sourceCommit':S,'receiptSHA256':H,'scope':'selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested','trustBasis':'external reviewed CI receipt digest, not caller source echo'},'events':rows,'final_snapshot':final}
++
++def run(x): return m.collect(x,x['scenario_id'],S,H)
++
++class Tests(unittest.TestCase):
++    def test_three_scripts_final_receipt(self):
++        for key in m.SUPPORTED:
++            result=run(fixture(key)); self.assertTrue(result['lane_observation_ok']); self.assertFalse(result['fullJourneyComplete'])
++    def test_no_private_content(self):
++        x=fixture();x['unknown']='SECRET EXTRA'; encoded=json.dumps(run(x))
++        for private in ('PRIVATE','private-','SECRET','Tell me','homework','Wait.'):
++            self.assertNotIn(private,encoded)
++    def test_retired_first_reply_absence_permitted(self): self.assertTrue(run(fixture())['lane_observation_ok'])
++    def test_timeout_incomplete(self):
++        x=fixture();x['observation_timed_out']=True;x['final_snapshot']['busy']=True
++        self.assertFalse(run(x)['lane_observation_ok'])
++    def test_missing_final_receipt_incomplete(self):
++        x=fixture();x['events'][2]['actual_reply']=None
++        self.assertFalse(run(x)['lane_observation_ok'])
++    def test_generation_failure_not_success(self):
++        x=fixture();x['events'][2]['model_return']['runtime_failure']='generationFailed';x['events'][2]['status']='unavailable';x['events'][2]['actual_reply']=None
++        self.assertFalse(run(x)['lane_observation_ok'])
++    def test_provider_unavailable_not_success(self):
++        x=fixture();x['events'][2]['model_identity']['provider_availability_before_dispatch']='modelNotReady'
++        self.assertFalse(run(x)['lane_observation_ok'])
++    def test_no_final_return_not_success(self):
++        x=fixture();x['events'][2].pop('model_return');x['events'][2]['status']='unavailable';x['events'][2]['actual_reply']=None
++        self.assertFalse(run(x)['lane_observation_ok'])
++    def test_mutation_refusals(self):
++        edits=[
++         lambda x:x.update(source_commit='c'*40),lambda x:x.update(claimedSourceCommit='c'*40),
++         lambda x:x.update(fullJourneyComplete=True),lambda x:x.update(actual_audio_delivery=True),
++         lambda x:x.update(model_drain_acknowledged=True),lambda x:x.update(physical_actions_applied=True),
++         lambda x:x['sourceAttestation'].update(verified=False),lambda x:x['sourceAttestation'].update(runtimeLoadedBinaryVerified=True),
++         lambda x:x['sourceAttestation'].update(receiptSHA256='c'*64),lambda x:x['sourceAttestation'].update(scope='trusted'),
++         lambda x:x['events'].pop(),lambda x:x['events'].reverse(),
++         lambda x:x['events'][0]['actual_input'].update(text='changed'),lambda x:x['events'][0].update(event_id='other'),
++         lambda x:x['events'][2]['model_identity'].update(provider_availability_before_dispatch='PRIVATE'),
++         lambda x:x['events'][2]['model_return'].update(runtime_failure='PRIVATE'),
++         lambda x:x['events'][2]['model_return'].update(cancelled=True),lambda x:x['events'][2]['model_return'].update(current_request=False),
++         lambda x:x['final_snapshot']['current_accepted_display'].update(revision='wrong'),
++         lambda x:x['final_snapshot'].update(session_generation=2),
++         lambda x:x['final_snapshot'].update(session_generation=True),
++         lambda x:x['final_snapshot']['accepted_displays'][0].update(settled=False),
++         lambda x:x['final_snapshot']['current_accepted_display'].update(text_truncated=True),
++         lambda x:x['events'][2].update(actual_reply='unbound'),lambda x:x['events'][2].update(accepted_display_receipts=[]),
++         lambda x:x['final_snapshot'].update(queued_count=True),lambda x:x.update(elapsed_ms=float('nan')),
++         lambda x:x['events'][2].update(elapsed_ms=-1),lambda x:x.update(extra='x'*1048576),
++         lambda x:x['final_snapshot'].update(busy=True),lambda x:x['events'][1].update(actual_reply='invented'),
++         lambda x:x['events'][2]['delivery_receipts'][0].update(audio_delivered=True),
++         lambda x:x['events'][2]['model_return'].update(request_id='wrong'),
++         lambda x:x['events'][2]['model_return'].update(text_present=False),
++         lambda x:x['events'][2]['model_return'].update(text_truncated=True),
++         lambda x:x['events'][2]['model_return'].update(text='   '),
++        ]
++        for mutate in edits:
++            with self.subTest(mutation=edits.index(mutate)):
++                x=fixture();mutate(x)
++                with self.assertRaises((ValueError,KeyError,TypeError)):run(x)
++    def test_bool_generation_refused(self):
++        x=fixture();x['final_snapshot']['session_generation']=True;x['final_snapshot']['current_accepted_display']['session_generation']=True
++        with self.assertRaises(m.InvalidEvidence):run(x)
++
++if __name__=='__main__': unittest.main()
+--- /dev/null
++++ b/tools/ci/test_j01_actual_model.py
+@@ -0,0 +1,208 @@
++import contextlib,importlib.util,io,json,os,pathlib,subprocess,sys,tempfile,unittest
++from unittest import mock
++P=pathlib.Path(__file__).resolve().parent
++spec=importlib.util.spec_from_file_location('j01_runner',P/'j01-actual-model.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++SHA='a'*40
++
++def env(root='/tmp'):
++ return dict(GITHUB_ACTIONS='true',GITHUB_REPOSITORY='mischa23v/blind',GITHUB_SHA=SHA,GITHUB_WORKFLOW_SHA=SHA,GITHUB_RUN_ID='123',GITHUB_RUN_ATTEMPT='1',GITHUB_JOB='j01-observation',GITHUB_WORKFLOW_REF=m.WORKFLOW,GITHUB_EVENT_NAME='push',GITHUB_REF=m.BRANCH,GITHUB_SERVER_URL='https://github.com',RUNNER_ENVIRONMENT='github-hosted',RUNNER_TEMP=root,GITHUB_WORKSPACE=str(m.R))
++class Tests(unittest.TestCase):
++ def setUp(self):m.RUN_DEADLINE=float('inf')
++ def test_context_exact(self):self.assertEqual(m.context(env())['GITHUB_SHA'],SHA)
++ def test_context_rejects_fork_pr_branch_workflow_job_sha_and_override(self):
++  edits={'GITHUB_ACTIONS':'false','GITHUB_REPOSITORY':'fork/blind','GITHUB_SHA':'invalid','GITHUB_WORKFLOW_SHA':'b'*40,'GITHUB_RUN_ID':'0','GITHUB_RUN_ATTEMPT':'-1','GITHUB_JOB':'other','GITHUB_WORKFLOW_REF':m.WORKFLOW+'x','GITHUB_EVENT_NAME':'pull_request','GITHUB_REF':'refs/heads/master','GITHUB_SERVER_URL':'https://example.org','RUNNER_ENVIRONMENT':'self-hosted','BLIND_J01_CONFIG':'external','BLIND_J01_RECEIPT_SHA':'external','XCODE_XCCONFIG_FILE':'external','OTHER_SWIFT_FLAGS':'-D OTHER','SWIFT_ACTIVE_COMPILATION_CONDITIONS':'OTHER','SDKROOT':'external','TOOLCHAINS':'external','DYLD_INSERT_LIBRARIES':'external','PYTHONPATH':'external','GIT_DIR':'external','GIT_WORK_TREE':'external','GIT_INDEX_FILE':'external','GIT_CONFIG':'external','GIT_CONFIG_GLOBAL':'external','GIT_CONFIG_SYSTEM':'external','GIT_CONFIG_PARAMETERS':'external','GIT_CONFIG_COUNT':'1'}
++  for key,value in edits.items():
++   with self.subTest(key=key),self.assertRaises(ValueError):m.context(dict(env(),**{key:value}))
++ def test_root_exact_and_exclusive(self):
++  with tempfile.TemporaryDirectory() as d:
++   root=m.root_path(env(d));self.assertEqual(root.name,'blind-j01-123-1');root.mkdir()
++   with self.assertRaises(FileExistsError):root.mkdir()
++ def test_root_symlink_and_traversal_refused(self):
++  with tempfile.TemporaryDirectory() as d:
++   target=pathlib.Path(d);(target/'link').symlink_to(target,target_is_directory=True)
++   for value in (str(target/'link'),str(target/'x'/'..')):
++    with self.subTest(value=value),self.assertRaises(ValueError):m.root_path(env(value))
++ def test_fixed_default_build_command(self):
++  result=m.build_argv(pathlib.Path('/fresh'))
++  self.assertEqual(result,['/usr/bin/xcodebuild','-project','ios/BlindAssist.xcodeproj','-scheme','BlindAssist','-configuration','Debug','-jobs','2','-derivedDataPath','/fresh/DerivedData','CODE_SIGNING_ALLOWED=NO','-destination','generic/platform=iOS Simulator','-parallel-testing-enabled','NO','build-for-testing'])
++  self.assertNotIn('BLIND_J01',str(result));self.assertNotIn('BLIND_FOUNDATION_MODELS',str(result))
++ def test_descriptor_exact_one(self):
++  with tempfile.TemporaryDirectory() as d:
++   root=pathlib.Path(d)
++   with self.assertRaises(ValueError):m.select_descriptor(root)
++   p=root/'one.xctestrun';p.touch();self.assertEqual(m.select_descriptor(root),p)
++   (root/'two.xctestrun').touch()
++   with self.assertRaises(ValueError):m.select_descriptor(root)
++ def test_command_observes_nonzero_without_rewriting(self):
++  with tempfile.TemporaryDirectory() as d:
++   r=m.command([sys.executable,'-c','raise SystemExit(7)'],pathlib.Path(d)/'run.log',2,4096)
++   self.assertEqual(r['exit_code'],7);self.assertEqual(r['reason'],'completed');self.assertFalse(m.good(r))
++ def test_command_success_receipt_and_fresh_logs(self):
++  with tempfile.TemporaryDirectory() as d:
++   p=pathlib.Path(d)/'run.log';r=m.command([sys.executable,'-c','print("scalar")'],p,2,4096)
++   self.assertTrue(m.good(r));self.assertEqual(json.loads(p.with_suffix('.command.json').read_text()),r)
++   with self.assertRaises(FileExistsError):m.command([sys.executable,'-c','pass'],p,2,4096)
++ def test_command_deadline_is_failure(self):
++  with tempfile.TemporaryDirectory() as d:
++   r=m.command([sys.executable,'-c','import time;time.sleep(5)'],pathlib.Path(d)/'run.log',.1,4096)
++   self.assertEqual(r['reason'],'deadline');self.assertNotEqual(r['exit_code'],0);self.assertLess(r['wall_ms'],2000)
++ def test_command_output_budget_is_failure(self):
++  with tempfile.TemporaryDirectory() as d:
++   r=m.command([sys.executable,'-c','print("x"*8192)'],pathlib.Path(d)/'run.log',2,128)
++   self.assertEqual(r['reason'],'output_cap');self.assertFalse(m.good(r))
++ def test_command_request_pipe_cap_before_launch(self):
++  with mock.patch.object(m.subprocess,'Popen') as p:
++   for data in (b'x'*4097,'not bytes'):
++    with self.assertRaises(ValueError):m.command([],pathlib.Path('/unused'),1,1024,input_bytes=data)
++   p.assert_not_called()
++ def test_command_bounded_stdin(self):
++  with tempfile.TemporaryDirectory() as d:
++   p=pathlib.Path(d)/'run.log';r=m.command([sys.executable,'-c','import sys;print(len(sys.stdin.buffer.read()))'],p,2,128,input_bytes=b'x'*4096)
++   self.assertTrue(m.good(r));self.assertEqual(p.read_text().strip(),'4096')
++ def test_successful_leader_still_kills_owned_group(self):
++  with tempfile.TemporaryDirectory() as d,mock.patch.object(m.os,'killpg',wraps=os.killpg) as kill:
++   r=m.command([sys.executable,'-c','pass'],pathlib.Path(d)/'run.log',2,128)
++   self.assertTrue(m.good(r));self.assertGreaterEqual(kill.call_count,1)
++ def test_global_budget_preserves_cleanup_reserve(self):
++  with mock.patch.object(m.time,'monotonic',return_value=100),mock.patch.object(m.subprocess,'Popen') as p:
++   m.RUN_DEADLINE=199
++   with self.assertRaises(ValueError):m.command([],pathlib.Path('/unused'),1,1024)
++   p.assert_not_called()
++ def test_global_cleanup_deadline_also_fails_closed(self):
++  with mock.patch.object(m.time,'monotonic',return_value=100),mock.patch.object(m.subprocess,'Popen') as p:
++   m.RUN_DEADLINE=99
++   with self.assertRaises(ValueError):m.command([],pathlib.Path('/unused'),1,1024,cleanup=True)
++   p.assert_not_called()
++ def test_create_only_exact_installed_type_runtime(self):
++  calls=[];mark=[];uid='12345678-1234-1234-1234-123456789012'
++  def tool(args,*unused,**kwargs):
++   calls.append(args)
++   if args[1]=='devicetypes':return json.dumps({'devicetypes':[{'identifier':m.TYPE}]}).encode()
++   if args[1]=='runtimes':return json.dumps({'runtimes':[{'identifier':m.RUNTIME,'isAvailable':True}]}).encode()
++   return uid.encode()
++  with mock.patch.object(m,'tool',side_effect=tool):self.assertEqual(m.create_simulator(pathlib.Path('/unused'),0,lambda:mark.append(True)),uid)
++  self.assertEqual(mark,[True]);self.assertEqual(calls[-1],['create','Blind-J01-0',m.TYPE,m.RUNTIME])
++ def test_missing_runtime_never_attempts_create(self):
++  mark=[]
++  with mock.patch.object(m,'tool',return_value=b'{}'),self.assertRaises(ValueError):m.create_simulator(pathlib.Path('/unused'),0,lambda:mark.append(True))
++  self.assertEqual(mark,[])
++ def test_ambiguous_create_not_cleanup_proof(self):
++  mark=[];values=[json.dumps({'devicetypes':[{'identifier':m.TYPE}]}).encode(),json.dumps({'runtimes':[{'identifier':m.RUNTIME,'isAvailable':True}]}).encode(),b'not a UUID']
++  with mock.patch.object(m,'tool',side_effect=values),self.assertRaises(ValueError):m.create_simulator(pathlib.Path('/unused'),0,lambda:mark.append(True))
++  self.assertEqual(mark,[True])
++ def test_cleanup_requires_delete_and_absence(self):
++  ok={'exit_code':0,'reason':'completed'}
++  for devices,expected in [({'devices':{}},True),({'devices':{'runtime':[{'udid':'owned'}]}},False)]:
++   with mock.patch.object(m,'command',return_value=ok) as call,mock.patch.object(m,'tool',return_value=json.dumps(devices).encode()):
++    self.assertEqual(m.cleanup_simulator(pathlib.Path('/unused'),'owned'),expected)
++    self.assertTrue(all(c.kwargs['cleanup'] for c in call.call_args_list))
++  with mock.patch.object(m,'command',return_value={'exit_code':1,'reason':'completed'}),mock.patch.object(m,'tool') as t:
++   self.assertFalse(m.cleanup_simulator(pathlib.Path('/unused'),'owned'));t.assert_not_called()
++ def test_boolean_exit_not_success(self):self.assertFalse(m.good({'exit_code':False,'reason':'completed'}))
++ def test_emit_scalar_cap_and_no_artifact(self):
++  with mock.patch.dict(os.environ,{},clear=True),contextlib.redirect_stdout(io.StringIO()) as output:m.emit({'status':'incomplete'})
++  self.assertEqual(output.getvalue(),'J01_CI_RECEIPT={"status":"incomplete"}\n')
++  with self.assertRaises(ValueError):m.emit({'x':'x'*65536})
++ def test_workflow_trust_boundary_and_no_storage(self):
++  s=(m.R/'.github/workflows/j01-actual-model.yml').read_text()
++  for token in ("github.event_name == 'push'","github.repository == 'mischa23v/blind'","github.event.repository.private == false",m.BRANCH,'runs-on: xcode-27',"BLIND_UPLOAD_ARTIFACTS: 'false'",'ref: ${{ github.sha }}','persist-credentials: false','timeout-minutes: 35','timeout-minutes: 28'):
++   self.assertIn(token,s)
++  for token in ('upload-artifact','actions/cache','pull_request:','workflow_dispatch:','sudo ','curl ','wget ','services:','secrets.'):
++   self.assertNotIn(token,s)
++ def test_exact_scripts_and_non_success_claim(self):
++  self.assertEqual(m.SCENARIOS,('REQ-SC02-1','REQ-SC02-3','REQ-SC02-4'))
++  s=(P/'j01-actual-model.py').read_text()
++  for token in ("metadata.collect(response,scenario,ctx['GITHUB_SHA'],receipt_sha)","all(x.get('status')=='observed'", "not acquisition['attempted']", "row['cleanup_completed']", "'fullJourneyComplete':False", "'runtimeLoadedBinaryVerified':False", "attestation.source_provenance(R,ctx['GITHUB_SHA'])==before['provenance']", "attestation.read_json(case/'wrapper.log',1024*1024)"):
++   self.assertIn(token,s)
++ def test_mode_does_not_accept_config_or_digest(self):
++  with mock.patch.object(sys,'argv',['runner','run','--receipt','external']),self.assertRaises(ValueError):m.main()
++
++ def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False):
++  import test_collect_j01_metadata as fixtures
++  with tempfile.TemporaryDirectory() as d:
++   root=pathlib.Path(d);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
++   (packet/'SUPPORTED.json').write_text(json.dumps(m.metadata.SUPPORTED))
++   workflow=repo/'.github/workflows/j01-actual-model.yml';workflow.parent.mkdir(parents=True);workflow.write_text('reviewed fixture')
++   e=env(d);e['GITHUB_WORKSPACE']=str(repo);ctx=m.context(e);calls=[];emitted=[]
++   before={'provenance':{'actual_head':SHA,'tracked_source_clean':True}}
++   def proof(*args,**kwargs):return dict(verified=True,runtimeLoadedBinaryVerified=False,sourceCommit=SHA,receiptSHA256=args[3],scope='selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested',trustBasis='external reviewed CI receipt digest, not caller source echo')
++   def command(argv,log,*args,**kwargs):
++    calls.append(argv)
++    if argv[0]=='/usr/bin/xcodebuild':
++     products=log.parent/'DerivedData/Build/Products';products.mkdir(parents=True);(products/'one.xctestrun').write_text('fixture')
++     log.write_text('');return dict(argv=argv,exit_code=build_exit,reason='completed')
++    request=json.loads(kwargs['input_bytes']);response=fixtures.fixture(request['scenario_id']);response['sourceAttestation']['receiptSHA256']=m.attestation.digest(log.parents[1]/'build-receipt.json')['sha256']
++    if malformed_response:response['sourceAttestation']=[]
++    if not model_available:response['events'][-1]['model_identity']['provider_availability_before_dispatch']='modelNotReady'
++    log.write_text(json.dumps(response));return dict(argv=argv,exit_code=wrapper_exit,reason='completed')
++   def create(folder,index,attempted):
++    attempted()
++    if ambiguous_create:raise ValueError('PRIVATE creation error')
++    return '12345678-1234-1234-1234-123456789012'
++   source=({'actual_head':'b'*40} if changed_source else before['provenance'])
++   with contextlib.ExitStack() as stack:
++    for obj,key,value in [(m,'R',repo),(m,'P',packet),(m.sys,'platform','darwin')]:stack.enter_context(mock.patch.object(obj,key,value))
++    stack.enter_context(mock.patch.dict(os.environ,e,clear=True))
++    for obj,key,kw in [(m,'verify_checkout',{'return_value':None}),(m,'command',{'side_effect':command}),(m,'create_simulator',{'side_effect':create}),(m,'tool',{'return_value':b'{}'}),(m,'cleanup_simulator',{'return_value':cleanup}),(m,'emit',{'side_effect':emitted.append}),(m.attestation,'begin',{'return_value':before}),(m.attestation,'finish',{'return_value':{'ci':ctx,'sourceCommit':SHA}}),(m.attestation,'verify',{'side_effect':proof}),(m.attestation,'source_provenance',{'return_value':source})]:stack.enter_context(mock.patch.object(obj,key,**kw))
++    code=m.run()
++   result=json.loads((root/'blind-j01-123-1/RESULT.json').read_text())
++   return code,result,calls,emitted
++ def test_simulated_same_job_three_script_positive_is_not_journey_success(self):
++  code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),4);self.assertEqual(len(r['scriptReceipts']),3)
++  self.assertFalse(r['fullJourneyComplete']);self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertNotIn('PRIVATE',json.dumps(emitted))
++ def test_simulated_model_unavailable_preserves_nonzero(self):
++  code,r,_,_=self.simulated_run(model_available=False);self.assertEqual(code,1);self.assertEqual(r['status'],'incomplete');self.assertEqual(len(r['scriptReceipts']),3)
++ def test_simulated_wrapper_failure_never_becomes_model_observation(self):
++  code,r,_,_=self.simulated_run(wrapper_exit=2);self.assertEqual(code,1);self.assertTrue(all(x['wrapper_exit']==2 for x in r['scriptReceipts']))
++ def test_simulated_cleanup_failure_withholds_later_scripts(self):
++  code,r,calls,_=self.simulated_run(cleanup=False);self.assertEqual(code,1);self.assertEqual(len(r['scriptReceipts']),1);self.assertEqual(len(calls),2)
++ def test_simulated_ambiguous_creation_stops_without_false_cleanup(self):
++  code,r,calls,emitted=self.simulated_run(ambiguous_create=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertEqual(len(r['scriptReceipts']),1);self.assertFalse(r['scriptReceipts'][0]['cleanup_completed']);self.assertNotIn('PRIVATE',json.dumps(emitted))
++ def test_simulated_build_failure_prevents_model_or_receipt_claim(self):
++  code,r,calls,_=self.simulated_run(build_exit=65);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertFalse(r['buildSucceeded']);self.assertNotIn('sourceAttestation',r);self.assertEqual(r['scriptReceipts'],[])
++ def test_simulated_changed_source_never_starts_script(self):
++  code,r,calls,_=self.simulated_run(changed_source=True);self.assertEqual(code,1);self.assertEqual(len(calls),1);self.assertTrue(all(x['status']=='unavailable' for x in r['scriptReceipts']))
++
++ def test_parent_owned_mode_is_explicit_and_identity_checked(self):
++  spec=importlib.util.spec_from_file_location('owned_app_adapter',m.P/'app_adapter.py');a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
++  with mock.patch.dict(os.environ,{},clear=True):self.assertFalse(a.owned_parent_group())
++  for marker,parent,group,session,expected in [('12',12,34,34,True),('13',12,34,34,False),('12',12,20,34,False),('12',12,34,20,False),('0',12,34,34,False),('bad',12,34,34,False)]:
++   with self.subTest(marker=marker,group=group,session=session),mock.patch.dict(os.environ,{'BLIND_J01_OWNED_PARENT_PID':marker},clear=True),mock.patch.object(a.os,'getppid',return_value=parent),mock.patch.object(a.os,'getpid',return_value=34),mock.patch.object(a.os,'getpgrp',return_value=group),mock.patch.object(a.os,'getsid',return_value=session):
++    if expected:self.assertTrue(a.owned_parent_group())
++    else:
++     with self.assertRaises(ValueError):a.owned_parent_group()
++  source=(m.P/'app_adapter.py').read_text();self.assertIn('start_new_session=not owned',source);self.assertIn('if p.poll() is None:p.kill()',source);self.assertIn('os.killpg(p.pid,signal.SIGKILL)',source)
++ def test_leader_exit_contains_same_group_descendant(self):
++  with tempfile.TemporaryDirectory() as d:
++   marker=pathlib.Path(d)/'escaped';child='import time,pathlib;time.sleep(.2);pathlib.Path('+repr(str(marker))+').write_text("escaped")'
++   leader='import subprocess,sys;subprocess.Popen([sys.executable,"-c",'+repr(child)+'])'
++   result=m.command([sys.executable,'-c',leader],pathlib.Path(d)/'run.log',2,128)
++   self.assertTrue(m.good(result));m.time.sleep(.3);self.assertFalse(marker.exists())
++
++ def test_actual_checkout_origin_top_level_and_push_event(self):
++  with tempfile.TemporaryDirectory() as d:
++   root=pathlib.Path(d);event=root/'event.json';event.write_text(json.dumps({'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}))
++   def query(argv,log,*args,**kwargs):
++    log.write_text(str(m.R) if argv[-1]=='--show-toplevel' else 'https://github.com/mischa23v/blind.git' if argv[-1]=='remote.origin.url' else SHA)
++    return {'exit_code':0,'reason':'completed'}
++   with mock.patch.dict(os.environ,{'GITHUB_EVENT_PATH':str(event)}),mock.patch.object(m,'command',side_effect=query):m.verify_checkout(root,'actual',m.context(env()))
++ def test_wrong_local_origin_or_push_identity_refused(self):
++  for kind in ('origin','root','head','after','ref','repository','private'):
++   with self.subTest(kind=kind),tempfile.TemporaryDirectory() as d:
++    root=pathlib.Path(d);event=root/'event.json';data={'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}
++    if kind in ('after','ref'):data[kind]='wrong'
++    if kind=='repository':data['repository']['full_name']='fork/blind'
++    if kind=='private':data['repository']['private']=True
++    event.write_text(json.dumps(data))
++    def query(argv,log,*args,**kwargs):
++     suffix='root' if argv[-1]=='--show-toplevel' else 'origin' if argv[-1]=='remote.origin.url' else 'head'
++     log.write_text('wrong' if kind==suffix else str(m.R) if suffix=='root' else 'https://github.com/mischa23v/blind' if suffix=='origin' else SHA)
++     return {'exit_code':0,'reason':'completed'}
++    with mock.patch.dict(os.environ,{'GITHUB_EVENT_PATH':str(event)}),mock.patch.object(m,'command',side_effect=query),self.assertRaises(ValueError):m.verify_checkout(root,'actual',m.context(env()))
++
++ def test_nested_malformed_response_has_closed_failure_and_cleanup(self):
++  code,r,_,emitted=self.simulated_run(malformed_response=True);self.assertEqual(code,1)
++  self.assertTrue(all(x['error_type']=='refused' and x['cleanup_completed'] for x in r['scriptReceipts']))
++  self.assertNotIn('PRIVATE',json.dumps(emitted))
++
++if __name__=='__main__':unittest.main()

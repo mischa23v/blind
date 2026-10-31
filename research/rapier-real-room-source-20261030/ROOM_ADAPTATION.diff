@@ -1,0 +1,166 @@
+--- published-collectall/run_aggregate.py
++++ real-room/run_aggregate.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Prepared controls-only aggregate launcher. No execution until published/reviewed/admitted.
++"""Prepared real-room diagnostic aggregate launcher. No execution until published/reviewed/admitted.
+ Reuses conference guard helpers and process-group accounting. No RLIMIT_AS for V8.
+ """
+ import hashlib, json, math, os, pathlib, resource, signal, stat, subprocess, sys, time
+@@ -18,9 +18,9 @@
+         signal.signal(sig,lambda s,_f: (_ for _ in ()).throw(SystemExit('Supervisor interrupted: '+str(s))))
+     manifestBytes=(H/'RUN_PINS.json').read_bytes();manifestSHA=hashlib.sha256(manifestBytes).hexdigest()
+     pins=json.loads(manifestBytes)
+-    if pins['protocol']!='rapier-analytic-controls-v3-collect-all-managed-sandbox': raise RuntimeError('Wrong controls protocol')
++    if pins['protocol']!='rapier-real-room-fixed-probes-v1-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
+     if pins['limits']!={'cpuSeconds':CPU,'wallSeconds':WALL,'observedRSSBytes':RSS,
+-                       'outputBytes':OUTPUT,'nodeOldSpaceMiB':NODE_HEAP_MIB,'controllerCalls':104}:
++                       'outputBytes':OUTPUT,'nodeOldSpaceMiB':NODE_HEAP_MIB,'controllerCalls':328}:
+         raise RuntimeError('Frozen limits changed')
+     def expand(s):
+         return s.replace('@WORKSPACE@',str(ROOT.parent)).replace('@SOURCE@',str(H)).replace('@REPO@',str(ROOT))
+@@ -53,7 +53,7 @@
+     work=pathlib.Path(expand(pins['workRoot']));work.mkdir(exist_ok=False)
+     out=work/'GUARD_RUN';out.mkdir(exist_ok=False)
+     cpu=min(os.sched_getaffinity(0));os.sched_setaffinity(0,{cpu})
+-    receipt={'schema':1,'scope':'analytic_controls_only','status':'started','sourceCommit':head,
++    receipt={'schema':1,'scope':'fixed_real_room_probes_only','status':'started','sourceCommit':head,
+              'manifestSHA256':manifestSHA,'inputHashesBefore':before,'commands':[],
+              'limits':pins['limits'],'cpuAffinity':[cpu],'peakObservedAggregateRSS':0,'peakFastExitChildRSS':0,
+              'physicalAuthority':False,'realRoomQueries':0,'rlimitASApplied':False,
+@@ -63,7 +63,7 @@
+                'Node old-space heap cap does not include WASM/native/external memory',
+                'Uses existing managed sandbox and trusted official source; not independently air-gapped',
+                'Node permissions prevent unintended operations; not a hostile-code security boundary',
+-               'Analytic adapter controls do not establish source-room support, hazards, arrival or physical clearance']}
++               'Same-mesh fixed probes do not establish source-room support, hazards, arrival or physical clearance']}
+     def save():
+         receipt['wallSeconds']=time.monotonic()-started;receipt['aggregateCPUSeconds']=usage()-initial
+         b=(json.dumps(receipt,indent=2)+'\n').encode()
+@@ -84,14 +84,14 @@
+     env={'PATH':'/usr/bin:/bin','LC_ALL':'C','HOME':str(out),'TMPDIR':str(out),
+          'UV_THREADPOOL_SIZE':'1','OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1',
+          'PYTHONDONTWRITEBYTECODE':'1','PYTHONPYCACHEPREFIX':str(out/'fresh-pycache')}
+-    packageRoot=expand(pins['packageRoot'])
++    packageRoot=expand(pins['packageRoot']);dataRoot=expand(pins['dataRoot'])
+     args=[pins['nodeExecutable'],
+-          '--permission','--allow-fs-read='+str(H),'--allow-fs-read='+packageRoot,
++          '--permission','--allow-fs-read='+str(H),'--allow-fs-read='+packageRoot,'--allow-fs-read='+dataRoot,
+           '--allow-fs-write='+str(work),
+           '--max-old-space-size=256','--max-semi-space-size=8','--v8-pool-size=1',
+-          str(H/'controls_worker.mjs'),'--package-root',packageRoot,'--output',str(work/'controls'),
++          str(H/'room_worker.mjs'),'--package-root',packageRoot,'--data-root',dataRoot,'--output',str(work/'probes'),
+           '--runtime-contract','managed_sandbox_trusted_official_source','--pins-sha256',manifestSHA]
+-    row={'label':'analytic-controls','argv':args,'childEnvironmentKeys':sorted(env),
++    row={'label':'real-room-fixed-probes','argv':args,'childEnvironmentKeys':sorted(env),
+          'runtimeContract':'managed_sandbox_trusted_official_source',
+          'networkAccessRequestedByProtocol':False,'independentlyAirGapped':False};receipt['commands'].append(row);save()
+     p=None;failure=None
+@@ -101,7 +101,7 @@
+             resource.setrlimit(resource.RLIMIT_CPU,(CPU,CPU))
+             resource.setrlimit(resource.RLIMIT_FSIZE,(OUTPUT,OUTPUT))
+             resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+-        with (out/'controls.stdout').open('xb') as stdout,(out/'controls.stderr').open('xb') as stderr:
++        with (out/'probes.stdout').open('xb') as stdout,(out/'probes.stderr').open('xb') as stderr:
+             p=subprocess.Popen(args,cwd=work,env=env,stdout=stdout,stderr=stderr,
+                                start_new_session=True,preexec_fn=limits)
+             while True:
+@@ -124,65 +124,53 @@
+             terminal=stable_inventory(work)
+             if sum(v['bytes'] for v in terminal.values())>OUTPUT-262144:raise RuntimeError('Payload/receipt reserve breach')
+             row['terminalInventory']=terminal
+-            if row['exitCode'] not in (0,1):raise RuntimeError('Unexpected controls exit; no retry or permission widening')
+-        summary=json.loads((work/'controls/SUMMARY.json').read_text())
+-        expected={'scope':'analytic_controls_only','wrapperCount':72,'probeCount':108,'checkCount':72,
+-                  'allFixturesAttempted':True,'expectationsUnchanged':True,
+-                  'controllerCalls':104,'wasmInitialized':True,'wrapperVersion':'0.21.0',
+-                  'realRoomQueries':0,'physicalAuthority':False,'movementApplied':False,
+-                  'runtimeContract':'managed_sandbox_trusted_official_source',
+-                  'nodePermissionsChecked':True,'independentlyAirGapped':False,'namespaceSetupRequested':False,
+-                  'hostSecuritySettingsChanged':False,'networkAccessRequestedByProtocol':False,
+-                  'rlimitASApplied':False,'independentHazardOraclePassed':False}
++            if row['exitCode'] not in (0,1):raise RuntimeError('Unexpected worker exit; no retry or permission widening')
++        if row['exitCode']!=0:raise RuntimeError('Room worker failed; partial result retained')
++        summary=json.loads((work/'probes/SUMMARY.json').read_text())
++        expected={'scope':'fixed_real_room_probes_only','status':'completed_diagnostic_proposals_not_movement',
++                  'wrapperCount':16,'probeCount':408,'controllerCalls':328,'unsupportedTurns':80,
++                  'allSelectedRowsRetained':True,'wasmInitialized':True,'wrapperVersion':'0.21.0',
++                  'physicalAuthority':False,'movementApplied':False,'arrivalEstablished':False,
++                  'analyticControlsHadTwoKnownFailures':True,'computedGroundedIsNotSupport':True,
++                  'runtimeContract':'managed_sandbox_trusted_official_source','nodePermissionsChecked':True,
++                  'independentlyAirGapped':False,'namespaceSetupRequested':False,'hostSecuritySettingsChanged':False,
++                  'networkAccessRequestedByProtocol':False,'rlimitASApplied':False,'independentHazardOraclePassed':False}
+         for k,v in expected.items():
+             if summary.get(k)!=v:raise RuntimeError('Worker terminal contract mismatch: '+k)
+-        if summary['pinsSHA256']!=manifestSHA:
+-            raise RuntimeError('Worker manifest identity mismatch')
+-        wrappers=[json.loads(x) for x in (work/'controls/wrapper-records.jsonl').read_text().splitlines()]
+-        probes=[json.loads(x) for x in (work/'controls/probe-rows.jsonl').read_text().splitlines()]
+-        checks=[json.loads(x) for x in (work/'controls/assertion-results.jsonl').read_text().splitlines()]
+-        expectedWrappers=[];expectedProbes=[]
+-        for envelope in ['body','horizontal_margin']:
+-            for fixture,ids in pins['expectedFixtureProbeIDs'].items():
++        if summary['pinsSHA256']!=manifestSHA:raise RuntimeError('Worker manifest identity mismatch')
++        wrappers=[json.loads(x) for x in (work/'probes/wrapper-records.jsonl').read_text().splitlines()]
++        probes=[json.loads(x) for x in (work/'probes/probe-rows.jsonl').read_text().splitlines()]
++        expectedWrappers=[];expectedProbes=[];original={}
++        for scene in ['coffee','conference']:
++            data=json.loads((pathlib.Path(dataRoot)/(scene+'.probes.json')).read_text())
++            original.update({x['id']:x for x in data})
++            for envelope in ['body','horizontal_margin']:
+                 for arm in ['raw_trimesh','two_sided_internal_edges']:
+-                    expectedWrappers.append((fixture,arm,envelope))
+-                    expectedProbes.extend((fixture,arm,envelope,i) for i in ids)
+-        if [(x['fixtureID'],x['arm'],x['envelope']) for x in wrappers]!=expectedWrappers:
++                    for inputArm in ['exact_xyz','horizontal_projection']:
++                        expectedWrappers.append((scene,arm,envelope,inputArm))
++                        expectedProbes.extend((scene,arm,envelope,inputArm,x['id']) for x in data)
++        if [(x['scene'],x['arm'],x['envelope'],x['inputArm']) for x in wrappers]!=expectedWrappers:
+             raise RuntimeError('Wrapper inventory/order mismatch')
+-        if [(x['fixtureID'],x['arm'],x['envelope'],x['row']['id']) for x in probes]!=expectedProbes:
++        if [(x['scene'],x['arm'],x['envelope'],x['inputArm'],x['row']['id']) for x in probes]!=expectedProbes:
+             raise RuntimeError('Probe inventory/order mismatch')
+-        if [(x['fixtureID'],x['arm'],x['envelope']) for x in checks]!=expectedWrappers:
+-            raise RuntimeError('Assertion inventory/order mismatch')
+-        for x in checks:
+-            if x.get('expectationsUnchanged') is not True or x.get('physicalAuthority') is not False:
+-                raise RuntimeError('Assertion contract changed')
+-            if not isinstance(x.get('failures'),list) or x['status']!=('failed' if x['failures'] else 'passed'):
+-                raise RuntimeError('Assertion failure/status mismatch')
+-        failedChecks=sum(bool(x['failures']) for x in checks);failedAssertions=sum(len(x['failures']) for x in checks)
+-        expectedStatus='controls_failed_assertions' if failedChecks else 'controls_passed'
+-        if summary.get('status')!=expectedStatus or row['exitCode']!=(1 if failedChecks else 0):
+-            raise RuntimeError('Final assertion status/exit mismatch')
+-        if summary.get('failedWrapperCount')!=failedChecks or summary.get('assertionFailureCount')!=failedAssertions:
+-            raise RuntimeError('Assertion count mismatch')
+-        if sum(x['row']['controllerCalled'] for x in probes)!=104:raise RuntimeError('Controller call count mismatch')
++        if sum(x['row']['controllerCalled'] for x in probes)!=328:raise RuntimeError('Controller inventory')
+         for x in probes:
+-            r=x['row']
++            r=x['row'];src=original[r['id']]
++            if r['originalFoot']!=src['foot'] or r['originalYawRadians']!=src['yawRadians'] or r['originalDesiredDelta']!=src['desiredDelta']:
++                raise RuntimeError('Original pose/input changed')
++            if r['independentEvidence']!=src['independentEvidence']:raise RuntimeError('Independent VTK evidence changed')
+             if r['physicalAuthority'] is not False or r['movementApplied'] is not False or r['arrivalEstablished'] is not False:
+-                raise RuntimeError('Proposal acquired movement/arrival authority')
++                raise RuntimeError('Physical authority acquired')
+             if r['support']!='unknown' or r['semanticFloor']!='unknown' or not r.get('queryBandDifference'):
+                 raise RuntimeError('Support or lower-band distinction lost')
+             if r['kind']=='turn':
+                 if r['status']!='unsupported_rotation' or r['controllerCalled'] is not False or r['proposedMovement'] is not None:
+-                    raise RuntimeError('Unsupported turn treated as a controller motion')
++                    raise RuntimeError('Rotation unsupported contract')
+             else:
+                 if r['proposalWasNotApplied'] is not True or not all(math.isfinite(v) for v in r['proposedMovement']):
+                     raise RuntimeError('Invalid/unretained controller proposal')
+-        receipt['controlsSummary']=summary
+-        receipt['status']='completed-analytic-controls-only'
+-        receipt['wrapperRecordsVerified']=72;receipt['nestedProbeRowsVerified']=108
+-        receipt['assertionRecordsVerified']=72;receipt['failedWrapperCount']=failedChecks
+-        receipt['assertionFailureCount']=failedAssertions;receipt['allFixturesAttempted']=True
+-        if failedChecks:raise RuntimeError('Original fixture assertions failed; complete controls inventory verified')
++        receipt['roomSummary']=summary;receipt['status']='completed-fixed-pose-diagnostic-only'
++        receipt['wrapperRecordsVerified']=16;receipt['nestedProbeRowsVerified']=408;receipt['realRoomQueries']=328
+     except BaseException as error:
+         failure=error;receipt['status']='failed';receipt['error']=type(error).__name__+': '+str(error)
+     finally:

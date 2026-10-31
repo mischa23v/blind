@@ -8,43 +8,150 @@ import BlindCore
         var scene = ObservedSceneAccumulator()
         init(session: UUID) { scene.begin(sessionID: session) }
     }
-    private let queue = DispatchQueue(label: "blind.observed-scene", qos: .utility)
+    private let queue: DispatchQueue
     private let clock: () -> Double
     private var worker: Worker?
     private var session: UUID?
     private var epoch = UUID()
     private var workID: UUID?
+    /// Retirement may race with the serial worker. This token only avoids a
+    /// not-yet-started obsolete plan; it never cancels observation accumulation
+    /// or frees the single work slot before the real main-owner callback.
+    private final class PlanValidity: @unchecked Sendable {
+        private let lock = NSLock()
+        private var current = true
+        func invalidate() { lock.lock(); current = false; lock.unlock() }
+        var isCurrent: Bool { lock.lock(); defer { lock.unlock() }; return current }
+    }
+    private var planValidity: PlanValidity?
+#if DEBUG
+    struct DiagnosticWorkTimingSnapshot: Sendable {
+        fileprivate let id: UUID
+        fileprivate let values: [TimeInterval?]
+        var planWasInvoked: Bool { values[3] != nil }
+        func report() -> String {
+            func time(_ index: Int) -> String { values[index].map { String($0) } ?? "missing" }
+            func delta(_ from: Int, _ to: Int) -> String {
+                guard let first = values[from], let last = values[to] else { return "missing" }
+                return String(last - first)
+            }
+            return "OBSERVED_SCENE_WORK_TIMING id=\(id) admitted=\(time(0)) workerStarted=\(time(1)) workerFinished=\(time(5)) mainDelivered=\(time(6)) queueAdmission=\(delta(0,1)) workerWall=\(delta(1,5)) mainHandoff=\(delta(5,6)) observeWall=\(delta(1,2)) planInvoked=\(planWasInvoked) planWall=\(delta(3,4))"
+        }
+    }
+    // Fixed seven-slot metadata only. Worker writes are lock-protected; no printing,
+    // asynchronous actor hop, image, position, map or body data enters this buffer.
+    private final class DiagnosticWorkTiming: @unchecked Sendable {
+        enum Phase: Int { case admitted, workerStarted, observationFinished, planStarted, planFinished, workerFinished, mainDelivered }
+        private let lock = NSLock()
+        private var times: [TimeInterval?] = [nil, nil, nil, nil, nil, nil, nil]
+        func mark(_ phase: Phase) {
+            let now = ProcessInfo.processInfo.systemUptime
+            lock.lock(); defer { lock.unlock() }
+            if times[phase.rawValue] == nil { times[phase.rawValue] = now }
+        }
+        func snapshot(id: UUID) -> DiagnosticWorkTimingSnapshot {
+            lock.lock(); let values = times; lock.unlock()
+            return .init(id: id, values: values)
+        }
+    }
+    // Exact completion of one accepted job, including its main-owner callback.
+    // One waiter per job keeps test-only storage bounded; rejected frames have no job.
+    @MainActor private final class DiagnosticWorkCompletion {
+        enum WaitError: Error { case alreadyWaiting, missingOperation }
+        let timing = DiagnosticWorkTiming()
+        private var finished = false
+        private var waiter: CheckedContinuation<Void, Never>?
+        func wait() async throws {
+            if finished { return }
+            guard waiter == nil else { throw WaitError.alreadyWaiting }
+            await withCheckedContinuation { waiter = $0 }
+        }
+        func finish() {
+            guard !finished else { return }
+            finished = true
+            let pending = waiter; waiter = nil
+            pending?.resume()
+        }
+    }
+    private var diagnosticWorkCompletion: (UUID, DiagnosticWorkCompletion)?
+    // Test-only gate after real planning, before publication. Nil in production
+    // and normal tests; never runs inside the validity lock or on the main owner.
+    var diagnosticAfterPlanningForTesting: (@Sendable () -> Void)?
+    func diagnosticLastWorkTimingForTesting() -> DiagnosticWorkTimingSnapshot? {
+        guard let completion = diagnosticWorkCompletion else { return nil }
+        return completion.1.timing.snapshot(id: completion.0)
+    }
+    func waitForCurrentWorkForTesting() async throws {
+        guard let id = workID else { return }
+        guard let completion = diagnosticWorkCompletion, completion.0 == id else {
+            throw DiagnosticWorkCompletion.WaitError.missingOperation
+        }
+        try await completion.1.wait()
+    }
+#endif
+    private var classifiedHits = NativeClassifiedHitState()
+    var classifiedHitEvidence: NativeClassifiedHitEvidence? {
+        guard let session, let evidence = classifiedHits.evidence,
+              evidence.isFresh(session: session, now: clock()) else { return nil }
+        return evidence
+    }
+    /// Additional sampled evidence, NOT merged into the depth-only mapper or
+    /// interpreted as current free space. Changed hits retire old pending plans.
+    func offerClassifiedHits(_ evidence: NativeClassifiedHitEvidence?, session: UUID, capturedAt: Double) {
+        guard self.session == session else { return }
+        if capturedAt.isFinite, capturedAt <= minimumCapture { return }
+        if classifiedHits.consume(evidence, session: session, capturedAt: capturedAt, now: clock()) {
+            planValidity?.invalidate(); plan = nil; onChange?()
+        }
+    }
+    var classifiedHitStatus: String {
+        guard let evidence = classifiedHitEvidence else { return "Classified hits unavailable; floor support unknown." }
+        return "Sampled classified hits: \(evidence.surfaces.count) anchors; incomplete=\(evidence.sampledOrIncomplete). No floor-support or clearance claim."
+    }
     private var lastOffered = -Double.infinity
     private var minimumCapture = -Double.infinity
     private var intent: ObservedSceneAccumulator.Intent = .lookAhead
     private var goalRevision = UUID()
+#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    /// Exact local intent namespace, separate from the companion's String revision.
+    func diagnosticIntentIsCurrent(session: UUID, revision: UUID) -> Bool {
+        self.session == session && goalRevision == revision
+    }
+#endif
     private var ownerGoalRevision: String?
     private var bodyRevision = UUID()
     private(set) var snapshot: ObservedSceneSnapshot?
     private(set) var plan: ObservedScenePlan?
     private(set) var liveStatus = "unavailable"
     var onChange: (() -> Void)?
-    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime }) { self.clock = clock }
+    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime },
+         queue: DispatchQueue = DispatchQueue(label: "blind.observed-scene", qos: .utility)) {
+        self.clock = clock; self.queue = queue
+    }
     func begin(session: UUID, capturedAfter: Double? = nil) {
-        self.session = session; epoch = UUID(); worker = Worker(session: session)
+        planValidity?.invalidate()
+        self.session = session; classifiedHits.begin(session: session); epoch = UUID(); worker = Worker(session: session)
         intent = .lookAhead; goalRevision = UUID(); lastOffered = -.infinity
         minimumCapture = capturedAfter.flatMap { $0.isFinite ? $0 : nil } ?? -.infinity
         snapshot = nil; plan = nil; liveStatus = "waitingForObservation"; onChange?()
         // An old in-flight job retains the one worker slot until it really exits.
     }
     func stop() {
-        session = nil; worker = nil; epoch = UUID(); snapshot = nil; plan = nil; liveStatus = "stopped"; onChange?()
+        planValidity?.invalidate()
+        classifiedHits.stop(); session = nil; worker = nil; epoch = UUID(); snapshot = nil; plan = nil; liveStatus = "stopped"; onChange?()
     }
     func trackingLost(at capturedAt: Double? = nil) {
         guard let session else { return }
-        epoch = UUID(); worker = Worker(session: session); snapshot = nil; plan = nil
+        planValidity?.invalidate()
+        classifiedHits.retire(); epoch = UUID(); worker = Worker(session: session); snapshot = nil; plan = nil
         // Preserve requested intent, but never revive the former return origin.
         let loss = capturedAt ?? clock()
         if loss.isFinite { minimumCapture = max(minimumCapture, lastOffered, loss) }
         liveStatus = "trackingUnavailable"; onChange?()
     }
     func setIntent(_ intent: ObservedSceneAccumulator.Intent) {
-        self.intent = intent; goalRevision = UUID(); plan = nil; liveStatus = "waitingForObservation"; onChange?()
+        planValidity?.invalidate()
+        classifiedHits.retire(); self.intent = intent; goalRevision = UUID(); plan = nil; liveStatus = "waitingForObservation"; onChange?()
     }
     /// A trusted goal/subtask replacement retires the previous return request,
     /// including work already queued for its older owner.
@@ -55,45 +162,88 @@ import BlindCore
     /// Body/profile changes invalidate a queued plan without discarding the
     /// observed map or silently restarting the owned return breadcrumb path.
     func invalidateBody() {
+        planValidity?.invalidate()
         bodyRevision = UUID(); plan = nil; liveStatus = "waitingForBodyObservation"; onChange?()
     }
     func suspendLive(at capturedAt: Double? = nil) {
-        epoch = UUID(); plan = nil; liveStatus = "depthUnavailable"
+        planValidity?.invalidate()
+        classifiedHits.retire(); epoch = UUID(); plan = nil; liveStatus = "depthUnavailable"
         let loss = capturedAt ?? clock()
         if loss.isFinite { minimumCapture = max(minimumCapture, lastOffered, loss) }
         onChange?()
     }
     func revalidate(now: Double) {
+        if classifiedHits.expire(now: now) { planValidity?.invalidate(); plan = nil; onChange?() }
         guard let captured = snapshot?.capturedAt else { return }
         if !now.isFinite || now < captured || now - captured > 0.5 { plan = nil; liveStatus = "expired"; onChange?() }
     }
-    func offer(_ observation: Observation, session: UUID, floor: Double?,
-               body: BodyEnvelope?, now: Double, hazard: Hazard = .uncertain) {
+    /// Busy frames are intentionally dropped: the accumulator has exactly one owned worker.
+    /// The receipt reports admission only, never successful processing or clearance.
+    @discardableResult func offer(_ observation: Observation, session: UUID, floor: Double?,
+               body: BodyEnvelope?, now: Double, hazard: Hazard = .uncertain) -> Bool {
         guard self.session == session, let worker, workID == nil,
               observation.timestamp > minimumCapture,
-              observation.timestamp - lastOffered >= 0.1 else { return }
+              observation.timestamp - lastOffered >= 0.1 else { return false }
         // Validate before updating cadence; a rejected future/NaN timestamp must
         // never poison lastOffered and prevent later valid captures recovering.
         guard observation.timestamp.isFinite, observation.timestamp >= 0, now.isFinite,
               now >= observation.timestamp, now - observation.timestamp <= 0.5 else {
-            plan = nil; liveStatus = "stale"; onChange?(); return
+            plan = nil; liveStatus = "stale"; onChange?(); return false
         }
         lastOffered = observation.timestamp
         let id = UUID(), generation = epoch, intent = intent, goal = goalRevision, bodyVersion = bodyRevision
+        let classifiedRevision = classifiedHits.revision
         workID = id
+        let validity = PlanValidity()
+        planValidity = validity
+#if DEBUG
+        let completion = DiagnosticWorkCompletion()
+        let timing = completion.timing
+        timing.mark(.admitted)
+        diagnosticWorkCompletion = (id, completion)
+        let afterPlanning = diagnosticAfterPlanningForTesting
+#endif
         queue.async { [weak self] in
+#if DEBUG
+            timing.mark(.workerStarted)
+#endif
             worker.scene.setIntent(intent, revision: goal)
             let snapshot = worker.scene.observe(observation, sessionID: session, now: now, hazard: hazard)
-            let plan = body.flatMap { worker.scene.planCurrent(floor: floor, body: $0, now: now) }
+#if DEBUG
+            timing.mark(.observationFinished)
+#endif
+            let plan = body.flatMap { body -> ObservedScenePlan? in
+                guard validity.isCurrent else { return nil }
+#if DEBUG
+                timing.mark(.planStarted)
+#endif
+                let result = worker.scene.planCurrent(floor: floor, body: body, now: now)
+#if DEBUG
+                timing.mark(.planFinished)
+                afterPlanning?()
+#endif
+                return result
+            }
+#if DEBUG
+            timing.mark(.workerFinished)
+#endif
             DispatchQueue.main.async { [weak self] in
+#if DEBUG
+                timing.mark(.mainDelivered)
+                // Captured independently of weak self: stale/rejected/deallocated
+                // owner exits still complete the exact admitted operation.
+                defer { completion.finish() }
+#endif
                 guard let self, self.workID == id else { return }
                 self.workID = nil
-                guard self.epoch == generation, self.session == session, self.goalRevision == goal, self.bodyRevision == bodyVersion else { return }
+                self.planValidity = nil
+                guard self.epoch == generation, self.session == session, self.goalRevision == goal, self.bodyRevision == bodyVersion, self.classifiedHits.revision == classifiedRevision else { return }
                 self.snapshot = snapshot; self.plan = plan
                 self.liveStatus = snapshot.status == .observing
                     ? (body == nil ? "bodyEnvelopeUnavailable" : plan?.local.state.rawValue ?? snapshot.returnState.rawValue) : snapshot.status.rawValue
                 self.revalidate(now: self.clock()); self.onChange?()
             }
         }
+        return true
     }
 }

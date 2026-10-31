@@ -1,0 +1,1311 @@
+[
+  {
+    "episodeIndex": 0,
+    "pairIndex": 0,
+    "conditionID": "nominal",
+    "seed": 72000,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 2.7758287302670825,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 237,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 2.7758287302670825,
+      "actual3DDistanceMetres": 2.7822628128871996,
+      "position": [
+        -1.1006650712491293,
+        0.0036011202220788893,
+        3.5167116692270612
+      ],
+      "yaw": 1.163451680809853,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-000/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-000/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-000/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 1,
+    "pairIndex": 0,
+    "conditionID": "command_delay",
+    "seed": 72000,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 2.8384847035559972,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 261,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 2.8384847035559972,
+      "actual3DDistanceMetres": 2.8458008429598793,
+      "position": [
+        -1.0779980800205728,
+        0.0033510803301551664,
+        3.567383987082328
+      ],
+      "yaw": 1.2278294207952902,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-001/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-001/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-001/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 2,
+    "pairIndex": 0,
+    "conditionID": "temporal_jitter",
+    "seed": 72000,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 2.820000000000001,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 261,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 2.820000000000001,
+      "actual3DDistanceMetres": 2.827287665815128,
+      "position": [
+        -1.085421926399019,
+        0.003504835074661995,
+        3.5499874239305687
+      ],
+      "yaw": 1.1957744067205274,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-002/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-002/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-002/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 3,
+    "pairIndex": 0,
+    "conditionID": "extra_translation",
+    "seed": 72000,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 2.783000000000002,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 219,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 2.783000000000002,
+      "actual3DDistanceMetres": 2.789542986802913,
+      "position": [
+        -1.0978676970613968,
+        0.003581491137001484,
+        3.523631546997654
+      ],
+      "yaw": 1.1627502337482045,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-003/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-003/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-003/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 4,
+    "pairIndex": 0,
+    "conditionID": "tracking_interruption",
+    "seed": 72000,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 2.7758287302670825,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 260,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 2.7758287302670825,
+      "actual3DDistanceMetres": 2.7822628128871996,
+      "position": [
+        -1.1006650712491293,
+        0.0036011202220788893,
+        3.5167116692270612
+      ],
+      "yaw": 1.163451680809853,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-004/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-004/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-004/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 5,
+    "pairIndex": 1,
+    "conditionID": "nominal",
+    "seed": 72001,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 7.677483216479521,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 631,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 7.677483216479521,
+      "actual3DDistanceMetres": 7.694961588234801,
+      "position": [
+        1.0824456868568146,
+        0.010873200827812717,
+        1.8221382451981771
+      ],
+      "yaw": -1.8369929848531226,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-005/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-005/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-005/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 6,
+    "pairIndex": 1,
+    "conditionID": "command_delay",
+    "seed": 72001,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 7.912251740152821,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 1051,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 7.912251740152821,
+      "actual3DDistanceMetres": 7.958457261149904,
+      "position": [
+        1.064695988760027,
+        0.010817507043650584,
+        1.763626318422512
+      ],
+      "yaw": -1.8878590079008708,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-006/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-006/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-006/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 7,
+    "pairIndex": 1,
+    "conditionID": "temporal_jitter",
+    "seed": 72001,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 7.77995316526368,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 843,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 7.77995316526368,
+      "actual3DDistanceMetres": 7.812360043179541,
+      "position": [
+        1.0666216098558339,
+        0.010747206596795778,
+        1.7729884840148644
+      ],
+      "yaw": -1.9108801965080595,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-007/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-007/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-007/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 8,
+    "pairIndex": 1,
+    "conditionID": "extra_translation",
+    "seed": 72001,
+    "status": "interruptedUnknown",
+    "movementExecuted": null,
+    "processStarted": true,
+    "actualDistanceMetres": null,
+    "processCompleted": false,
+    "arrival": false,
+    "partialProgress": {
+      "status": "timeout",
+      "lastCommittedTick": 322,
+      "leg": 0,
+      "completedLegs": 0,
+      "actualDistanceMetres": 4.217119671960106,
+      "actual3DDistanceMetres": 4.227782280224461,
+      "position": [
+        0.05138678619973422,
+        0.003313999675268681,
+        4.300719967558023
+      ],
+      "yaw": 0.3741892018479642,
+      "arrival": false,
+      "actualTraceCSVFlushed": true
+    },
+    "partialProgressNotTerminal": true,
+    "partialTracePath": "episodes/episode-008/result/ACTUAL_TRACE_PARTIAL.csv",
+    "failure": "exec-server transport disconnected; original producer termination inaccessible; no terminal receipt; evidence unchanged beyond declared deadline plus60s",
+    "recoveryRecord": "RECOVERY_PREFLIGHT.json"
+  },
+  {
+    "episodeIndex": 9,
+    "pairIndex": 1,
+    "conditionID": "tracking_interruption",
+    "seed": 72001,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 7.677483216479521,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 654,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 7.677483216479521,
+      "actual3DDistanceMetres": 7.694961588234801,
+      "position": [
+        1.0824456868568146,
+        0.010873200827812717,
+        1.8221382451981771
+      ],
+      "yaw": -1.8369929848531226,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-009/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-009/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-009/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 10,
+    "pairIndex": 2,
+    "conditionID": "nominal",
+    "seed": 72002,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 9.937483216479496,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 746,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 9.937483216479496,
+      "actual3DDistanceMetres": 9.955270313634834,
+      "position": [
+        0.34690037305062893,
+        0.001354719635411443,
+        -0.3106907618238844
+      ],
+      "yaw": -1.9526028233371349,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-010/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-010/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-010/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 11,
+    "pairIndex": 2,
+    "conditionID": "command_delay",
+    "seed": 72002,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 10.17225174015277,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 1166,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 10.17225174015277,
+      "actual3DDistanceMetres": 10.218713840069864,
+      "position": [
+        0.32421631442998966,
+        0.0011740788816469623,
+        -0.3655496961543157
+      ],
+      "yaw": -1.9016658096694954,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-011/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-011/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-011/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 12,
+    "pairIndex": 2,
+    "conditionID": "temporal_jitter",
+    "seed": 72002,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 10.18580689543881,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 1331,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 10.18580689543881,
+      "actual3DDistanceMetres": 10.24663433115797,
+      "position": [
+        0.34035938978560165,
+        0.0012084009795265468,
+        -0.3249881594594165
+      ],
+      "yaw": -1.9355685500570183,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-012/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-012/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-012/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 13,
+    "pairIndex": 2,
+    "conditionID": "extra_translation",
+    "seed": 72002,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 9.931678317190272,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 681,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 9.931678317190272,
+      "actual3DDistanceMetres": 9.950018876167604,
+      "position": [
+        0.34896742474350406,
+        0.001361282919241924,
+        -0.30565551427824605
+      ],
+      "yaw": -1.9527253756012641,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-013/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-013/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-013/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 14,
+    "pairIndex": 2,
+    "conditionID": "tracking_interruption",
+    "seed": 72002,
+    "status": "completeOrderedPairSyntheticEpisode",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 9.937483216479496,
+    "processCompleted": true,
+    "arrival": true,
+    "partialProgress": {
+      "status": "completeOrderedPairSyntheticEpisode",
+      "lastCommittedTick": 769,
+      "leg": 0,
+      "completedLegs": 1,
+      "actualDistanceMetres": 9.937483216479496,
+      "actual3DDistanceMetres": 9.955270313634834,
+      "position": [
+        0.34690037305062893,
+        0.001354719635411443,
+        -0.3106907618238844
+      ],
+      "yaw": -1.9526028233371349,
+      "arrival": true,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-014/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-014/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-014/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 15,
+    "pairIndex": 3,
+    "conditionID": "nominal",
+    "seed": 72003,
+    "status": "interruptedUnknown",
+    "movementExecuted": null,
+    "processStarted": true,
+    "actualDistanceMetres": null,
+    "processCompleted": false,
+    "arrival": false,
+    "partialProgress": {
+      "status": "timeout",
+      "lastCommittedTick": 162,
+      "leg": 0,
+      "completedLegs": 0,
+      "actualDistanceMetres": 0.18000000000000063,
+      "actual3DDistanceMetres": 0.19187505973781813,
+      "position": [
+        -2.3989099301671963,
+        -0.002305958528313676,
+        0.9011763955455163
+      ],
+      "yaw": -1.7943340549058706,
+      "arrival": false,
+      "actualTraceCSVFlushed": true
+    },
+    "partialProgressNotTerminal": true,
+    "partialTracePath": "episodes/episode-015/result/ACTUAL_TRACE_PARTIAL.csv",
+    "failure": "producer/session inaccessible; no terminal receipt; unchanged through deadline plus60s; not rerun",
+    "recoveryRecord": "RECOVERY02_PREFLIGHT.json"
+  },
+  {
+    "episodeIndex": 16,
+    "pairIndex": 3,
+    "conditionID": "command_delay",
+    "seed": 72003,
+    "status": "unknownReferenceSupportDuringMotion",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 3.080000000000001,
+    "processCompleted": true,
+    "arrival": false,
+    "partialProgress": {
+      "status": "unknownReferenceSupportDuringMotion",
+      "lastCommittedTick": 382,
+      "leg": 0,
+      "completedLegs": 0,
+      "actualDistanceMetres": 3.080000000000001,
+      "actual3DDistanceMetres": 3.0958480115985285,
+      "position": [
+        -3.5656401167070557,
+        -0.004029635638816325,
+        -1.688055528966556
+      ],
+      "yaw": -1.8199769757655198,
+      "arrival": false,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-016/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-016/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-016/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 17,
+    "pairIndex": 3,
+    "conditionID": "temporal_jitter",
+    "seed": 72003,
+    "status": "unknownReferenceSupportDuringMotion",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 5.4953224525338245,
+    "processCompleted": true,
+    "arrival": false,
+    "partialProgress": {
+      "status": "unknownReferenceSupportDuringMotion",
+      "lastCommittedTick": 559,
+      "leg": 0,
+      "completedLegs": 0,
+      "actualDistanceMetres": 5.4953224525338245,
+      "actual3DDistanceMetres": 5.515120545385276,
+      "position": [
+        -2.7636804582757177,
+        -0.004413147099358635,
+        -3.693758881376829
+      ],
+      "yaw": -0.6915101225512567,
+      "arrival": false,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-017/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-017/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-017/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 18,
+    "pairIndex": 3,
+    "conditionID": "extra_translation",
+    "seed": 72003,
+    "status": "unknownReferenceSupportDuringMotion",
+    "movementExecuted": true,
+    "processStarted": true,
+    "actualDistanceMetres": 3.3806176890174626,
+    "processCompleted": true,
+    "arrival": false,
+    "partialProgress": {
+      "status": "unknownReferenceSupportDuringMotion",
+      "lastCommittedTick": 357,
+      "leg": 0,
+      "completedLegs": 0,
+      "actualDistanceMetres": 3.3806176890174626,
+      "actual3DDistanceMetres": 3.3959921456632634,
+      "position": [
+        -3.631940530104479,
+        -0.003106257838332715,
+        -1.9853434496016487
+      ],
+      "yaw": -1.7838428714196315,
+      "arrival": false,
+      "actualTraceCSVFlushed": true
+    },
+    "terminalResultParseError": null,
+    "partialProgressParseError": null,
+    "partialTracePath": "episodes/episode-018/result/ACTUAL_TRACE_PARTIAL.csv",
+    "partialProgressNotTerminal": false,
+    "receipt": "runs/episode-018/RUN_RECEIPT.json",
+    "resultPath": "episodes/episode-018/result/RESULT.json",
+    "failure": null
+  },
+  {
+    "episodeIndex": 19,
+    "pairIndex": 3,
+    "conditionID": "tracking_interruption",
+    "seed": 72003,
+    "status": "running",
+    "movementExecuted": null,
+    "processStarted": true,
+    "actualDistanceMetres": null
+  },
+  {
+    "episodeIndex": 20,
+    "pairIndex": 4,
+    "conditionID": "nominal",
+    "seed": 72004,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 21,
+    "pairIndex": 4,
+    "conditionID": "command_delay",
+    "seed": 72004,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 22,
+    "pairIndex": 4,
+    "conditionID": "temporal_jitter",
+    "seed": 72004,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 23,
+    "pairIndex": 4,
+    "conditionID": "extra_translation",
+    "seed": 72004,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 24,
+    "pairIndex": 4,
+    "conditionID": "tracking_interruption",
+    "seed": 72004,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 25,
+    "pairIndex": 5,
+    "conditionID": "nominal",
+    "seed": 72005,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 26,
+    "pairIndex": 5,
+    "conditionID": "command_delay",
+    "seed": 72005,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 27,
+    "pairIndex": 5,
+    "conditionID": "temporal_jitter",
+    "seed": 72005,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 28,
+    "pairIndex": 5,
+    "conditionID": "extra_translation",
+    "seed": 72005,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 29,
+    "pairIndex": 5,
+    "conditionID": "tracking_interruption",
+    "seed": 72005,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 30,
+    "pairIndex": 6,
+    "conditionID": "nominal",
+    "seed": 72006,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 31,
+    "pairIndex": 6,
+    "conditionID": "command_delay",
+    "seed": 72006,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 32,
+    "pairIndex": 6,
+    "conditionID": "temporal_jitter",
+    "seed": 72006,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 33,
+    "pairIndex": 6,
+    "conditionID": "extra_translation",
+    "seed": 72006,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 34,
+    "pairIndex": 6,
+    "conditionID": "tracking_interruption",
+    "seed": 72006,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 35,
+    "pairIndex": 7,
+    "conditionID": "nominal",
+    "seed": 72007,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 36,
+    "pairIndex": 7,
+    "conditionID": "command_delay",
+    "seed": 72007,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 37,
+    "pairIndex": 7,
+    "conditionID": "temporal_jitter",
+    "seed": 72007,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 38,
+    "pairIndex": 7,
+    "conditionID": "extra_translation",
+    "seed": 72007,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 39,
+    "pairIndex": 7,
+    "conditionID": "tracking_interruption",
+    "seed": 72007,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 40,
+    "pairIndex": 8,
+    "conditionID": "nominal",
+    "seed": 72008,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 41,
+    "pairIndex": 8,
+    "conditionID": "command_delay",
+    "seed": 72008,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 42,
+    "pairIndex": 8,
+    "conditionID": "temporal_jitter",
+    "seed": 72008,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 43,
+    "pairIndex": 8,
+    "conditionID": "extra_translation",
+    "seed": 72008,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 44,
+    "pairIndex": 8,
+    "conditionID": "tracking_interruption",
+    "seed": 72008,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 45,
+    "pairIndex": 9,
+    "conditionID": "nominal",
+    "seed": 72009,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 46,
+    "pairIndex": 9,
+    "conditionID": "command_delay",
+    "seed": 72009,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 47,
+    "pairIndex": 9,
+    "conditionID": "temporal_jitter",
+    "seed": 72009,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 48,
+    "pairIndex": 9,
+    "conditionID": "extra_translation",
+    "seed": 72009,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 49,
+    "pairIndex": 9,
+    "conditionID": "tracking_interruption",
+    "seed": 72009,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 50,
+    "pairIndex": 10,
+    "conditionID": "nominal",
+    "seed": 72010,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 51,
+    "pairIndex": 10,
+    "conditionID": "command_delay",
+    "seed": 72010,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 52,
+    "pairIndex": 10,
+    "conditionID": "temporal_jitter",
+    "seed": 72010,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 53,
+    "pairIndex": 10,
+    "conditionID": "extra_translation",
+    "seed": 72010,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 54,
+    "pairIndex": 10,
+    "conditionID": "tracking_interruption",
+    "seed": 72010,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 55,
+    "pairIndex": 11,
+    "conditionID": "nominal",
+    "seed": 72011,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 56,
+    "pairIndex": 11,
+    "conditionID": "command_delay",
+    "seed": 72011,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 57,
+    "pairIndex": 11,
+    "conditionID": "temporal_jitter",
+    "seed": 72011,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 58,
+    "pairIndex": 11,
+    "conditionID": "extra_translation",
+    "seed": 72011,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 59,
+    "pairIndex": 11,
+    "conditionID": "tracking_interruption",
+    "seed": 72011,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 60,
+    "pairIndex": 12,
+    "conditionID": "nominal",
+    "seed": 72012,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 61,
+    "pairIndex": 12,
+    "conditionID": "command_delay",
+    "seed": 72012,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 62,
+    "pairIndex": 12,
+    "conditionID": "temporal_jitter",
+    "seed": 72012,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 63,
+    "pairIndex": 12,
+    "conditionID": "extra_translation",
+    "seed": 72012,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 64,
+    "pairIndex": 12,
+    "conditionID": "tracking_interruption",
+    "seed": 72012,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 65,
+    "pairIndex": 13,
+    "conditionID": "nominal",
+    "seed": 72013,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 66,
+    "pairIndex": 13,
+    "conditionID": "command_delay",
+    "seed": 72013,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 67,
+    "pairIndex": 13,
+    "conditionID": "temporal_jitter",
+    "seed": 72013,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 68,
+    "pairIndex": 13,
+    "conditionID": "extra_translation",
+    "seed": 72013,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 69,
+    "pairIndex": 13,
+    "conditionID": "tracking_interruption",
+    "seed": 72013,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 70,
+    "pairIndex": 14,
+    "conditionID": "nominal",
+    "seed": 72014,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 71,
+    "pairIndex": 14,
+    "conditionID": "command_delay",
+    "seed": 72014,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 72,
+    "pairIndex": 14,
+    "conditionID": "temporal_jitter",
+    "seed": 72014,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 73,
+    "pairIndex": 14,
+    "conditionID": "extra_translation",
+    "seed": 72014,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 74,
+    "pairIndex": 14,
+    "conditionID": "tracking_interruption",
+    "seed": 72014,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 75,
+    "pairIndex": 15,
+    "conditionID": "nominal",
+    "seed": 72015,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 76,
+    "pairIndex": 15,
+    "conditionID": "command_delay",
+    "seed": 72015,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 77,
+    "pairIndex": 15,
+    "conditionID": "temporal_jitter",
+    "seed": 72015,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 78,
+    "pairIndex": 15,
+    "conditionID": "extra_translation",
+    "seed": 72015,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 79,
+    "pairIndex": 15,
+    "conditionID": "tracking_interruption",
+    "seed": 72015,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 80,
+    "pairIndex": 16,
+    "conditionID": "nominal",
+    "seed": 72016,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 81,
+    "pairIndex": 16,
+    "conditionID": "command_delay",
+    "seed": 72016,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 82,
+    "pairIndex": 16,
+    "conditionID": "temporal_jitter",
+    "seed": 72016,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 83,
+    "pairIndex": 16,
+    "conditionID": "extra_translation",
+    "seed": 72016,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 84,
+    "pairIndex": 16,
+    "conditionID": "tracking_interruption",
+    "seed": 72016,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 85,
+    "pairIndex": 17,
+    "conditionID": "nominal",
+    "seed": 72017,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 86,
+    "pairIndex": 17,
+    "conditionID": "command_delay",
+    "seed": 72017,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 87,
+    "pairIndex": 17,
+    "conditionID": "temporal_jitter",
+    "seed": 72017,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 88,
+    "pairIndex": 17,
+    "conditionID": "extra_translation",
+    "seed": 72017,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 89,
+    "pairIndex": 17,
+    "conditionID": "tracking_interruption",
+    "seed": 72017,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 90,
+    "pairIndex": 18,
+    "conditionID": "nominal",
+    "seed": 72018,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 91,
+    "pairIndex": 18,
+    "conditionID": "command_delay",
+    "seed": 72018,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 92,
+    "pairIndex": 18,
+    "conditionID": "temporal_jitter",
+    "seed": 72018,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 93,
+    "pairIndex": 18,
+    "conditionID": "extra_translation",
+    "seed": 72018,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 94,
+    "pairIndex": 18,
+    "conditionID": "tracking_interruption",
+    "seed": 72018,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 95,
+    "pairIndex": 19,
+    "conditionID": "nominal",
+    "seed": 72019,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 96,
+    "pairIndex": 19,
+    "conditionID": "command_delay",
+    "seed": 72019,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 97,
+    "pairIndex": 19,
+    "conditionID": "temporal_jitter",
+    "seed": 72019,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 98,
+    "pairIndex": 19,
+    "conditionID": "extra_translation",
+    "seed": 72019,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  {
+    "episodeIndex": 99,
+    "pairIndex": 19,
+    "conditionID": "tracking_interruption",
+    "seed": 72019,
+    "status": "notRun",
+    "movementExecuted": false
+  }
+]

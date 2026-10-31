@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "scope": "reviewed current Earcut dependency CI, not historical stage83 proof",
+  "historical_manifest": "SOURCE_PINS.json",
+  "historical_manifest_sha256": "5d54a3c436166fd1ee1568cc15f2c34ce724958eee6a630d006c1e448cd1663a",
+  "reviewed_changes": [
+    {
+      "path": "research/room-mesh-package-75/apple/ci.py",
+      "before": "29bac96c47f2352f1b7af52dd6b0217c3238ab5707fa8ac9e7a38f4d8caa7bde",
+      "after": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "before": "733a7bdcc4a8da7ff4fc95c087b690e369ca03c79adcc729e277934d708b53b1",
+      "after": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/tests/main.swift",
+      "before": "b4d00b36d9dc58a7160817510f0e29d5f56dfd40358faec810db6b743ffd8123",
+      "after": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+      "before": "03fff8f2bf62e1cf2ea2ac5a0a0d2b11c78a17225a5a6314b0a68ff8b6ed92b3",
+      "after": "615d816abcf85013f3d4d35eba806eba25a53101ac9f58e26d3b7cbc771e5c91"
+    }
+  ],
+  "new_files": [
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json"
+  ],
+  "files": {
+    "research/native-mesh-decoder-81/Sources/MeshBufferDecoder.swift": "3e028faafe3094fa103083ddec9e494dafa9065df998924531d20962331e7dc0",
+    "research/native-mesh-decoder-81/apple/ci.py": "5c8a5f2ac3b3df5cedc2dbab140a16a12be13ae9103989d7c158f40f1139445f",
+    "research/arkit-mesh-adapter-82/Sources/MeshSnapshot.swift": "d7318f9a2564c62677abaf53934ea7721a25fe13a1d59ffab9ecd717762b4fdc",
+    "research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift": "73c26289773688db28c6caaeb0d84430dd81c78df5a4fa8718b50f332da4687f",
+    "research/room-mesh-package-75/apple/ci.py": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0",
+    "research/room-mesh-package-75/APPLE_SOURCE_PINS.json": "d96e7e5ecf2f1bfdfe42e95e1717119ffccb7e306bfd54aa4815b2f5f40b8530",
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6",
+    "research/mesh-candidate-ingress-83/Sources/ARKitIngress.swift": "b67267f1079a6f14e289ad8b795ead282973e662a7a18774bc2c842211225b2e",
+    "research/mesh-candidate-ingress-83/tests/main.swift": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20",
+    "research/mesh-candidate-ingress-83/apple/ci.py": "615d816abcf85013f3d4d35eba806eba25a53101ac9f58e26d3b7cbc771e5c91",
+    "research/mesh-candidate-ingress-83/apple/workflow-proposal.yml": "e21aaf8b0dc2a041ac0f861c0828ba429aae9c763afb9b00ff4d5566e5ba3638",
+    "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
+    "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
+    "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
+  },
+  "immutable_snapshot_layer": {
+    "scope": "current source only; new native tests authored, not executed",
+    "base_manifest_sha256": "b03d5ee01091bc1adde491e2f14f2e6bfb80a75c7856865a5aa32599dcbae1c7",
+    "changes": [
+      {
+        "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+        "before": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d",
+        "after": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510"
+      },
+      {
+        "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+        "before": "1e64d3b00f3f6cb5ba7a54be032155e7c7eafd89c443c755bcffc6325cdd5351",
+        "after": "78ff92baab7f7ec882d279a614bb625c0a53521399e196e6dde96dceb4772bce"
+      }
+    ]
+  },
+  "anchor_delivery_recovery_layer": {
+    "scope": "current source only;14 new native tests authored not executed",
+    "base_manifest_sha256": "d29372090b1424167bfd5ea6e388787e018b583ace237af21328d120bb52b144",
+    "changes": [
+      {
+        "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+        "before": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510",
+        "after": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
+      },
+      {
+        "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+        "before": "78ff92baab7f7ec882d279a614bb625c0a53521399e196e6dde96dceb4772bce",
+        "after": "d8bd86678228d95c6f5be767faf9e1045342e2582f1f793a1ce66bf160f262d5"
+      }
+    ]
+  },
+  "optional_exact_seed_radius_layer": {
+    "baselineManifestSHA256": "de54c36a151998768789ef37ab56c48262256241b44b3a24566ecf98cf3a79f6",
+    "sourceManifestSHA256": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+    "before": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "d8bd86678228d95c6f5be767faf9e1045342e2582f1f793a1ce66bf160f262d5"
+    },
+    "defaultCallerActivation": false
+  },
+  "optional_envelope_layer": {
+    "beforeManifestSHA256": "67ba14e6f1ba1ef98d69556715c14f8d90871b014b89443984b12efd3c585a56",
+    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
+    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
+    "before": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "a12d61b6119ca3c8fc0707aa846db26794011193643d07ae858e50cb8e158b80"
+    },
+    "added": [],
+    "defaultCallerActivation": false,
+    "nativeSwiftExecuted": false
+  },
+  "synthetic_diagnostics_layer": {
+    "beforeManifestSHA256": "422cedceb07da811737dbd82e189771c5ee3d5e4656c8cc523a1921e61c6411d",
+    "before": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "0e3d03c681912e58aef1c9c55086fb8acba2e003d4aa3e3aea2761c32386b749"
+    },
+    "after": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a"
+    },
+    "defaultCallerActivation": false,
+    "nativeSwiftExecuted": false
+  },
+  "seated_body_foot_candidate_layer": {
+    "status": "unbuilt_source",
+    "beforeManifestSHA256": "a232849250c51fc936b1c135be6bdf083a65c3668911ba98190009005e5a8744",
+    "before": {
+      "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
+    },
+    "after": {
+      "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
+    },
+    "scope": "optional atomic expectedSource admission; no change to legacy default or physical authority"
+  },
+  "source_delivery_diagnostic_layer": {
+    "status": "unexecuted_debug_metadata_only",
+    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+    "beforeManifestSHA256": "8b37ae7107f81b0fc54aba1ffc6f128150ab153391c76f52b283d92d765f578a",
+    "changes": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
+        "before": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a",
+        "after": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab"
+      }
+    },
+    "runtimeAuthorityChanged": false
+  },
+  "roommesh_no_artifact_layer": {
+    "status": "source_only_no_artifact_default",
+    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+    "beforeManifestSHA256": "3722e8ea7bd17f6d71d1c5a42c0f0be3bb2c684ab4dcdafd756480ae05c208ee",
+    "changes": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
+        "before": "51173488ef575167179ffa79e42db57e4ac1dec46ee6e20708c6c3ffc6f7e4ab",
+        "after": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657"
+      }
+    },
+    "runtimeAuthorityChanged": false
+  },
+  "synthetic_qos_comparison_layer": {
+    "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
+    "status": "source_only_unexecuted",
+    "beforeManifestSHA256": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d",
+    "changes": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
+        "before": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657",
+        "after": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
+      }
+    },
+    "runtimeAuthorityChanged": false
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "RGB_sync": "UNRESOLVED; RGB was not used",
+  "axis_convention_run": {
+    "candidate": {
+      "id": "C23",
+      "optical_to_recorded_camera": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "runner_up_convention_score_gap": 0.014862354098077193,
+      "scale_m_per_unit": 0.001,
+      "score": 0.057572159389514085
+    },
+    "coarse_controls": {
+      "cyclic_pose_shuffle": {
+        "best_score": null,
+        "eligible_scales": 0,
+        "evaluated_scales": 25,
+        "score_range": null,
+        "status": "coverage_ineligible"
+      },
+      "zero_translation": {
+        "best_score": 0.06982114620430421,
+        "eligible_scales": 25,
+        "evaluated_scales": 25,
+        "score_range": [
+          0.06982114620430421,
+          0.06982114620430423
+        ],
+        "status": "eligible_control_scores"
+      }
+    },
+    "conventions_tested": 24,
+    "decision": {
+      "reasons": [],
+      "status": "candidate_survives_preregistered_internal_checks"
+    },
+    "development_aggregate_loss": 0.057572159389514085,
+    "development_fit_status": "conditional_candidate_only",
+    "development_leave_one_pair_out_stability": [
+      {
+        "omitted_development_pair": 0,
+        "runner_up_gap": 0.00917554661533903,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.040171639586004594,
+        "stable": true,
+        "winner_id": "C23"
+      },
+      {
+        "omitted_development_pair": 1,
+        "runner_up_gap": 0.011066062233780122,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.07095461477447552,
+        "stable": true,
+        "winner_id": "C23"
+      },
+      {
+        "omitted_development_pair": 2,
+        "runner_up_gap": 0.020857973294634347,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.06615222943479719,
+        "stable": true,
+        "winner_id": "C23"
+      },
+      {
+        "omitted_development_pair": 3,
+        "runner_up_gap": 0.014931910296325221,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.05301015376277904,
+        "stable": true,
+        "winner_id": "C23"
+      }
+    ],
+    "development_pair_losses_without_frame_ids": [
+      0.10977371880004257,
+      0.017424793234629764,
+      0.03183194925366478,
+      0.07125817626971923
+    ],
+    "equally_refined_controls": {
+      "cyclic_pose_shuffle": {
+        "best_scale_m_per_unit": null,
+        "best_score": null,
+        "profile_summary": {
+          "best_score": null,
+          "eligible_scales": 0,
+          "evaluated_scales": 25,
+          "score_range": null,
+          "status": "coverage_ineligible"
+        },
+        "status": "inconclusive_no_coverage"
+      },
+      "zero_translation": {
+        "best_scale_m_per_unit": 1e-06,
+        "best_score": 0.06982114620430421,
+        "profile_summary": {
+          "best_score": 0.06982114620430421,
+          "eligible_scales": 25,
+          "evaluated_scales": 25,
+          "score_range": [
+            0.06982114620430421,
+            0.06982114620430423
+          ],
+          "status": "eligible_control_scores"
+        },
+        "status": "inconclusive_boundary_minimum"
+      }
+    },
+    "heldout_aggregate_loss": 0.06979539950120683,
+    "heldout_pair_losses_without_frame_ids": [
+      0.07399235729348971,
+      0.06559844170892394
+    ],
+    "heldout_state": "evaluated_once_at_locked_development_candidate",
+    "no_direction_inversion_no_pose_fit_no_pair_reselection": true,
+    "original_F_regression": {
+      "development_status": "inconclusive_no_coverage",
+      "status": "passed"
+    },
+    "run": "axis-diagnostic-run-001",
+    "scale_near_minimum_range_NOT_confidence_interval": [
+      0.0007943282347242813,
+      0.0017782794100389228
+    ],
+    "zero_translation_score_increase_over_candidate": 0.012248986814790128
+  },
+  "limitations": [
+    "Export units and camera convention remain inferred, not author documented.",
+    "Six frozen pairs only; four development/two holdout. Raw odometry is not independent ground truth.",
+    "Objective includes fixed penalties for missing/occluded samples; its values are not metric accuracy percentages.",
+    "Near-minimum scale interval is a heuristic profile range, not a statistical confidence interval.",
+    "K scaling/pixel-center association and pose direction remain conditional assumptions.",
+    "RGB/video synchronization remains unresolved; RGB was not used.",
+    "No metric mapping accuracy, stair-detector accuracy or navigation-safety claim.",
+    "No source/gate/pair changes or automatic reruns followed this result; raw data remain private.",
+    "This source/aggregate preservation packet does not grant a dataset redistribution licence.",
+    "No raw images, masks, raw poses, pair manifests, CSVs, PLYs or dataset archives are included."
+  ],
+  "loss_definition": "Dimensionless capped absolute log-depth ratio plus fixed missing/occlusion penalties; NOT metres, percent accuracy, or independent ground-truth error.",
+  "original_scale_run": {
+    "assumed_optical_to_recorded_camera": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        -1,
+        0
+      ],
+      [
+        0,
+        0,
+        -1
+      ]
+    ],
+    "controls": {
+      "cyclic_pose_shuffle": {
+        "best_score": 0.10752822287346425,
+        "eligible_scales": 7,
+        "evaluated_scales": 25,
+        "score_range": [
+          0.10752822287346425,
+          0.10852054007905274
+        ],
+        "status": "eligible_control_scores"
+      },
+      "zero_translation": {
+        "best_score": null,
+        "eligible_scales": 0,
+        "evaluated_scales": 25,
+        "score_range": null,
+        "status": "coverage_ineligible"
+      }
+    },
+    "decision": {
+      "reasons": [
+        "development_residual_too_large",
+        "heldout_insufficient_coverage",
+        "inconclusive_no_coverage",
+        "zero_translation_control_uninformative_or_nonflat"
+      ],
+      "status": "inconclusive",
+      "threshold_status": "Declared diagnostic design choices before selected depths are read; NOT accuracy specifications or confidence intervals",
+      "thresholds": {
+        "max_development_or_holdout_score": 0.15,
+        "max_holdout_median_visible_log_error": 0.1,
+        "max_holdout_score_increase": 0.03,
+        "max_near_minimum_scale_factor": 4,
+        "max_zero_translation_profile_range": 0.001,
+        "min_shuffled_best_score_increase": 0.01,
+        "min_zero_translation_score_increase": 0.01
+      }
+    },
+    "development": {
+      "best_scale_m_per_unit": null,
+      "best_score": null,
+      "profile_summary": {
+        "best_score": null,
+        "eligible_scales": 0,
+        "evaluated_scales": 25,
+        "score_range": null,
+        "status": "coverage_ineligible"
+      },
+      "status": "inconclusive_no_coverage"
+    },
+    "development_aggregate_loss": null,
+    "gate_interpretation": "Generic development_residual_too_large and heldout_insufficient_coverage reason strings cover an absent candidate here; neither is a measured aggregate development residual or heldout coverage failure.",
+    "heldout_aggregate_loss": null,
+    "heldout_state": "not_evaluated_no_development_candidate",
+    "run": "scale-diagnostic-run-001",
+    "selected_scale_m_per_unit": null
+  },
+  "sample_design": {
+    "development_pairs": 4,
+    "holdout_pairs": 2,
+    "pair_selection": "Frozen from pose metadata before depth-based selection; pair identities and raw poses intentionally omitted.",
+    "prior_holdout_exposure": "Original scale run decoded holdout shape/type/masks but did not score holdout geometry; axis search deferred holdout decode/scoring until development lock."
+  },
+  "schema": "scalemaster-calibration-aggregate-preservation-v1",
+  "scope": "Already-completed private Stairs_02 diagnostics only; packaging did not rerun inference."
+}

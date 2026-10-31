@@ -1,0 +1,275 @@
+{
+  "repository": "https://github.com/recastnavigation/recastnavigation",
+  "revision": "9f4ce64458dfae86e1239c525ddc219c4e9e06f1",
+  "tree": "3f2171f00146970f294af02a8e0056647a559b64",
+  "license": "Zlib",
+  "sourceFiles": 43,
+  "sourceBytes": 738805,
+  "totalAcquisitionBytes": 807980,
+  "sourceCapBytes": 20971520,
+  "workdirCapBytes": 209715200,
+  "files": [
+    {
+      "path": "Detour/Include/DetourAlloc.h",
+      "bytes": 2657,
+      "git_blob_sha1": "f87b454acb6fa975313cf9f480d7fe35221616fd",
+      "sha256": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71"
+    },
+    {
+      "path": "Detour/Include/DetourAssert.h",
+      "bytes": 2302,
+      "git_blob_sha1": "ea58dd9a03374e75d0fd8a670be28c0163b56efd",
+      "sha256": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794"
+    },
+    {
+      "path": "Detour/Include/DetourCommon.h",
+      "bytes": 19435,
+      "git_blob_sha1": "d54bc7edc7d5c4932e9605f000b7e640c8b0a09d",
+      "sha256": "24d69468f73782718855b3691ae348e50437febc7594635b37a940f1c0c8db46"
+    },
+    {
+      "path": "Detour/Include/DetourMath.h",
+      "bytes": 754,
+      "git_blob_sha1": "eec89ce08ed5b558906dbfd23d212bdbf0c98a60",
+      "sha256": "1251390f71e85b8b20cfd33340a42f712f2e8305e363c001fcdd9b55578a3cd4"
+    },
+    {
+      "path": "Detour/Include/DetourNavMesh.h",
+      "bytes": 31772,
+      "git_blob_sha1": "422a3342f2711e704cc3e95bfd9f43dfbfee5308",
+      "sha256": "aee0d0d332d3ac352ed14d0a3d86fe0fdfd1d9cd424e67c2a0438e1c41bb6e31"
+    },
+    {
+      "path": "Detour/Include/DetourNavMeshBuilder.h",
+      "bytes": 6759,
+      "git_blob_sha1": "1840ab5248566fbce4836335b35ef2bbd2872e37",
+      "sha256": "e2734317981bb9dfb973af6a33025f926ce28535389696d9babf15254817c682"
+    },
+    {
+      "path": "Detour/Include/DetourNavMeshQuery.h",
+      "bytes": 31195,
+      "git_blob_sha1": "dd8150c29d907275f2621b1949bd40154e5890da",
+      "sha256": "fa80858bb80c984f85ec15182c31e1757858bc86511f81fb8bb265b8fe20f6d6"
+    },
+    {
+      "path": "Detour/Include/DetourNode.h",
+      "bytes": 4644,
+      "git_blob_sha1": "8918d4686c0d394145eef2b5c6002da8893c9207",
+      "sha256": "7c295c61f09dff0de42bdcc873a5d698d687bb2052aca8b293425c0ef0444a9e"
+    },
+    {
+      "path": "Detour/Include/DetourStatus.h",
+      "bytes": 2707,
+      "git_blob_sha1": "8e1bb44b9dc9525efbac1d0b34fa98a99254b591",
+      "sha256": "7255e33173c4bdb26f4224514d098fdc5c31e19cd80263a4e56475627602ade9"
+    },
+    {
+      "path": "Detour/Source/DetourAlloc.cpp",
+      "bytes": 1515,
+      "git_blob_sha1": "d9ad1fc013934206d782f5f1a06da34a9c828ddd",
+      "sha256": "ddf4d9857e9e1714daa9dd9b687ac8139085cc602359db0dba4f1dedbedc69c1"
+    },
+    {
+      "path": "Detour/Source/DetourAssert.cpp",
+      "bytes": 1206,
+      "git_blob_sha1": "a9727a31981744d3ae49cf12b947b805944580a6",
+      "sha256": "3caf6f89119fab5b89f3454cfb13b3776f429c9f0e4e5c8acb3ac56ab813273c"
+    },
+    {
+      "path": "Detour/Source/DetourCommon.cpp",
+      "bytes": 9831,
+      "git_blob_sha1": "b8457828e3e1594ec214ce98e71b7dd3c12cce9c",
+      "sha256": "c28eb2d5fd251e1b2e24a7c03a679ff82684e51a0ce95db3cf457fda60362008"
+    },
+    {
+      "path": "Detour/Source/DetourNavMesh.cpp",
+      "bytes": 45489,
+      "git_blob_sha1": "ee868f2f176b2110e4f281bb9fb425e7b1084ef3",
+      "sha256": "637d8750f0d097ba00d9ef3fd4d8f30a36de5e482b8f8c3c8930d6df05b86600"
+    },
+    {
+      "path": "Detour/Source/DetourNavMeshBuilder.cpp",
+      "bytes": 24214,
+      "git_blob_sha1": "07ba86311f2d5aaa370da579789cae850a100989",
+      "sha256": "159b4bacae86bdb2ff40225e837ff7b84e306456fbf08ec717b1da1dfeba4555"
+    },
+    {
+      "path": "Detour/Source/DetourNavMeshQuery.cpp",
+      "bytes": 105016,
+      "git_blob_sha1": "7edbe3b1dc849c40c4478e51cb3695405247c5d8",
+      "sha256": "73651e2cea3c162cd01574e24668a30ab4c3dc985e07d51a9d7038c0523b0db1"
+    },
+    {
+      "path": "Detour/Source/DetourNode.cpp",
+      "bytes": 4884,
+      "git_blob_sha1": "48abbba6b5b256e0b03c97c35cee780b379e8c8a",
+      "sha256": "067ffb9a81f7315f2253ff217263acb1c01590d130e01d4de4500308d756132b"
+    },
+    {
+      "path": "DetourCrowd/Include/DetourCrowd.h",
+      "bytes": 18147,
+      "git_blob_sha1": "6360dfb3e61ba5666aae123fb05964cd633e8875",
+      "sha256": "66053c29eddcdb8794569e4f60d0a3d2102740f403822d451d63a1b336cf4855"
+    },
+    {
+      "path": "DetourCrowd/Include/DetourLocalBoundary.h",
+      "bytes": 2077,
+      "git_blob_sha1": "56b5cb27c5cba0ab79e43fbbab4636e4ce146abe",
+      "sha256": "61a0bef8538a48de8e30a4e0e49442383c83543ce0b8d749affa24d452c8132c"
+    },
+    {
+      "path": "DetourCrowd/Include/DetourObstacleAvoidance.h",
+      "bytes": 5346,
+      "git_blob_sha1": "cc46347a0fbcf5abf61960edddc6398b1433d6d3",
+      "sha256": "f3c6e39dd4b8c60a4a8ae4c1202ab06170fe673bcb43568cb910601fad993065"
+    },
+    {
+      "path": "DetourCrowd/Include/DetourPathCorridor.h",
+      "bytes": 7498,
+      "git_blob_sha1": "f5ee8df70d1c933e9e242be4b3e8b55d88aba669",
+      "sha256": "f252e962a4b3aef1e7f31caa367134c85d27264f9238d06763383b8a78dfce62"
+    },
+    {
+      "path": "DetourCrowd/Include/DetourPathQueue.h",
+      "bytes": 2381,
+      "git_blob_sha1": "310721e7093e66fca40e27df968dc77194c0de28",
+      "sha256": "7c48d76be6a59a9ec82ed11e687d4bdd414a6ba96aabd3adb28e869dccdceb82"
+    },
+    {
+      "path": "DetourCrowd/Include/DetourProximityGrid.h",
+      "bytes": 2122,
+      "git_blob_sha1": "d8968efd5640b9801cb5eb46fb368ffcd254b0f0",
+      "sha256": "b98a88367f2eb29ed5e615d73dc3c8bcd7742a8010eec21fdbfa6ca048af6198"
+    },
+    {
+      "path": "DetourCrowd/Source/DetourCrowd.cpp",
+      "bytes": 38144,
+      "git_blob_sha1": "d7cdae0b9b58b4cee41b4b56763f23526af9c4aa",
+      "sha256": "c0d5164dabc3e68ee25ba479d13ae7f77066ccf7bfb461963d16a144caaf3ac5"
+    },
+    {
+      "path": "DetourCrowd/Source/DetourLocalBoundary.cpp",
+      "bytes": 3491,
+      "git_blob_sha1": "79d4322063dcafc94c4837f212579f457e0d83b6",
+      "sha256": "ecb0196533c654d43894c061f1dd551008f95f3f03e2d03558962f82c77e486e"
+    },
+    {
+      "path": "DetourCrowd/Source/DetourObstacleAvoidance.cpp",
+      "bytes": 15386,
+      "git_blob_sha1": "f460c3d92a7bad1abde6c262b2bf1dac76ed8499",
+      "sha256": "a385493b551ea6a72af687fceaf1283e738570ea288a1ebe73e11c32aa3a386a"
+    },
+    {
+      "path": "DetourCrowd/Source/DetourPathCorridor.cpp",
+      "bytes": 17857,
+      "git_blob_sha1": "3835a389b5fa02048c49c0c79735a6325703e5dc",
+      "sha256": "09fd84d977b48789fc5d999e53850ce9f47bcc3ab6d4c9dea98beec2789ced05"
+    },
+    {
+      "path": "DetourCrowd/Source/DetourPathQueue.cpp",
+      "bytes": 4731,
+      "git_blob_sha1": "1ed0cd7ebc50c9cdfd92fdd6ff51701d6604ed11",
+      "sha256": "69360fd1e15efb427fa43948234a3fb516ec1b53db2154c1bbf3e0df36f8bfea"
+    },
+    {
+      "path": "DetourCrowd/Source/DetourProximityGrid.cpp",
+      "bytes": 4813,
+      "git_blob_sha1": "fc1e2e13686070313cb07144df84aa4619db9718",
+      "sha256": "ba4acb2161cfca60ec10669eafc665230150b6856efa33c0afa0c39f321a2521"
+    },
+    {
+      "path": "License.txt",
+      "bytes": 877,
+      "git_blob_sha1": "c259ddf6cd36f4745ca71bff1092d3c9d2af900d",
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "path": "Recast/Include/Recast.h",
+      "bytes": 63085,
+      "git_blob_sha1": "30e710e50c5458e115b3aafe70e69438c3c0ecf1",
+      "sha256": "712634ac8d933af70ef08270a2f439270cddb821cc901c216494fa843e4e5990"
+    },
+    {
+      "path": "Recast/Include/RecastAlloc.h",
+      "bytes": 13046,
+      "git_blob_sha1": "2ca43ec558fd11c6c84c622d9ff706d036a66f3e",
+      "sha256": "36dcd90719f0ff80d568eee808d7a05416265f2e370a32842411cd67f30eb4cd"
+    },
+    {
+      "path": "Recast/Include/RecastAssert.h",
+      "bytes": 2210,
+      "git_blob_sha1": "7527cffc046adac402519c5ec64435834281be5f",
+      "sha256": "22feb557dfcd302cff1ef882741a608a338b0a99689ea56d4320d8dafecd7912"
+    },
+    {
+      "path": "Recast/Source/Recast.cpp",
+      "bytes": 13572,
+      "git_blob_sha1": "d75a9f59f6ae27bcf1dd8429ccccc6eb770bd8bb",
+      "sha256": "865595763451cde0aad5b99088bfab48d4ea35050fefd67f3d4f95885ba38d66"
+    },
+    {
+      "path": "Recast/Source/RecastAlloc.cpp",
+      "bytes": 1545,
+      "git_blob_sha1": "e919daf7be43b0d700db463c461bf64ce81d77db",
+      "sha256": "e77600ee0a1f4b36e9e0700480fcfccf8a62e31eb9e16aa7cb8eab5e93511a2e"
+    },
+    {
+      "path": "Recast/Source/RecastArea.cpp",
+      "bytes": 24692,
+      "git_blob_sha1": "7a7091cc88c1e1af061d85edc9c7f430aee53168",
+      "sha256": "445cce010d7a3220355497a3c2c3f45fbc4fcd2436db5cca15157d935a42d477"
+    },
+    {
+      "path": "Recast/Source/RecastAssert.cpp",
+      "bytes": 1187,
+      "git_blob_sha1": "08a05a6cb9f7df9dad44e3247fa95800ceb314c4",
+      "sha256": "335af77176d9ee1fb5c9763df6ce21a818aed19524f3dc251a50ae61ae853496"
+    },
+    {
+      "path": "Recast/Source/RecastContour.cpp",
+      "bytes": 30361,
+      "git_blob_sha1": "ce50c78c9c30be0341a3615e5fe056bcce8f73a2",
+      "sha256": "a9282897a5a5cb56cf8bbab97e0fd5edc3cd394ae8fe5266a28ce4199a4f3bfa"
+    },
+    {
+      "path": "Recast/Source/RecastFilter.cpp",
+      "bytes": 7559,
+      "git_blob_sha1": "7875040b9f07a17d54d9f61ae3389db0732e2103",
+      "sha256": "0d133cdce1446babbf01bf47dc152c843e9cb2ee5dbb537c2e0ae566b6c95b9d"
+    },
+    {
+      "path": "Recast/Source/RecastLayers.cpp",
+      "bytes": 17586,
+      "git_blob_sha1": "ca37ebba7f3c8ced782562c13938b8b693f03dd9",
+      "sha256": "f01d325fd096feee2971f71f9b03b1d37a6d0a4777bb9d529ce698253b484820"
+    },
+    {
+      "path": "Recast/Source/RecastMesh.cpp",
+      "bytes": 42215,
+      "git_blob_sha1": "98e15cdccec2985e3c688bca048f3b42a8efcaa7",
+      "sha256": "9667e69e1886a520fcc84044b2e96154ff75e5c804fa32520b1cc0d991e42fd9"
+    },
+    {
+      "path": "Recast/Source/RecastMeshDetail.cpp",
+      "bytes": 40115,
+      "git_blob_sha1": "07bbdbd5ab462456f4478e4adccfbcb0ae5bb626",
+      "sha256": "e77e8fc479215fe9a14c68051090fa16884a13ba03b0e424a80bbf6f506f818f"
+    },
+    {
+      "path": "Recast/Source/RecastRasterization.cpp",
+      "bytes": 18226,
+      "git_blob_sha1": "c65d6ea0a67f649d880d73957f0905cab09f3933",
+      "sha256": "30ed7b12d42bd61dda5aa9eff2e559574d91a61145f40fe4cea449b9eabf792a"
+    },
+    {
+      "path": "Recast/Source/RecastRegion.cpp",
+      "bytes": 46156,
+      "git_blob_sha1": "48eed36b597111b5415d9731c3a6fd787c44989a",
+      "sha256": "174e00a76287e03eff20d889c0b744ea24c9cababd22c42f2d1f83e8d512c345"
+    }
+  ],
+  "buildStatus": "built; local adapter tests separate",
+  "libraryBytes": 327400,
+  "librarySHA256": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0"
+}

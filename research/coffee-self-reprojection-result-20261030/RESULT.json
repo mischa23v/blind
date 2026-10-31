@@ -1,0 +1,1092 @@
+{
+  "status": "completed-self-versus-fused-diagnostic",
+  "physicalAuthority": false,
+  "routeAcceptance": false,
+  "heldoutDepthRead": false,
+  "sameViewConsistencyNotAccuracy": true,
+  "buildFrames": [
+    "frame_00290",
+    "frame_00357",
+    "frame_00391"
+  ],
+  "cases": [
+    {
+      "kind": "fused",
+      "frame": "frame_00290",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 110176,
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 1723,
+      "fixedGridValid": 9902,
+      "mapBefore": {
+        "state": {
+          "scans": 3,
+          "treeNodes": 271082,
+          "leaves": 232014,
+          "evidenceKeys": 232014,
+          "hitVotes": 26608,
+          "freeVotes": 223405
+        },
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "payload": {
+          "xyzSizeProbability.npy": {
+            "sha256": "a1c34832f6d621fccc33fc2f7cc0257d3882612dcea37d54a95cc3f8c511d2da",
+            "bytes": 9280688
+          },
+          "logOdds.npy": {
+            "sha256": "da69eb5df4d22530451a4fab08398bfc03b8871127cfa377440446d2b2dbbcae",
+            "bytes": 928184
+          },
+          "hitScans.npy": {
+            "sha256": "6d98b667508972d328d33d1df21db0ac3b654b066c450e3768285d9200f389ae",
+            "bytes": 928184
+          },
+          "freeScans.npy": {
+            "sha256": "891dc8fcaa40255ef5b649cf46b5e1fd1b116bfb132ffb2f2413b5d57094613c",
+            "bytes": 928184
+          }
+        }
+      },
+      "mapLeafSizeCounts": {
+        "0.05": 232014
+      },
+      "nativeIntersectionBoxMetres": 0.05,
+      "primaryRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 9500,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 400,
+        "range-exhausted": 2,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "observationRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 3,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0,
+        "observed-hit-visibility-unverified": 9899
+      },
+      "entryAxialResidualMetres": {
+        "count": 9899,
+        "signed": {
+          "min": -1.8740631736646907,
+          "p05": -0.4748038993722275,
+          "p25": -0.09971258369651603,
+          "median": -0.059167472135360555,
+          "p75": -0.03415473220967025,
+          "p95": -0.015544437505048813,
+          "max": -0.00022414474018495056,
+          "mean": -0.11745154134113085,
+          "rms": 0.2453025519189853
+        },
+        "absolute": {
+          "min": 0.00022414474018495056,
+          "p05": 0.015544437505048813,
+          "p25": 0.03415473220967025,
+          "median": 0.059167472135360555,
+          "p75": 0.09971258369651603,
+          "p95": 0.47480389937222867,
+          "max": 1.8740631736646907,
+          "mean": 0.11745154134113085,
+          "rms": 0.2453025519189853
+        }
+      },
+      "centerAxialResidualMetres": {
+        "count": 9899,
+        "signed": {
+          "min": -1.8574911606271776,
+          "p05": -0.4538836677069694,
+          "p25": -0.09643722870809768,
+          "median": -0.04516950954487897,
+          "p75": -0.019477584005736404,
+          "p95": 0.0024356477541338083,
+          "max": 0.03271278154728652,
+          "mean": -0.10571334438327157,
+          "rms": 0.24049653985524516
+        },
+        "absolute": {
+          "min": 4.076433441069227e-05,
+          "p05": 0.004368298226859047,
+          "p25": 0.019875868163797827,
+          "median": 0.04516950954487897,
+          "p75": 0.09643722870809768,
+          "p95": 0.4538836677069714,
+          "max": 1.8574911606271776,
+          "mean": 0.10678556531247474,
+          "rms": 0.24049653985524516
+        }
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 9899,
+        "signed": {
+          "min": -1.929541142489613,
+          "p05": -0.5180033876664064,
+          "p25": -0.10988248339958617,
+          "median": -0.0652059477039244,
+          "p75": -0.0373732439683474,
+          "p95": -0.017202533815344204,
+          "max": -0.00024270608921472814,
+          "mean": -0.12777259631568708,
+          "rms": 0.26331646093922906
+        },
+        "absolute": {
+          "min": 0.00024270608921472814,
+          "p05": 0.017202533815344225,
+          "p25": 0.0373732439683474,
+          "median": 0.0652059477039244,
+          "p75": 0.10988248339958617,
+          "p95": 0.5180033876664066,
+          "max": 1.929541142489613,
+          "mean": 0.12777259631568708,
+          "rms": 0.26331646093922906
+        }
+      },
+      "hitTerminalConflicts": 0,
+      "beforeAfterPayloadEqual": true,
+      "derivedEvidence": {
+        "path": "fused_frame_00290.npz",
+        "sha256": "cc42c39bbd5c4410fb96946f9a1031bceb86155411ee4a25437a373786d727d7",
+        "bytes": 516046
+      }
+    },
+    {
+      "kind": "fused",
+      "frame": "frame_00357",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 268528,
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 4189,
+      "fixedGridValid": 7436,
+      "mapBefore": {
+        "state": {
+          "scans": 3,
+          "treeNodes": 271082,
+          "leaves": 232014,
+          "evidenceKeys": 232014,
+          "hitVotes": 26608,
+          "freeVotes": 223405
+        },
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "payload": {
+          "xyzSizeProbability.npy": {
+            "sha256": "a1c34832f6d621fccc33fc2f7cc0257d3882612dcea37d54a95cc3f8c511d2da",
+            "bytes": 9280688
+          },
+          "logOdds.npy": {
+            "sha256": "da69eb5df4d22530451a4fab08398bfc03b8871127cfa377440446d2b2dbbcae",
+            "bytes": 928184
+          },
+          "hitScans.npy": {
+            "sha256": "6d98b667508972d328d33d1df21db0ac3b654b066c450e3768285d9200f389ae",
+            "bytes": 928184
+          },
+          "freeScans.npy": {
+            "sha256": "891dc8fcaa40255ef5b649cf46b5e1fd1b116bfb132ffb2f2413b5d57094613c",
+            "bytes": 928184
+          }
+        }
+      },
+      "mapLeafSizeCounts": {
+        "0.05": 232014
+      },
+      "nativeIntersectionBoxMetres": 0.05,
+      "primaryRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 7214,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 222,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "observationRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 3,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0,
+        "observed-hit-visibility-unverified": 7433
+      },
+      "entryAxialResidualMetres": {
+        "count": 7433,
+        "signed": {
+          "min": -2.450137558259729,
+          "p05": -0.8039765207280811,
+          "p25": -0.1273638428095487,
+          "median": -0.07568131498074426,
+          "p75": -0.04071812708651379,
+          "p95": -0.015131908102465634,
+          "max": -0.0002808614782616736,
+          "mean": -0.1699238389824621,
+          "rms": 0.3865899901706671
+        },
+        "absolute": {
+          "min": 0.0002808614782616736,
+          "p05": 0.015131908102465631,
+          "p25": 0.04071812708651379,
+          "median": 0.07568131498074426,
+          "p75": 0.1273638428095487,
+          "p95": 0.8039765207280777,
+          "max": 2.450137558259729,
+          "mean": 0.1699238389824621,
+          "rms": 0.3865899901706671
+        }
+      },
+      "centerAxialResidualMetres": {
+        "count": 7433,
+        "signed": {
+          "min": -2.4693078285875805,
+          "p05": -0.804699400435039,
+          "p25": -0.12382238370046128,
+          "median": -0.06447031388605229,
+          "p75": -0.02726110193357334,
+          "p95": 0.004250026024471241,
+          "max": 0.032644903266537906,
+          "mean": -0.16004850646274713,
+          "rms": 0.3846253167933012
+        },
+        "absolute": {
+          "min": 3.3700128653890715e-05,
+          "p05": 0.004770462305088152,
+          "p25": 0.027784646118513612,
+          "median": 0.06447031388605229,
+          "p75": 0.12382238370046128,
+          "p95": 0.8046994004350385,
+          "max": 2.4693078285875805,
+          "mean": 0.1613827959364417,
+          "rms": 0.3846253167933012
+        }
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 7433,
+        "signed": {
+          "min": -2.677846032084105,
+          "p05": -0.9111852511968017,
+          "p25": -0.1405927264889364,
+          "median": -0.08651035179841138,
+          "p75": -0.04578969036554614,
+          "p95": -0.016638995957520043,
+          "max": -0.0003093128806215262,
+          "mean": -0.18919005986033485,
+          "rms": 0.42531790215932014
+        },
+        "absolute": {
+          "min": 0.0003093128806215262,
+          "p05": 0.016638995957520032,
+          "p25": 0.04578969036554614,
+          "median": 0.08651035179841138,
+          "p75": 0.1405927264889364,
+          "p95": 0.9111852511968016,
+          "max": 2.677846032084105,
+          "mean": 0.18919005986033485,
+          "rms": 0.42531790215932014
+        }
+      },
+      "hitTerminalConflicts": 1615,
+      "beforeAfterPayloadEqual": true,
+      "derivedEvidence": {
+        "path": "fused_frame_00357.npz",
+        "sha256": "c01e08b1d062a390c629974e97cc4f7b929d2723e08829378a718194139c9e0c",
+        "bytes": 387814
+      }
+    },
+    {
+      "kind": "fused",
+      "frame": "frame_00391",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 0,
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 0,
+      "fixedGridValid": 11625,
+      "mapBefore": {
+        "state": {
+          "scans": 3,
+          "treeNodes": 271082,
+          "leaves": 232014,
+          "evidenceKeys": 232014,
+          "hitVotes": 26608,
+          "freeVotes": 223405
+        },
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "payload": {
+          "xyzSizeProbability.npy": {
+            "sha256": "a1c34832f6d621fccc33fc2f7cc0257d3882612dcea37d54a95cc3f8c511d2da",
+            "bytes": 9280688
+          },
+          "logOdds.npy": {
+            "sha256": "da69eb5df4d22530451a4fab08398bfc03b8871127cfa377440446d2b2dbbcae",
+            "bytes": 928184
+          },
+          "hitScans.npy": {
+            "sha256": "6d98b667508972d328d33d1df21db0ac3b654b066c450e3768285d9200f389ae",
+            "bytes": 928184
+          },
+          "freeScans.npy": {
+            "sha256": "891dc8fcaa40255ef5b649cf46b5e1fd1b116bfb132ffb2f2413b5d57094613c",
+            "bytes": 928184
+          }
+        }
+      },
+      "mapLeafSizeCounts": {
+        "0.05": 232014
+      },
+      "nativeIntersectionBoxMetres": 0.05,
+      "primaryRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 11444,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 181,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "observationRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0,
+        "observed-hit-visibility-unverified": 11625
+      },
+      "entryAxialResidualMetres": {
+        "count": 11625,
+        "signed": {
+          "min": -1.4143360377793117,
+          "p05": -0.4926948573690806,
+          "p25": -0.12370682822121215,
+          "median": -0.05618648583444319,
+          "p75": -0.03377607650541492,
+          "p95": -0.01425076138967914,
+          "max": -0.0006821089679021064,
+          "mean": -0.11765386353045715,
+          "rms": 0.2211829889923665
+        },
+        "absolute": {
+          "min": 0.0006821089679021064,
+          "p05": 0.014250761389679135,
+          "p25": 0.03377607650541492,
+          "median": 0.05618648583444319,
+          "p75": 0.12370682822121215,
+          "p95": 0.49269485736907864,
+          "max": 1.4143360377793117,
+          "mean": 0.11765386353045715,
+          "rms": 0.2211829889923665
+        }
+      },
+      "centerAxialResidualMetres": {
+        "count": 11625,
+        "signed": {
+          "min": -1.39576924558627,
+          "p05": -0.4805294687192638,
+          "p25": -0.1254249069420026,
+          "median": -0.04200647022244963,
+          "p75": -0.016732331735632933,
+          "p95": 0.007437304723715954,
+          "max": 0.03056352389470618,
+          "mean": -0.10631321236842985,
+          "rms": 0.2166562460624432
+        },
+        "absolute": {
+          "min": 2.7655123489012112e-06,
+          "p05": 0.0031715611072656636,
+          "p25": 0.016960231292600714,
+          "median": 0.04200647022244963,
+          "p75": 0.1254249069420026,
+          "p95": 0.48052946871926183,
+          "max": 1.39576924558627,
+          "mean": 0.10780041629302463,
+          "rms": 0.2166562460624432
+        }
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 11625,
+        "signed": {
+          "min": -1.5621125831014724,
+          "p05": -0.5417014068450168,
+          "p25": -0.14072621259943174,
+          "median": -0.05954654146683147,
+          "p75": -0.036232204246731126,
+          "p95": -0.015009623040535328,
+          "max": -0.0006857028309932289,
+          "mean": -0.1309335821783161,
+          "rms": 0.24861803083371578
+        },
+        "absolute": {
+          "min": 0.0006857028309932289,
+          "p05": 0.015009623040535304,
+          "p25": 0.036232204246731126,
+          "median": 0.05954654146683147,
+          "p75": 0.14072621259943174,
+          "p95": 0.541701406845016,
+          "max": 1.5621125831014724,
+          "mean": 0.1309335821783161,
+          "rms": 0.24861803083371578
+        }
+      },
+      "hitTerminalConflicts": 3776,
+      "beforeAfterPayloadEqual": true,
+      "derivedEvidence": {
+        "path": "fused_frame_00391.npz",
+        "sha256": "a672f80f823940c83fade11cdae3f8f40ead389900941cedb15a17894475ee7d",
+        "bytes": 605798
+      }
+    },
+    {
+      "kind": "single",
+      "frame": "frame_00290",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 110176,
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 1723,
+      "fixedGridValid": 9902,
+      "mapBefore": {
+        "state": {
+          "scans": 1,
+          "treeNodes": 102015,
+          "leaves": 86757,
+          "evidenceKeys": 86757,
+          "hitVotes": 9304,
+          "freeVotes": 77453
+        },
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "payload": {
+          "xyzSizeProbability.npy": {
+            "sha256": "90d34a224cfadef67aec8cfe5680439fbce8977b79b70959cad965bf871650e9",
+            "bytes": 3470408
+          },
+          "logOdds.npy": {
+            "sha256": "c0da2b3065e4f910c957ee236456f52afcfce64d051f74a54136d4ee01418d0c",
+            "bytes": 347156
+          },
+          "hitScans.npy": {
+            "sha256": "e4b8e983d4fd4c8ec922b965e565e84114cc4859a49c6a4984e6f47010b06af9",
+            "bytes": 347156
+          },
+          "freeScans.npy": {
+            "sha256": "366661cd852375dc72efbfe90bd87ba2eb279d6f5b1cb8e8aaca278a7b56cc51",
+            "bytes": 347156
+          }
+        }
+      },
+      "mapLeafSizeCounts": {
+        "0.05": 86757
+      },
+      "nativeIntersectionBoxMetres": 0.05,
+      "primaryRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 9500,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 400,
+        "range-exhausted": 2,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "observationRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 3,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0,
+        "observed-hit-visibility-unverified": 9899
+      },
+      "entryAxialResidualMetres": {
+        "count": 9899,
+        "signed": {
+          "min": -1.8740631736646907,
+          "p05": -0.4748038993722275,
+          "p25": -0.09971258369651603,
+          "median": -0.059167472135360555,
+          "p75": -0.03415473220967025,
+          "p95": -0.015544437505048813,
+          "max": -0.00022414474018495056,
+          "mean": -0.11745154134113085,
+          "rms": 0.2453025519189853
+        },
+        "absolute": {
+          "min": 0.00022414474018495056,
+          "p05": 0.015544437505048813,
+          "p25": 0.03415473220967025,
+          "median": 0.059167472135360555,
+          "p75": 0.09971258369651603,
+          "p95": 0.47480389937222867,
+          "max": 1.8740631736646907,
+          "mean": 0.11745154134113085,
+          "rms": 0.2453025519189853
+        }
+      },
+      "centerAxialResidualMetres": {
+        "count": 9899,
+        "signed": {
+          "min": -1.8574911606271776,
+          "p05": -0.4538836677069694,
+          "p25": -0.09643722870809768,
+          "median": -0.04516950954487897,
+          "p75": -0.019477584005736404,
+          "p95": 0.0024356477541338083,
+          "max": 0.03271278154728652,
+          "mean": -0.10571334438327157,
+          "rms": 0.24049653985524516
+        },
+        "absolute": {
+          "min": 4.076433441069227e-05,
+          "p05": 0.004368298226859047,
+          "p25": 0.019875868163797827,
+          "median": 0.04516950954487897,
+          "p75": 0.09643722870809768,
+          "p95": 0.4538836677069714,
+          "max": 1.8574911606271776,
+          "mean": 0.10678556531247474,
+          "rms": 0.24049653985524516
+        }
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 9899,
+        "signed": {
+          "min": -1.929541142489613,
+          "p05": -0.5180033876664064,
+          "p25": -0.10988248339958617,
+          "median": -0.0652059477039244,
+          "p75": -0.0373732439683474,
+          "p95": -0.017202533815344204,
+          "max": -0.00024270608921472814,
+          "mean": -0.12777259631568708,
+          "rms": 0.26331646093922906
+        },
+        "absolute": {
+          "min": 0.00024270608921472814,
+          "p05": 0.017202533815344225,
+          "p25": 0.0373732439683474,
+          "median": 0.0652059477039244,
+          "p75": 0.10988248339958617,
+          "p95": 0.5180033876664066,
+          "max": 1.929541142489613,
+          "mean": 0.12777259631568708,
+          "rms": 0.26331646093922906
+        }
+      },
+      "hitTerminalConflicts": 0,
+      "beforeAfterPayloadEqual": true,
+      "derivedEvidence": {
+        "path": "single_frame_00290.npz",
+        "sha256": "cc42c39bbd5c4410fb96946f9a1031bceb86155411ee4a25437a373786d727d7",
+        "bytes": 516046
+      }
+    },
+    {
+      "kind": "single",
+      "frame": "frame_00357",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 268528,
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 4189,
+      "fixedGridValid": 7436,
+      "mapBefore": {
+        "state": {
+          "scans": 1,
+          "treeNodes": 70620,
+          "leaves": 59305,
+          "evidenceKeys": 59305,
+          "hitVotes": 7863,
+          "freeVotes": 51442
+        },
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "payload": {
+          "xyzSizeProbability.npy": {
+            "sha256": "dbb6ec41e3415aa1d2006c780730d3ff84cec76a913bdc9123cc90f3edf23b9a",
+            "bytes": 2372328
+          },
+          "logOdds.npy": {
+            "sha256": "555f7c4897058d689868cd8cb2dda0999a0b86837d8b5b3bf24e00865997b996",
+            "bytes": 237348
+          },
+          "hitScans.npy": {
+            "sha256": "eee5fc861bfbbd15f67615096774769963b17eea73e22a14a9e2c2334130a870",
+            "bytes": 237348
+          },
+          "freeScans.npy": {
+            "sha256": "fe531a2147733a3d96f66e949a4b3a1b4073166d4c72d5255a5bd2e4565c84ee",
+            "bytes": 237348
+          }
+        }
+      },
+      "mapLeafSizeCounts": {
+        "0.05": 59305
+      },
+      "nativeIntersectionBoxMetres": 0.05,
+      "primaryRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 7185,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 251,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "observationRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 3,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0,
+        "observed-hit-visibility-unverified": 7433
+      },
+      "entryAxialResidualMetres": {
+        "count": 7433,
+        "signed": {
+          "min": -2.450137558259729,
+          "p05": -0.7763814206236859,
+          "p25": -0.12255362186598528,
+          "median": -0.07209313906021331,
+          "p75": -0.03975007041834999,
+          "p95": -0.015066513722177717,
+          "max": -0.0002808614782616736,
+          "mean": -0.16440233092740283,
+          "rms": 0.3801424911396108
+        },
+        "absolute": {
+          "min": 0.0002808614782616736,
+          "p05": 0.01506651372217771,
+          "p25": 0.03975007041834999,
+          "median": 0.07209313906021331,
+          "p75": 0.12255362186598528,
+          "p95": 0.7763814206236851,
+          "max": 2.450137558259729,
+          "mean": 0.16440233092740283,
+          "rms": 0.3801424911396108
+        }
+      },
+      "centerAxialResidualMetres": {
+        "count": 7433,
+        "signed": {
+          "min": -2.4693078285875805,
+          "p05": -0.7782282097967753,
+          "p25": -0.11923828235861755,
+          "median": -0.06133674404254097,
+          "p75": -0.026537385504979305,
+          "p95": 0.0042928423718131895,
+          "max": 0.032644903266537906,
+          "mean": -0.1546152400880408,
+          "rms": 0.3782543720016463
+        },
+        "absolute": {
+          "min": 3.3700128653890715e-05,
+          "p05": 0.004644903266537881,
+          "p25": 0.02699014139961564,
+          "median": 0.06133674404254097,
+          "p75": 0.11923828235861755,
+          "p95": 0.7782282097967751,
+          "max": 2.4693078285875805,
+          "mean": 0.15595632475836782,
+          "rms": 0.3782543720016463
+        }
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 7433,
+        "signed": {
+          "min": -2.677846032084105,
+          "p05": -0.8892780237111981,
+          "p25": -0.13603231920805747,
+          "median": -0.08199516611369928,
+          "p75": -0.044669210876203014,
+          "p95": -0.016581266759745104,
+          "max": -0.0003093128806215262,
+          "mean": -0.18306017337929334,
+          "rms": 0.4182471941551691
+        },
+        "absolute": {
+          "min": 0.0003093128806215262,
+          "p05": 0.016581266759745094,
+          "p25": 0.044669210876203014,
+          "median": 0.08199516611369928,
+          "p75": 0.13603231920805747,
+          "p95": 0.8892780237111979,
+          "max": 2.677846032084105,
+          "mean": 0.18306017337929334,
+          "rms": 0.4182471941551691
+        }
+      },
+      "hitTerminalConflicts": 0,
+      "beforeAfterPayloadEqual": true,
+      "derivedEvidence": {
+        "path": "single_frame_00357.npz",
+        "sha256": "a6e95c96eac91a9a3ff286cd88b0fbd39580ca546225e437bd118929d885de59",
+        "bytes": 387814
+      }
+    },
+    {
+      "kind": "single",
+      "frame": "frame_00391",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 0,
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 0,
+      "fixedGridValid": 11625,
+      "mapBefore": {
+        "state": {
+          "scans": 1,
+          "treeNodes": 120662,
+          "leaves": 103951,
+          "evidenceKeys": 103951,
+          "hitVotes": 9441,
+          "freeVotes": 94510
+        },
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "payload": {
+          "xyzSizeProbability.npy": {
+            "sha256": "a5cbc6b619845b5cdd6f1c9dd6462428dfa94a54d2140deb3a20ffd9c78cbc05",
+            "bytes": 4158168
+          },
+          "logOdds.npy": {
+            "sha256": "8a12eca42bec4912bef80a76d0ce00a2b4123598eabce5c71865bed5e9bda920",
+            "bytes": 415932
+          },
+          "hitScans.npy": {
+            "sha256": "90960062d64a1351700f68ba29338a559dea5935e2c09c7a9cbfd6d916fb61be",
+            "bytes": 415932
+          },
+          "freeScans.npy": {
+            "sha256": "0d42e87b003f6ba808f6ec3ce33519595c86a10faca5823d429bb14bebf8954f",
+            "bytes": 415932
+          }
+        }
+      },
+      "mapLeafSizeCounts": {
+        "0.05": 103951
+      },
+      "nativeIntersectionBoxMetres": 0.05,
+      "primaryRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 11353,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 272,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "observationRayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 0,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0,
+        "observed-hit-visibility-unverified": 11625
+      },
+      "entryAxialResidualMetres": {
+        "count": 11625,
+        "signed": {
+          "min": -1.372545179094689,
+          "p05": -0.21064742079043083,
+          "p25": -0.05879690398631343,
+          "median": -0.03948273663807189,
+          "p75": -0.02499616447628661,
+          "p95": -0.008613910354499777,
+          "max": -0.00031120586102906245,
+          "mean": -0.07777325961900039,
+          "rms": 0.17163258635613513
+        },
+        "absolute": {
+          "min": 0.00031120586102906245,
+          "p05": 0.008613910354499765,
+          "p25": 0.02499616447628661,
+          "median": 0.03948273663807189,
+          "p75": 0.05879690398631343,
+          "p95": 0.21064742079043075,
+          "max": 1.372545179094689,
+          "mean": 0.07777325961900039,
+          "rms": 0.17163258635613513
+        }
+      },
+      "centerAxialResidualMetres": {
+        "count": 11625,
+        "signed": {
+          "min": -1.3570265323902955,
+          "p05": -0.20574665077272636,
+          "p25": -0.05344354843566501,
+          "median": -0.026365104218091462,
+          "p75": -0.011087733414037348,
+          "p95": 0.009128587719346635,
+          "max": 0.03056352389470618,
+          "mean": -0.06645557024601521,
+          "rms": 0.16734602085196432
+        },
+        "absolute": {
+          "min": 2.7655123489012112e-06,
+          "p05": 0.0023425569192351507,
+          "p25": 0.012863064750471054,
+          "median": 0.02636571280486688,
+          "p75": 0.05344354843566501,
+          "p95": 0.20574665077272633,
+          "max": 1.3570265323902955,
+          "mean": 0.06835509962461801,
+          "rms": 0.16734602085196432
+        }
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 11625,
+        "signed": {
+          "min": -1.511324466059163,
+          "p05": -0.22626233529479975,
+          "p25": -0.06335515185734542,
+          "median": -0.043091068015920886,
+          "p75": -0.027120525660669692,
+          "p95": -0.009250523829653193,
+          "max": -0.0003142082479326014,
+          "mean": -0.08631045398259621,
+          "rms": 0.19408874684387384
+        },
+        "absolute": {
+          "min": 0.0003142082479326014,
+          "p05": 0.00925052382965319,
+          "p25": 0.027120525660669692,
+          "median": 0.043091068015920886,
+          "p75": 0.06335515185734542,
+          "p95": 0.22626233529479975,
+          "max": 1.511324466059163,
+          "mean": 0.08631045398259621,
+          "rms": 0.19408874684387384
+        }
+      },
+      "hitTerminalConflicts": 0,
+      "beforeAfterPayloadEqual": true,
+      "derivedEvidence": {
+        "path": "single_frame_00391.npz",
+        "sha256": "c90b5dc4421f4a7dae25ff9d149debd6b2c5ffb1a2647930a7db9b2fe09576e2",
+        "bytes": 605798
+      }
+    }
+  ],
+  "supportAttributionDefinition": "occupied singleton-map support at fused hit voxel center; not physical object identity or proof of occlusion",
+  "limits": {
+    "CPUSeconds": 120,
+    "outerWallSeconds": 180,
+    "addressSpaceBytes": 536870912,
+    "CPUCount": 1,
+    "fileBytes": 33554432
+  },
+  "exactBaselineRecreated": true,
+  "singletonKeyStatesAtFusedHits": {
+    "frame_00290": {
+      "frame_00290": {
+        "total": 9899,
+        "knownOccupied": 9899,
+        "knownNotOccupied": 0,
+        "unknown": 0
+      },
+      "frame_00357": {
+        "total": 9899,
+        "knownOccupied": 0,
+        "knownNotOccupied": 0,
+        "unknown": 9899
+      },
+      "frame_00391": {
+        "total": 9899,
+        "knownOccupied": 0,
+        "knownNotOccupied": 0,
+        "unknown": 9899
+      }
+    },
+    "frame_00357": {
+      "frame_00290": {
+        "total": 7433,
+        "knownOccupied": 0,
+        "knownNotOccupied": 0,
+        "unknown": 7433
+      },
+      "frame_00357": {
+        "total": 7433,
+        "knownOccupied": 7186,
+        "knownNotOccupied": 247,
+        "unknown": 0
+      },
+      "frame_00391": {
+        "total": 7433,
+        "knownOccupied": 700,
+        "knownNotOccupied": 1368,
+        "unknown": 5365
+      }
+    },
+    "frame_00391": {
+      "frame_00290": {
+        "total": 11625,
+        "knownOccupied": 0,
+        "knownNotOccupied": 0,
+        "unknown": 11625
+      },
+      "frame_00357": {
+        "total": 11625,
+        "knownOccupied": 4483,
+        "knownNotOccupied": 565,
+        "unknown": 6577
+      },
+      "frame_00391": {
+        "total": 11625,
+        "knownOccupied": 8394,
+        "knownNotOccupied": 3211,
+        "unknown": 20
+      }
+    }
+  },
+  "fusedHitSingleViewSupport": {
+    "frame_00290": {
+      "total": 9899,
+      "occupiedBySingleViewMask": {
+        "0": 0,
+        "1": 9899,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0
+      },
+      "selfViewOccupied": 9899,
+      "otherViewOnlyOccupied": 0,
+      "noSingleViewOccupied": 0,
+      "derivedEvidence": {
+        "path": "support_frame_00290.npz",
+        "sha256": "04ce5fce74def924a847fdd169ff6275b30d62d5904026cc2db069c4826086f1",
+        "bytes": 20362
+      }
+    },
+    "frame_00357": {
+      "total": 7433,
+      "occupiedBySingleViewMask": {
+        "0": 0,
+        "1": 0,
+        "2": 6733,
+        "3": 0,
+        "4": 247,
+        "5": 0,
+        "6": 453,
+        "7": 0
+      },
+      "selfViewOccupied": 7186,
+      "otherViewOnlyOccupied": 247,
+      "noSingleViewOccupied": 0,
+      "derivedEvidence": {
+        "path": "support_frame_00357.npz",
+        "sha256": "683d07a9252c4a25dfef2783c9f2359a72d18c7ad90218afedfe241cc9e438ad",
+        "bytes": 15430
+      }
+    },
+    "frame_00391": {
+      "total": 11625,
+      "occupiedBySingleViewMask": {
+        "0": 0,
+        "1": 0,
+        "2": 3231,
+        "3": 0,
+        "4": 7142,
+        "5": 0,
+        "6": 1252,
+        "7": 0
+      },
+      "selfViewOccupied": 8394,
+      "otherViewOnlyOccupied": 3231,
+      "noSingleViewOccupied": 0,
+      "derivedEvidence": {
+        "path": "support_frame_00391.npz",
+        "sha256": "9f302c10cfe3335727c13b9f9d28f230ca17e8dea5aaa48147782f3d52d87a06",
+        "bytes": 23814
+      }
+    }
+  },
+  "librarySHA256": "82afb6c94b3e0234ee371395b6f7ba17ae159987293ac357463bde43605ebc26",
+  "controlsReceiptSHA256": "51624c3c11456971709fd41ef6bd2b63f303e7f0df1b58bec5403d73d607f3e4",
+  "sourceManifestSHA256": "d21b5740f1ea1cd0a8126ec0315109114a6fd1886e20a4be2b66050e7e1ee6c9",
+  "wallSeconds": 3.3931465499990736,
+  "cpuSeconds": 3.418898,
+  "peakRSSKiB": 153748
+}

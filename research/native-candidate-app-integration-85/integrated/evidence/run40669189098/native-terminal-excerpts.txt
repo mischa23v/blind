@@ -1,0 +1,25 @@
+2026-10-28T10:04:28.5657750Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ad3cbd554ed7c59380cf6e7f9a1488e2eec2d417:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T10:04:34.9229090Z  * [new ref]         ad3cbd554ed7c59380cf6e7f9a1488e2eec2d417 -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T10:04:34.9502660Z ad3cbd554ed7c59380cf6e7f9a1488e2eec2d417
+2026-10-28T10:04:37.2015100Z ad3cbd554ed7c59380cf6e7f9a1488e2eec2d417
+2026-10-28T10:04:38.6923280Z ad3cbd554ed7c59380cf6e7f9a1488e2eec2d417
+2026-10-28T10:06:58.3167130Z core exit status: 0
+2026-10-28T10:06:58.3661560Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 10.197 (10.409) seconds
+2026-10-28T10:06:58.3662550Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 10.197 (10.413) seconds
+2026-10-28T10:08:19.7059810Z memory exit status: 0
+2026-10-28T10:08:19.7333210Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 13.503 (13.514) seconds
+2026-10-28T10:08:19.7334460Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 13.503 (13.515) seconds
+2026-10-28T10:12:01.5430620Z build exit status: 0
+2026-10-28T10:12:01.8162840Z ** BUILD SUCCEEDED **
+2026-10-28T10:19:20.0303950Z unit exit status: 0
+2026-10-28T10:34:07.0381880Z ui exit status: 65
+2026-10-28T10:34:07.2306750Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:373: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Contrast failed
+2026-10-28T10:34:07.2307960Z Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (80.848 seconds).
+2026-10-28T10:34:07.2309380Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:129: error: -[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop] : XCTAssertLessThan failed: ("110.50683820833342") is not less than ("90.0") - Automation consumed the cancellation evidence window; natural expiry cannot count as Stop
+2026-10-28T10:34:07.2310900Z Test Case '-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]' failed (129.360 seconds).
+2026-10-28T10:34:07.2312440Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:21: error: -[BlindAssistUITests.LaunchTests testPracticeLayoutAtLargestAccessibilitySize] : Failed to terminate org.blindassist.mobility:35757: Failed to terminate org.blindassist.mobility:0
+2026-10-28T10:34:07.2313740Z Test Case '-[BlindAssistUITests.LaunchTests testPracticeLayoutAtLargestAccessibilitySize]' failed (75.798 seconds).
+2026-10-28T10:34:07.2382940Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:129: error: -[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop] : XCTAssertLessThan failed: ("110.50683820833342") is not less than ("90.0") - Automation consumed the cancellation evidence window; natural expiry cannot count as Stop
+2026-10-28T10:34:07.2384740Z Test Case '-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]' failed (129.360 seconds).
+2026-10-28T10:34:14.1137340Z unit xcresult: {"result": "Passed", "totalTestCount": 198, "passedTests": 192, "failedTests": 0, "skippedTests": 6, "expectedFailures": 0, "startTime": 1793182329.117, "finishTime": 1793182747.347}
+2026-10-28T10:34:14.2660380Z ui xcresult: {"result": "Failed", "totalTestCount": 18, "passedTests": 13, "failedTests": 3, "skippedTests": 2, "expectedFailures": 0, "startTime": 1793182771.248, "finishTime": 1793183638.847}

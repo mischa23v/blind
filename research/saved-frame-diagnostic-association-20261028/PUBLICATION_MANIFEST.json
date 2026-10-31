@@ -1,0 +1,81 @@
+{
+  "scope": "Capture-bound same-saved-frame CAMERA association only. No recorder consumer, geometry overlay, transform, measured uncertainty or physical authority. Eight Core tests authored; no local Swift compiler.",
+  "evidence": {
+    "narrowNode": {
+      "pass": 30,
+      "fail": 0
+    },
+    "affectedNode": {
+      "pass": 67,
+      "fail": 2,
+      "failures": "Two unchanged preimage failures; baseline reproduction included"
+    },
+    "newSwiftBehaviorTests": {
+      "authored": 8,
+      "executed": 0
+    },
+    "native": "not executed by this slice"
+  },
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/SavedWorldFrame.swift",
+      "sha256": "2238b9b9bbc9a49c9ead6adc7ef15e035345208dc764b2cb14716a0922205ea6"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SavedWorldFrameTests.swift",
+      "sha256": "362334778abbea51b9ab75fa548b484d5fd77e504060638ad2c31ba854d9337d"
+    },
+    {
+      "path": "ios/BlindAssist/PlaceStore.swift",
+      "sha256": "f2a4766eabaaaec4e6fbb6f0a43c7593ad5a78830610a8f0ce8313928ce103eb"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "fcea783bbbbaa4e1bdda04740fc38f11c10f30de1e6160d8eb5072d7b4a01298"
+    },
+    {
+      "path": "tools/test/spatial-review-regressions.test.mjs",
+      "sha256": "aefd0b7ac4a43641826f692a51da8407798265340a19e94a491f86ad00afd162"
+    },
+    {
+      "path": "tools/test/saved-frame-camera-association.test.mjs",
+      "sha256": "dba4e3415018e6f2ac244a79ac8c0e9bf353e51692902edd11cdc5055b6e025e"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/BASELINE_FIXTURE.json",
+      "sha256": "15c1426de1a1baabdb05fadd0ea71631fd795d14664bfb2798832f2444ed71f3"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/CANDIDATE_MANIFEST.json",
+      "sha256": "fbe34d43feae1f49f623bef9b41074c255a2914def7ca13c3ca509dda74bf7fd"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/PREIMAGE.json",
+      "sha256": "988abbcef61168147e8f5c0e8f935add00e6781fefca092be6a2188c7bda6204"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/README.md",
+      "sha256": "bb356de3ebb422560f8d712551b366b9042bb6b885b251123693ab65486f34e9"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/node-affected.tap",
+      "sha256": "eb3e6cf54be3aa894f06d8e74c0695c92c50aab685813ff03787485ede612db3"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/node-baseline-two-failures.tap",
+      "sha256": "78e456e5079675d051ae976656a846b3bba35b881dbabb8d67ce82310e22957f"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/node-initial.tap",
+      "sha256": "047215cdcdc19d6f34d1ade52714374a44aee941ababb78f6e242691736dc9a2"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/preimage/NavigationModel.swift.txt",
+      "sha256": "f101f67cb88c6b2ea8847a380ce09a351322f73e01df0dcb9e0893146d4264d1"
+    },
+    {
+      "path": "research/saved-frame-diagnostic-association-20261028/preimage/spatial-review-regressions.test.mjs.txt",
+      "sha256": "2a0fd1b9335b3b802232e0ecebba1b7c69ebd65b240bde0bb73ac10d2bfc3ee7"
+    }
+  ]
+}

@@ -19,13 +19,17 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     if (!isAbsolute(objectDetector) || /[\p{Cc}$]/u.test(objectDetector) || !['Detector.mlmodel', 'Detector.mlmodelc'].includes(basename(objectDetector))) throw new Error('Use an absolute Detector.mlmodel or Detector.mlmodelc path.');
     if (![objectDetectorSHA256, objectDetectorManifestSHA256].every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value))) throw new Error('Object detector requires verified artifact and manifest hashes.');
   } else if (objectDetectorSHA256 !== undefined || objectDetectorManifestSHA256 !== undefined) throw new Error('Detector hashes require --object-detector.');
-  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift'];
+  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift', 'HostedNonvisualJourneyTests.swift', 'SeatedMeshProjectionTests.swift', 'SeatedCollisionBridgeTests.swift', 'NormalOwnerMeshConnectionTests.swift', 'NativeQoSComparisonTests.swift'];
   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
   const refs = [], sources = [];
   for (const file of files) {
     const ref = add(file, `isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ${JSON.stringify(`BlindAssist/${file}`)}; sourceTree = "<group>";`);
     refs.push(ref); sources.push(add(`build:${file}`, `isa = PBXBuildFile; fileRef = ${ref};`));
   }
+  // One existing oracle source, distinct app/test module memberships. Its own
+  // compile guard excludes the app unless DEBUG + seated diagnostics are enabled.
+  const oracleRef = add('shared-collision-oracle', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistTests/SavedRoomRouteCollisionOracle.swift; sourceTree = SOURCE_ROOT;');
+  refs.push(oracleRef); sources.push(add('shared-collision-oracle-app-build', `isa = PBXBuildFile; fileRef = ${oracleRef};`));
   // Optional Lock Screen / Dynamic Island status (--live-activity): a WidgetKit extension plus
   // attributes shared with the app. Off by default so the standard build has no extension target.
   const activityFiles = ['CompanionActivityAttributes.swift', 'CompanionLiveActivityWidget.swift'];
@@ -87,8 +91,28 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const memoryPackage = add('memory-package', 'isa = XCLocalSwiftPackageReference; relativePath = ../BlindMemory;');
   const memoryDependency = add('memory-dependency', `isa = XCSwiftPackageProductDependency; package = ${memoryPackage}; productName = BlindMemory;`);
   const memoryLibrary = add('memory-lib', `isa = PBXBuildFile; productRef = ${memoryDependency};`);
+  // Preserve the stage85 app linkage/IDs without opting into mesh diagnostics or capture.
+  const meshPackage = add('stage85package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/mesh-candidate-ingress-83";');
+  const meshDependency = add('stage85product', `isa = XCSwiftPackageProductDependency; package = ${meshPackage}; productName = MeshCandidateIngress83;`);
+  const meshLibrary = add('stage85framework', `isa = PBXBuildFile; productRef = ${meshDependency};`);
+  // Existing local diagnostic route engine; no new upstream or activation flag.
+  const roomMeshPackage = add('room-mesh-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/room-mesh-package-75/BlindRoomMesh";');
+  const roomMeshDependency = add('room-mesh-product', `isa = XCSwiftPackageProductDependency; package = ${roomMeshPackage}; productName = BlindRoomMesh;`);
+  const roomMeshLibrary = add('room-mesh-library', `isa = PBXBuildFile; productRef = ${roomMeshDependency};`);
+  // DEBUG+explicit-flag seated source viewer; linkage alone never activates capture.
+  const benchPackage = add('seated-mesh-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/live-mesh-classified-bench-20261028";');
+  const benchDependency = add('seated-mesh-product', `isa = XCSwiftPackageProductDependency; package = ${benchPackage}; productName = LiveMeshClassifiedBench;`);
+  const benchLibrary = add('seated-mesh-library', `isa = PBXBuildFile; productRef = ${benchDependency};`);
+  // Opt-in normal-owner app code emits direct82/81 symbols. Link the existing
+  // local products explicitly; no new package, flag or default activation.
+  const snapshotPackage = add('mesh-snapshot-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/arkit-mesh-adapter-82";');
+  const decoderPackage = add('mesh-decoder-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/native-mesh-decoder-81";');
+  const appMeshSnapshot = add('normal-owner-snapshot-product', `isa = XCSwiftPackageProductDependency; package = ${snapshotPackage}; productName = MeshSnapshot82;`);
+  const appMeshSnapshotBuild = add('normal-owner-snapshot-framework', `isa = PBXBuildFile; productRef = ${appMeshSnapshot};`);
+  const appMeshDecoder = add('normal-owner-decoder-product', `isa = XCSwiftPackageProductDependency; package = ${decoderPackage}; productName = MeshBufferDecoder81;`);
+  const appMeshDecoderBuild = add('normal-owner-decoder-framework', `isa = PBXBuildFile; productRef = ${appMeshDecoder};`);
   const sourcesPhase = add('sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${sources.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
-  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
+  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${appMeshSnapshotBuild},${appMeshDecoderBuild},${benchLibrary},${meshLibrary},${roomMeshLibrary},${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
   let activityTarget, activityEmbed;
   if (liveActivity) {
     const activityProduct = add('activity-product', 'isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = BlindAssistLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR;');
@@ -104,7 +128,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     const embedBuild = add('build:activity-embed', `isa = PBXBuildFile; fileRef = ${activityProduct}; settings = { ATTRIBUTES = (RemoveHeadersOnCopy,); };`);
     activityEmbed = add('activity-embed', `isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (${embedBuild},); name = "Embed Foundation Extensions"; runOnlyForDeploymentPostprocessing = 0;`);
   }
-  const group = add('group', `isa = PBXGroup; children = (${refs.join(',')},${product},${id('ui-file')},${id('ui-product')},${id('unit-file')},${id('unit-replay-file')},${spatialTestFiles.map(file => id(`unit-spatial:${file}`)).join(',')},${id('unit-product')},); sourceTree = "<group>";`);
+  const group = add('group', `isa = PBXGroup; children = (${refs.join(',')},${product},${id('ui-file')},${id('ui-product')},${id('unit-file')},${id('unit-replay-file')},${spatialTestFiles.map(file => id(`unit-spatial:${file}`)).join(',')},${id('unit-product')},${id('unit-roomplan-fixtures')},${id('unit-route-fixtures')},); sourceTree = "<group>";`);
   const configs = [];
   for (const name of ['Debug', 'Release']) {
     // Adult-configured private device trial only. Release receives neither the
@@ -116,7 +140,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "${configurationConditions}"; ${deviceSettings} ${nativeSettings} TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; ONLY_ACTIVE_ARCH = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
   }
   const configList = add('configs', `isa = XCConfigurationList; buildConfigurations = (${configs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
-  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${dependency},${memoryDependency},);`);
+  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${appMeshSnapshot},${appMeshDecoder},${benchDependency},${meshDependency},${roomMeshDependency},${dependency},${memoryDependency},);`);
   const uiFile = add('ui-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT;');
   const uiBuild = add('ui-build', `isa = PBXBuildFile; fileRef = ${uiFile};`);
   // Preserve the already-committed opt-in diagnostic IDs and UI-test-only membership.
@@ -140,15 +164,43 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     return add(`unit-spatial-build:${file}`, `isa = PBXBuildFile; fileRef = ${ref};`);
   });
   const unitSources = add('unit-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${unitBuild},${replayBuild},${spatialTestBuilds.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
+  // Original Apple sample JSON/license/provenance remain in the hosted test bundle ONLY.
+  // Blue folder reference preserves RoomPlanApple for Bundle(for:).url(subdirectory:).
+  const unitRoomPlanFixtures = add('unit-roomplan-fixtures', 'isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomPlanApple"; sourceTree = SOURCE_ROOT;');
+  const unitRoomPlanFixturesBuild = add('unit-roomplan-fixtures-build', `isa = PBXBuildFile; fileRef = ${unitRoomPlanFixtures};`);
+  const unitRouteFixtures = add('unit-route-fixtures', 'isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomRouteDiagnostic"; sourceTree = SOURCE_ROOT;');
+  const unitRouteFixturesBuild = add('unit-route-fixtures-build', `isa = PBXBuildFile; fileRef = ${unitRouteFixtures};`);
+  const unitResources = add('unit-resources', `isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (${unitRoomPlanFixturesBuild},${unitRouteFixturesBuild},); runOnlyForDeploymentPostprocessing = 0;`);
   const unitProduct = add('unit-product', 'isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = BlindAssistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR;');
   const unitCore = add('unit-core', `isa = XCSwiftPackageProductDependency; package = ${pkg}; productName = BlindCore;`);
   const unitCoreBuild = add('unit-core-build', `isa = PBXBuildFile; productRef = ${unitCore};`);
-  const unitFrameworks = add('unit-frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${unitCoreBuild},); runOnlyForDeploymentPostprocessing = 0;`);
-  const unitConfigs = ['Debug', 'Release'].map(name => add(`unit-${name}`, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)${name === 'Debug' ? ' DEBUG' : ''}"; TARGETED_DEVICE_FAMILY = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = ""; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.tests; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist"; BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; };`));
+  // Hosted RecordedRouteStoreTests imports existing BlindMemory and its GRDB product.
+  // This is the SAME exact dependency already used by BlindMemory/Package.swift.
+  const unitMemory = add('unit-memory', `isa = XCSwiftPackageProductDependency; package = ${memoryPackage}; productName = BlindMemory;`);
+  const unitMemoryBuild = add('unit-memory-build', `isa = PBXBuildFile; productRef = ${unitMemory};`);
+  const grdbPackage = add('hosted-grdb-package', 'isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/groue/GRDB.swift.git"; requirement = { kind = exactVersion; version = 7.11.1; };');
+  const unitGRDB = add('unit-grdb', `isa = XCSwiftPackageProductDependency; package = ${grdbPackage}; productName = GRDB;`);
+  const unitGRDBBuild = add('unit-grdb-build', `isa = PBXBuildFile; productRef = ${unitGRDB};`);
+  const unitRoomMesh = add('unit-room-mesh', `isa = XCSwiftPackageProductDependency; package = ${roomMeshPackage}; productName = BlindRoomMesh;`);
+  const unitRoomMeshBuild = add('unit-room-mesh-build', `isa = PBXBuildFile; productRef = ${unitRoomMesh};`);
+  // Synthetic owned-snapshot regressions only. Existing83 is already linked by
+  // the app;82 is explicit for @testable owned fixtures, never a public forge API.
+  const unitMeshIngress = add('unit-mesh-ingress', `isa = XCSwiftPackageProductDependency; package = ${meshPackage}; productName = MeshCandidateIngress83;`);
+  const unitMeshIngressBuild = add('unit-mesh-ingress-build', `isa = PBXBuildFile; productRef = ${unitMeshIngress};`);
+  const unitMeshSnapshot = add('unit-mesh-snapshot', `isa = XCSwiftPackageProductDependency; package = ${snapshotPackage}; productName = MeshSnapshot82;`);
+  const unitMeshSnapshotBuild = add('unit-mesh-snapshot-build', `isa = PBXBuildFile; productRef = ${unitMeshSnapshot};`);
+  //82's decoded return types and default Limits argument emit direct81 symbols
+  //in hosted fixtures. Explicitly link81; source visibility is not link reachability.
+  const unitMeshDecoder = add('unit-mesh-decoder', `isa = XCSwiftPackageProductDependency; package = ${decoderPackage}; productName = MeshBufferDecoder81;`);
+  const unitMeshDecoderBuild = add('unit-mesh-decoder-build', `isa = PBXBuildFile; productRef = ${unitMeshDecoder};`);
+  const unitBench = add('unit-seated-mesh', `isa = XCSwiftPackageProductDependency; package = ${benchPackage}; productName = LiveMeshClassifiedBench;`);
+  const unitBenchBuild = add('unit-seated-mesh-build', `isa = PBXBuildFile; productRef = ${unitBench};`);
+  const unitFrameworks = add('unit-frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${unitBenchBuild},${unitCoreBuild},${unitMemoryBuild},${unitGRDBBuild},${unitRoomMeshBuild},${unitMeshIngressBuild},${unitMeshSnapshotBuild},${unitMeshDecoderBuild},); runOnlyForDeploymentPostprocessing = 0;`);
+  const unitConfigs = ['Debug', 'Release'].map(name => add(`unit-${name}`, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; OTHER_SWIFT_FLAGS = "$(inherited) -D BLIND_COLLISION_ORACLE_TESTS"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)${name === 'Debug' ? ' DEBUG' : ''}"; TARGETED_DEVICE_FAMILY = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = ""; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.tests; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist"; BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; };`));
   const unitConfigList = add('unit-configs', `isa = XCConfigurationList; buildConfigurations = (${unitConfigs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug;`);
   const unitDependency = add('unit-dep', `isa = PBXTargetDependency; target = ${target}; targetProxy = ${proxy};`);
-  const unitTarget = add('unit-target', `isa = PBXNativeTarget; buildConfigurationList = ${unitConfigList}; buildPhases = (${unitSources},${unitFrameworks},); buildRules = (); dependencies = (${unitDependency},); name = BlindAssistTests; productName = BlindAssistTests; productReference = ${unitProduct}; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (${unitCore},);`);
-  const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${pkg},${memoryPackage},); targets = (${target},${uiTarget},${unitTarget},${activityTarget ? `${activityTarget},` : ''});`);
+  const unitTarget = add('unit-target', `isa = PBXNativeTarget; buildConfigurationList = ${unitConfigList}; buildPhases = (${unitSources},${unitFrameworks},${unitResources},); buildRules = (); dependencies = (${unitDependency},); name = BlindAssistTests; productName = BlindAssistTests; productReference = ${unitProduct}; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (${unitBench},${unitCore},${unitMemory},${unitGRDB},${unitRoomMesh},${unitMeshIngress},${unitMeshSnapshot},${unitMeshDecoder},);`);
+  const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${benchPackage},${meshPackage},${snapshotPackage},${decoderPackage},${roomMeshPackage},${pkg},${memoryPackage},${grdbPackage},); targets = (${target},${uiTarget},${unitTarget},${activityTarget ? `${activityTarget},` : ''});`);
   let result = `// !$*UTF8*$!\n{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {\n${objects.join('\n')}\n}; rootObject = ${project}; }\n`;
   return result;
 }

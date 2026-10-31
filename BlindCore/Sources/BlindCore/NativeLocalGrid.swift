@@ -78,6 +78,9 @@ public struct NativeLocalGridSnapshot: Equatable, Sendable {
     public let generation: UInt64?
     public let frameRevision, eventRevision: UInt64
     public let capturedAt: Double?
+    /// Exact upstream capture association; not an AR session/frame identity.
+    public let currentCaptureSequence: UInt64?
+    public let currentNodeID: Int?
     public let mapCorrection: NativeCameraTransform?
     public let cameraToARWorld, currentOpticalPose: NativeCameraTransform?
     public let tiles: [NativeLocalGridTile]
@@ -118,7 +121,8 @@ public struct NativeLocalGridConsumer: Sendable {
     public mutating func invalidate() { self = NativeLocalGridConsumer() }
     public func snapshot() -> NativeLocalGridSnapshot {
         .init(status: status, generation: generation, frameRevision: frameRevision, eventRevision: eventRevision,
-              capturedAt: capturedAt, mapCorrection: correction, cameraToARWorld: arPose,
+              capturedAt: capturedAt, currentCaptureSequence: lastAssociation?.sequence, currentNodeID: lastAssociation?.node,
+              mapCorrection: correction, cameraToARWorld: arPose,
               currentOpticalPose: opticalPose, tiles: tiles.values.sorted { $0.nodeID < $1.nodeID }, evictedTileCount: evicted)
     }
     /// Call from the native watchdog as well as on receipt; silence cannot extend
@@ -225,5 +229,61 @@ public struct NativeLocalGridConsumer: Sendable {
     }
     private static func validTransform(_ transform: NativeCameraTransform) -> Bool {
         transform.valid && [12,13,14].allSatisfy { abs(transform.columns[$0]) <= 1_000_000 }
+    }
+}
+
+/// Current capture-only view over upstream evidence, never an accumulated map
+/// presented as present-day clearance. Coordinates remain RTAB node/map-local.
+public struct NativeCurrentNavigationEvidence: Equatable, Sendable {
+    public struct Revision: Equatable, Sendable {
+        public let generation, frame, event, captureSequence: UInt64
+        public let nodeID, mapID: Int
+    }
+    public let revision: Revision
+    public let capturedAt, evaluatedAt: Double
+    public var age: Double { evaluatedAt - capturedAt }
+    public let tile: NativeLocalGridTile
+    public let historicalTileCount: Int
+    // The upstream mailbox does not carry the original AR session/frame UUID or
+    // a registered metric-frame identity. Never manufacture these from time/IDs.
+    public var originalARCaptureIdentityAvailable: Bool { false }
+    public var registeredMetricFrameAvailable: Bool { false }
+    public var fullFootprintSupportKnown: Bool { false }
+    public var absenceEstablishesFreeSpace: Bool { false }
+    public var authorizesPhysicalGuidance: Bool { false }
+}
+
+public enum NativeNavigationEvidence: Equatable, Sendable {
+    public enum Unavailable: String, Sendable {
+        case dependencyAbsent, inactive, invalidClock, missingCapture, staleCapture
+        case sourceUnavailable, truncated, captureTileMissing, unassociated
+    }
+    case unavailable(Unavailable)
+    case current(NativeCurrentNavigationEvidence)
+    public var authorizesPhysicalGuidance: Bool { false }
+}
+
+extension NativeLocalGridSnapshot {
+    /// Re-evaluate at every consumer/delivery boundary. Cached available status
+    /// cannot extend freshness. Older tiles stay history, not current obstacles,
+    /// and missing/replaced objects do not become a proof of empty space.
+    public func navigationEvidence(now: Double) -> NativeNavigationEvidence {
+        guard now.isFinite, now >= 0 else { return .unavailable(.invalidClock) }
+        guard let capturedAt, capturedAt.isFinite, capturedAt >= 0 else { return .unavailable(.missingCapture) }
+        guard now >= capturedAt, now - capturedAt <= 0.5 else { return .unavailable(.staleCapture) }
+        guard status != .truncated else { return .unavailable(.truncated) }
+        guard status == .available else { return .unavailable(.sourceUnavailable) }
+        guard let generation, let sequence = currentCaptureSequence, let node = currentNodeID,
+              currentOpticalPose != nil, cameraToARWorld != nil else { return .unavailable(.unassociated) }
+        let matching = tiles.filter { $0.nodeID == node && $0.captureSequence == sequence && $0.capturedAt == capturedAt }
+        guard matching.count == 1, let tile = matching.first else { return .unavailable(.captureTileMissing) }
+        guard !tile.truncated else { return .unavailable(.truncated) }
+        return .current(.init(revision: .init(generation: generation, frame: frameRevision,
+            event: eventRevision, captureSequence: sequence, nodeID: node, mapID: tile.mapID),
+            capturedAt: capturedAt, evaluatedAt: now, tile: tile, historicalTileCount: max(0, tiles.count - 1)))
+    }
+    public func isCurrent(_ evidence: NativeCurrentNavigationEvidence, now: Double) -> Bool {
+        guard case .current(let current) = navigationEvidence(now: now) else { return false }
+        return current.revision == evidence.revision && current.tile == evidence.tile
     }
 }

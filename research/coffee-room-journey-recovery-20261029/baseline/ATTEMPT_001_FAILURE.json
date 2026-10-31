@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "attempt": "001",
+  "source_commit": "c210ca822ec4fdc339f808af58bc5b057fd98788",
+  "status": "compile-failed-no-queries",
+  "compile_exit": 1,
+  "group_retired": true,
+  "query_commands_executed": 0,
+  "cause": "Prepared source package omitted the published native025/blind_detour.h required by blind_detour_exclusion.cpp.",
+  "aggregate_cpu_seconds": 5.426192,
+  "wall_seconds": 5.438823830000274,
+  "peak_observed_aggregate_rss_bytes": 64864256,
+  "input_pins_before_after_current_verified": 67,
+  "final_inventory_entries_verified": 86,
+  "warnings": {
+    "count": 8,
+    "category": "-Wmaybe-uninitialized",
+    "source": "upstream DetourNavMesh.cpp"
+  },
+  "sha256": {
+    "raw_retained_receipt": "cb5bbbf5af144ebe4325ff67ab597786cb0cac3e3eaef0ce4a815b0fa7f585cc",
+    "raw_retained_compile_stderr": "446e09cd696112ddb7c54d9da4a5dafd85a622b34838d092486b8fd6e95b375c",
+    "admitted_guard_manifest": "516562e86812c9eca3c688087fd471473bdc8f9f1d398a02604ee9fbf3c44abc"
+  },
+  "query_or_route_result": null,
+  "physical_authority": false,
+  "next_gate": "Restore exact published missing header and verify quoted include closure in a fresh attempt002 owned root; reviewed source checkpoint and separate root admission required. Never overwrite attempt001 or automatically retry."
+}

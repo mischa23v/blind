@@ -1,0 +1,32 @@
+{
+  "status": "failed_preserved_not_completed",
+  "sourceCommit": "1521e1af78606cbf716d8209adef2da9294b05ee",
+  "guardError": "RuntimeError: vtk worker failed; no retry or permission widening; partial records retained",
+  "savedVTKRecords": 29069,
+  "expectedVTKRecords": 29568,
+  "lastSavedRecord": {
+    "scene": "coffee",
+    "name": "0_to_8",
+    "eventIndex": 1581,
+    "arm": "native_height",
+    "envelope": "body",
+    "lowerTrimMetres": 0.0
+  },
+  "completedHeightRows": 3696,
+  "validHeightEvents": 3696,
+  "wallSeconds": 79.89491605900184,
+  "aggregateCPUSeconds": 79.85346899999999,
+  "peakObservedAggregateRSS": 197959680,
+  "vtkTerminalSummaryExists": false,
+  "vtkTriangleCatalogExists": false,
+  "rawHashes": {
+    "GUARD_RUN/RESULT.json": "5e63f3dc3f1b17e213bc7084d4171b8a76507c10828b2cd288e3b3e97c73b24e",
+    "GUARD_RUN/vtk.stderr": "8efbd946b8b8cefe8057c2ec7d1ae096daf702dfa1ecbc0f5fe1b02d642492e6",
+    "vtk/contacts.jsonl.gz": "87763475a58525523340dd33f1380c7bd8cf90fd5a4f73f3b4d6ce79a2ced950",
+    "height/events.jsonl": "c1c0abfd3ee792da4f0c06e257aec17d67cf8f12e19ab571fa6442335f746c57",
+    "height/SUMMARY.json": "7dbc744f3c4efb0c36410a94b91e5e20e244932c4c49567d41b5ad61e1a30540"
+  },
+  "geometryQueriesRerun": false,
+  "movementApplied": false,
+  "physicalAuthority": false
+}

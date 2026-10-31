@@ -1,0 +1,126 @@
+{
+  "status": "SOURCE ONLY NOT RUN",
+  "excluded": [
+    "SCHEDULE_20.json",
+    "HISTORICAL_PATHS_20.json",
+    "all runtime outputs",
+    "all meshes/images/binaries"
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5366,
+      "sha256": "c86d5986cdce3566384a89f5b5af79db9f2fa09aa2a4c38bea02acf9314af30a"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 12534,
+      "sha256": "44f55910b508a8508fb0f436cbc7e1f785fd0253eaab0da6b3b930ca39a5c420"
+    },
+    {
+      "path": "FRAME_AND_GROUND_FOLLOW_ADDENDUM.md",
+      "bytes": 9899,
+      "sha256": "9d69c94081941165187c7638e463033b9a7cb0c585dfb45644b25b919b519635"
+    },
+    {
+      "path": "CURRENT_PATHS_20.json",
+      "bytes": 67924,
+      "sha256": "52d100633b60e1d9063d3e7dcfb27d37473d5953026a89c2c30e53a6adb965a2"
+    },
+    {
+      "path": "SCHEDULE_20.json.gz",
+      "bytes": 131731,
+      "sha256": "78926b2da5fff8efe40b99121006bc70be0c94e1fe54b619a640fe2e893977fa"
+    },
+    {
+      "path": "SCHEDULE_STORAGE.json",
+      "bytes": 507,
+      "sha256": "f21f4724df578307351e455a1a80474beee288a5604aa718d636f90e16844f8f"
+    },
+    {
+      "path": "restore_schedule.py",
+      "bytes": 882,
+      "sha256": "d1ffeb73c5ac38d3584738673e95d6f6ddbbdc2020b16bfc4ade6b152465b95d"
+    },
+    {
+      "path": "SOURCE_PINS.json",
+      "bytes": 3213,
+      "sha256": "74541290438c53a972a8691c19848f0beccc062f39924bd881d36d09391ef7ae"
+    },
+    {
+      "path": "support_functions.py",
+      "bytes": 2570,
+      "sha256": "a6f45748921c286b9bf56ec2728b735966da8e3e1f6f29ad6f857551c58ecbd4"
+    },
+    {
+      "path": "run_controls.py",
+      "bytes": 1457,
+      "sha256": "9fc6283e593f2098841e0c0856e3b6c71a3e74bf6bf2caeb5043ac81b38d3a2b"
+    },
+    {
+      "path": "run_comparison.py",
+      "bytes": 11513,
+      "sha256": "dd4548740f613e0ef899ccb2324e6fb5bb1021829989260db84b7b08fecf40d5"
+    },
+    {
+      "path": "test_coffee_frame_controls.py",
+      "bytes": 1747,
+      "sha256": "327e11ef36ba09b13fb5ebcda0d81e92052746c31d0b43bfa8f6919540eda730"
+    },
+    {
+      "path": "upstream/blind-koivu-reference-comparison-06/reference_geometry.py",
+      "bytes": 10435,
+      "sha256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d"
+    },
+    {
+      "path": "upstream/blind-opus-reference-scoring-audit-02/source/reference_band_box.py",
+      "bytes": 9740,
+      "sha256": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/ground-follow-v2/ground_support.py",
+      "bytes": 8369,
+      "sha256": "095906c4cda9972e46751b511f46d41e2e541e2ebc44ebbb7da6dbe8240acfaf"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py",
+      "bytes": 5367,
+      "sha256": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/ground-follow-v2/run_ground_pilot.py",
+      "bytes": 12396,
+      "sha256": "679851a99466803d8390b38433a165ec409d52a4df266ff7e3651855370793de"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/ground-follow-v2/test_ground_physics.py",
+      "bytes": 2480,
+      "sha256": "c61ec01610561e90b42ce7bb5e7e8a490ea1ee2b75005368e19c4139629ae357"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/ground-follow-v2/test_ground_support.py",
+      "bytes": 4018,
+      "sha256": "1ed4e4e9c7d2415f741cad376693c0632e469972c4e7526a32014490f0fcd397"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/ground-follow-v2/test_oriented_ground_container.py",
+      "bytes": 5030,
+      "sha256": "faf152deff73ecacc1ab03ca042954d9c533f69a9b193654175f4eb96a1d050d"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/source/oriented_container.py",
+      "bytes": 12118,
+      "sha256": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/source/run_pilot.py",
+      "bytes": 11372,
+      "sha256": "8dba7dedf09e74dda80a035c3b7d404ebafeea09e953fcb968d75a8a2396ff64"
+    },
+    {
+      "path": "upstream/blind-split-candidate-game-03/source/test_oriented_container.py",
+      "bytes": 10456,
+      "sha256": "8db6c95cc7ef08dbe0521c76b39b03596d373329bb99cf4abc5e30a5cd81fb26"
+    }
+  ]
+}

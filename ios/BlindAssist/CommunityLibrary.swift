@@ -81,6 +81,22 @@ actor CommunityPackageStorage {
         try FileManager.default.removeItem(at: directory.appendingPathComponent(digest).appendingPathExtension("json"))
         return try list()
     }
+    func venueCatalog() throws -> VenuePackageCatalog {
+        try prepare()
+        let file = directory.appendingPathComponent("venue-directory.catalog")
+        guard FileManager.default.fileExists(atPath: file.path) else { return .init(references: []) }
+        let values = try file.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey, .isSymbolicLinkKey])
+        guard values.isRegularFile == true, values.isSymbolicLink != true,
+              let size = values.fileSize, size <= VenuePackageCatalog.maximumBytes else { throw CommunityError.invalid }
+        let handle = try FileHandle(forReadingFrom: file); defer { try? handle.close() }
+        return try VenuePackageCatalog.decode(handle.read(upToCount: VenuePackageCatalog.maximumBytes + 1) ?? Data())
+    }
+    func saveVenueCatalog(_ catalog: VenuePackageCatalog) throws {
+        try catalog.validate(); let bytes = try JSONEncoder().encode(catalog)
+        guard bytes.count <= VenuePackageCatalog.maximumBytes else { throw CommunityError.tooLarge }
+        try Task.checkCancellation(); try prepare()
+        try bytes.write(to: directory.appendingPathComponent("venue-directory.catalog"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+    }
     func export(_ package: PlacePackage) throws -> URL {
         let data = try package.encoded()
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).blindplace.json")
@@ -89,6 +105,7 @@ actor CommunityPackageStorage {
 }
 
 @MainActor final class CommunityLibrary: ObservableObject {
+    @Published private(set) var venueCatalog = VenuePackageCatalog(references: [])
     @Published private(set) var installed: [InstalledPlacePackage] = []
     @Published private(set) var fileIssues: [CommunityFileIssue] = []
     @Published private(set) var releases: [PublicMapRelease] = []
@@ -118,7 +135,17 @@ actor CommunityPackageStorage {
         }
     }
     func reload() {
-        perform { [self] in let result = try await storage.list(); try Task.checkCancellation(); accept(result) }
+        perform { [self] in
+            let result = try await storage.list(); try Task.checkCancellation(); accept(result)
+            do {
+                let catalog = try await storage.venueCatalog(); try Task.checkCancellation()
+                venueCatalog = catalog
+            } catch is CancellationError { throw CancellationError() }
+            catch {
+                try Task.checkCancellation(); venueCatalog = .init(references: [])
+                status = "Saved packages loaded. Local venue directory is unavailable or damaged; its file was preserved. Import a valid directory to replace it."
+            }
+        }
     }
     private func accept(_ result: CommunityInventory) { installed = result.installed; fileIssues = result.issues }
     func search(repository: String, more: Bool = false) {
@@ -165,6 +192,22 @@ actor CommunityPackageStorage {
             try Task.checkCancellation(); preview = try PlacePackage.decode(data); status = "Imported for review. Not activated as your current location."
         }
     }
+    func importVenueCatalog(_ url: URL) {
+        perform { [self] in
+            let data = try await Task.detached {
+                let access = url.startAccessingSecurityScopedResource(); defer { if access { url.stopAccessingSecurityScopedResource() } }
+                let values = try url.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey, .isSymbolicLinkKey])
+                guard values.isRegularFile == true, values.isSymbolicLink != true,
+                      let size = values.fileSize, size <= VenuePackageCatalog.maximumBytes else { throw CommunityError.tooLarge }
+                let handle = try FileHandle(forReadingFrom: url); defer { try? handle.close() }
+                return try handle.read(upToCount: VenuePackageCatalog.maximumBytes + 1) ?? Data()
+            }.value
+            try Task.checkCancellation()
+            let catalog = try VenuePackageCatalog.decode(data)
+            try await storage.saveVenueCatalog(catalog); try Task.checkCancellation()
+            venueCatalog = catalog; status = "Local venue directory saved. Choose a venue explicitly; coordinates are candidates, not your location."
+        }
+    }
     func review(_ item: InstalledPlacePackage) {
         preview = nil
         perform { [self] in
@@ -206,5 +249,103 @@ actor CommunityPackageStorage {
         if package.routeMap?.packageID != nil { package.routeMap?.packageRevision = package.revision }
         package.createdAt = ISO8601DateFormatter().string(from: Date()); package.reviews = []
         preview = package; status = "Public-sharing draft only. Previous review claims were removed because this is a new revision. Review before exporting; nothing is published."
+    }
+}
+
+/// Explicit local venue switch. This reuses IndoorNavigator's real map IO owner;
+/// a catalogue match is never an observation of the user's building/floor/pose.
+@MainActor final class VenuePackageActivation: ObservableObject {
+    typealias Loader = @MainActor (String) async throws -> PlacePackage
+    @Published private(set) var package: PlacePackage?
+    @Published private(set) var selected: VenuePackageReference?
+    @Published private(set) var status = "Choose a venue package. Live location is unknown."
+    @Published private(set) var loading = false
+    private struct Request {
+        let generation: UUID
+        let reference: VenuePackageReference
+        let indoor: IndoorNavigator
+        let intent: IndoorNavigator.CommunityImportIntent
+    }
+    private var queued: Request?
+    var operationInFlight: Bool { task != nil }
+    private var generation = UUID()
+    private var task: Task<Void, Never>?
+    private var pending: (IndoorNavigator, IndoorNavigator.CommunityImportIntent)?
+    private var completingRevision: UUID?
+    private let load: Loader
+    init(storage: CommunityPackageStorage = CommunityPackageStorage(), loader: Loader? = nil) {
+        load = loader ?? { digest in try await storage.load(digest: digest) }
+    }
+    func cancel() {
+        if loading { package = nil; status = "Venue loading cancelled. Guidance remains unavailable; live location is unknown." }
+        generation = UUID(); queued = nil; loading = false
+        if let (indoor, intent) = pending {
+            if indoor.ownsCommunityImport(intent) { indoor.failCommunityImport(intent) }
+            else if indoor.revision == completingRevision, let selected {
+                // Retire the ordered writer too, not only the earlier package-read task.
+                let replacement = indoor.beginCommunityImport(packageID: selected.packageID, revision: selected.packageRevision)
+                indoor.failCommunityImport(replacement)
+            }
+        }
+        pending = nil; completingRevision = nil
+    }
+    func select(_ reference: VenuePackageReference, indoor: IndoorNavigator) {
+        cancel(); package = nil; selected = reference
+        // Even a missing or invalid new target must not retain the previous route/pose.
+        let intent = indoor.beginCommunityImport(packageID: reference.packageID, revision: reference.packageRevision)
+        pending = (indoor, intent); let request = generation
+        loading = true; status = "Loading exact saved venue revision. Live location is unknown."
+        queued = Request(generation: request, reference: reference, indoor: indoor, intent: intent)
+        startReadIfIdle()
+    }
+    private func startReadIfIdle() {
+        guard task == nil else { return }
+        task = Task { [self] in
+            // One real read at a time; newer selections replace one queued request.
+            // Retiring authority cannot pretend a synchronous file read has ended.
+            while let request = queued {
+                queued = nil
+                await read(request)
+            }
+            task = nil
+        }
+    }
+    private func read(_ work: Request) async {
+        let request = work.generation, reference = work.reference, indoor = work.indoor, intent = work.intent
+            do {
+                try reference.validate()
+                let value = try await load(reference.digest)
+                try Task.checkCancellation()
+                guard generation == request else { return }
+                guard indoor.ownsCommunityImport(intent) else { throw SpatialMapIOError.superseded }
+                try reference.validate(package: value, actualDigest: CommunityPackageStorage.digest(try value.encoded()))
+                // Preserve the full floor/room/layout package even when it has no route graph.
+                package = value
+                guard value.localization == "manual-landmarks", value.routeMap != nil else {
+                    indoor.failCommunityImport(intent); pending = nil; loading = false
+                    status = "Venue layout loaded for preview; no compatible route graph. Live location is unknown."
+                    return
+                }
+                await withCheckedContinuation { (finished: CheckedContinuation<Void, Never>) in
+                    indoor.completeCommunityImport(value, intent: intent) { [weak self] result in
+                        // Keep the single operation slot until the real ordered writer callback.
+                        defer { finished.resume() }
+                        guard let self, self.generation == request else { return }
+                        self.pending = nil; self.completingRevision = nil; self.loading = false
+                        switch result {
+                        case .success:
+                            self.status = "Venue floors, rooms, objects and authored routes loaded. Live location and floor are unknown; fresh localization is required."
+                        case .failure:
+                            self.package = nil
+                            self.status = "Venue activation was superseded or failed. Guidance remains unavailable."
+                        }
+                    }
+                    completingRevision = indoor.revision
+                }
+            } catch {
+                guard generation == request else { return }
+                indoor.failCommunityImport(intent); pending = nil; package = nil; loading = false
+                status = "Exact venue package unavailable or invalid. Import/download and review this revision first; no automatic network request was made. Guidance remains unavailable."
+            }
     }
 }

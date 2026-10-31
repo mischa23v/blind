@@ -1,0 +1,12 @@
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+from pathlib import Path
+import json,hashlib,numpy as np
+B=Path('research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage');D=B/'zup-common-surface';checks=[]
+def ck(b,s):assert b,s;checks.append(s)
+rows=[x.split('\t') for x in (B.parent/'adapter/INPUTS.tsv').read_text().splitlines()];p=np.array([[float(x) for x in r[9:]] for r in rows]);saved=np.loadtxt(B/'zup-mapper/RECOVERED_POSES.tsv');ck(saved.shape==(265,13),'265 recovered poses');ck(np.array_equal(saved[:,0],np.arange(1,266)),'ordered IDs');err=float(abs(p-saved[:,1:]).max());ck(err<4e-7,'all optical input poses preserved')
+ck(hashlib.sha256((B.parent/'adapter/INPUTS.tsv').read_bytes()).hexdigest()==json.loads((B/'ZUP_PRE_RUN_FREEZE.json').read_text())['inputTSVSHA256'],'input TSV hash')
+params=lambda q:dict(x.split('\t',1)for x in q.read_text().splitlines())
+a=params(B/'zup-mapper/PARAMETERS.tsv');b=params(B/'zup-native-grid/PARAMETERS.tsv');delta={k:[a.get(k),b.get(k)]for k in a.keys()|b.keys()if a.get(k)!=b.get(k)};ck(delta=={'Grid/RayTracing':['false','true']},'ray tracing sole parameter delta');ck(b['Grid/CellSize']=='0.04','4cm grid')
+raw=np.load(D/'octomap_zup_regenerated_decoded_points.npy');A=np.array(json.loads(Path('research/open3d-same-data-benchmark-20261028/fresh-run/inputs/room_datasets/koivu/icp_iphone.json').read_text())['gt_transformation']);q=raw@A[:3,:3].T+A[:3,3];keys=np.floor(q/.04).astype(np.int64);u,inv=np.unique(keys,axis=0,return_inverse=True);d=np.sum((q-(keys+.5)*.04)**2,axis=1);mini=np.full(len(u),np.inf);np.minimum.at(mini,inv,d);cand=np.flatnonzero(d==mini[inv]);x=q[cand];g=inv[cand];o=np.lexsort((x[:,2],x[:,1],x[:,0],g));g=g[o];selected=q[cand[o[np.r_[True,g[1:]!=g[:-1]]]]];z=np.load(D/'octomap_zup_regenerated.npz');ck(np.array_equal(selected,z['pointsFaroMetres']),'independent common4cm representative selection exact');ck(np.all((z['referenceCellID']>=0)&(z['referenceCellID']<17801112)),'reference triangle indices in range');ck(np.all(z['forwardDistanceMetres']>=0)and np.all(z['reverseReferencePointDistanceMetres']>=0),'nonnegative distances')
+report={'status':'passed','checks':checks,'checkCount':len(checks),'maxInputPoseError':err,'common4cmSamples':len(selected),'registrationNotFitHere':True,'physicalSafetyEstablished':False};Path('research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/GEOMETRY_CONTRACT.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

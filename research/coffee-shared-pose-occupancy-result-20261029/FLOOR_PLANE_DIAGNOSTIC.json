@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "status": "completed-evaluator-only-scalar-diagnostic",
+  "method": "Existing plane transformed with inverse-transpose of exact supplied R; no refit, no scientific/native imports, no raw raster decoding",
+  "sourceSHA256": "ea7060aca82d37c7a763aa583ad0dd434f0408fb7d0eb52f28caecbbed9a0929",
+  "inputSHA256": {
+    "stageA": "4d1360780619477f123e69f53ea6d655eab4ef1abb997ddd17a87b2c7b603f1a",
+    "sharedResult": "395321fd55785aa3a81d4edb31065ed50fa5dc0f7bcbd6f2ff6ce7fdc3fb9659",
+    "oldDiagnostic": "cf3d7c330e370fa872d79f3913907bdf9bb6466de28ce83f2c5b7c09ec97bbd9",
+    "patchSelection": "7e938424d28ae9b3a64480c2629aacd422a75d00cb8087cbfc0724fd99b81497"
+  },
+  "frames": [
+    {
+      "frame": "frame_00290",
+      "worldUnitNormal": [
+        0.0015871816403527736,
+        0.0020966277563162186,
+        0.9999965424972689
+      ],
+      "worldPlaneOffset": 1.3529905686998212,
+      "normalAngleToSuppliedPositiveZDegrees": 0.1506673054217725,
+      "originalFitPoints": 414,
+      "originalLocalFitMaxResidualMetres": 0.00135833489456183,
+      "fittedPatchSamplesInsideRecordedDepthEnvelope": 414,
+      "fittedSamplesExcludedOutsideRecordedDepthEnvelope": 0,
+      "fittedPatchWorldXYZBoundsMetres": [
+        [
+          -2.1328619536014584,
+          -1.5426190204144246
+        ],
+        [
+          2.741393580667923,
+          3.1661494566794914
+        ],
+        [
+          -1.356849947968625,
+          -1.35564270927735
+        ]
+      ]
+    },
+    {
+      "frame": "frame_00357",
+      "worldUnitNormal": [
+        0.0021402920952253053,
+        -0.010466694589514354,
+        0.9999429320986858
+      ],
+      "worldPlaneOffset": 1.3487545777374192,
+      "normalAngleToSuppliedPositiveZDegrees": 0.6121186988168987,
+      "originalFitPoints": 195,
+      "originalLocalFitMaxResidualMetres": 0.005313542859821885,
+      "fittedPatchSamplesInsideRecordedDepthEnvelope": 191,
+      "fittedSamplesExcludedOutsideRecordedDepthEnvelope": 4,
+      "fittedPatchWorldXYZBoundsMetres": [
+        [
+          -0.9824525315516381,
+          -0.4178719918865079
+        ],
+        [
+          0.30132307348914256,
+          0.6964266826614036
+        ],
+        [
+          -1.3445460747291127,
+          -1.3395686064604826
+        ]
+      ]
+    },
+    {
+      "frame": "frame_00391",
+      "worldUnitNormal": [
+        0.010583220996373125,
+        0.0013155893041147209,
+        0.9999431307120046
+      ],
+      "worldPlaneOffset": 1.3520076363486955,
+      "normalAngleToSuppliedPositiveZDegrees": 0.6110525824753419,
+      "originalFitPoints": 480,
+      "originalLocalFitMaxResidualMetres": 0.003821785955381074,
+      "fittedPatchSamplesInsideRecordedDepthEnvelope": 480,
+      "fittedSamplesExcludedOutsideRecordedDepthEnvelope": 0,
+      "fittedPatchWorldXYZBoundsMetres": [
+        [
+          -0.5704862977211067,
+          0.10419341080911115
+        ],
+        [
+          -0.4143882906044154,
+          0.13526145379376175
+        ],
+        [
+          -1.3528290321326275,
+          -1.346069866765244
+        ]
+      ]
+    }
+  ],
+  "heightSamplesAreFittedPlanePredictionsNotRawPoints": true,
+  "physicalAuthority": false,
+  "heldOut": false,
+  "floorFlattening": false,
+  "pairs": [
+    {
+      "frames": [
+        "frame_00290",
+        "frame_00357"
+      ],
+      "normalAngleDegrees": 0.7205339133062162,
+      "fittedPatchXYBoundingBoxesOverlap": false,
+      "sameLocationHeightResidual": "not evaluated: no overlapping patch-domain bounding boxes"
+    },
+    {
+      "frames": [
+        "frame_00290",
+        "frame_00391"
+      ],
+      "normalAngleDegrees": 0.5173848612078135,
+      "fittedPatchXYBoundingBoxesOverlap": false,
+      "sameLocationHeightResidual": "not evaluated: no overlapping patch-domain bounding boxes"
+    },
+    {
+      "frames": [
+        "frame_00357",
+        "frame_00391"
+      ],
+      "normalAngleDegrees": 0.8305100635949545,
+      "fittedPatchXYBoundingBoxesOverlap": false,
+      "sameLocationHeightResidual": "not evaluated: no overlapping patch-domain bounding boxes"
+    }
+  ]
+}

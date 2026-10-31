@@ -1,0 +1,4 @@
+{
+  "before": "TextField(t(\"Your question\", \"سؤالك\"), text: $model.assistantQuestion, axis: .vertical)",
+  "after": "TextField(t(\"Your question\", \"سؤالك\"), text: $model.assistantQuestion,\n                    prompt: Text(t(\"Your question\", \"سؤالك\")).foregroundColor(.primary), axis: .vertical)"
+}

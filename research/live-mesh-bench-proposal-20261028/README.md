@@ -1,0 +1,45 @@
+# P0 exclusive nonwalking mesh producer — staged proposal
+
+**Status:** source proposal and authored XCTest fixtures only; not linked into the app, not activated, not Swift-compiled or device-tested here. Dependency APIs inspected at `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95`. No normal app source, build flags, workflow, planner implementation or physical output changed. The earlier `../live-navigation-wiring-20261028/README.md` audit remains frozen.
+
+## Concrete connection
+
+`LiveMeshBenchSession.Producer` receives real ARKit anchor callbacks on a dedicated serial queue. Within that same synchronous callback it invokes the existing `ARKitMeshAdapter82.capture`; owned values then pass through existing `MeshCandidateIngress83` decoding into `BlindRoomMesh`/Recast–Detour. It never asynchronously queues a borrowed anchor, Metal buffer or pointer. There is no copied/new mapping algorithm.
+
+This is an **exclusive seated diagnostic mode**, not simultaneous navigation: a future caller must first deliberately stop normal camera monitoring, recovery/watchdogs, RoomPlan and every source that could restart the session. That app handoff and warning confirmation are **not implemented**. Preparation expects the exact previous delegate, borrows the same session and never constructs a second ARSession. It saves the exact delegate/queue, keeps the terminal producer installed through owned-copy/native drain, and restores only if still the exact owner. Restoration never runs the camera. Stop, background notification, error/interruption, frame loss, owner replacement and deinit retire the diagnostic. No production caller, UI or automatic activation exists. The warning constant is not proof that a warning was delivered.
+
+The source exposes **phone monitoring unavailable** and **physical authority false**. No route ticket, spoken movement, beacon, hazard-clearance output, persistence, image export or network operation is supplied. Independent normal phone hazard processing is intentionally not running in this proposed exclusive mode; it is not silently claimed preserved. Wearables do not make this a safe walking mode.
+
+## Work bounds and meaning
+
+- At most128 anchors inspected per callback; larger callbacks retire the stage. At most **one actual82 copy attempt per callback**, rotating within the current mesh-anchor batch so stable ordering does not always select the first anchor. Every other delivered mesh revision is passed as an explicit unknown gap through83; it is not silently dropped or fabricated as empty space. Native references live only for that callback.
+- One outstanding capture/decode slot, max128 revision/tombstone identities, reused existing83/runtime mailbox. Per copied revision:32,000 vertices,32,000 faces,1,500,000 input bytes and1,500,000 logical decoded bytes; complete-or-reject, never truncated faces. These are admission limits, not measured latency or whole-process RSS bounds. Existing native geometry/runtime limits remain additional independent bounds.
+- Initial untracked data is unknown. Known stale frames, pre-activation frames, nonincreasing frame timestamps and later tracking loss retire admission. Synchronous frame-age checks precede copy; anchor receipt time never becomes mesh capture time. No body pose is inferred.
+- The watchdog runs on the same producer queue. It cannot preempt a blocked native copy, and main display `isCurrent` checks ownership/revision, **not an independent wall-clock lease**. A blocked producer may delay expiry. No hard0.5s display/hazard/latency guarantee is claimed; a separate thread-safe display-freshness lease is required before promising live display freshness.
+- Sampling/omissions mean this is partial evolving geometry, not a completed room model. Any omission remains sticky unknown in83 until a separate new owner/session, and even complete source delivery never means actual-world coverage.
+
+## Explicit blockers, not softened caveats
+
+1. **Classified-floor candidate blocker:**82 copies triangle classifications, but current83 drops them when creating `MeshAnchorEvent`; its75 runtime uses default `legacySlope`. Therefore this stage's routes are unclassified/slope-based geometric candidates. They are **not a classified-floor-only pipeline**, measured support or clearance. Preserving classifications through the established `triangleSupport`/`.classifiedFloorOnly` API requires a separate reviewed adapter patch and real-runtime fixtures; no fabricated floor is introduced here.
+2. **App integration blocker:** stopped-session/restart-source ownership, accessible warning completion/confirmation, UI and deliberate diagnostic invocation are not connected. The initializer's caller contract cannot prove that normal monitoring was stopped. Do not link/activate this as a complete app feature before that handoff is implemented and reviewed.
+3. **Native evidence blocker:** no Swift compiler, Xcode or Apple SDK is available here. The source has not compiled. Actual mesh callback ordering/generation, native buffer stability, copy cost, memory, watchdog behavior and background capture must be established on the exact supported SDK/phone. A new wrapper UUID and reset options do not prove a delayed native mesh callback belongs to the new AR run.
+4. **Movement blocker:** calibrated body pose, support/error model, latest swept-body/head/ground coverage and physical acceptance remain absent. This proposal supplies none of them and must not enable movement.
+
+## Tests and review
+
+- `Tests/LiveMeshBenchIngressTests.swift`: **8 authored tests** use actual82 owned-buffer format,83 decoder/lifecycle and75 native candidate runtime: transform once; foreign generation refused before copy; exact removal/replacement; malformed replacement remains unknown; one outstanding slot; stop during capture; per-callback aggregate budget with deliberately fast decoder and round-robin omissions; discard while capture is actually semaphore-blocked. These are synthetic geometry, not live sensor data.
+- `Tests/LiveMeshBenchSessionTests.swift`: **5 authored iOS-only tests** create an actual but never-run ARSession: wrong-owner refusal, exact delegate/queue restoration without restart, late drain versus replacement owner, prepared-owner background retirement and deinit drain. They do not execute real mesh callbacks, camera background stop, tracking transitions or the producer watchdog.
+- Existing83 `tests/main.swift` supplies separate dependency cases for same-anchor queued-decode removal, late old-epoch completion, malformed copies, replay receipts and terminal discard. Historical execution of those cases is not execution of this new wrapper.
+- `verify_staging.py` performs bounded file/source-contract checks only and writes `STATIC_RESULT.json`; it does **not** parse/compile Swift or execute Apple APIs. Its result must not be called native tests.
+- Two independent source reviewers identified and corrected raw-ingress exposure after native owner replacement, missing whole-callback copy bound, stale/replayed frame admission and dropped-controller cleanup coverage. Remaining assumptions above are recorded rather than turned into booleans proving safety.
+
+On an already authorized, complete Apple checkout, host dependency fixtures can be run serially with `swift test --package-path research/live-mesh-bench-proposal-20261028 --jobs 1`. The five conditional native ownership fixtures additionally require an approved iOS-hosted XCTest target; no such membership or new workflow is added here. Do not install a toolchain, fetch heavy dependencies or activate the camera merely to execute this staged source check.
+
+## Primary API evidence inspected2026-10-28
+
+- Apple [`ARSession.delegateQueue`](https://developer.apple.com/documentation/arkit/arsession/delegatequeue) documents delegate delivery queue selection and default main queue. It does not itself prove borrowed buffer lifetime or GPU synchronization.
+- Apple [`ARMeshAnchor`](https://developer.apple.com/documentation/arkit/armeshanchor) states the evolving scene mesh is not intended to reflect physical changes in real time. It cannot replace current raw-depth/coverage safety sensing.
+- Apple [`Setting resource storage modes`](https://developer.apple.com/documentation/metal/setting-resource-storage-modes) distinguishes access/storage from synchronization; `.shared` accessibility alone is not proof of exclusive stable read ownership. No invented Metal fence claims to synchronize ARKit's private producer.
+- Apple [`ARFrame.timestamp`](https://developer.apple.com/documentation/arkit/arframe/timestamp) identifies frame capture time; this inspection did not establish its precise clock-origin contract. The staged comparison to system uptime follows existing repository adapters and remains an exact-SDK/device verification item.
+
+**Stop condition for this source stage:** preserve the bounded producer, tests, exact-source manifest and known blockers for review. No app integration, phone validation or navigation readiness is implied.

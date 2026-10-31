@@ -1,0 +1,156 @@
+{
+  "status": "27_NAMED_CHECKS_PASS_WITH_RECEIPT_CAVEATS",
+  "checks": [
+    {
+      "check": "B_point_derived_sloped_plane_and_count",
+      "status": "PASS"
+    },
+    {
+      "check": "B_low_head_retention_unknown_band",
+      "status": "PASS"
+    },
+    {
+      "check": "B_floor_hole_unknown",
+      "status": "PASS"
+    },
+    {
+      "check": "B_actual_drop_not_bridged",
+      "status": "PASS"
+    },
+    {
+      "check": "B_horizontal_overhang_unknown_below",
+      "status": "PASS"
+    },
+    {
+      "check": "B_thin_low_obstacle_retention",
+      "status": "PASS"
+    },
+    {
+      "check": "B_empty_unknown",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_point_derived_sloped_plane_and_count",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_low_head_retention_unknown_band",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_floor_hole_unknown",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_actual_drop_not_bridged",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_horizontal_overhang_unknown_below",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_thin_low_obstacle_retention",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_empty_unknown",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_point_derived_sloped_plane_and_count",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_low_head_retention_unknown_band",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_floor_hole_unknown",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_actual_drop_not_bridged",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_horizontal_overhang_unknown_below",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_thin_low_obstacle_retention",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_empty_unknown",
+      "status": "PASS"
+    },
+    {
+      "check": "N1_raster_to_C1_plane_sign_all_points_retained",
+      "status": "PASS"
+    },
+    {
+      "check": "N1_raster_to_C1_hole_unknown_all_points_retained",
+      "status": "PASS"
+    },
+    {
+      "check": "C1_zero_and_opposite_normals_finite_sign_control",
+      "status": "PASS"
+    },
+    {
+      "check": "C0_C1_grazing_rejection_not_free_proof",
+      "status": "PASS"
+    },
+    {
+      "check": "native_serialization_gradient_loss_documented_no_resume",
+      "status": "PASS"
+    },
+    {
+      "check": "normal_array_nonfinite_preconditions",
+      "status": "PASS"
+    }
+  ],
+  "suite": {
+    "suite": "NP synthetic integration",
+    "status": "PASS",
+    "recordedData": false
+  },
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 8.875418801995693,
+    "peakSummedRSSBytes": 534171648,
+    "peakCumulativeCPUSeconds": 8.74,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 30,
+      "wallSeconds": 45,
+      "RSSBytes": 2147483648,
+      "diskBytes": 33554432,
+      "logicalCPUs": 1
+    },
+    "scope": "Unchanged original NP synthetic fixture linked to existing D1 core; no recorded inputs",
+    "frozenIntegrityPassed": true
+  },
+  "integrity": {
+    "checked": 242,
+    "changedOrMissing": [],
+    "passed": true
+  },
+  "caveats": {
+    "omittedHeader": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/build-gate/n1_adapter.h",
+    "actualSHA256": "1a138c6fb47c692a788b1bd9cd7f768242e3f0e716894a4b18ec3cc2b69a368a",
+    "priorGateFrozenSHA256": "1a138c6fb47c692a788b1bd9cd7f768242e3f0e716894a4b18ec3cc2b69a368a",
+    "matchesPriorFreeze": true,
+    "note": "Continuation freeze omitted header; post-hoc prior-freeze match is not a contemporaneous continuation precheck. No source change or rerun.",
+    "serializationOutputOriginalPath": "<WORKSPACE_ROOT>/synthetic_gradient_loss.voxblox",
+    "serializationOutputBytes": 355105,
+    "serializationOutputSHA256": "1027658b7271429cda502037724753fb8f7825c603aea5f362d7af0f1429ef3a",
+    "serializationOutputPreservedAt": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/zero-direction-candidate/np-continuation/run/synthetic_gradient_loss.voxblox",
+    "diskGuardScopeLimitation": "Output written to inherited workspace cwd outside continuation tree; small file bytes excluded from sampled continuation disk count."
+  },
+  "unchangedFixtureSHA256": "9ae386d925af186667faad313947e27ed5deafd077be225db9be5bdd2ff1110d",
+  "originalBaselineFailurePreserved": true,
+  "recordedData": false,
+  "directoryBytesIncludingRecoveredOutput": 1768540
+}

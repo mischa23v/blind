@@ -1,0 +1,49 @@
+{
+  "filename": "leaves_phone_frame.bin",
+  "byteOrder": "little",
+  "recordBytes": 32,
+  "fields": [
+    {
+      "name": "x",
+      "dtype": "float32"
+    },
+    {
+      "name": "y",
+      "dtype": "float32"
+    },
+    {
+      "name": "z",
+      "dtype": "float32"
+    },
+    {
+      "name": "sizeMetres",
+      "dtype": "float32"
+    },
+    {
+      "name": "occupancyProbability",
+      "dtype": "float32"
+    },
+    {
+      "name": "nativeHistoricalType",
+      "dtype": "int32"
+    },
+    {
+      "name": "nativeReferenceNodeID",
+      "dtype": "int32"
+    },
+    {
+      "name": "occupiedFlag",
+      "dtype": "int32"
+    }
+  ],
+  "coordinateFrame": "original phone OpenGL world, B*RTABworld exactly once",
+  "occupiedFlag": "native OctoMap isNodeOccupied at frozen0.5; authoritative over historical type",
+  "unknown": "unrepresented voxels remain unknown, not free",
+  "nativeHistoricalType": {
+    "-1": "unknown type",
+    "0": "empty type",
+    "1": "ground type",
+    "100": "obstacle type"
+  },
+  "floorSupportVerified": false
+}

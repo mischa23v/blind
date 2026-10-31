@@ -1,0 +1,400 @@
+#!/usr/bin/env python3
+"""Single admitted, immutable attempt; standard-library Linux resource guard.
+
+This file is source preparation. Do not invoke before final freeze/admission review.
+No retry, cap increase, parameter change, or failed-control fallback is provided.
+"""
+import time
+
+START = time.monotonic()
+
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import resource
+import signal
+import stat
+import subprocess
+import sys
+
+H = Path(__file__).resolve().parent
+ROOT = H.parents[2]
+RUN = H / "run"
+ATTEMPT = H / "GUARD_ATTEMPT.json"
+RECEIPT = H / "GUARD_RECEIPT.json"
+LIMITS = {"cpuSeconds": 10, "wallSeconds": 15, "CPUCount": 1,
+          "RSSBytes": 512 * 1024**2, "outputBytes": 32 * 1024**2}
+RECEIPT_RESERVE_BYTES = 64 * 1024
+POLL_SECONDS = 0.025
+TICKS = os.sysconf("SC_CLK_TCK")
+PAGES = os.sysconf("SC_PAGE_SIZE")
+
+
+class Refusal(Exception):
+    pass
+
+
+def json_bytes(value):
+    return (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n").encode()
+
+
+def write_exclusive(path, value):
+    data = json_bytes(value)
+    with path.open("xb") as handle:
+        handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
+def proc_stat(pid):
+    raw = Path("/proc") / str(pid) / "stat"
+    text = raw.read_text()
+    parts = text[text.rfind(")") + 2:].split()
+    return {"group": int(parts[2]), "state": parts[0],
+            "cpu": sum(int(parts[i]) for i in (11, 12, 13, 14)) / TICKS,
+            "rss": max(0, int(parts[21])) * PAGES,
+            "startTicks": int(parts[19])}
+
+
+class Budget:
+    def __init__(self):
+        self.group = None
+        self.child_usage = None
+        self.samples = 0
+        self.sample_peak_rss = 0
+        self.conservative_peak_rss = 0
+        self.max_cpu = 0.0
+        self.max_output = 0
+        self.last = {}
+
+    def group_state(self):
+        cpu = 0.0
+        rss = 0
+        pids = []
+        if self.group is not None:
+            for entry in Path("/proc").iterdir():
+                if not entry.name.isdigit():
+                    continue
+                try:
+                    value = proc_stat(entry.name)
+                except (FileNotFoundError, ProcessLookupError):
+                    continue
+                except PermissionError as exc:
+                    # An unreadable process could be an unobserved group member.
+                    raise Refusal("process-accounting-permission-unavailable") from exc
+                if value["group"] == self.group:
+                    cpu += value["cpu"]
+                    rss += value["rss"]
+                    pids.append(int(entry.name))
+        return cpu, rss, pids
+
+    def output_bytes(self):
+        total = 0
+        # Exactly these paths are new guard/worker output. Frozen source is not
+        # included, and worker may write only inside RUN under the reviewed contract.
+        for path in (ATTEMPT, RECEIPT):
+            if path.exists():
+                total += path.lstat().st_size
+        if RUN.exists():
+            for base, dirs, files in os.walk(RUN, followlinks=False):
+                for name in dirs + files:
+                    path = Path(base) / name
+                    mode = path.lstat().st_mode
+                    if stat.S_ISLNK(mode):
+                        raise Refusal("output-symlink-refused")
+                    if stat.S_ISREG(mode):
+                        total += path.stat().st_size
+                    elif not stat.S_ISDIR(mode):
+                        raise Refusal("nonregular-output-refused")
+        return total
+
+    def sample(self):
+        own = resource.getrusage(resource.RUSAGE_SELF)
+        reaped = resource.getrusage(resource.RUSAGE_CHILDREN)
+        group_cpu, group_rss, members = self.group_state()
+        # A live parent's cutime/cstime include its already-reaped descendants,
+        # not its living children. Once our direct worker is reaped, RUSAGE_CHILDREN
+        # provides the fast-exit CPU/RSS fallback; it is not added to the same
+        # still-live worker's consumed CPU.
+        total_cpu = own.ru_utime + own.ru_stime + reaped.ru_utime + reaped.ru_stime + group_cpu
+        own_current_rss = proc_stat(os.getpid())["rss"]
+        instantaneous = own_current_rss + group_rss
+        conservative = own.ru_maxrss * 1024 + max(group_rss, reaped.ru_maxrss * 1024)
+        self.samples += 1
+        self.sample_peak_rss = max(self.sample_peak_rss, instantaneous)
+        self.conservative_peak_rss = max(self.conservative_peak_rss, conservative)
+        self.max_cpu = max(self.max_cpu, total_cpu)
+        self.max_output = max(self.max_output, self.output_bytes())
+        self.last = {"elapsedSeconds": time.monotonic() - START,
+                     "aggregateCPUSeconds": self.max_cpu,
+                     "sampledAggregateRSSBytes": instantaneous,
+                     "conservativePeakAggregateRSSBytes": self.conservative_peak_rss,
+                     "outputBytes": self.max_output, "groupMembers": members}
+        return self.last
+
+    def check(self, reserve_output=True):
+        current = self.sample()
+        if current["aggregateCPUSeconds"] >= LIMITS["cpuSeconds"]:
+            raise Refusal("aggregate-CPU-limit")
+        if current["elapsedSeconds"] >= LIMITS["wallSeconds"]:
+            raise Refusal("wall-limit")
+        if current["conservativePeakAggregateRSSBytes"] > LIMITS["RSSBytes"]:
+            raise Refusal("aggregate-RSS-limit")
+        output_limit = LIMITS["outputBytes"] - (RECEIPT_RESERVE_BYTES if reserve_output else 0)
+        if current["outputBytes"] > output_limit:
+            raise Refusal("aggregate-output-limit")
+        return current
+
+
+def read_small_json(path, budget, limit=2 * 1024**2):
+    budget.check()
+    if not path.is_file() or path.is_symlink() or path.stat().st_size > limit:
+        raise Refusal("missing-or-unbounded-JSON:" + str(path))
+    raw = path.read_bytes()
+    result = json.loads(raw)
+    budget.check()
+    return raw, result
+
+
+def sha_file(path, budget):
+    digest = hashlib.sha256()
+    count = 0
+    with path.open("rb") as handle:
+        before = os.fstat(handle.fileno())
+        if not stat.S_ISREG(before.st_mode):
+            raise Refusal("nonregular-pinned-input")
+        while True:
+            chunk = handle.read(1024 * 1024)
+            if not chunk:
+                break
+            count += len(chunk)
+            digest.update(chunk)
+            budget.check()
+        after = os.fstat(handle.fileno())
+    if (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns) != \
+       (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns):
+        raise Refusal("pinned-input-mutated-during-read")
+    budget.check()
+    return count, digest.hexdigest()
+
+
+def checked_path(value):
+    if not isinstance(value, str) or not value or Path(value).is_absolute():
+        raise Refusal("pinned-path-must-be-workspace-relative")
+    original = ROOT / value
+    resolved = original.resolve(strict=True)
+    try:
+        resolved.relative_to(ROOT)
+    except ValueError as exc:
+        raise Refusal("pinned-path-outside-workspace") from exc
+    if original != resolved or not resolved.is_file():
+        raise Refusal("pinned-path-symlink-or-noncanonical")
+    if resolved in (H / "PRE_RUN_FREEZE.json", H / "ADMISSION.json") or RUN in resolved.parents:
+        raise Refusal("circular-or-output-input-pin")
+    return resolved
+
+
+def child_limits(cpu):
+    os.sched_setaffinity(0, {cpu})
+    resource.setrlimit(resource.RLIMIT_CPU, (10, 10))
+    resource.setrlimit(resource.RLIMIT_FSIZE,
+                       (LIMITS["outputBytes"] - RECEIPT_RESERVE_BYTES,) * 2)
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+    # Do not confuse virtual address space with resident memory. RSS is checked
+    # across the process group, including this guard, plus fast-exit rusage.
+
+
+def kill_group(proc):
+    if proc is not None:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+
+
+def main():
+    global START
+    # Include interpreter startup in wall accounting when Linux process-start
+    # ticks are available; CPU accounting always includes all guard CPU.
+    try:
+        elapsed = time.clock_gettime(time.CLOCK_BOOTTIME) - proc_stat(os.getpid())["startTicks"] / TICKS
+        START = time.monotonic() - max(0.0, elapsed)
+    except (OSError, AttributeError, ValueError):
+        pass
+    if len(sys.argv) != 1:
+        print("REFUSED: guard accepts no arguments", file=sys.stderr)
+        return 2
+    # Atomic attempt creation prevents concurrent or repeated execution. Existing
+    # results are never removed, truncated, rewritten, or automatically retried.
+    if RUN.exists() or ATTEMPT.exists() or RECEIPT.exists():
+        print("REFUSED: existing run/attempt/receipt; preserve original attempt", file=sys.stderr)
+        return 2
+    try:
+        write_exclusive(ATTEMPT, {"schema": 1, "pid": os.getpid(), "limits": LIMITS,
+                                  "status": "attempt-claimed", "physicalAuthority": False})
+    except FileExistsError:
+        print("REFUSED: concurrent attempt already claimed", file=sys.stderr)
+        return 2
+    budget = Budget()
+    proc = None
+    log = None
+    result = {"schema": 1, "status": "FAILED", "limits": LIMITS,
+              "physicalAuthority": False, "attemptPreserved": True,
+              "nativeExecutionStarted": False, "addressSpaceCapApplied": False,
+              "sampleIntervalSeconds": POLL_SECONDS,
+              "outputReceiptReserveBytes": RECEIPT_RESERVE_BYTES,
+              "resourceEnforcement": "single CPU affinity; aggregate sampling with fast-exit rusage; child CPU/FSIZE rlimits; wall alarm"}
+
+    def deadline(_signum, _frame):
+        raise Refusal("wall-limit")
+
+    try:
+        signal.signal(signal.SIGALRM, deadline)
+        remaining = LIMITS["wallSeconds"] - (time.monotonic() - START)
+        if remaining <= 0:
+            raise Refusal("wall-limit-before-prechecks")
+        signal.setitimer(signal.ITIMER_REAL, remaining)
+        affinity = os.sched_getaffinity(0)
+        if not affinity:
+            raise Refusal("no-CPU-affinity-available")
+        cpu = min(affinity)
+        os.sched_setaffinity(0, {cpu})
+        result["cpuAffinity"] = [cpu]
+        budget.check()
+        admission_raw, admission = read_small_json(H / "ADMISSION.json", budget, 64 * 1024)
+        if admission.get("admitted") is not True or admission.get("admittedBy") != "root" or admission.get("reviewed") is not True:
+            raise Refusal("not-explicitly-reviewed-and-root-admitted")
+        freeze_raw, freeze = read_small_json(H / "PRE_RUN_FREEZE.json", budget)
+        freeze_sha = hashlib.sha256(freeze_raw).hexdigest()
+        admission_sha = hashlib.sha256(admission_raw).hexdigest()
+        result.update(freezeSHA256=freeze_sha, admissionSHA256=admission_sha)
+        if admission.get("freezeSHA256") != freeze_sha:
+            raise Refusal("admission-freeze-hash-mismatch")
+        if freeze.get("schema") != 1 or freeze.get("limits") != LIMITS:
+            raise Refusal("freeze-schema-or-limit-mismatch")
+        if "runtimeFiles" in freeze:
+            raise Refusal("absolute-runtime-file-pins-not-supported-by-this-guard")
+        rows = freeze.get("files")
+        if not isinstance(rows, list) or not 2 <= len(rows) <= 256:
+            raise Refusal("invalid-file-pin-list")
+        pins = {}
+        for row in rows:
+            if not isinstance(row, dict) or set(row) != {"path", "bytes", "sha256"}:
+                raise Refusal("invalid-file-pin-record")
+            path = checked_path(row["path"])
+            if path in pins or type(row["bytes"]) is not int or row["bytes"] < 0:
+                raise Refusal("duplicate-or-invalid-file-pin")
+            if not isinstance(row["sha256"], str) or len(row["sha256"]) != 64 or any(c not in "0123456789abcdef" for c in row["sha256"]):
+                raise Refusal("invalid-file-digest")
+            if path.stat().st_size != row["bytes"]:
+                raise Refusal("pinned-size-mismatch:" + row["path"])
+            measured = sha_file(path, budget)
+            if measured != (row["bytes"], row["sha256"]):
+                raise Refusal("pinned-file-drift:" + row["path"])
+            pins[path] = row
+        guard = Path(__file__).resolve()
+        worker = H / "worker.py"
+        fixtures = H / "reader_fixtures.py"
+        for path, field in ((guard, "guardSHA256"), (worker, "workerSHA256")):
+            if path not in pins or freeze.get(field) != pins[path]["sha256"]:
+                raise Refusal("missing-or-mismatched-final-source-pin:" + field)
+        if fixtures not in pins:
+            raise Refusal("missing-reviewed-reader-fixtures-pin")
+        result["verifiedPinnedFileCount"] = len(pins)
+        # Recheck launch-governing files immediately before spawn. No alternate
+        # worker path, command, environment cap override, or CLI is admitted.
+        if (H / "ADMISSION.json").read_bytes() != admission_raw or (H / "PRE_RUN_FREEZE.json").read_bytes() != freeze_raw:
+            raise Refusal("admission-or-freeze-drift-before-launch")
+        for path in (guard, worker, fixtures):
+            if sha_file(path, budget) != (pins[path]["bytes"], pins[path]["sha256"]):
+                raise Refusal("final-source-drift-before-launch")
+        RUN.mkdir(exist_ok=False)
+        command = [sys.executable, str(worker), "--worker"]
+        write_exclusive(RUN / "LAUNCH.json", {"schema": 1, "freezeSHA256": freeze_sha,
+                         "admissionSHA256": admission_sha, "command": command,
+                         "limits": LIMITS, "cpuAffinity": [cpu], "physicalAuthority": False})
+        env = os.environ.copy()
+        env.update(OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1",
+                   TBB_NUM_THREADS="1", NUMEXPR_NUM_THREADS="1", VECLIB_MAXIMUM_THREADS="1",
+                   PYTHONDONTWRITEBYTECODE="1", PYTHONOPTIMIZE="0", BLIND_STOCK_ROUTE_GUARDED="1",
+                   BLIND_STOCK_ROUTE_FREEZE_SHA256=freeze_sha)
+        budget.check()
+        log = (RUN / "worker.log").open("xb")
+        proc = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT,
+                                start_new_session=True, preexec_fn=lambda: child_limits(cpu))
+        result.update(nativeExecutionStarted=True, command=command, workerPID=proc.pid)
+        budget.group = proc.pid
+        while True:
+            budget.check()
+            pid, status, usage = os.wait4(proc.pid, os.WNOHANG)
+            if pid:
+                proc.returncode = os.waitstatus_to_exitcode(status)
+                budget.child_usage = usage
+                result["returncode"] = proc.returncode
+                result["wait4ChildCPUSeconds"] = usage.ru_utime + usage.ru_stime
+                result["wait4ChildMaxRSSBytes"] = usage.ru_maxrss * 1024
+                break
+            time.sleep(min(POLL_SECONDS, max(0.0, LIMITS["wallSeconds"] - (time.monotonic() - START))))
+        budget.check()
+        if budget.last["groupMembers"]:
+            raise Refusal("worker-left-process-group-members")
+        if proc.returncode != 0:
+            raise Refusal("worker-nonzero-exit")
+        _, summary = read_small_json(RUN / "SUMMARY.json", budget)
+        if summary.get("success") is not True:
+            raise Refusal("worker-did-not-establish-success")
+        if (H / "ADMISSION.json").read_bytes() != admission_raw or (H / "PRE_RUN_FREEZE.json").read_bytes() != freeze_raw:
+            raise Refusal("admission-or-freeze-drift-after-worker")
+        for path, pin in pins.items():
+            if sha_file(path, budget) != (pin["bytes"], pin["sha256"]):
+                raise Refusal("pinned-input-drift-after-worker:" + pin["path"])
+        result["allPinnedInputsReverifiedAfterWorker"] = True
+        budget.check()
+        result["status"] = "PASS"
+    except BaseException as exc:
+        result["stopReason"] = str(exc)[:2000]
+        result["errorType"] = type(exc).__name__
+        result["status"] = "FAILED"
+    finally:
+        # A deadline must never prevent cleanup of this guard-owned process group.
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        kill_group(proc)
+        if proc is not None and proc.returncode is None:
+            try:
+                _, status, usage = os.wait4(proc.pid, 0)
+                proc.returncode = os.waitstatus_to_exitcode(status)
+                result["returncode"] = proc.returncode
+                result["wait4ChildCPUSeconds"] = usage.ru_utime + usage.ru_stime
+                result["wait4ChildMaxRSSBytes"] = usage.ru_maxrss * 1024
+            except ChildProcessError:
+                result["status"] = "FAILED"
+                result.setdefault("cleanupError", "child-reaping-state-unknown")
+        if log is not None:
+            log.close()
+        try:
+            budget.check()
+        except BaseException as exc:
+            result["status"] = "FAILED"
+            result["finalBudgetFailure"] = str(exc)[:1000]
+        result.update(finalMeasurement=budget.last, sampleCount=budget.samples,
+                      peakSampledAggregateRSSBytes=budget.sample_peak_rss,
+                      peakConservativeAggregateRSSBytes=budget.conservative_peak_rss,
+                      aggregateCPUSeconds=budget.max_cpu,
+                      elapsedSeconds=time.monotonic() - START)
+        # Reserve space and a tiny timing/CPU headroom for serializing this receipt;
+        # reaching a cap is never reported as a completed successful result.
+        if result["aggregateCPUSeconds"] >= LIMITS["cpuSeconds"] - 0.02 or result["elapsedSeconds"] >= LIMITS["wallSeconds"] - 0.02:
+            result["status"] = "FAILED"
+            result.setdefault("finalBudgetFailure", "insufficient-final-receipt-headroom")
+        encoded = json_bytes(result)
+        if len(encoded) > RECEIPT_RESERVE_BYTES:
+            raise RuntimeError("guard receipt exceeded reserved output budget")
+        write_exclusive(RECEIPT, result)
+    print(json.dumps({key: result.get(key) for key in ("status", "stopReason", "finalBudgetFailure", "nativeExecutionStarted", "aggregateCPUSeconds", "elapsedSeconds")}))
+    return 0 if result["status"] == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

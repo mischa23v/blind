@@ -1,0 +1,34 @@
+{
+  "aggregateStatus": "failed",
+  "allNativeHeightEventsValid": true,
+  "completeCollisionVerdict": null,
+  "decompressedSavedBytes": 67107620,
+  "guardBeforeAfterHashesEqual": true,
+  "gzipReadToEOFWithoutError": true,
+  "lastSavedRecord": {
+    "arm": "native_height",
+    "envelope": "body",
+    "eventIndex": 1581,
+    "lowerTrimMetres": 0.0,
+    "name": "0_to_8",
+    "scene": "coffee"
+  },
+  "method": "streaming stdlib JSON/gzip audit; no native execution",
+  "missingRecords": 499,
+  "nativeHeightEvents": 3696,
+  "physicalMovementApplied": false,
+  "rawGzipBytes": 2228166,
+  "rawGzipSHA256": "87763475a58525523340dd33f1380c7bd8cf90fd5a4f73f3b4d6ce79a2ced950",
+  "recordsByScene": {
+    "coffee": 12653,
+    "conference": 16416
+  },
+  "savedCompleteRecords": 29069,
+  "scheduledRecords": 29568,
+  "schema": 1,
+  "stageExitCodes": {
+    "compile": 0,
+    "height": 0,
+    "vtk": 1
+  }
+}

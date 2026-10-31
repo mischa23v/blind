@@ -37,3 +37,63 @@ public struct VenueCatalog: Codable, Sendable {
         }
     }
 }
+
+/// Local directory references, not Google content, hierarchy or localization evidence.
+/// An explicit selection pins immutable package bytes; no network provider is required.
+public struct VenuePackageReference: Codable, Equatable, Sendable, Identifiable {
+    public let venue: Venue
+    public let packageID: String
+    public let packageRevision: String
+    public let digest: String
+    public let googlePlaceID: String?
+    public var id: String { venue.id }
+    public init(venue: Venue, packageID: String, packageRevision: String, digest: String,
+                googlePlaceID: String? = nil) {
+        self.venue = venue; self.packageID = packageID; self.packageRevision = packageRevision
+        self.digest = digest; self.googlePlaceID = googlePlaceID
+    }
+    public func validate() throws {
+        try VenueCatalog(venues: [venue]).validate()
+        guard PlacePackage.validID(venue.id), venue.name.count <= 300,
+              PlacePackage.validID(packageID), PlacePackage.validID(packageRevision),
+              digest.count == 64, digest.allSatisfy({ "0123456789abcdef".contains($0) }),
+              venue.mapFile == digest + ".json",
+              googlePlaceID == nil || (!googlePlaceID!.isEmpty && googlePlaceID!.count <= 256 &&
+                googlePlaceID!.unicodeScalars.allSatisfy({ CharacterSet.alphanumerics.contains($0) || "_-".unicodeScalars.contains($0) }))
+        else { throw MapError.invalid }
+    }
+    public func validate(package: PlacePackage, actualDigest: String) throws {
+        try validate(); try package.validate()
+        guard package.visibility == "public", package.id == packageID,
+              package.revision == packageRevision, actualDigest == digest else { throw MapError.invalid }
+    }
+}
+
+public struct VenuePackageCatalog: Codable, Sendable {
+    public let schemaVersion: Int
+    public let references: [VenuePackageReference]
+    public static let maximumBytes = 128_000
+    public init(references: [VenuePackageReference]) { schemaVersion = 1; self.references = references }
+    public func validate() throws {
+        guard schemaVersion == 1, references.count <= 128,
+              Set(references.map(\.id)).count == references.count else { throw MapError.invalid }
+        let google = references.compactMap(\.googlePlaceID)
+        guard Set(google).count == google.count else { throw MapError.invalid }
+        for reference in references { try reference.validate() }
+    }
+    public static func decode(_ data: Data) throws -> Self {
+        guard !data.isEmpty, data.count <= maximumBytes else { throw MapError.invalid }
+        let value = try JSONDecoder().decode(Self.self, from: data); try value.validate(); return value
+    }
+    /// Exact optional provider key lookup only; no request to Google or location assertion.
+    public func reference(googlePlaceID: String) -> VenuePackageReference? {
+        guard (try? validate()) != nil else { return nil }
+        return references.first { $0.googlePlaceID == googlePlaceID }
+    }
+    public func candidates(latitude: Double, longitude: Double, accuracy: Double, age: Double) -> [VenuePackageReference] {
+        guard (try? validate()) != nil else { return [] }
+        let ids = Set(VenueCatalog(venues: references.map(\.venue))
+            .candidates(latitude: latitude, longitude: longitude, accuracy: accuracy, age: age).map(\.id))
+        return references.filter { ids.contains($0.id) }
+    }
+}

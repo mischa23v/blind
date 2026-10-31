@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "TERMINAL_SOURCE_561_ADDITIVE_REPORT",
+  "source_commit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+  "parent_manifest_sha256": "26572ea97b597389db6789c9815b1fc6698a8cbca364067ff1b5a1750f8da65e",
+  "parent_payloads_unchanged": true,
+  "stdlib_reproducer_tests": 13,
+  "reproduction_matches_saved_logs": true,
+  "raw_logs_included": false,
+  "native_executed": false,
+  "ci_dispatched": false,
+  "source_published": false,
+  "files": [
+    {
+      "path": "GITHUB_STATUS_0506.json",
+      "bytes": 18802,
+      "sha256": "a4eea5cbe71c51185d24da37458851df51026528cdfdaf02c1acd910d8f2c1b0"
+    },
+    {
+      "path": "LOG_RECEIPTS.json",
+      "bytes": 38794,
+      "sha256": "c9f27307552db05cc8239f53ba3b4f9f5232fb825e95091496161a09166f97f3"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 8530,
+      "sha256": "f07a0e89ce42ed4446645524baa30c900c4c6e4e335dea62ad9c98601e124505"
+    },
+    {
+      "path": "parse_logs.py",
+      "bytes": 9244,
+      "sha256": "fa3b9ec7bd5a5d615c5e29ca9b5fb0b609ad714b38a1f5c9db1c12dc062c8aa9"
+    },
+    {
+      "path": "test_parse_logs.py",
+      "bytes": 5199,
+      "sha256": "39fd3dc23a9d0f8a41df02e4cb35caab904dba0dcd1085be09e13f23fa547654"
+    }
+  ]
+}

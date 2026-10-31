@@ -18,6 +18,12 @@ final class LaunchTests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US",
             "-background-conversation", "NO", "-camera-awareness", "NO"]
+        // Observe only the existing full audit and dedicated endpoint probes.
+        // No category override, new launch, wait, or audit filtering.
+        if ["testAccessibilityAuditOfCameraAndAsk", "testPracticeLayoutAtDefaultSize",
+            "testPracticeLayoutAtLargestAccessibilitySize"].contains(where: { name.contains($0) }) {
+            app.launchArguments.append("--ask-layout-trace")
+        }
         app.launch()
     }
     private func openTab(_ name: String) {
@@ -55,6 +61,46 @@ final class LaunchTests: XCTestCase {
         for id in ["tool-read-text", "tool-read-page", "tool-scan-code", "tool-light", "tool-explore"] {
             reveal(app.buttons[id])
         }
+    }
+
+    func testQuietDescriptionsCanResumeWithoutStartingMicrophoneOrCamera() {
+        openSettingsPage("conversation-controls")
+        let descriptions = app.buttons["conversation-descriptions"]
+        reveal(descriptions)
+        XCTAssertEqual(descriptions.label, "Resume descriptions")
+        XCTAssertEqual(descriptions.value as? String, "Descriptions quiet")
+        descriptions.tap()
+        XCTAssertEqual(descriptions.label, "Quiet descriptions, keep alerts")
+        XCTAssertEqual(descriptions.value as? String, "Descriptions on")
+        descriptions.tap()
+        XCTAssertEqual(descriptions.label, "Resume descriptions")
+        XCTAssertEqual(descriptions.value as? String, "Descriptions quiet")
+        XCTAssertTrue(app.staticTexts["microphone-status"].exists)
+        XCTAssertEqual(app.staticTexts["microphone-status"].label, "Microphone is not listening.")
+        XCTAssertTrue(app.staticTexts["camera-status"].label.hasPrefix("Camera off."))
+        XCTAssertTrue(app.buttons["write-message"].exists)
+    }
+
+    func testAskControlsAndUnavailableReasonRemainReachableWithoutCamera() {
+        openSettingsPage("ask-screen")
+        let answer = app.buttons["local-answer"]
+        reveal(answer)
+        XCTAssertFalse(answer.isEnabled)
+        let reason = app.staticTexts["local-answer-unavailable-reason"]
+        reveal(reason)
+        XCTAssertEqual(reason.label, "Camera monitoring is not running. Open Camera and safety to start it.")
+        let repeatAnswer = app.buttons["repeat-answer"]
+        reveal(repeatAnswer)
+        XCTAssertEqual(repeatAnswer.label, "Repeat answer")
+        XCTAssertFalse(repeatAnswer.isEnabled, "Readable styling must not enable an empty answer")
+        XCTAssertTrue(app.descendants(matching: .any)["ask-focus"].exists)
+        let goal = app.descendants(matching: .any)["ask-goal"]
+        reveal(goal)
+        XCTAssertTrue(goal.exists)
+        let question = app.descendants(matching: .any)["ask-question"]
+        reveal(question)
+        XCTAssertTrue(question.exists)
+        XCTAssertFalse(answer.isEnabled, "Scrolling and selecting text must not start camera monitoring")
     }
     func testRoomsShowSavedRoomsAndExplicitStartScan() {
         openTab("Rooms")
@@ -100,18 +146,50 @@ final class LaunchTests: XCTestCase {
         openTab("Assistant")
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
     }
-    func testPracticeIsAnnouncedAndCanStop() {
+    func testPracticeNavigationRemainsReachable() {
         openSettingsPage("camera-screen")
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
         openSettingsPage("home-practice")
-        XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
+        let reply = app.staticTexts["companion-reply"]
+        XCTAssertTrue(reply.waitForExistence(timeout: 5))
+        XCTAssertTrue(reply.isHittable, "Practice navigation must expose the companion reply")
+        // Navigation reachability is separate from cancellation. This check does
+        // not prove audible speech or active practice after the navigation delay.
+    }
+    func testPracticeIsAnnouncedAndCanStop() {
+        // This explicit test owns the synthetic receipt. Do not depend on
+        // XCTest's display-name formatting to decide whether to enable it.
+        let runID = UUID().uuidString
+        app.terminate()
+        app.launchArguments.append("--practice-runtime-diagnostic")
+        app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
+        app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID
+        print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\(runID)")
+        app.launch()
         openSettingsPage("camera-screen")
-        XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
+        let start = app.buttons["start-simulation"]
+        reveal(start)
+        // Start before synthesizing the tap: this overestimates elapsed practice
+        // time. Keep a 30-second margin below the unchanged production 120s expiry.
+        let startedBeforeTap = ProcessInfo.processInfo.systemUptime
+        let cancellationEvidenceLimit: TimeInterval = 90
+        start.tap()
+        let practiceStatus = app.staticTexts["practice-active-status"]
+        XCTAssertTrue(practiceStatus.waitForExistence(timeout: 5))
+        reveal(practiceStatus)
         // Ending practice respects the separate camera preference, rather than forcing sensors on.
         let end = app.buttons["end-practice"]
-        reveal(end); end.tap()
-        XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)
+        reveal(end)
+        XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedBeforeTap, cancellationEvidenceLimit,
+                          "Automation consumed the cancellation evidence window; natural expiry cannot count as Stop")
+        end.tap()
+        XCTAssertFalse(practiceStatus.exists)
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring")
+        let elapsed = ProcessInfo.processInfo.systemUptime - startedBeforeTap
+        XCTAssertLessThan(elapsed, cancellationEvidenceLimit,
+                          "Postconditions must precede natural expiry; a late observation is not cancellation evidence")
+        print("PRACTICE_CANCEL elapsedUpperBound=\(elapsed) limit=\(cancellationEvidenceLimit) explicitEndTap=true")
     }
     func testAccessibleMainModesAndOfflineDefault() {
         openSettingsPage("camera-screen")
@@ -121,6 +199,10 @@ final class LaunchTests: XCTestCase {
         reveal(ask); ask.tap()
         XCTAssertTrue(app.buttons["voice-question"].waitForExistence(timeout: 5))
         reveal(app.buttons["local-answer"])
+        XCTAssertFalse(app.buttons["local-answer"].isEnabled, "Readable unavailable action must not start the camera")
+        let unavailableReason = app.staticTexts["local-answer-unavailable-reason"]
+        reveal(unavailableReason)
+        XCTAssertEqual(unavailableReason.label, "Camera monitoring is not running. Open Camera and safety to start it.")
         // The production privacy build contains no photo-upload control. Developer builds
         // may expose it, but offline mode must still disable it.
         if app.buttons["cloud-answer"].exists {
@@ -185,6 +267,46 @@ final class LaunchTests: XCTestCase {
             recordPracticeLayoutAttachment(sizeName + "-" + role)
         }
         recordPracticeFooterEnd(footerElement, expectedLabel: footer, sizeName: sizeName)
+        recordAskLayout(sizeName: sizeName)
+    }
+    @MainActor private func recordAskLayout(sizeName: String) {
+        // Same system-selected category and synthetic app as the Practice probe.
+        // Observe real Form rows at this size; do not override fonts or the audit.
+        openSettingsPage("ask-screen")
+        let action = app.buttons["local-answer"]
+        let reason = app.staticTexts["local-answer-unavailable-reason"]
+        let expectedReason = "Camera monitoring is not running. Open Camera and safety to start it."
+        for (role, element) in [("ask-action", action), ("ask-reason", reason)] {
+            let existedBeforeReveal = element.exists
+            print("ASK_LAYOUT beforeReveal size=\(sizeName) role=\(role) exists=\(existedBeforeReveal)")
+            revealPracticeDiagnosticElement(element)
+            recordPracticeLayoutAttachment(sizeName + "-" + role)
+            print("ASK_LAYOUT afterReveal size=\(sizeName) role=\(role) frame=\(element.frame) hittable=\(element.isHittable) enabled=\(element.isEnabled) label=\(element.label)")
+            XCTAssertEqual(element.label, role == "ask-action" ? "Ask about the camera view" : expectedReason)
+        }
+        XCTAssertFalse(action.isEnabled, "Readable unavailable action must not start the camera")
+        let navigation = app.navigationBars.firstMatch
+        let tabs = app.tabBars.firstMatch
+        XCTAssertTrue(navigation.exists)
+        XCTAssertTrue(tabs.exists)
+        func endIsVisible() -> Bool {
+            guard reason.exists else { return false }
+            return reason.frame.maxY > navigation.frame.maxY && reason.frame.maxY <= tabs.frame.minY
+        }
+        for _ in 0..<8 {
+            if endIsVisible() { break }
+            app.swipeUp()
+        }
+        for _ in 0..<8 {
+            if endIsVisible() { break }
+            app.swipeDown()
+        }
+        recordPracticeLayoutAttachment(sizeName + "-ask-reason-end")
+        XCTAssertTrue(reason.exists)
+        print("ASK_LAYOUT reasonEnd size=\(sizeName) frame=\(reason.frame) unobscuredTop=\(navigation.frame.maxY) unobscuredBottom=\(tabs.frame.minY) endVisible=\(endIsVisible())")
+        XCTAssertTrue(endIsVisible(), "Full unavailable reason must scroll above the tab bar and below the navigation bar")
+        XCTAssertTrue(reason.isHittable)
+        XCTAssertEqual(reason.label, expectedReason)
     }
     @MainActor private func recordPracticeFooterEnd(_ footer: XCUIElement, expectedLabel: String, sizeName: String) {
         let navigation = app.navigationBars.firstMatch
@@ -262,6 +384,8 @@ final class LaunchTests: XCTestCase {
             ("practice-header", app.staticTexts.matching(NSPredicate(format: "label == %@", "Practice")).firstMatch),
             ("practice-footer", app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Practice pauses live sensors and ends by itself after two minutes.")).firstMatch),
             ("local-answer", app.buttons["local-answer"]),
+            ("repeat-answer", app.buttons["repeat-answer"]),
+            ("local-answer-unavailable-reason", app.staticTexts["local-answer-unavailable-reason"]),
             ("voice-question", app.buttons["voice-question"])
         ]
         for (role, element) in controls {
@@ -338,7 +462,13 @@ final class LaunchTests: XCTestCase {
 
     @MainActor
     private func auditFullDestination(_ phase: String, title: String, requiredControl: String) throws {
-        defer { recordFullAuditEvidence(phase, "after") }
+        let previousContinueAfterFailure = continueAfterFailure
+        defer {
+            // Keep the original audit failure, but allow its after-state evidence
+            // to be retained before restoring this test's fail-fast policy.
+            recordFullAuditEvidence(phase, "after")
+            continueAfterFailure = previousContinueAfterFailure
+        }
         // Required destination UI, not a sleep, scroll, altered state or audit exemption.
         let titleReady = app.navigationBars[title].waitForExistence(timeout: 10)
         let controlReady = app.buttons[requiredControl].waitForExistence(timeout: 10)
@@ -346,6 +476,9 @@ final class LaunchTests: XCTestCase {
         recordFullAuditEvidence(phase, "before")
         XCTAssertTrue(titleReady, "Expected destination navigation title")
         XCTAssertTrue(controlReady, "Expected destination control")
+        // XCTest records audit failures normally; only abort-on-first-failure is
+        // delayed inside this scope so the diagnostic defer can execute.
+        continueAfterFailure = true
         var observedFindings = 0
         try app.performAccessibilityAudit { issue in
             print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),phase:\(phase),compact:\(issue.compactDescription.prefix(2048)),detailed:\(issue.detailedDescription.prefix(4096)),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")

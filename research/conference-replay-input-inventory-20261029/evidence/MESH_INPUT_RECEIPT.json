@@ -1,0 +1,131 @@
+{
+  "originalMeshSHA": "79cfd017b9c88dca840c8ec969208a93593b03f600303d70cc6777b7c55438a1",
+  "vertexCount": 18398,
+  "triangleCount": 29366,
+  "transformedFloat32VertexBytesSHA": "50557edee3f4f0b1432c21206f1cc4f3b4c1133f0c0e754db70268eca7c250eb",
+  "triangleBytesSHA": "2c5cb77f5548e12c2bcf59680b459389a097567cec0079f30526481d6e9b9324",
+  "gameBounds": [
+    [
+      -5.069046497344971,
+      -0.04929184913635254,
+      -5.471590518951416
+    ],
+    [
+      6.167215347290039,
+      2.8901522159576416,
+      5.460257053375244
+    ]
+  ],
+  "gridWidthDepthCells": [
+    449,
+    437
+  ],
+  "gridCellCount": 196213,
+  "properRotationDeterminant": 1.0,
+  "windingChanged": false,
+  "floorBandTriangleCount": 5238,
+  "floorBandUpwardSlopeAtMost5degTriangles": 1902,
+  "floorBandDownwardTriangles": 25,
+  "meshSource": "author-distributed Polycam exact original triangles, registered by frozen phone-only rigid fit37; fixed scale1; no new fusion or cleanup",
+  "correctedOccupancyPoseIndicesDifferentFromOriginalMesh": [
+    23,
+    24,
+    61,
+    62,
+    63,
+    119,
+    132,
+    229,
+    230
+  ],
+  "poseFrameWasRelocated": false,
+  "originalToCorrectedIsNotOneRigidPoseFix": true,
+  "registrationTransform": {
+    "scope": "fixed-scale phone-only Polycam rigid registration; no reference or route-based fit",
+    "acceptedForComparator": true,
+    "gates": {
+      "fitResidual": true,
+      "distinctHypothesisSeparation": true,
+      "reservedLandmarkResidual": true
+    },
+    "rotationOBJToLevel": [
+      [
+        -0.9223214558711278,
+        -0.001594362729873215,
+        -0.38642022468712534
+      ],
+      [
+        -0.3864197947533155,
+        -0.0005818739925597859,
+        0.9223228304912882
+      ],
+      [
+        -0.0016953650247910313,
+        0.9999985597140342,
+        -7.941845088873397e-05
+      ]
+    ],
+    "translationOBJToLevel": [
+      0.4754601040467386,
+      0.5913772993585449,
+      1.4200226573667323
+    ],
+    "scale": 1.0,
+    "bestWallFit": {
+      "seedYawDegrees": 210,
+      "yawDegrees": 202.6061102532961,
+      "rotation2D": [
+        [
+          -0.9231692290581962,
+          0.3843937753399445
+        ],
+        [
+          -0.38439377533994323,
+          -0.9231692290581963
+        ]
+      ],
+      "translation2D": [
+        0.4757504153748278,
+        0.5895838400989457
+      ],
+      "trimmed90RMS": 0.011072423735385563,
+      "bidirectionalMedian": 0.008373829869773843,
+      "bidirectionalP90": 0.029350300092265833,
+      "fractionWithin20cm": 0.9903524401373256,
+      "sourceFitCountAfterExclusion": 11011
+    },
+    "reservedFamilyResiduals": {
+      "backrest": {
+        "count": 13,
+        "median": 0.02685262956531206,
+        "p90": 0.06050503128675313,
+        "max": 0.08023281264754897
+      },
+      "tableEnd": {
+        "count": 2,
+        "median": 0.04735699539607639,
+        "p90": 0.05025307115544097,
+        "max": 0.05097709009528211
+      },
+      "doorway": {
+        "count": 18,
+        "median": 0.027667635763134822,
+        "p90": 0.06188330097228044,
+        "max": 0.08505089702017431
+      }
+    },
+    "reservedP90": 0.06050503128675313,
+    "sourceOriginalMeshUnchanged": true,
+    "physicalClearanceCertified": false,
+    "movementExecuted": false,
+    "referenceUsed": false,
+    "runtime": {
+      "CPUSeconds": 53.268938,
+      "peakRSSKiB": 213016,
+      "wallSeconds": 52.85789717498119,
+      "bytesBeforeResult": 1267528
+    }
+  },
+  "polycamSourceFrameSubsetOrOptimizedPosesNotSupplied": true,
+  "fullTSDFWeightCoverageAvailable": false
+}

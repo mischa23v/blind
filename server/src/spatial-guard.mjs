@@ -45,6 +45,9 @@ export function mentionsHazard(text) {
   return HAZARD.test(normalized) || AR_HAZARD.test(normalized);
 }
 
+// Bounded locomotion paraphrases; not a semantic safety certificate.
+const CONTINUATION = /\b(?:sidestep(?:ping)?|head\s+straight|(?:continue|carry on|keep going)\s+(?:straight|walking|moving))\b|(?:^|[\s،؛.!؟])(?:كمل|كملي|واصل|واصلي|استمر|استمري|تابع|تابعي)\s+(?:علي طول|على طول|مباشره|السير|المشي|عبر|نحو|باتجاه)(?:[\s،؛.!؟]|$)/i;
+
 export function containsSpatialClaim(text, context = text) {
   // Normalize spoken-equivalent separators before checking physical phrases.
   const canonical = text.replace(/[-‐‑‒–—−]+/gu, ' ');
@@ -54,7 +57,7 @@ export function containsSpatialClaim(text, context = text) {
   // Fixed conversational idioms only; no quotation/whole-sentence exemption.
   const prose = science.replace(/\b(?:take your time|move on to (?:another|the next) (?:topic|question|subject))\b|(?:^|\s)خذ وقتك(?=[\s.!؟،]|$)/gi, '');
   const arabic = normalizeArabic(prose);
-  if (DIRECTION.test(prose) || OBJECT_RELATION.test(prose) || PHYSICAL_ACTION.test(prose) ||
+  if (CONTINUATION.test(arabic) || DIRECTION.test(prose) || OBJECT_RELATION.test(prose) || PHYSICAL_ACTION.test(prose) ||
       AR_DIRECTION.test(arabic) || AR_OBJECT_RELATION.test(arabic) || AR_PHYSICAL_ACTION.test(arabic) ||
       CLEARANCE.test(canonical) || STEP_COUNT.test(canonical) || AR_CLEARANCE.test(arabic) || AR_STEP_COUNT.test(arabic)) return true;
   const normalizedContext = normalizeArabic(context.replace(/[-‐‑‒–—−]+/gu, ' '));

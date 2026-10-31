@@ -1,0 +1,937 @@
+{
+  "schema": 1,
+  "status": "reviewed current report/evidence allowlist; same-export import comparison completed, fresh reconstruction benchmarks unfinished",
+  "snapshotUTC": "2026-10-28T17:12:00Z",
+  "baseCommit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "publicationOwner": "root only; this task does not commit or push",
+  "reportPath": "research/geometry-independent-audit-20261028/FULL_REPORT.md",
+  "findings": 19,
+  "independentOpenUSDComparison": "COMPLETED; two exact retained public diagnostic exports, independently repeated",
+  "pendingNativeRun": 40726507227,
+  "nativeRunStateAtSnapshot": "completed/failure; hosted223pass7fail6skip;9classification and capture pass; UI audit failed",
+  "physicalAuthority": false,
+  "files": [
+    {
+      "path": "research/geometry-independent-audit-20261028/DEPENDENCY_RECONCILIATION.json",
+      "bytes": 21654,
+      "sha256": "6863c7d15df636b570a7e200e0843fec7e9523cb1bfcd7ea31de6b581199bd9c",
+      "gitBlobSHA": "034149b0ee417bebc11bc0380d119dddf29996f9",
+      "action": "create",
+      "classification": "public technical provenance"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/EVIDENCE_SUMMARY.json",
+      "bytes": 29028,
+      "sha256": "67db266b7beb661385c90394594ac94bfca8a47fd741c3dc718df6774f82dd29",
+      "gitBlobSHA": "b4d38d1e92c88adf3c08a1fce7bf1ce283ae81a0",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/FULL_REPORT.md",
+      "bytes": 50509,
+      "sha256": "e5aa206f358d3837d2944ddba84ea19d98733cefd6ed6ef48347fed5f3a958f2",
+      "gitBlobSHA": "b9a556b9cc39e73442ecd29f8614035427d6415c",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/REVIEW.json",
+      "bytes": 1965,
+      "sha256": "0e448bbc6c66e9aeb99f2c7ae1f1cddb90a6202aa5ef27a0b7548f2fc3f7b13b",
+      "gitBlobSHA": "6fc30b12a094d1ac45fc63d13775536f55142107",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/SHA256SUMS.txt",
+      "bytes": 1984,
+      "sha256": "2a03706abfc984d6c52214859bb7cd3ef1097a8f80d55583f5eaad272ba0fce2",
+      "gitBlobSHA": "52028dae1e4147db88713bb07c31e4b91382bef8",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/build_evidence_summary.py",
+      "bytes": 7555,
+      "sha256": "def17a7ca72db84d2bdd6b621a3d8b0c91e93afbe4363e2429ea4ae723d392cd",
+      "gitBlobSHA": "d33b8316943bfa5e6beb22ea513dd37b3193f52e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/ARRAY_ACQUISITION.json",
+      "bytes": 2178,
+      "sha256": "5d7c78e6b903c2c3482fdde492a14c21955f8a1c5808161333de4ee0a853e3c4",
+      "gitBlobSHA": "55ab0671f55eb774183449415c374ab4e3e75aeb",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/COPY_PROVENANCE.json",
+      "bytes": 4130,
+      "sha256": "f81a56a06f2a0ba16efb0f3252cfd4ec8552e1fcfc7bd64a99a2b3137637e322",
+      "gitBlobSHA": "8f05f239ac6e1d3920126e32f2cc34f2a69636db",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/DATA_CONTRACT.json",
+      "bytes": 83126,
+      "sha256": "874d604021b81d20400b90890bd5706873ae6b6983014e6c57fd1e54f597d03f",
+      "gitBlobSHA": "1bb4d1a2a4520b19db4c86f93f59908c06ce37fa",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/DATA_LICENSE_AND_ATTRIBUTION.md",
+      "bytes": 1272,
+      "sha256": "950b26405b8077350e76e78357990e102716b7d57294ca682fc700bcf109e409",
+      "gitBlobSHA": "a28e4a9babfbf07448eaca658b2f2464292f80ff",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/FETCH_VERIFICATION.json",
+      "bytes": 3569,
+      "sha256": "0b6ad73d0ce81e2f840658bf09e6ac1cdea3c9719679d551ab98c7260494c5aa",
+      "gitBlobSHA": "c889c60a636b14df86dffdb0ae30a751303edabe",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/KOIVU_FROZEN.json",
+      "bytes": 150341,
+      "sha256": "4ae17ea2f19d579727ab0892c1f9f84e12ba6cf31920374d3939e777871103c1",
+      "gitBlobSHA": "8e6fa44fc774c5be888f1669ff71b81e9eb3d273",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/READINESS_REPORT.md",
+      "bytes": 16393,
+      "sha256": "4d3e5b519eba871c704c8c4eec7c31ccdcf2cea349a87311338ebdfb0a982576",
+      "gitBlobSHA": "8f64a5897c9dc7213215b5bb466e8df8826abbc3",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/RECOUNT_PROTOCOL.md",
+      "bytes": 2356,
+      "sha256": "cacdfee3e8173b83eaade57a479cfe3f297dd50c77caff9e0608ceef95631cd2",
+      "gitBlobSHA": "64f4dc0caed655ac58f762a549c37328a446107d",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/RECOVERED_RESULT.json",
+      "bytes": 2851,
+      "sha256": "2850e8178de692f51fd361832961c1e433a2d7fc4ce3e1cd08bbf87f992e8ee8",
+      "gitBlobSHA": "d64ce5b9be8daacd367ab8024442eee8f85a1de3",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/RECOVERY_RECEIPT.json",
+      "bytes": 2629,
+      "sha256": "5008fb3d992d4abf43e00ddb88024c88719f065695c963c24814d59974ac7aa5",
+      "gitBlobSHA": "8a8bbb9ab64a1bcb4be3411c2ada21e1ce0b7a9b",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/SAVED_ARRAY_RECOUNT.json",
+      "bytes": 35567,
+      "sha256": "e03866ae0455018dede1e58c9b9ba58c4a30e49d7637fb5f82259690a82e8c09",
+      "gitBlobSHA": "777fa97910369adebdc07f5f756e622d498540fb",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/SOURCE_AVAILABILITY_AUDIT.json",
+      "bytes": 1256,
+      "sha256": "773742dde2e862435c27aaec13a5bd383577106d175465c46407e358bf6f2890",
+      "gitBlobSHA": "634fb49a6f53f0ad7d554e6756f028bbb25166a1",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/heldout-result.json",
+      "bytes": 753509,
+      "sha256": "8361b64178d947f8f53246788f62942ef5082dd1cb18fee66dc5423cffb4b279",
+      "gitBlobSHA": "3a9ca6ddafae6f88b7762322255baebeb73f57e3",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/evidence/open3d/saved-reference-result.json",
+      "bytes": 98795,
+      "sha256": "f9b3b96aa7ed83e65bc907d6d36ae47ba5530a5b2a47a84bd518686e3baa2128",
+      "gitBlobSHA": "70ddd9a24b2907605bb521815a084045504af462",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/prepare_publication.py",
+      "bytes": 6794,
+      "sha256": "70c63897fc71b1c4466045e5d98fc718a0a0901840cc6708fac843210d8cdb55",
+      "gitBlobSHA": "b178297f7fa715b19b3d11720dba06f307943818",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/review_report.py",
+      "bytes": 4290,
+      "sha256": "18d781fa2ae8f6c261e6bba3ffe21ae028dd28ef078b9ed8724993df2b018e1f",
+      "gitBlobSHA": "9151462dc41bbd1fc79f2623d1abcbe97876971b",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/.gitignore",
+      "bytes": 22,
+      "sha256": "429a7ff8e3befe5ac528bb832881840115d63940883b125526b582eedcdcb7a9",
+      "gitBlobSHA": "0bf85e34894ce3057bc3bdd6c8e478755e6f07aa",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/CAPABILITIES.json",
+      "bytes": 1351,
+      "sha256": "18ad74b1be34536b3e07002f20548a7b750fbbbdc961f1a640e903ef07147da8",
+      "gitBlobSHA": "038d29c6aed87423b91325553569a6f0fcec152d",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/OPENUSD_INSTALL_RECEIPT.json",
+      "bytes": 911,
+      "sha256": "65d3dda45bc7dab7c5537ae1cc9edd400e0ca2d532cce8d75ef1b15d5189529c",
+      "gitBlobSHA": "d017cf8bf438cce048a1429760a554fcd6890e07",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/OPENUSD_LICENSE.txt",
+      "bytes": 49827,
+      "sha256": "4d6e8e3a9bd0104e10c48e3bc6af2f0976448a70a377d20cef674740f96f4452",
+      "gitBlobSHA": "f27246f07de4faa447b5099039aeb1ac304f9556",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/OPENUSD_WHEEL_METADATA.json",
+      "bytes": 1726,
+      "sha256": "cfeca42860166b5c1bfa7c42b8274d9e39d1aa1d84b1fc52945570d94fc4a3ab",
+      "gitBlobSHA": "c4192f2298f520ae1174b9e4e3ed67f84fe412cc",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/README.md",
+      "bytes": 16230,
+      "sha256": "d79f882d0870679f6ba10466d21f12db8e436c1078a03a213423166d7f38fab3",
+      "gitBlobSHA": "9f197505f7a03df5df54719677a9babc6e0a2bd8",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/SHA256SUMS.txt",
+      "bytes": 855,
+      "sha256": "22930c30c2d34dc2c1146b335bfa255e9b23f999782630357cebdef7fea437cc",
+      "gitBlobSHA": "aff6e1b1bbf4a3c068c6b47b5fd45d47ecf3c46a",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/STATUS.json",
+      "bytes": 2449,
+      "sha256": "04ac1c5d91697b584071f46666cd6f5f92508aa9a648952cf9b568d3cf59b9f2",
+      "gitBlobSHA": "505a3452e673462ad8a9fc96ca1307db7796850c",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/WRAPPER_REVIEW.json",
+      "bytes": 976,
+      "sha256": "66370888acff77e25f5e3e928bde872d3a98dd71808d5c3bc234648031d5b2c0",
+      "gitBlobSHA": "8ed09249a0db635d4592d900a55d7ebe745e1a98",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/inspect_public_usdz.py",
+      "bytes": 17506,
+      "sha256": "5665c41dad18251eabe3747786779871ff38119ddc0e24b7e75f1e5e3374c4a5",
+      "gitBlobSHA": "afdfbc8e41bec40a34c03a9959e584eedd6fe6d0",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/Bedroom3-openusd-reference.json",
+      "bytes": 107703,
+      "sha256": "56ddb40981a65b7a88af42211211ef86bd05b2428a64fd9639f833140f63542b",
+      "gitBlobSHA": "9f0a9b0b2cd4efcdf87f3c65d764119b04eb0aae",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/COMPARISON.json",
+      "bytes": 54037,
+      "sha256": "ae12a8f7c32deea716b6e174c9f1d7cbd8ce4784422210e27972a3df54667490",
+      "gitBlobSHA": "719444b6854f2f86e2b19ebbd51f1df620e82250",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/EXECUTION_RECEIPT.json",
+      "bytes": 800,
+      "sha256": "ab9c135c636ffb05cd655d86b62ce91692eabc8df20f3f52d63e31102321e34d",
+      "gitBlobSHA": "7a0270126adb3f5fbde36c6293af254966b799df",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/Hallway2-openusd-reference.json",
+      "bytes": 121092,
+      "sha256": "7b4fc9e7c45db737a3f2629a3e2f3c32dd8816de2d2c5197db1c8aa668d6777d",
+      "gitBlobSHA": "75be3b09b8f606eead4cc080ac558aeea4ca8ea9",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/INDEPENDENT_REVIEW.json",
+      "bytes": 1061,
+      "sha256": "13644a4b366a4f102877ee60ef55a37d907c99954049ca15e85799d8c84de2ba",
+      "gitBlobSHA": "84e44770feb8564bc7d7f4fc167bd4d572a46a85",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/INPUT_MANIFEST.json",
+      "bytes": 2604,
+      "sha256": "423ff4a7914dd2fb1334ae41676feba557de9d0728d5d652407290de9c2f2447",
+      "gitBlobSHA": "d2080f28f068b332f1d8cd1dd9f5767160e0cd89",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/RESULTS.md",
+      "bytes": 6515,
+      "sha256": "83d6379be6b8d203f25f1abdf4d7b8b817e85a53ed0cb103d108135b5f905213",
+      "gitBlobSHA": "4d10673d87ba7b2eacaac735a224878e652321ec",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/SHA256SUMS.txt",
+      "bytes": 620,
+      "sha256": "3409338eed9ef727e92a134dabac859da3d14f12379c41d7ed24ac5b8be47ee3",
+      "gitBlobSHA": "79a3ef6cfe93af7565942986bb923b8d8806edcd",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/summarize_comparison.py",
+      "bytes": 7207,
+      "sha256": "e329d511f7f39e02e162ae1a0101246fc467e34074c8b2d04bfe31f4dbf46b0f",
+      "gitBlobSHA": "04d9a322e2854b22f4629507b55a4e8917ec9a18",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "bytes": 31646,
+      "sha256": "77c66d3a30eb46b6d38973a58b79cf591bedc9376298d980394499630851fa2b",
+      "gitBlobSHA": "cef8ab992f9c2ea95b322d6c235d1a2fe400ea94",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "bytes": 2423,
+      "sha256": "5d0c4f850eb0bfd7961bfe357dd7b3038e4ecf27f4360169ba5b217546cf42fb",
+      "gitBlobSHA": "252ccaa74f7cfb2f264370f9a2f81fe7063b148e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "bytes": 1670,
+      "sha256": "7aa20efe20868662f9ae9c0cecc12278374290612ff8ce5a450c2defd9c5db01",
+      "gitBlobSHA": "2193db2c0089846bdf32bf6a68a092162926cb0e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "bytes": 3897,
+      "sha256": "5f15eb6dde35dabcad5348055faf3c6e65dd2e1c445e278dc58dde418ba1889b",
+      "gitBlobSHA": "004935514eced9f6f206fa29883d147f942fc1b9",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/README.md",
+      "bytes": 4488,
+      "sha256": "c21c0dda2575bd006e871745cb535f34f999640590c2b5aa2aaa8c84445253ea",
+      "gitBlobSHA": "ee02c75904ca9fdeb72139133f1fd337d5ac4eec",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/SavedRoomCollisionBackendMatrix-v1.json",
+      "bytes": 25953,
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9",
+      "gitBlobSHA": "f6d78b4d6d7d3e51c84c92e1b32625d04584c2ef",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/blocked-context-views-v3/APPLE-LICENSE.txt",
+      "bytes": 1054,
+      "sha256": "ef80d1c2ac05c7040c0ced9d603c2c359712f90fdb3ece8da70b976981a69e89",
+      "gitBlobSHA": "de2de43e470509bf758c4c02f621f6cf3c6f2c07",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/early-unit-case-statuses-original.json",
+      "bytes": 122430,
+      "sha256": "1d139e569a8818940fa65c9cb87e1835f8a60ac74a2ffd012a752beddc9fdf39",
+      "gitBlobSHA": "d33c5ebbfc75f2aaa80fb2cb2ff2396eeb28ef0c",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/final-unit-case-statuses-original.json",
+      "bytes": 75145,
+      "sha256": "b2f224901eb20e434ab0b341d8efc95831ffb7459f6ca4faab776c87fbcee83c",
+      "gitBlobSHA": "027852fa75ea652f26359c5057a9a57f496ab538",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/report-manifest.json",
+      "bytes": 5663,
+      "sha256": "371484f5ae1acfcea49b37906eaf39a26728fccb2e84c5c32e38bd519342d61f",
+      "gitBlobSHA": "620c5a2297a1a791a03c1fa13ef7b4a7d853fe12",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/terminal-run.json",
+      "bytes": 367,
+      "sha256": "574d571d5d045459e794ce5753d9c39c22ebfae4e32f115530b1c013c1417b94",
+      "gitBlobSHA": "1243253657b274ad28474911931ddf56bb327935",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093201/bounded-pin-failure.json",
+      "bytes": 1590,
+      "sha256": "8de7594853a1dbef8df885c62c726cb08309df59a2d2491adedad8e69c7576e8",
+      "gitBlobSHA": "3aac4d29ca9cd2a63d41d7b082330e3b5d98fecc",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "bytes": 31646,
+      "sha256": "95ec7254c7a5e130b5cae56da82c69bc4c79a1fb98c93ee6101f0180ea92798a",
+      "gitBlobSHA": "877a1b12bddcd79ba434ce1c52b9bbd5c0c62586",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "bytes": 2423,
+      "sha256": "5d0c4f850eb0bfd7961bfe357dd7b3038e4ecf27f4360169ba5b217546cf42fb",
+      "gitBlobSHA": "252ccaa74f7cfb2f264370f9a2f81fe7063b148e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "bytes": 1670,
+      "sha256": "7aa20efe20868662f9ae9c0cecc12278374290612ff8ce5a450c2defd9c5db01",
+      "gitBlobSHA": "2193db2c0089846bdf32bf6a68a092162926cb0e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "bytes": 3897,
+      "sha256": "5f15eb6dde35dabcad5348055faf3c6e65dd2e1c445e278dc58dde418ba1889b",
+      "gitBlobSHA": "004935514eced9f6f206fa29883d147f942fc1b9",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/README.md",
+      "bytes": 5508,
+      "sha256": "12132bbeb7eb86ca828ec599c903d79468d52131eb40162cdec6c60549a77d82",
+      "gitBlobSHA": "2a7f25ac23575d242eb9e88146a67553b03ae8d0",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/SavedRoomCollisionBackendMatrix-v1.json",
+      "bytes": 25953,
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9",
+      "gitBlobSHA": "f6d78b4d6d7d3e51c84c92e1b32625d04584c2ef",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/SavedRoomCollisionMixedScene-v1.json",
+      "bytes": 18853,
+      "sha256": "fe4aba11ad1749f1215b9a4420c01438463c8d86548263e2603227e38385ab8e",
+      "gitBlobSHA": "59a7b8d7660282b1397ef746d75d6b137989c9c4",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/classified-stage-receipts.txt",
+      "bytes": 9215,
+      "sha256": "8def43cdf57f79f1f2a468b8e44c08c7f4e61323bec944ab8356b6b1917ed595",
+      "gitBlobSHA": "813aa320557591175b58ad3441f99e4a17a6e875",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/classified-timing-summary.json",
+      "bytes": 6460,
+      "sha256": "3a68d3ecb4026265537107b4e1bc8a1b5c9967dbf2110b38304500e58f833753",
+      "gitBlobSHA": "72001389b9fa89710c3d71985051a7e121742752",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/early-unit-case-statuses-original.json",
+      "bytes": 147325,
+      "sha256": "82f8efdbb4487145f752a41d6f28fb4a44475806fd6a64bae5ac039c0d74a867",
+      "gitBlobSHA": "c46b6cdacca026dfb39e43c3edc9bc8a6d29b633",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/final-unit-case-statuses-original.json",
+      "bytes": 86255,
+      "sha256": "d764d9ef267aa2a23b23808cd60d488c794123b19ea12d7fc0b04b9e248942ef",
+      "gitBlobSHA": "de345a4f3c309aacec74144e1d6fb5aa0831663a",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/report-manifest.json",
+      "bytes": 6026,
+      "sha256": "0b8dee6c0a1b29d92d278f1969c2619d5bc9796c2abe27c26fee8cae806760b3",
+      "gitBlobSHA": "2faa3d41149f246dd758726af1b6789604e04f7f",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/terminal-run.json",
+      "bytes": 367,
+      "sha256": "381649882c27768acdf243e379efd44fc1550dc1597ddb0c61e0eb3f7ca3616a",
+      "gitBlobSHA": "cb57e7f28a25008ceec3a2ab1cfe046526eb3e6a",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/ui-audit/evidence.json",
+      "bytes": 1022,
+      "sha256": "ed9ce22cb24faca2befdbf54dda876f0e18562b07de409a728300b62be7dbb01",
+      "gitBlobSHA": "478c032637c25fd9934063495f6d4827d8092634",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/ui-audit/full-audit-ask-issue-1-metadata.json",
+      "bytes": 404,
+      "sha256": "adbe9a2cc8583b5f72bdfb20c7367a9d6e75947ffb7c64c76c759e61eba25d13",
+      "gitBlobSHA": "24f24c1199ee1355c06cecee5500d0db17954408",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093419/bounded-pin-failure.json",
+      "bytes": 1762,
+      "sha256": "1a72acdac18155fb5cccc2b63a0138d0f475fa1773e0439cca1d97277958f067",
+      "gitBlobSHA": "d84f952f34b02c0a7db17bed977b25bcc0816c88",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721821544/bounded-proof-summary.txt",
+      "bytes": 635,
+      "sha256": "22af1b4c50a0b86e76a8be53aeb8b53f1389bc1d7359a428676c44c258a5c4df",
+      "gitBlobSHA": "0536d5e6c64edfc1ca9da494d2baebcd7c5a3453",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721821544/terminal-run.json",
+      "bytes": 1651,
+      "sha256": "25a25671b5945a2677ee1f0d4c97934f9158c9d6d572c99bbf63ad4f58a5a16e",
+      "gitBlobSHA": "eb722391ca4b1d44034304fc296ae62a145b7d27",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721821664/bounded-proof-summary.txt",
+      "bytes": 493,
+      "sha256": "8d7b0fe2a18446f87fe2a1258997d7a0fbaaface1a4f6d4182998bf49c1ff136",
+      "gitBlobSHA": "dbcd1bba0247b91569bb0d5d6214fa66619d798b",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721821664/terminal-run.json",
+      "bytes": 1658,
+      "sha256": "1353e98802ee5b381090ac5eb31052f9a9bb6d583356f3ab57cc106cd780e850",
+      "gitBlobSHA": "7b102908fe9f091ad435467aa5f8705613c7df5a",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721822359/README.md",
+      "bytes": 3372,
+      "sha256": "158498285ce12448c6e02906ff61910da2ed6e1c48f80c6c0cd7a6c61e14e395",
+      "gitBlobSHA": "56600d51834dd50a458d73cf2237633c84eadb7c",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721822359/bounded-link-failure-lines.txt",
+      "bytes": 2552,
+      "sha256": "ee36d3b53628c3422d6ddc5ab4bc24b33ec085e8f215dcbc718f3704bd689d32",
+      "gitBlobSHA": "fce2a8907f32ae77a33f535510443c446f0844fa",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721822359/early-unit-case-statuses-original.json",
+      "bytes": 2134,
+      "sha256": "e3dc504fd551e5341388165a631446fbc761edd380ed977f844b75ccc5dd467f",
+      "gitBlobSHA": "7548cc942ace29c376737ba15ab2c4c1595eeb1c",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721822359/final-unit-case-statuses-original.json",
+      "bytes": 1559,
+      "sha256": "ce6ea35271ab0085979afebf9d97a58847d88abbce4ca63b4285b145ce8ba3a5",
+      "gitBlobSHA": "223d283779075eaf47530e223d50f6d4105f3d06",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721822359/same-export-failed-receipt.json",
+      "bytes": 569,
+      "sha256": "b62446d02dd86de8e4d07ea0c1967da92d80fe4377379b915c4fb798b4b1c2a8",
+      "gitBlobSHA": "062edf4c7c85f48eb208862124e8ab58fd944200",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40721822359/terminal-run.json",
+      "bytes": 4629,
+      "sha256": "308f44bb659026dc9875f2175a2ce4cd477260cf67132193c31e0f3e46f035fc",
+      "gitBlobSHA": "3ae3bb47e63deb2c16ec69ffad907baad7a47aa5",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "bytes": 38989,
+      "sha256": "ff4eca3829a09e678841fddd04bb8c6e243afb020b65ebc0b792e4e1754e9f8d",
+      "gitBlobSHA": "829095d67fe0b7c9bfd656fcb45ae65be9365062",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "bytes": 2423,
+      "sha256": "5d0c4f850eb0bfd7961bfe357dd7b3038e4ecf27f4360169ba5b217546cf42fb",
+      "gitBlobSHA": "252ccaa74f7cfb2f264370f9a2f81fe7063b148e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "bytes": 1670,
+      "sha256": "7aa20efe20868662f9ae9c0cecc12278374290612ff8ce5a450c2defd9c5db01",
+      "gitBlobSHA": "2193db2c0089846bdf32bf6a68a092162926cb0e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "bytes": 3897,
+      "sha256": "5f15eb6dde35dabcad5348055faf3c6e65dd2e1c445e278dc58dde418ba1889b",
+      "gitBlobSHA": "004935514eced9f6f206fa29883d147f942fc1b9",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/SavedRoomCollisionBackendMatrix-v1.json",
+      "bytes": 25953,
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9",
+      "gitBlobSHA": "f6d78b4d6d7d3e51c84c92e1b32625d04584c2ef",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/SavedRoomCollisionMixedScene-v1.json",
+      "bytes": 18853,
+      "sha256": "fe4aba11ad1749f1215b9a4420c01438463c8d86548263e2603227e38385ab8e",
+      "gitBlobSHA": "59a7b8d7660282b1397ef746d75d6b137989c9c4",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/early-unit-case-statuses-original.json",
+      "bytes": 159276,
+      "sha256": "540f7d7b88d574420684393ca8e92b9783d20aad0accda8b697a496f93622354",
+      "gitBlobSHA": "d85ed71fa92b3cfabf38a68808faf5c332c20c8d",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/final-unit-case-statuses-original.json",
+      "bytes": 91618,
+      "sha256": "cc39ee53c1bcd54b858895e5870a15e4cfdb0f518dbcea91d21e17f0e5581c2a",
+      "gitBlobSHA": "8687b091932a9c392bd728c780b8e20c92ba2f06",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/local-same-export-verification.json",
+      "bytes": 1351,
+      "sha256": "2a0a0dbf4147a780186a6776bebc1629a4078ddec68080e0b475b351e352e655",
+      "gitBlobSHA": "db85d499b6924a15abe97401b4d691a60c62b4c3",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT.usdz",
+      "bytes": 46080,
+      "sha256": "f808de2e0283b8b2aaea07ecc16e694222877c1452dd7203a321d84186345a67",
+      "gitBlobSHA": "7971c80e9137706ce8d10b2f39562882f3803074",
+      "encoding": "base64",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT_METADATA.bin",
+      "bytes": 608,
+      "sha256": "2c87670fed01165ec90e74d2b70e7f25c4fdbf6bfe4ee05fbd05dbedf3ec3236",
+      "gitBlobSHA": "55043bc2963da3cbe9f609217ddbe1c3fc9ee9cb",
+      "encoding": "base64",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT.usdz",
+      "bytes": 57294,
+      "sha256": "0c47630270348ded24ce0a4fe6a18f5defce5d445d8c7e109c932b56d812d232",
+      "gitBlobSHA": "e3e7812736f4cc50d1cd989917ceacda9019e9ac",
+      "encoding": "base64",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT_METADATA.bin",
+      "bytes": 707,
+      "sha256": "0fbb1daaa7fb13a7ac76c7e428046876a614a8287248318f8f023561d143672c",
+      "gitBlobSHA": "0b900842dea85a4b0f18d6c6da65b65ab4f0b5bd",
+      "encoding": "base64",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "bytes": 25150,
+      "sha256": "e0418b9919e73ce518580206105707c91a9d3e33307b0e076a035e60810e52fa",
+      "gitBlobSHA": "731c43cd1dc8641eb9036277b76b453f0b669b79",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/APPLE_ROOM_ROUTE_SAME_EXPORT_MANIFEST.json",
+      "bytes": 1423,
+      "sha256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2",
+      "gitBlobSHA": "2c4cd8cf8318330463a924124a2ec0a6ce87cf25",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/public-apple-same-export/receipt.json",
+      "bytes": 4072,
+      "sha256": "1c6ddecfd30e4b646b6f8d3c12f7c373cbf151811a358c6a8e21be45d89f2ef0",
+      "gitBlobSHA": "d1ad9f49a2641bd04ee84d510595844edbf93073",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/report-manifest.json",
+      "bytes": 6026,
+      "sha256": "30a79060fa62e28772d661bb5a13e01c2fc10801308838f6fa0aa1e0502532dd",
+      "gitBlobSHA": "49a6f7eb5b1193f7938c4d3b9aebfa41c57b3f8f",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/terminal-failure-extract.txt",
+      "bytes": 2101,
+      "sha256": "1bf17b812a9020275ed5e8a1e047e6b901534357e1cac64ba3a8e4ff05c534c5",
+      "gitBlobSHA": "a5809f868bc7ba258081f2116f2169ae4dcff4cc",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/terminal-jobs-170921Z.json",
+      "bytes": 4265,
+      "sha256": "ce22e1c570b0f4600f27b6d8f715890837f0dc498364c6ef76bf1ecac34a6b28",
+      "gitBlobSHA": "1c04e6b2d13688af1933f8d14bd038837a4a6b1f",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/terminal-run.json",
+      "bytes": 4449,
+      "sha256": "985b3797fa5609eb3e181412563a1b6acb6936626d4877ff7480135e47e997ec",
+      "gitBlobSHA": "908daf149199c99c0d5f90b0c20090a1ae01f08e",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/ui-audit/evidence.json",
+      "bytes": 1022,
+      "sha256": "3008d8cad3f2723e07d01119f1b847a420ae6601a9aa4a8cea239520ef4f7ec8",
+      "gitBlobSHA": "0ffb4fc6592cbd3f1edffda8492a1b2531cb0b1d",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40726507227/ui-audit/full-audit-ask-issue-1-metadata.json",
+      "bytes": 254,
+      "sha256": "858b6bc3c214701eef35a4909d4fbdce1940628e24cdc9043649dc28a0fb0c75",
+      "gitBlobSHA": "e628667d1a0427154d1986fdda73033d2972769c",
+      "encoding": "utf-8",
+      "action": "create",
+      "classification": "public technical evidence or report; no private child data"
+    }
+  ],
+  "totalFileBytes": 2817088,
+  "existingDependencyCount": 23,
+  "existingDependencyRecord": "research/geometry-independent-audit-20261028/DEPENDENCY_RECONCILIATION.json",
+  "excluded": [
+    "all screenshots and image files",
+    "raw photos or RGB/depth frames",
+    "NPZ arrays",
+    "archives other than the two SHA-verified public USDZ fixtures",
+    "runtimes, wheels, caches, dependencies",
+    "all production/app/test/workflow changes",
+    "all shared tracker changes"
+  ],
+  "privacyReview": "Only original public Apple fixture technical receipts, synthetic UI callback JSON, public Koivu derived technical summaries, public study citations and engineering source/hash metadata. No private child/family details, camera/audio capture or credentials are included.",
+  "manifestSelfPublication": "Publish this manifest and its .sha256 sidecar in addition to files; self-hash is not recursively included in its own contents."
+}

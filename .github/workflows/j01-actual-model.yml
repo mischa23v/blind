@@ -1,0 +1,53 @@
+name: Explicit isolated J01 model observations
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - '.github/workflows/j01-actual-model.yml'
+      - 'research/j01-hosted-app-adapter-20261030/**'
+      - 'research/j01-actual-model-lane-20261030/**'
+      - 'ios/BlindAssistTests/HostedNonvisualJourneyTests.swift'
+      - 'tools/ci/j01-actual-model.py'
+      - 'tools/ci/test_j01_actual_model.py'
+      - 'tools/ci/collect_j01_metadata.py'
+      - 'tools/ci/test_collect_j01_metadata.py'
+permissions:
+  contents: read
+# No uploads, cache, service, runtime/model download, or account setup.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
+concurrency:
+  group: isolated-j01-model-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  j01-observation:
+    if: github.event_name == 'push' && github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 35
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Validate portable current-source boundaries
+        timeout-minutes: 2
+        run: |
+          python3 -B research/native-candidate-app-integration-85/integrated/check.py
+          python3 -B tools/ci/test_j01_actual_model.py
+          python3 -B tools/ci/test_collect_j01_metadata.py
+      - name: Verify installed default Apple project and toolchain
+        timeout-minutes: 3
+        run: bash tools/ci/native-apple.sh preflight
+      - name: Build once and observe three exact scripts on separate empty simulators
+        id: observe
+        timeout-minutes: 28
+        run: python3 -B tools/ci/j01-actual-model.py run
+      - name: Preserve bounded failure status in normal logs and summary
+        if: always()
+        timeout-minutes: 1
+        run: python3 -B tools/ci/j01-actual-model.py report

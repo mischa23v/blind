@@ -1,0 +1,97 @@
+{
+  "status": "proposed development protocol; not a physics-run approval or result",
+  "frequencyHz": 15,
+  "baseSeed": 72000,
+  "conditions": [
+    {
+      "id": "nominal",
+      "actor": {
+        "reaction_delay_ticks": 0,
+        "translation_scale": 1.0
+      },
+      "poseDelivery": {
+        "delay_ticks": 0,
+        "jitter_ticks": 0,
+        "drop_probability": 0.0
+      },
+      "withholdCaptureTicks": null
+    },
+    {
+      "id": "command_delay",
+      "actor": {
+        "reaction_delay_ticks": 3,
+        "translation_scale": 1.0
+      },
+      "poseDelivery": {
+        "delay_ticks": 0,
+        "jitter_ticks": 0,
+        "drop_probability": 0.0
+      },
+      "withholdCaptureTicks": null
+    },
+    {
+      "id": "temporal_jitter",
+      "actor": {
+        "reaction_delay_ticks": 0,
+        "translation_scale": 1.0
+      },
+      "poseDelivery": {
+        "delay_ticks": 2,
+        "jitter_ticks": 2,
+        "drop_probability": 0.0
+      },
+      "withholdCaptureTicks": null
+    },
+    {
+      "id": "extra_translation",
+      "actor": {
+        "reaction_delay_ticks": 0,
+        "translation_scale": 1.15
+      },
+      "poseDelivery": {
+        "delay_ticks": 0,
+        "jitter_ticks": 0,
+        "drop_probability": 0.0
+      },
+      "withholdCaptureTicks": null
+    },
+    {
+      "id": "tracking_interruption",
+      "actor": {
+        "reaction_delay_ticks": 0,
+        "translation_scale": 1.0
+      },
+      "poseDelivery": {
+        "delay_ticks": 0,
+        "jitter_ticks": 0,
+        "drop_probability": 0.0
+      },
+      "withholdCaptureTicks": [
+        60,
+        90
+      ]
+    }
+  ],
+  "pilot": {
+    "episodes": 5,
+    "route": "unchanged stage67 first original leg only",
+    "startAndYaw": "unchanged stage67 original source start and heading",
+    "goal": "unchanged stage67 original first goal",
+    "replicateIndex": 0,
+    "seedRule": "baseSeed+replicateIndex; same seed across conditions",
+    "maximumTicksPerEpisode": 450,
+    "maximumCPUSecondsPerEpisode": 180,
+    "maximumWallSecondsPerEpisode": 240,
+    "RSSBytes": 3758096384,
+    "outputBytesPerEpisode": 2097152,
+    "diskReserveBytes": 805306368
+  },
+  "eventualMatrix": {
+    "distinctOrderedRoutePairs": 20,
+    "conditions": 5,
+    "episodes": 100,
+    "pairRule": "all ordered distinct pairs of the five frozen original source anchors, in anchor-sequence order",
+    "requiresSeparateSourceOnlyRoutesAndFrozenRunManifest": true,
+    "notTwentyRooms": true
+  }
+}

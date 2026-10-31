@@ -1,0 +1,137 @@
+{
+  "archive_identity_only": {
+    "bytes": 637736031,
+    "sha256": "3aea83a4ab6cfcf5818ce8b68f16768545d2923e35f359fb829d941518d8f6af",
+    "verification": "one authorized stream during extraction only"
+  },
+  "installed_module_identities": {
+    "numpy": {
+      "basename": "__init__.py",
+      "bytes": 25919,
+      "sha256": "93924ac4b793328947dfd9eb9355e54eccdfd26a92c8dd52188aed2e52c7eb38"
+    },
+    "numpy._core._multiarray_umath": {
+      "basename": "_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 10808937,
+      "sha256": "ba96467ae494babaf7c3458b09cc03c4200c2e10010860d80e452ffb8b01c8cd"
+    },
+    "numpy.linalg._umath_linalg": {
+      "basename": "_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 231833,
+      "sha256": "64bfb8bb8a1a09ca31f7a6e307a87b4c78a75f3489aaf3c61ed8aa4ffada9845"
+    },
+    "open3d": {
+      "basename": "__init__.py",
+      "bytes": 8597,
+      "sha256": "bf0f4cd2031549d60ad691fffa26ce60737b5e094c9b727e3ddbab189a6dc738"
+    },
+    "open3d.cpu.pybind": {
+      "basename": "pybind.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 225559512,
+      "sha256": "e99d5acb1ad93e609e83864ec69553a08b2a486e5d639241cc51e3c795e0f0d7"
+    }
+  },
+  "not_a_runnable_replacement_freeze": true,
+  "original_source_freeze_sha256": "f0c575341117f220c94da85d08f941efcd4ecda76113757b043f920a26c26f8f",
+  "parameters": {
+    "color": "NoColor",
+    "depth_scale": 1000.0,
+    "depth_trunc_m": 4.0,
+    "optical_to_recorded_camera": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "sdf_trunc_m": 0.2,
+    "voxel_m": 0.04
+  },
+  "selection": {
+    "fixed_prefix_end": 59,
+    "fixed_prefix_start": 0,
+    "frame_count": 60,
+    "reason": "fixed before visual selection",
+    "selected_PNG_bytes_from_prior_inventory": 2444995,
+    "selected_members": 120,
+    "sequence": "Stairs_02"
+  },
+  "small_input_identities": [
+    {
+      "basename": "SOURCE_FREEZE.json",
+      "label": "input_0",
+      "sha256": "30ca5d9b480ce920f604707b9a31009ee88d836b89a805e6e31609819dbe35ed"
+    },
+    {
+      "basename": "SELECTED_CALIBRATION.json",
+      "label": "input_1",
+      "sha256": "5b5a614341b351ed041053886c5327c8342479a7135691405e491e8e559c4746"
+    },
+    {
+      "basename": "development-candidate-lock.json",
+      "label": "input_2",
+      "sha256": "40a7f1ffe9de9179020e569a35f1d715ac4d8c9883b3508ee1077be7a8e82f5e"
+    },
+    {
+      "basename": "diagnostic-result.json",
+      "label": "input_3",
+      "sha256": "9840945112cead2da8790c9d25578bc6495f86e53f4bc2a885527385616358dd"
+    },
+    {
+      "basename": "execution-receipt.json",
+      "label": "input_4",
+      "sha256": "035312dd23926775606e214a0f3741a265e6a67cce6d2890021642114f7117c3"
+    },
+    {
+      "basename": "camera_matrix.csv",
+      "label": "input_5",
+      "sha256": "559dab31bec6ecb42386bc776df68086ab169606122e5af2263591484ba18955"
+    },
+    {
+      "basename": "member-inventory.json",
+      "label": "input_6",
+      "sha256": "9a8ffcee341ebf5a8807460338650301b7371c40131c852c343f8edacf1a36bb"
+    },
+    {
+      "basename": "odometry.csv",
+      "label": "input_7",
+      "sha256": "98c6ae69f19c57afdb87679a1aeb053301f77f1de4ca04ee39378cc95b409321"
+    },
+    {
+      "basename": "RESULT.json",
+      "label": "input_8",
+      "sha256": "535f1fac5d8605195a5509930c2692d5dfc991ae4a36b3875d528bf5f2a7dc22"
+    },
+    {
+      "basename": "fusion_worker.py",
+      "label": "input_9",
+      "sha256": "cce6699ab0430fda0c9bdac02fb992af2d82f4f1a689b934cbb71d2f43cc5086"
+    }
+  ],
+  "source_sha256": {
+    "PLAN.txt": "70fcb919b199f97455513bcfeba7eec16e5d913e15aa3d7ed99b642907466ede",
+    "SELECTED_CALIBRATION.json": "5b5a614341b351ed041053886c5327c8342479a7135691405e491e8e559c4746",
+    "common.py": "a48a74b5cd1f92a9b5169d7b7ae1a3a67ef084f2194c6bf872ce99311b9d845f",
+    "extract_prefix.py": "d2c3eb5d33a9f9b0bf4c0e2a86d4123bdfe751dbfdc969e972b97f7af78cc55f",
+    "preview.py": "f8a61d5a0fcc0ef32f74a738e0ecd0eb6ee435066795aa70d7ca80bd67eada94",
+    "replay.py": "f39c51d741e85aa523355c146df219a3e4af4fbc08334a60f9d5b1d99c0594d4",
+    "run_bounded.py": "744da974d1adefc455ded2c2fabf71cccc0ac28fe3adaf40e621825af0e77c82"
+  },
+  "static_review": {
+    "geometry_selected_contract_masks_extraction_endpoint_ledger_checked": true,
+    "reconstruction_executed": false,
+    "resource_guard": "sampled RSS, root acceptance required; no hard cgroup claim",
+    "software_tests_executed": false,
+    "status": "no blocking source issues found"
+  }
+}

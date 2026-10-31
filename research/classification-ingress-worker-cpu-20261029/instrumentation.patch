@@ -1,0 +1,274 @@
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -1,4 +1,9 @@
+ import Foundation
++#if DEBUG && canImport(Darwin)
++import Darwin
++#elseif DEBUG && canImport(Glibc)
++import Glibc
++#endif
+ 
+ public enum MeshCandidateError: Error {
+  case invalidInput, unavailable, stale, nativeFailure
+@@ -92,33 +97,92 @@
+  /// clock reads, stage locks or public diagnostic API. No geometry/identity is kept.
+  public enum DiagnosticStage: String, Sendable {
+   case requestEnqueued, workerStarted, nativeBuildBegin, nativeBuildEnd
++  case workerFinished, requestRetired
+   case routeBegin, routeEnd, nativeFailure, completionQueued, completionDelivered
+   case discardRequested, discardWorkerStarted, discardReleased, discardCompletionDelivered
+  }
+  public struct DiagnosticStageReceipt: Sendable {
+   public let stage: DiagnosticStage
+   public let elapsedMilliseconds: Int
+- }
++  /// Current worker thread only; nil is unavailable, never zero CPU evidence.
++  public let workerCPUTimeMicroseconds: Int64?
++  public let workerThreadID: UInt64?
++ }
++ private var diagnosticCompletion: ((UUID,[DiagnosticStageReceipt])->Void)?
++ private var diagnosticDeliveryCount=0
++ // Fixed process-wide pending bound, independent of owner/query lifetime.
++ private final class DiagnosticDeliveryGate {
++  let lock=NSLock()
++  var pending=0
++  let queue=DispatchQueue(label:"blind.room-mesh.synthetic-timing",qos:.utility)
++  func submit(_ work:@escaping ()->Void) {
++   lock.lock()
++   guard pending<16 else{lock.unlock();return}
++   pending+=1;lock.unlock()
++   queue.async { [self] in
++    defer{lock.lock();pending-=1;lock.unlock()}
++    work()
++   }
++  }
++ }
++ private static let diagnosticDeliveryGate=DiagnosticDeliveryGate()
+  private var diagnosticStartedAt: TimeInterval?
+  private var diagnosticReceipts: [DiagnosticStageReceipt] = []
+  public private(set) var diagnosticReceiptID: UUID?
+  public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
+                          endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+-                         captureSyntheticTestTiming: Bool)throws {
++                         captureSyntheticTestTiming: Bool,
++                         syntheticTimingCompletion: ((UUID,[DiagnosticStageReceipt])->Void)? = nil)throws {
+   try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy)
+   // Assigned before this owner escapes; never enabled/disabled during work.
+   if captureSyntheticTestTiming {
++   diagnosticCompletion=syntheticTimingCompletion
+    diagnosticReceiptID=UUID()
+    diagnosticStartedAt=ProcessInfo.processInfo.systemUptime
+   }
+  }
+  public var diagnosticStageReceipts: [DiagnosticStageReceipt] { locked { diagnosticReceipts } }
+- private func recordDiagnosticStage(_ stage: DiagnosticStage) {
++ private static func workerCPUClock()->(Int64,UInt64)? {
++#if canImport(Darwin) || canImport(Glibc)
++  var time=timespec()
++  guard clock_gettime(CLOCK_THREAD_CPUTIME_ID,&time)==0,
++        time.tv_sec>=0,time.tv_sec<=Int((Int64.max-999_999)/1_000_000),
++        time.tv_nsec>=0,time.tv_nsec<1_000_000_000 else{return nil}
++#if canImport(Darwin)
++  var thread:UInt64=0
++  guard pthread_threadid_np(nil,&thread)==0 else{return nil}
++#else
++  let thread=UInt64(pthread_self())
++#endif
++  return (Int64(time.tv_sec)*1_000_000+Int64(time.tv_nsec)/1_000,thread)
++#else
++  return nil
++#endif
++ }
++ private func diagnosticWorkerOffset()->Int? {
++  guard diagnosticStartedAt != nil else{return nil}
++  return locked{diagnosticReceipts.count}
++ }
++ private func deliverDiagnosticWorker(from offset:Int?) {
++  guard let offset,let completion=diagnosticCompletion,let id=diagnosticReceiptID else{return}
++  let snapshot:[DiagnosticStageReceipt]?=locked {
++   guard diagnosticDeliveryCount<8,offset<diagnosticReceipts.count else{return nil}
++   diagnosticDeliveryCount+=1
++   return Array(diagnosticReceipts[offset...])
++  }
++  guard let snapshot else{return}
++  // Snapshot contains scalar metadata only. Never retain self/geometry or invoke
++  // the consumer on the native worker, under locks, or on the result callback.
++  Self.diagnosticDeliveryGate.submit { completion(id,snapshot) }
++ }
++ private func recordDiagnosticStage(_ stage: DiagnosticStage, workerCPU:Bool=false) {
+   guard let startedAt=diagnosticStartedAt else{return}
++  let cpu=workerCPU ? Self.workerCPUClock():nil
+   locked {
+    if diagnosticReceipts.count<64 {
+     let elapsed=max(0,Int((ProcessInfo.processInfo.systemUptime-startedAt)*1_000))
+-    diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed))
++    diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed,
++     workerCPUTimeMicroseconds:cpu?.0,workerThreadID:cpu?.1))
+    }
+   }
+  }
+@@ -255,37 +319,54 @@
+ #endif
+   Self.worker.async { [self] in
+ #if DEBUG
+-   recordDiagnosticStage(.workerStarted)
++   let diagnosticOffset=diagnosticWorkerOffset()
++   recordDiagnosticStage(.workerStarted,workerCPU:true)
++   defer {
++    recordDiagnosticStage(.workerFinished,workerCPU:true)
++    deliverDiagnosticWorker(from:diagnosticOffset)
++   }
+ #endif
+    defer{locked{pending-=1;scheduleDiscardIfDrained()}}
+-   guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.stale));return}
++   guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{
++#if DEBUG
++    recordDiagnosticStage(.requestRetired,workerCPU:true)
++#endif
++    finish(.failure(.stale));return}
+    do {
+     let(v,t)=owner.geometry()
+ #if DEBUG
+-    recordDiagnosticStage(.nativeBuildBegin)
++    recordDiagnosticStage(.nativeBuildBegin,workerCPU:true)
+ #endif
+     let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport())
+ #if DEBUG
+-    recordDiagnosticStage(.nativeBuildEnd)
+-    recordDiagnosticStage(.routeBegin)
++    recordDiagnosticStage(.nativeBuildEnd,workerCPU:true)
++    recordDiagnosticStage(.routeBegin,workerCPU:true)
+ #endif
+     let path=try native.route(start,goal,endpointPolicy:endpointPolicy)
+ #if DEBUG
+-    recordDiagnosticStage(.routeEnd)
++    recordDiagnosticStage(.routeEnd,workerCPU:true)
+ #endif
+     let state=locked{(matches(s,g,r),gap)}
+-    guard state.0 else{finish(.failure(.stale));return}
++    guard state.0 else{
++#if DEBUG
++    recordDiagnosticStage(.requestRetired,workerCPU:true)
++#endif
++    finish(.failure(.stale));return}
+     var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
+     finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
+    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
+ #if DEBUG
+-    recordDiagnosticStage(.nativeFailure)
+-#endif
+-    guard locked({matches(s,g,r)}) else{finish(.failure(.stale));return}
++    recordDiagnosticStage(.nativeFailure,workerCPU:true)
++#endif
++    guard locked({matches(s,g,r)}) else{
++#if DEBUG
++    recordDiagnosticStage(.requestRetired,workerCPU:true)
++#endif
++    finish(.failure(.stale));return}
+     finish(.failure(.endpointAssociationRejected(receipt)))
+    } catch {
+ #if DEBUG
+-    recordDiagnosticStage(.nativeFailure)
++    recordDiagnosticStage(.nativeFailure,workerCPU:true)
+ #endif
+     finish(.failure(.nativeFailure))
+    }
+--- a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
++++ b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+@@ -49,13 +49,15 @@
+     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                 supportPolicy: MeshSupportPolicy = .legacySlope,
+                 captureSyntheticTestTiming: Bool,
++                syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
+                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+         self.supportPolicy = supportPolicy
+         let initialEpoch = UUID(); epoch = initialEpoch
+         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+-            supportPolicy: supportPolicy, captureSyntheticTestTiming: captureSyntheticTestTiming)
++            supportPolicy: supportPolicy, captureSyntheticTestTiming: captureSyntheticTestTiming,
++            syntheticTimingCompletion: syntheticTimingCompletion)
+     }
+     public var diagnosticReceiptID: UUID? { runtime.diagnosticReceiptID }
+     public var diagnosticStageReceipts: [RoomMeshCandidateRuntime.DiagnosticStageReceipt] {
+--- a/ios/BlindAssistTests/ClassificationIngressTests.swift
++++ b/ios/BlindAssistTests/ClassificationIngressTests.swift
+@@ -40,11 +40,37 @@
+                 reason: (error as? MeshSnapshot82.Failure) ?? .invalidDescriptor))
+         }
+     }
++#if DEBUG
++    /// Runs only on the separate bounded diagnostic queue, never the timed
++    /// result callback. No runtime/owner/geometry capture is needed by the sink.
++    private static func cpuReceipt(id: UUID, rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
++        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage,
++                  _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int, Int64, Bool) {
++            guard let a = rows.first(where: { $0.stage == begin }),
++                  let b = rows.first(where: { $0.stage == end }),
++                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1, -1, false) }
++            let wall = b.elapsedMilliseconds - a.elapsedMilliseconds
++            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
++                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds,
++                  bc >= ac else { return (wall, -1, false) }
++            return (wall, bc - ac, true)
++        }
++        let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
++        let worker = pair(.workerStarted, .workerFinished)
++        let build = pair(.nativeBuildBegin, .nativeBuildEnd)
++        let route = pair(.routeBegin, .routeEnd)
++        let retired = rows.contains { $0.stage == .requestRetired }
++        let failed = rows.contains { $0.stage == .nativeFailure }
++        // Missing/mismatched clocks are -1/false, not evidence of zero CPU.
++        print("CLASSIFICATION_WORKER_CPU id=\(id.uuidString) worker_begin_ms=\(began) lane=ingress83 worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) retired=\(retired) native_failed=\(failed) records=\(rows.count)")
++    }
++#endif
+     private func makeOwner(supportPolicy: MeshSupportPolicy = .legacySlope,
+                            decodeQueue: DispatchQueue) throws -> MeshCandidateIngress83 {
+ #if DEBUG
+         try MeshCandidateIngress83(supportPolicy: supportPolicy,
+-            captureSyntheticTestTiming: true, decodeQueue: decodeQueue)
++            captureSyntheticTestTiming: true, syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) },
++            decodeQueue: decodeQueue)
+ #else
+         try MeshCandidateIngress83(supportPolicy: supportPolicy, decodeQueue: decodeQueue)
+ #endif
+--- a/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift
++++ b/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift
+@@ -19,9 +19,35 @@
+               timestamp: 1, vertices: vertices, triangles: triangles, columnMajorTransform: identity,
+               complete: true, triangleSupport: support)
+     }
++#if DEBUG
++    /// Runs only on the separate bounded diagnostic queue, never the timed
++    /// result callback. No runtime/owner/geometry capture is needed by the sink.
++    private static func cpuReceipt(id: UUID, rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
++        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage,
++                  _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int, Int64, Bool) {
++            guard let a = rows.first(where: { $0.stage == begin }),
++                  let b = rows.first(where: { $0.stage == end }),
++                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1, -1, false) }
++            let wall = b.elapsedMilliseconds - a.elapsedMilliseconds
++            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
++                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds,
++                  bc >= ac else { return (wall, -1, false) }
++            return (wall, bc - ac, true)
++        }
++        let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
++        let worker = pair(.workerStarted, .workerFinished)
++        let build = pair(.nativeBuildBegin, .nativeBuildEnd)
++        let route = pair(.routeBegin, .routeEnd)
++        let retired = rows.contains { $0.stage == .requestRetired }
++        let failed = rows.contains { $0.stage == .nativeFailure }
++        // Missing/mismatched clocks are -1/false, not evidence of zero CPU.
++        print("CLASSIFICATION_WORKER_CPU id=\(id.uuidString) worker_begin_ms=\(began) lane=runtime75 worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) retired=\(retired) native_failed=\(failed) records=\(rows.count)")
++    }
++#endif
+     private func makeRuntime(sessionID: String, supportPolicy: MeshSupportPolicy = .legacySlope) throws -> RoomMeshCandidateRuntime {
+ #if DEBUG
+-        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true)
++        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true,
++            syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) })
+ #else
+         try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy)
+ #endif

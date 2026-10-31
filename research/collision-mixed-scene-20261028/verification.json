@@ -1,0 +1,109 @@
+{
+  "kind": "source-contracts-not-Swift-compilation",
+  "baselineCommit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+  "checks": [
+    {
+      "name": "typed_SIMD_repair_unchanged",
+      "passed": true
+    },
+    {
+      "name": "six_original_test_bodies_unchanged",
+      "passed": true
+    },
+    {
+      "name": "ten_original_control_queries_and_predicates_unchanged",
+      "passed": true
+    },
+    {
+      "name": "external_candidate_separated_and_gated",
+      "passed": true
+    },
+    {
+      "name": "all_original_and_mixed_controls_gate_readiness",
+      "passed": true
+    },
+    {
+      "name": "existing_v1_matrix_stays_combined",
+      "passed": true
+    },
+    {
+      "name": "category_masks_distinct_and_union_probe",
+      "passed": true
+    },
+    {
+      "name": "default_source_collision_mask_retained",
+      "passed": true
+    },
+    {
+      "name": "every_phase_queries_both_categories",
+      "passed": true
+    },
+    {
+      "name": "same_full_cylinder_and_transforms",
+      "passed": true
+    },
+    {
+      "name": "all_three_zero_collision_margins",
+      "passed": true
+    },
+    {
+      "name": "two_sided_all_contact_search_retained",
+      "passed": true
+    },
+    {
+      "name": "no_dynamic_bodies_or_paused_world",
+      "passed": true
+    },
+    {
+      "name": "original_triangles_all_installed",
+      "passed": true
+    },
+    {
+      "name": "mixed_vertices_match_failed_fixture",
+      "passed": true
+    },
+    {
+      "name": "mixed_triangles_match_failed_fixture",
+      "passed": true
+    },
+    {
+      "name": "fixed_four_layout_query_cells",
+      "passed": true
+    },
+    {
+      "name": "fixed_six_controls",
+      "passed": true
+    },
+    {
+      "name": "same_radius_height_no_floor_lift",
+      "passed": true
+    },
+    {
+      "name": "unexpected_floor_in_wall_only_fails",
+      "passed": true
+    },
+    {
+      "name": "mixed_floor_contact_required",
+      "passed": true
+    },
+    {
+      "name": "error_empty_and_failclosed",
+      "passed": true
+    },
+    {
+      "name": "mixed_witness_kept_before_assertion",
+      "passed": true
+    },
+    {
+      "name": "diagnostic_bounded_and_separated_cells_asserted",
+      "passed": true
+    }
+  ],
+  "passed": 24,
+  "failed": 0,
+  "nativeExecution": "not-run-no-Apple-SDK-Xcode",
+  "sourceSHA256": {
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift": "139de1ae5309296c6efa96225040b816b08b40f75e1f0c5c7c118194bc3a2256"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "reviewUTC": "2026-10-29T05:14:30Z",
+  "frozenPinsIndependentlyVerified": 479,
+  "mismatches": 0,
+  "candidateStrictTraces": 28,
+  "candidateObservationalTraces": 4,
+  "candidateAllExactMatches": 32,
+  "originalGeometricMismatchesRetained": 17,
+  "nativeNPControls": 2,
+  "axisProbeOriginal": "unallocated both normal modes",
+  "axisProbeCandidate": {
+    "normalOffWeight": 1,
+    "normalOffDistance": 0.02000004053,
+    "normalOnWeight": 0
+  },
+  "obliqueUnchanged": true,
+  "separateELFCoreClosureConfirmed": true,
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 77.17971822200343,
+    "peakSummedRSSBytes": 664125440,
+    "peakCumulativeCPUSeconds": 76.97,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 120,
+      "wallSeconds": 150,
+      "RSSBytes": 2147483648,
+      "diskBytes": 67108864,
+      "logicalCPUs": 1
+    },
+    "scope": "D1 isolated 26-file core build and synthetic clients only; no recorded inputs",
+    "frozenIntegrityPassed": true
+  },
+  "limitations": [
+    "Synthetic finite-ray candidate only, not upstream release/adoption",
+    "D2 invalid-input/zero-physical-range/empty-clear native lifecycle unchanged",
+    "Original full NP suite not rerun; serialization and malformed followups remain open",
+    "No recorded accuracy or physical safety claim",
+    "N1 area cutoff and full hazard-pipeline fixture gaps remain"
+  ],
+  "evidenceSHA256": {
+    "EXECUTION_FREEZE.json": "11e30170172c1bb4e5f80b7967dff97db7a2787a3190715cafa1e5546934e23c",
+    "RESOURCE.json": "034d8756f0c333f4cfee37b326522b454d617a8aa1b10181ae40f5e460e75384",
+    "POST_RUN_INTEGRITY.json": "95cd5bfb2b99a026174bbb846226574961651eb4fc43db28a9e2c39ba11ab27d",
+    "run/ELF.json": "5e0f8e104a2165dc660b75bf534ee5a3e93349271e3e1cd2e2a3f9c3122feb3e",
+    "run/original.log": "14adbce5de195305ff92a98219f436a00225354f291d4c8a8f45b14bf90929f1",
+    "run/candidate.log": "98d938269ad3b6bb238c60559ddd9c58b356b371776825b5d4c9a123cf19ff08"
+  }
+}

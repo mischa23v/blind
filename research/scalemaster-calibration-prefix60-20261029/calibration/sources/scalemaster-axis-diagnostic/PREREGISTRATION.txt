@@ -1,0 +1,105 @@
+SOURCE PREPARATION ONLY. No new diagnostic, synthetic test, import, image decoding,
+pair selection, or extraction has been executed. Root review/admission is pending.
+
+Purpose and scope
+Explore whether a fixed exported camera-axis convention explains run-001's
+inconclusive depth consistency. This is a follow-on hypothesis prompted by that
+negative development result, not a fresh independent validation study. Preserve
+run-001 exactly. Its original six metadata-selected pairs and holdout split remain
+frozen. No archive reread/download, new image extraction, RGB use, author contact,
+or publication. Holdout scoring remains unused until a development-only choice.
+Prior exposure: run-001 decoded all 12 PNGs for shape/type/mask audit before its
+development failure; neither holdout geometric consistency was scored. This new
+run loads development PNGs first and defers even holdout decoding until lock.
+
+Finite hypothesis family
+Exactly 24 distinct integer signed-permutation C matrices, determinant +1,
+orthogonal, lexicographically ordered by their flattened entries. C maps optical
+camera coordinates to recorded camera coordinates. R_world_optical=R_raw @ C;
+relative transform is C^T R_j^T R_i C and C^T R_j^T(t_i-t_j). Raw translations,
+quaternion normalization, pose direction world_from_recorded_camera and exact
+K_depth from pinned camera_matrix.csv scaled 1/7.5 remain unchanged. No reflection,
+pose-direction inversion, image rotation/cropping, scale sign change, continuous
+rotation/translation fit, ICP, Sim3, per-pair scale, or pose refinement is allowed.
+Pose direction/K/pixel-center association remain explicit unverified assumptions.
+
+Original objective and gates unchanged
+Reuse the SHA-pinned original diagnostic implementation: confidence 2; exclude
+raw 0 and 65535 conservatively with explicit counts; fixed <=512 source pixels;
+absolute log z ratio capped .25; missing/outside/low-confidence/occluded points
+retain .25 loss in the original denominator. Each direction of every required
+pair needs >=64 matches, >=.35 correspondence and >=.25 visible coverage. Search
+25 common logarithmic scales 1e-6..1 plus <=11 local refinements per C. Boundary,
+flat (<.001 variation), broad (>4x within .01 of optimum) profiles are inconclusive.
+Development/heldout score <=.15; heldout <=development+.03; median visible heldout
+log residual <=.10. Zero-translation profile must be eligible, flat within .001,
+and best >=candidate+.01. Cyclic shuffled-pose best must be >=candidate+.01 or
+coverage-ineligible. No gate is relaxed after looking at results.
+Additionally give both zero/shuffle controls the SAME original coarse+local-refine
+fit opportunity as the candidate and require their best eligible losses to remain
+>=candidate+.01. Preserve/report original coarse controls separately for exact
+run-001 regression. This extra conservative check prevents refined-vs-coarse
+optimization from exaggerating the candidate's advantage.
+
+Additional convention identifiability gates (heuristic, NOT confidence intervals)
+Choose the numerically lowest development score across all 24 conventions,
+including competing boundary/flat/broad candidates so they cannot be hidden by
+pre-filtering. The winner itself must pass original scale-profile/development
+gates. Require >=.01 score margin to every other convention's best eligible scale.
+For each of four leave-one-development-pair-out summaries, reuse the same stored
+25 coarse scale evaluations for ALL conventions (no holdout, no extra fitting or
+pair replacement). Require the same convention, >=.005 runner-up margin, and
+coarse scale within factor 4 of the full-development candidate. These checks are
+stability diagnostics, not independent observations or statistical certification.
+Ties break by fixed convention ID for reporting only and fail the margin gate.
+
+Controls and heldout firewall
+Before searching alternatives, original F=diag(1,-1,-1) MUST reproduce saved
+run-001 development status/profile and zero/shuffle controls, recursively with
+numeric tolerance 1e-12 and exact structure/status/eligibility. Mismatch stops.
+For the numerical development winner, retain full zero/shuffle control profiles.
+If convention/scale/development/control gates fail, do not decode or evaluate
+holdout. Otherwise write development-candidate-lock.json first, then decode and
+score both frozen holdouts exactly once at that one C and scale. Holdout never
+chooses C/scale/refinement, and a failed holdout cannot trigger another candidate.
+Report untested holdout separately from measured ineligibility/residual failures.
+
+Synthetic gates before real selected-depth reads
+Run all original known-scale/off-grid/occlusion/missing-overlap/tiny-scale and
+degeneracy tests. New analytic asymmetric static scene (slanted background at
+normal-distance equation n.X=5.0 plus
+three differently positioned spheres), four fixed translated/rotated views,
+known C=[[0,-1,0],[0,0,-1],[1,0,0]], known s=.001: recover exact C, scale within
+.15 log ratio, pass uniqueness/stability and original zero/shuffle gates. Original
+F must fit >=.01 worse or fail coverage. Zero-motion case must reject axis/scale
+identification; forward-looking featureless plane must reject four-way roll
+ambiguity. These test estimator behavior only, never real dataset units. Any
+assertion, resource cap or provenance failure stops before real evaluation; no
+automatic retry/tuning. Synthetic definitions were chosen before this new run.
+The 5.0m background plane was chosen by analytic source inspection to retain
+zero-control visibility under the unchanged 5% occlusion rule for the specified
+motions; no synthetic or new real-data result informed this choice.
+
+Provenance and resource guard
+Freeze both new scripts, this plan, pinned original diagnostic/source-freeze,
+run-001 manifest/result/image receipt, and exact pose/K metadata. Image bytes are
+verified against the frozen image receipt only as each split is decoded. Do not
+rehash/reread the large archive. Existing archive identity remains in its receipt.
+Fresh private sibling output root only. One CPU, numeric libraries single-thread,
+cumulative controller+children <=30 CPU seconds /45 wall seconds, reservations
+64 MiB controller +192 MiB child =256 MiB address space. Record observed RSS peaks
+and conservative sum. No claim of cgroup RSS enforcement. Per-artifact cap20 MiB;
+zero extraction. No execution until parent reviews final exact source-freeze hash
+and grants a CPU slot. Inconclusive is an allowed terminal scientific outcome.
+
+Proposed invocation (NOT yet admitted)
+python coordination/scalemaster-axis-diagnostic/run_bounded.py \
+  --previous-run private-datasets/scalemaster/scale-diagnostic-run-001 \
+  --output-root private-datasets/scalemaster/axis-diagnostic-run-001 \
+  --root-reviewed-and-slot-clear
+
+Interpretation limits
+Even all gates passing means only a conditional inferred export convention and
+unit hypothesis, NOT author-documented encoding, independent metric accuracy,
+detector accuracy or navigation safety. Raw odometry is not independent ground
+truth. RGB/video correspondence remains unresolved. All raw samples stay private.

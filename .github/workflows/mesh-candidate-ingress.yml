@@ -1,0 +1,56 @@
+name: Candidate owned mesh ingress integration
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/mesh-candidate-ingress-83/**'
+      - 'research/native-mesh-decoder-81/**'
+      - 'research/arkit-mesh-adapter-82/**'
+      - 'research/room-mesh-package-75/**'
+      - '.github/workflows/mesh-candidate-ingress.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+
+# No paid-storage assumption: uploads require a separately reviewed source opt-in.
+# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
+concurrency:
+  group: candidate-mesh-candidate-ingress-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  ingress:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Run real package ingress fixtures and compile actual ARKit boundary
+        id: fixtures
+        timeout-minutes: 23
+        run: python3 research/mesh-candidate-ingress-83/apple/ci.py
+      - name: Preserve bounded source-only proof receipts
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-mesh-candidate-ingress-83-receipts
+          path: |
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/*-receipt.json
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/RESULT.json
+          if-no-files-found: warn
+          retention-days: 3
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py ingress

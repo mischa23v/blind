@@ -1,0 +1,38 @@
+{
+  "checks": {
+    "usesUnmodifiedOpen3DVolumeAPI": true,
+    "noImageResize": true,
+    "depthScale1000": true,
+    "depthTrunc4": true,
+    "poseRightMultiplyFlip": true,
+    "nativeMeshExport": true,
+    "forbidsHistoricalOverwrite": true,
+    "265UniqueTrain29DisjointHoldout": true,
+    "294DepthManifestMatchesTrainAndHoldout": true,
+    "265TrainingDepthHashesMatch": true,
+    "heldoutResultUsesExact29IDs": true,
+    "savedReferenceContains7Integrated1Heldout": true,
+    "noGeometryReconstructionRun": true
+  },
+  "availability": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "machine": "x86_64",
+    "modules": {
+      "numpy": true,
+      "PIL": true,
+      "scipy": true,
+      "open3d": false,
+      "vtk": true,
+      "cv2": false,
+      "torch": false
+    },
+    "actualPhoneArchiveLocal": false,
+    "actualFAROMeshLocal": false,
+    "actualPoseIntrinsicsFileLocal": false,
+    "rawFramesSubstitutedByRoomPlanOrSynthetic": false,
+    "newMapperRan": false,
+    "largeDownloadsOrInstallsAttempted": false
+  },
+  "scope": "source/hash/count checks only; no raw-frame reconstruction or physical metric validation"
+}

@@ -1,0 +1,25 @@
+{
+  "checks_passed": 11,
+  "checks": [
+    "2aded preimage retained: ios/BlindAssist/ObservedSceneRuntime.swift",
+    "2aded preimage retained: ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+    "all original test bytes retained except three additive assertions",
+    "exactly two new native tests",
+    "no timeout QoS or freshness relaxation",
+    "actual planner call retained",
+    "bounded seven timing slots",
+    "no callback printing",
+    "only one extra valid-work timing line",
+    "valid-work print follows exact fence",
+    "existing bounded extraction prefix and cap retained"
+  ],
+  "source_sha256": {
+    "ios/BlindAssist/ObservedSceneRuntime.swift": "ccc8827da3b1bc16d49c44120ffda68578a898f0c23f9eb31ef641a4d344125b",
+    "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift": "73bc73c7999acc864c739571b62536e693c5c061d7b7d589cff878ddffa0a75f"
+  },
+  "native_tests_authored": 2,
+  "native_tests_executed": 0,
+  "swift_compiled": false,
+  "speed_claimed": false,
+  "status": "source candidate; native validation required"
+}

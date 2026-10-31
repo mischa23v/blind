@@ -1,0 +1,15 @@
+2026-10-28T07:42:35.2004290Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8767fa0e4696ce8b7d5562fe623783cd137c55ee:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T07:42:43.4028280Z  * [new ref]         8767fa0e4696ce8b7d5562fe623783cd137c55ee -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T07:42:43.4312930Z 8767fa0e4696ce8b7d5562fe623783cd137c55ee
+2026-10-28T07:42:45.5599440Z 8767fa0e4696ce8b7d5562fe623783cd137c55ee
+2026-10-28T07:42:46.5764100Z   "sourceChecksPassed": 42,
+2026-10-28T07:42:46.5908190Z   "runtimeOptIn": false,
+2026-10-28T07:42:46.5908430Z   "geometryCopyEnabled": false,
+2026-10-28T07:42:46.6103520Z 8767fa0e4696ce8b7d5562fe623783cd137c55ee
+2026-10-28T07:45:21.7588240Z diagnostics-build exit status: 65
+2026-10-28T07:45:21.8815040Z /Users/runner/work/blind/blind/ios/BlindAssist/RecordedRoomRoutePreview.swift:108:26: error: cannot assign to value: 'error' is immutable
+2026-10-28T07:45:21.8816360Z     |                          `- error: cannot assign to value: 'error' is immutable
+2026-10-28T07:45:21.8817230Z /Users/runner/work/blind/blind/ios/BlindAssist/RecordedRoomRoutePreview.swift:108:34: error: cannot assign value of type 'Bool' to type 'any Error'
+2026-10-28T07:45:21.8818600Z     |                                  `- error: cannot assign value of type 'Bool' to type 'any Error'
+2026-10-28T07:45:21.8819170Z ** BUILD FAILED **
+2026-10-28T07:45:21.9007180Z ** BUILD FAILED **

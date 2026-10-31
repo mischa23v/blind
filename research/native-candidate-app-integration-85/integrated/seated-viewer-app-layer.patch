@@ -1,0 +1,1875 @@
+--- a/ios/BlindAssist/DashboardView.swift
++++ b/ios/BlindAssist/DashboardView.swift
+@@ -648,6 +648,15 @@
+                 .onDelete { offsets in placesToDelete = offsets.map { model.places.places[$0] } }
+             }
+             Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
++                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++                NavigationLink(t("Seated live mesh diagnostic", "تشخيص الشبكة الحية أثناء الجلوس")) {
++                    SeatedMeshDiagnosticView(model: model)
++                }
++                .frame(minHeight: 44)
++                .disabled(model.places.scanning || model.places.finishing)
++                .accessibilityIdentifier("seated-mesh-open")
++                #endif
++
+                 NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
+                     model.makeNavigationTestRecordingView()
+                 }
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -1,5 +1,8 @@
+ import SwiftUI
+ import ARKit
++#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++import LiveMeshClassifiedBench
++#endif
+ import AVFoundation
+ import CoreImage
+ import ImageIO
+@@ -72,6 +75,9 @@
+     @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") == nil
+         ? true : UserDefaults.standard.bool(forKey: "camera-awareness") {
+         didSet {
++            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++            if !oldValue && cameraAwareness && seatedMeshDiagnostic == nil { seatedDiagnosticHold = false }
++            #endif
+             UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")
+             if cameraAwareness && assistantSession.foregroundActive && !textOnly {
+                 cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false; start()
+@@ -1186,7 +1192,7 @@
+             self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
+         }
+         places.onScanFinished = { [weak self] in
+-            guard let self else { return }
++            guard let self, self.normalCameraSessionAllowed else { return }
+             #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+             self.meshCandidateDiagnostics.beginEpoch(); self.meshCandidateDiagnostics.stop()
+             #endif
+@@ -1213,8 +1219,82 @@
+         }
+         journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
+     }
++    // A camera owner fence, not a guidance/readiness permission. Release stays unchanged.
++    private var normalCameraSessionAllowed: Bool {
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        return !seatedDiagnosticHold && seatedMeshDiagnostic == nil
++        #else
++        return true
++        #endif
++    }
++    private var normalCameraCallbackAllowed: Bool {
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        return normalCameraSessionAllowed && session.delegate === self && session.delegateQueue === DispatchQueue.main
++        #else
++        return true
++        #endif
++    }
++    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++    @Published private(set) var seatedMeshDiagnostic: SeatedMeshDiagnosticController?
++    private var seatedDiagnosticHold = false
++    private var seatedDiagnosticPresentation = SeatedMeshPresentationLease()
++    // RoomPlan has no acknowledged native drain in the current owner API. Do not
++    // reinterpret cancelScan() as one. This first checkpoint refuses reuse until
++    // app relaunch if this ARSession has ever been handed to RoomPlan.
++    private var seatedDiagnosticRoomPlanTouched = false
++    func openSeatedMeshDiagnosticView() -> UUID { seatedDiagnosticPresentation.open() }
++    func confirmSeatedMeshDiagnostic(viewID: UUID) -> UUID? {
++        guard assistantSession.foregroundActive, seatedMeshDiagnostic == nil else { return nil }
++        return seatedDiagnosticPresentation.confirm(view: viewID)
++    }
++    func cancelSeatedMeshDiagnosticConfirmation() { seatedDiagnosticPresentation.cancelConfirmation() }
++    func closeSeatedMeshDiagnosticView(_ viewID: UUID) {
++        guard seatedDiagnosticPresentation.close(view: viewID) else { return }
++        stopSeatedMeshDiagnostic()
++    }
++    func beginSeatedMeshDiagnostic(viewID: UUID, confirmationID: UUID) -> String? {
++        dispatchPrecondition(condition: .onQueue(.main))
++        guard seatedDiagnosticPresentation.consume(view: viewID, confirmation: confirmationID) else {
++            return "Confirmation expired. Reopen the seated diagnostic and confirm again."
++        }
++        guard seatedMeshDiagnostic == nil, !places.scanning, !places.finishing,
++              !seatedDiagnosticRoomPlanTouched else {
++            return "Unavailable while a room scan owns or has used this session. Close the app and reopen before this diagnostic."
++        }
++        guard assistantSession.foregroundActive, !textOnly,
++              AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
++              ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification),
++              session.delegate === self, session.delegateQueue === DispatchQueue.main else {
++            return "Requires foreground camera permission and a LiDAR iPhone with classified mesh support."
++        }
++        seatedDiagnosticHold = true // Before cleanup can trigger late completions.
++        stop()
++        do {
++            let controller = try SeatedMeshDiagnosticController(session: session, expectedDelegate: self) { [weak self] in
++                // Remain stopped after native drain. Foreground/conversation never
++                // clears the hold; only an explicit normal-camera action may do so.
++                self?.seatedMeshDiagnostic = nil
++            }
++            seatedMeshDiagnostic = controller
++            try controller.activate()
++            return nil
++        } catch {
++            seatedMeshDiagnostic?.stop()
++            return "Diagnostic could not acquire the camera. Normal camera remains stopped."
++        }
++    }
++    func stopSeatedMeshDiagnostic() { seatedDiagnosticPresentation.cancelConfirmation(); seatedMeshDiagnostic?.stop() }
++    func resumeNormalCameraAfterMeshDiagnostic(viewID: UUID) {
++        guard seatedDiagnosticPresentation.owns(view: viewID), assistantSession.foregroundActive,
++              seatedMeshDiagnostic == nil, seatedDiagnosticHold else { return }
++        seatedDiagnosticHold = false
++        cameraAwareness = true
++        start()
++    }
++    #endif
+     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
+     func start() {
++        guard normalCameraSessionAllowed else { return }
+         defer { updateLiveActivity() }
+         guard !running, !places.scanning, assistantSession.foregroundActive, cameraAwareness, !textOnly else { return }
+         guard ARWorldTrackingConfiguration.isSupported else {
+@@ -1230,7 +1310,7 @@
+         case .notDetermined:
+             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                 DispatchQueue.main.async {
+-                    guard let self, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
++                    guard let self, self.normalCameraSessionAllowed, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
+                     if granted { self.outdoor.requestCoarseLocation(); self.launchWithNearbyPlace() } else { self.cameraPermissionNeeded() }
+                 }
+             }
+@@ -1243,6 +1323,7 @@
+         speakOperation(message)
+     }
+     private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID(), announceCalibration: Bool = true, recoveryAttempt: Bool = false) {
++        guard normalCameraSessionAllowed else { return }
+         retireBodyWarning(publishChange: false)
+         guard assistantSession.foregroundActive, cameraAwareness, !textOnly,
+               AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
+@@ -1301,6 +1382,10 @@
+     }
+     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
+     private func stopCameraMonitoring() {
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        seatedDiagnosticPresentation.cancelConfirmation()
++        if let seatedMeshDiagnostic { seatedMeshDiagnostic.stop(); return }
++        #endif
+         nativeObservations.stop()
+         voiceRoomScan.cancel()
+         retireBodyWarning(publishChange: false)
+@@ -1351,6 +1436,7 @@
+     func calibrateBelt() { wearables.send(WearableCommand.calibrate) }
+     func identifyBelt() { wearables.send(WearableCommand.identify) }
+     private func startWatchdog() {
++        guard normalCameraSessionAllowed else { return }
+         watchdog?.invalidate()
+         watchdog = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
+             guard let self else { return }
+@@ -1425,21 +1511,21 @@
+         meshCandidateDiagnostics.discard(completion: completion)
+     }
+     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         for anchor in anchors where anchor is ARMeshAnchor {
+             meshCandidateDiagnostics.observe(.added, anchorID: anchor.identifier,
+                 receiptUptime: ProcessInfo.processInfo.systemUptime)
+         }
+     }
+     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         for anchor in anchors where anchor is ARMeshAnchor {
+             meshCandidateDiagnostics.observe(.updated, anchorID: anchor.identifier,
+                 receiptUptime: ProcessInfo.processInfo.systemUptime)
+         }
+     }
+     func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         for anchor in anchors where anchor is ARMeshAnchor {
+             meshCandidateDiagnostics.observe(.removed, anchorID: anchor.identifier,
+                 receiptUptime: ProcessInfo.processInfo.systemUptime)
+@@ -1447,7 +1533,7 @@
+     }
+     #endif
+     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         // Record only nonnormal tracking before throttling. This constant-work
+         // hook preserves a real relocalizing callback without inspecting anchors.
+         if let worldSessionID = UUID(uuidString: observationFrameID) {
+@@ -1874,7 +1960,7 @@
+         }
+     }
+     func session(_ session: ARSession, didFailWithError error: Error) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         places.invalidateWorldMapRecovery()
+         retireBodyWarning(publishChange: false)
+         nativeObservations.stop()
+@@ -1895,6 +1981,7 @@
+         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
+     }
+     private func requestCameraRecovery(now: Double) {
++        guard normalCameraSessionAllowed else { return }
+         guard running, !simulation, !places.scanning, assistantSession.foregroundActive, cameraAwareness else { return }
+         let authorized = AVCaptureDevice.authorizationStatus(for: .video) == .authorized
+         if let retry = cameraRecovery.pendingRetry {
+@@ -1917,7 +2004,7 @@
+         }
+     }
+     func sessionWasInterrupted(_ session: ARSession) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         places.invalidateWorldMapRecovery()
+         retireBodyWarning(publishChange: false)
+         nativeObservations.stop()
+@@ -1942,7 +2029,7 @@
+         if UIApplication.shared.applicationState == .active { _ = speakMobility(message) }
+     }
+     func sessionInterruptionEnded(_ session: ARSession) {
+-        guard session === self.session else { return }
++        guard session === self.session, normalCameraCallbackAllowed else { return }
+         #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+         meshCandidateDiagnostics.stop()
+         #endif
+@@ -1952,6 +2039,7 @@
+         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
+     }
+     func scanPlace(name: String, compare: Bool = false) {
++        guard normalCameraSessionAllowed else { return }
+         guard running, !simulation, !places.scanning else { message = "Start the live camera first."; return }
+         guard !compare || recognizedPlace != nil else { message = "Recognize a saved place before comparing."; return }
+         outdoor.requestCoarseLocation()
+@@ -1966,9 +2054,13 @@
+         #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+         meshCandidateDiagnostics.scanStarted()
+         #endif
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        seatedDiagnosticRoomPlanTouched = true
++        #endif
+         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil, registrationSessionID: UUID(uuidString: observationFrameID))
+     }
+     func recognize(_ place: SavedPlace) {
++        guard normalCameraSessionAllowed else { return }
+         guard supported, AVCaptureDevice.authorizationStatus(for: .video) == .authorized, !places.scanning else {
+             message = "Start the live camera before recognizing a place."; return
+         }
+@@ -1990,6 +2082,7 @@
+         }
+     }
+     func continueWithoutPlaceMatch() {
++        guard normalCameraSessionAllowed else { return }
+         guard running, !simulation, supported, !places.scanning,
+               AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
+         cancelAutomaticRoomRecovery()
+@@ -5164,6 +5257,7 @@
+         }
+     }
+     func startSimulation() {
++        guard normalCameraSessionAllowed else { return }
+         #if DEBUG
+         beginPracticeRuntimeDiagnosticIfRequested()
+         practiceRuntimeDiagnostic?.mark(.startEntered)
+@@ -5341,10 +5435,16 @@
+         interruptedSearch.cancel()
+         cancelDescription(); voice.cancel()
+         _ = feedback.stopInformation(announceCancellation: false)
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        if seatedMeshDiagnostic != nil { message = "Microphone muted. Seated mesh diagnostic has no phone hazard monitoring."; return }
++        #endif
+         message = arabic ? "الميكروفون مكتوم. الكتابة متاحة وتنبيهات الخطر لا تتوقف." : "Microphone muted. You can still type; hazard alerts are not disabled."
+     }
+ 
+     func endConversation() {
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        stopSeatedMeshDiagnostic()
++        #endif
+         voiceRoomScan.cancel()
+         clearSelectedDocument()
+         companionWorkingState.searchAreaClue.clear()
+@@ -5361,6 +5461,10 @@
+     func reconnectListening() { startConversation() }
+ 
+     func startExperience() {
++        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++        guard seatedMeshDiagnostic == nil else { return }
++        seatedDiagnosticHold = false
++        #endif
+         automaticStartupAllowed = true
+         cameraAwareness = true
+         startConversation()
+@@ -5376,6 +5480,7 @@
+     }
+ 
+     func toggleHomeDescriptions() {
++        guard normalCameraSessionAllowed else { return }
+         if ambientDescriptions {
+             stopDescriptions()
+             speakOperation(arabic ? "سأتوقف عن الوصف. تبقى تنبيهات المسار مفعلة." : "I'll be quiet. Path alerts stay on.")
+@@ -5444,6 +5549,7 @@
+ 
+     /// Start ordinary capture, then try bounded saved-map candidates without a room picker.
+     private func launchWithNearbyPlace() {
++        guard normalCameraSessionAllowed else { return }
+         cancelAutomaticRoomRecovery()
+         automaticRoomRecoveryEnabled = true
+         launch()
+@@ -5491,6 +5597,7 @@
+     }
+ 
+     private func tickAutomaticRoomRecovery(now: Double) {
++        guard normalCameraSessionAllowed else { return }
+         guard automaticRoomRecoveryEnabled, running, !simulation, !places.scanning,
+               assistantSession.foregroundActive, UIApplication.shared.applicationState == .active,
+               recognizedPlace == nil, alignedRoomID == nil,
+@@ -5529,6 +5636,7 @@
+ 
+     /// Appearance is a short-lived search clue, even without depth/calibration. It is never pose.
+     private func probeAutomaticRoomAppearance(frame: ARFrame) {
++        guard normalCameraSessionAllowed else { return }
+         let capturedAt = lastFrameWallTime
+         guard automaticRoomRecoveryEnabled, awaitingPlace == nil, recognizedPlace == nil,
+               alignedRoomID == nil, !recoveryProbeInFlight, !recallInFlight,
+@@ -5540,7 +5648,7 @@
+         lastRecoveryProbe = capturedAt; recoveryProbeInFlight = true
+         let episode = recoveryProbeEpisode, frameID = observationFrameID
+         roomRecall.evidence(image: frame.capturedImage, candidates: candidates) { [weak self] evidence, _ in
+-            guard let self, self.recoveryProbeEpisode == episode else { return }
++            guard let self, self.normalCameraSessionAllowed, self.recoveryProbeEpisode == episode else { return }
+             self.recoveryProbeInFlight = false
+             let now = ProcessInfo.processInfo.systemUptime
+             guard self.running, !self.places.scanning, self.automaticRoomRecoveryEnabled,
+--- /dev/null
++++ b/ios/BlindAssist/SeatedMeshDiagnosticController.swift
+@@ -0,0 +1,300 @@
++#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++import ARKit
++import Combine
++import SceneKit
++import UIKit
++import simd
++import LiveMeshClassifiedBench
++import MeshCandidateIngress83
++import BlindRoomMesh
++
++/// Helper display owner only. No model context, persistence, speech, haptics or
++/// mobility ticket is produced here. Camera pose is deliberately not a body pose.
++final class SeatedMeshDiagnosticController: ObservableObject {
++    @Published private(set) var scene: SCNScene?
++    @Published private(set) var sourceReceipt = "Waiting for a normal tracked frame and admitted source geometry."
++    @Published private(set) var producerReceipt = "No bounded refresh requested."
++    @Published private(set) var routeReceipt = "WITHHELD — no current source snapshot or supplied test endpoints."
++    @Published private(set) var anchorReceipts: [String] = []
++    @Published private(set) var routePointReceipts: [String] = []
++    @Published private(set) var meshBoundsReceipt = "No source bounds."
++    @Published private(set) var stopped = false
++    private var bench: LiveMeshBenchSession?
++    private var snapshot: MeshCandidateIngress83.SourceSnapshot?
++    private var candidate: MeshCandidateIngress83.Candidate?
++    private var epoch = UUID(), previewEpoch = UUID()
++    private var previewParameters = ""
++    private var snapshotPending = false, statusPending = false, routePending = false
++    private var timer: Timer?
++    private let renderQueue = DispatchQueue(label: "blind.seated-mesh.render", qos: .utility)
++    private var onStopped: (() -> Void)?
++    private var nativeDrained = false
++    var onNativeDrainForTesting: (() -> Void)?
++
++    init(session: ARSession, expectedDelegate: any ARSessionDelegate, onStopped: @escaping () -> Void) throws {
++        dispatchPrecondition(condition: .onQueue(.main))
++        self.onStopped = onStopped
++        bench = try LiveMeshBenchSession(stoppedSession: session, expectedDelegate: expectedDelegate) { [weak self] restored in
++            guard let self else { return }
++            self.retireAll()
++            self.sourceReceipt = restored ? "Stopped and drained. Normal camera remains off." : "Stopped and drained; camera owner changed. No automatic restoration."
++            self.bench = nil; self.nativeDrained = true
++            self.onNativeDrainForTesting?()
++            self.finishStopIfDrained()
++        }
++    }
++    private func finishStopIfDrained() {
++        guard stopped, nativeDrained, !snapshotPending, !statusPending, !routePending else { return }
++        let completion = onStopped; onStopped = nil; completion?()
++    }
++    /// Run after the current callback stack releases its owned source/render values.
++    /// The app holds exclusive ownership until both native and display work drain.
++    private func scheduleDisplayDrainCheck() {
++        DispatchQueue.main.async { [weak self] in self?.finishStopIfDrained() }
++    }
++    private func finishRenderDelivery() {
++        // This barrier must run on the SAME serial worker, after its source/scene
++        // closure returns. Its main acknowledgement is also after the main delivery
++        // stack. Neither closure below captures source bytes or SceneKit geometry.
++        renderQueue.async { [weak self] in
++            DispatchQueue.main.async { [weak self] in
++                guard let self else { return }
++                self.snapshotPending = false
++                self.finishStopIfDrained()
++            }
++        }
++    }
++    /// Native XCTest scheduler fixture only: no source snapshot, camera activation,
++    /// geometry, UI publication or route is fabricated. Exercises this controller's
++    /// real pending/worker/main/barrier drain using a held synthetic payload closure.
++    func enqueueSyntheticDisplayWorkForTesting(work: @escaping () -> Void,
++        afterEnqueue: @escaping () -> Void, delivered: @escaping () -> Void) {
++        precondition(!snapshotPending && !stopped)
++        snapshotPending = true
++        renderQueue.async { [weak self] in
++            work()
++            DispatchQueue.main.async { [weak self] in
++                defer { self?.finishRenderDelivery() }
++                delivered()
++            }
++            afterEnqueue()
++        }
++    }
++    func activate() throws {
++        try bench?.activateForSeatedBench()
++        timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in self?.tick() }
++        tick()
++    }
++    func stop() {
++        retireAll()
++        sourceReceipt = "Stopping; displayed geometry erased. Waiting for owned work to drain."
++        bench?.stop()
++    }
++    private func retireAll() {
++        epoch = UUID(); stopped = true
++        timer?.invalidate(); timer = nil
++        snapshot = nil; candidate = nil; scene = nil; anchorReceipts = []; routePointReceipts = []; meshBoundsReceipt = "Source bounds erased."
++        routeReceipt = "WITHHELD — diagnostic stopped or session lost."
++    }
++    func retirePreview() {
++        previewEpoch = UUID(); candidate = nil; routePointReceipts = []
++        scene?.rootNode.childNode(withName: "diagnostic-route", recursively: false)?.removeFromParentNode()
++        routeReceipt = "WITHHELD — test endpoints or body parameters changed. Request a new preview."
++    }
++    func reacquire() {
++        guard !stopped else { return }
++        retirePreview()
++        producerReceipt = "Bounded refresh requested: current-frame anchors only, at most 64 anchors and 8 seconds."
++        bench?.reacquireTrackedFrameAnchors()
++    }
++    private func tick() {
++        guard !stopped, let bench else { return }
++        guard bench.state == .capturing else { retireAll(); return }
++        if scene != nil && !bench.hasCurrentTrackedSession { retireAll(); bench.stop(); return }
++        if let snapshot, !bench.isCurrent(snapshot) {
++            self.snapshot = nil
++            sourceReceipt = "RETIRED SOURCE REVISION — wireframe is historical inspection only, not current. Waiting for newer immutable source. " + sourceReceipt
++        }
++        if let candidate, !bench.isCurrent(candidate) { retirePreview(); routeReceipt = "WITHHELD — route retired by newer source, tracking or ownership." }
++        if !statusPending {
++            statusPending = true; let token = epoch
++            bench.requestStatus { [weak self] text in
++                guard let self else { return }
++                self.statusPending = false
++                defer { self.scheduleDisplayDrainCheck() }
++                guard self.epoch == token, !self.stopped else { return }
++                self.producerReceipt = text
++            }
++        }
++        guard snapshot == nil, !snapshotPending, !routePending else { return }
++        snapshotPending = true; let token = epoch
++        bench.requestSourceSnapshot { [weak self] result in
++            guard let self else { return }
++            defer { self.scheduleDisplayDrainCheck() }
++            guard self.epoch == token, !self.stopped else { self.snapshotPending = false; return }
++            switch result {
++            case .failure(let failure):
++                self.snapshotPending = false
++                self.sourceReceipt = (self.scene == nil ? "" : "RETIRED historical wireframe remains for inspection only. ") + "Source snapshot withheld: \(failure). No missing area is treated as free."
++            case .success(let source):
++                // One renderer task at a time. Source arrays are owned immutable
++                // values; no ARFrame, ARMeshAnchor or Metal buffer enters this queue.
++                self.renderQueue.async { [weak self] in
++                    let rendered = SeatedMeshRenderer.makeScene(source.geometry)
++                    DispatchQueue.main.async { [weak self] in
++                        guard let self else { return }
++                        defer { self.finishRenderDelivery() }
++                        guard self.epoch == token, !self.stopped, self.bench?.hasCurrentTrackedSession == true else { return }
++                        guard let renderResult = rendered else { self.sourceReceipt = "Source geometry cannot be rendered within bounds. Whole snapshot withheld."; return }
++                        let rendered = renderResult.scene
++                        self.meshBoundsReceipt = renderResult.bounds
++                        let current = self.bench?.isCurrent(source) == true
++                        self.snapshot = current ? source : nil; self.scene = rendered
++                        let g = source.geometry
++                        let triangles = g.anchors.reduce(0) { $0 + $1.triangleIndices.count / 3 }
++                        self.sourceReceipt = (current ? "CURRENT DELIVERY REVISION — " : "RETIRED SOURCE REVISION — historical wireframe only, not current. ") + "Session \(g.sessionID), generation \(g.generation), revision \(g.revision). \(g.anchors.count) anchors, \(triangles) actual source triangles; metres, ARKit +Y up. Source delivery complete: \(g.sourceDeliveryComplete). Mesh capture time unavailable; physical coverage unknown. Gaps: \(g.unknownCoverage.joined(separator: ", "))."
++                        self.anchorReceipts = g.anchorDelivery.map { r in
++                            "Anchor \(r.anchorID): required \(r.requiredRevision), installed \(r.installedRevision.map(String.init) ?? "none"), unresolved through \(r.unresolvedThroughRevision.map(String.init) ?? "none"), issue \(r.issue?.rawValue ?? "none"), removed \(r.removed). Receipt uptime \(r.receiptUptime); capture time unavailable."
++                        }
++                        if let candidate = self.candidate,
++                           SeatedMeshProjection.matches(source: .init(session: g.sessionID, generation: g.generation, revision: g.revision),
++                             route: .init(session: candidate.route.sessionID, generation: candidate.route.generation, revision: candidate.route.revision),
++                             sourceCurrent: current, routeCurrent: self.bench?.isCurrent(candidate) == true),
++                           let line = SeatedMeshRenderer.route(candidate.route.points) {
++                            rendered.rootNode.addChildNode(line)
++                            self.routePointReceipts = candidate.route.points.prefix(256).enumerated().map { index, p in
++                                "Diagnostic point \(index): X \(p[0]), Y \(p[1]), Z \(p[2]) metres."
++                            }
++                            self.routeReceipt = "AVAILABLE SOURCE-ONLY DIAGNOSTIC — \(candidate.route.points.count) points; revision \(candidate.route.revision). Strict supplied XZ gate; \(self.previewParameters). Body location, connectors, current support and obstacle clearance NOT verified. NOT walking guidance."
++                        } else {
++                            self.candidate = nil; self.routePointReceipts = []
++                            self.routeReceipt = "WITHHELD — \(current ? Self.coverageReason(g) : "rendered source revision retired during inspection"). Supplied test endpoints required. No safe-path claim."
++                        }
++                    }
++                }
++            }
++        }
++    }
++    func requestPreview(startText: String, goalText: String, radiusText: String, heightText: String) {
++        guard !stopped, !routePending, let bench, let snapshot, bench.isCurrent(snapshot) else {
++            routeReceipt = "WITHHELD — no current source snapshot."; return
++        }
++        guard let start = Self.point(startText), let goal = Self.point(goalText),
++              let radius = Float(radiusText), let height = Float(heightText),
++              let body = try? MeshCandidateBody(radius: radius, height: height) else {
++            routeReceipt = "WITHHELD — enter finite X Y Z coordinates in metres and valid declared radius/height."; return
++        }
++        guard snapshot.geometry.sourceDeliveryComplete, snapshot.geometry.unknownCoverage.isEmpty else {
++            routeReceipt = "WITHHELD — \(Self.coverageReason(snapshot.geometry)). Inspect anchor receipts and explicitly refresh. Missing source is not free space."; return
++        }
++        retirePreview(); routePending = true; let token = epoch, previewToken = previewEpoch
++        previewParameters = "declared radius \(body.radius)m, height \(body.height)m"
++        routeReceipt = "WITHHELD — source-only strict query pending."
++        bench.requestPreview(start: start, goal: goal, body: body) { [weak self] result in
++            guard let self else { return }
++            self.routePending = false
++            defer { self.scheduleDisplayDrainCheck() }
++            guard self.epoch == token, self.previewEpoch == previewToken, !self.stopped else { return }
++            switch result {
++            case .failure(let failure): self.routeReceipt = "WITHHELD — strict source query: \(failure). No physical route authority."
++            case .success(let candidate):
++                guard self.bench?.isCurrent(candidate) == true else {
++                    self.routeReceipt = "WITHHELD — route retired by newer source."; return
++                }
++                // A query intentionally advances ingress/runtime revision, retiring
++                // the pre-query snapshot. Fetch a fresh matching inspection before
++                // displaying the line; never weaken currentness to reuse that token.
++                self.candidate = candidate; self.snapshot = nil; self.scene = nil
++                self.routeReceipt = "WITHHELD — query complete; awaiting current matching source inspection."
++                self.tick()
++            }
++        }
++    }
++    private static func coverageReason(_ g: MeshSourceGeometrySnapshot) -> String {
++        let scoped = g.unknownCoverage.filter { $0.hasPrefix("delivery:") || $0.hasPrefix("removed:") }
++        let global = g.unknownCoverage.filter { !$0.hasPrefix("delivery:") && !$0.hasPrefix("removed:") }
++        return "delivery complete=\(g.sourceDeliveryComplete); global/integrity reasons=[\(global.joined(separator: ", "))]; anchor-scoped omissions/removal warnings=[\(scoped.joined(separator: ", "))]. Current policy requires all retained-source delivery complete, even for distant anchors; this does not mean the room is impassable"
++    }
++    private static func point(_ text: String) -> [Float]? {
++        let words = text.split(whereSeparator: { $0.isWhitespace || $0 == "," })
++        guard words.count == 3 else { return nil }
++        let values = words.compactMap { Float($0) }
++        return values.count == 3 && values.allSatisfy(\.isFinite) ? values : nil
++    }
++    deinit { timer?.invalidate() }
++}
++
++/// Original local values transformed once. No ScaleMaster/MuSHRoom export fix,
++/// reference-room geometry, floor filling, body pose or screen-to-world guessing.
++enum SeatedMeshProjection {
++    struct Revision: Equatable { let session: String; let generation: Int; let revision: UInt64 }
++    /// Equality is delivery association only. The caller must supply independent
++    /// owner currentness checks; neither this nor the result conveys freshness.
++    static func matches(source: Revision, route: Revision, sourceCurrent: Bool, routeCurrent: Bool) -> Bool {
++        sourceCurrent && routeCurrent && source == route
++    }
++    static func worldVertices(local: [Double], transform: [Double]) -> [SCNVector3]? {
++        guard local.count <= 600_000, local.count % 3 == 0, transform.count == 16,
++              local.allSatisfy(\.isFinite), transform.allSatisfy(\.isFinite),
++              transform[3] == 0, transform[7] == 0, transform[11] == 0, transform[15] == 1 else { return nil }
++        var result: [SCNVector3] = []; result.reserveCapacity(local.count / 3)
++        for i in stride(from: 0, to: local.count, by: 3) {
++            let x = local[i], y = local[i + 1], z = local[i + 2]
++            let p = (0..<3).map { r in Float(transform[r] * x + transform[4 + r] * y + transform[8 + r] * z + transform[12 + r]) }
++            guard p.allSatisfy(\.isFinite) else { return nil }
++            result.append(SCNVector3(p[0], p[1], p[2]))
++        }
++        return result
++    }
++}
++private enum SeatedMeshRenderer {
++    static func makeScene(_ source: MeshSourceGeometrySnapshot) -> (scene: SCNScene, bounds: String)? {
++        guard source.anchors.count <= 64, source.anchors.reduce(0, { $0 + $1.localVertices.count }) <= 600_000,
++              source.anchors.reduce(0, { $0 + $1.triangleIndices.count }) <= 300_000 else { return nil }
++        let scene = SCNScene()
++        var low = SIMD3<Float>(repeating: .infinity), high = SIMD3<Float>(repeating: -.infinity)
++        for anchor in source.anchors {
++            guard let positions = SeatedMeshProjection.worldVertices(local: anchor.localVertices, transform: anchor.columnMajorTransform),
++                  anchor.triangleIndices.count % 3 == 0,
++                  anchor.triangleIndices.allSatisfy({ $0 >= 0 && Int($0) < positions.count }),
++                  anchor.normalizedSupportRoles.map({ $0.count == anchor.triangleIndices.count / 3 }) ?? true else { return nil }
++            for p in positions { low = simd_min(low, SIMD3(p.x,p.y,p.z)); high = simd_max(high, SIMD3(p.x,p.y,p.z)) }
++            var roles = [[Int32](), [Int32](), [Int32]()]
++            for i in stride(from: 0, to: anchor.triangleIndices.count, by: 3) {
++                let role = anchor.normalizedSupportRoles.map { $0[i / 3] == .floor ? 0 : 1 } ?? 2
++                roles[role].append(contentsOf: anchor.triangleIndices[i..<(i + 3)])
++            }
++            let elements = roles.map { SCNGeometryElement(indices: $0, primitiveType: .triangles) }
++            let geometry = SCNGeometry(sources: [SCNGeometrySource(vertices: positions)], elements: elements)
++            geometry.materials = [UIColor.systemPurple, .systemOrange, .systemGray].map { color in
++                let m = SCNMaterial(); m.diffuse.contents = color; m.lightingModel = .constant; m.isDoubleSided = true; m.fillMode = .lines; return m
++            }
++            let node = SCNNode(geometry: geometry); node.name = anchor.anchorID
++            // Positions are already session-world. Node transform remains identity.
++            scene.rootNode.addChildNode(node)
++        }
++        if low.x.isFinite {
++            let center = (low + high) * 0.5, size = simd_length(high - low)
++            guard center.x.isFinite, center.y.isFinite, center.z.isFinite, size.isFinite else { return nil }
++            let camera = SCNNode(); camera.camera = SCNCamera(); camera.camera?.automaticallyAdjustsZRange = true
++            let distance = max(size, 0.5)
++            let position = SIMD3(center.x, center.y + distance, center.z + distance)
++            guard position.x.isFinite, position.y.isFinite, position.z.isFinite else { return nil }
++            camera.position = SCNVector3(position.x, position.y, position.z)
++            camera.look(at: SCNVector3(center.x,center.y,center.z)); scene.rootNode.addChildNode(camera)
++        }
++        let bounds = low.x.isFinite
++            ? "Source-only session-world bounds (metres): X [\(low.x), \(high.x)], Y [\(low.y), \(high.y)], Z [\(low.z), \(high.z)]. Extent X \(high.x-low.x), Y \(high.y-low.y), Z \(high.z-low.z) metres. Bounds are not free-space extents, passage clearance or user location."
++            : "No admitted source vertices. No room dimensions invented."
++        return (scene, bounds)
++    }
++    static func route(_ points: [[Float]]) -> SCNNode? {
++        guard (2...4096).contains(points.count), points.allSatisfy({ $0.count == 3 && $0.allSatisfy(\.isFinite) }) else { return nil }
++        let vertices = points.map { SCNVector3($0[0],$0[1],$0[2]) }
++        let indices = (1..<points.count).flatMap { [Int32($0 - 1),Int32($0)] }
++        let geometry = SCNGeometry(sources: [SCNGeometrySource(vertices: vertices)], elements: [SCNGeometryElement(indices: indices, primitiveType: .line)])
++        let material = SCNMaterial(); material.diffuse.contents = UIColor.cyan; material.lightingModel = .constant; geometry.materials = [material]
++        let node = SCNNode(geometry: geometry); node.name = "diagnostic-route"; return node
++    }
++}
++#endif
+--- /dev/null
++++ b/ios/BlindAssist/SeatedMeshDiagnosticView.swift
+@@ -0,0 +1,91 @@
++#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++import SwiftUI
++import SceneKit
++import LiveMeshClassifiedBench
++
++struct SeatedMeshDiagnosticView: View {
++    @ObservedObject var model: NavigationModel
++    @State private var entryError: String?
++    @State private var confirming = false
++    @State private var viewID: UUID?
++    @State private var confirmationID: UUID?
++    var body: some View {
++        ScrollView {
++            VStack(alignment: .leading, spacing: 16) {
++                Text(LiveMeshBenchSession.requiredWarning).font(.headline)
++                    .accessibilityIdentifier("seated-mesh-warning")
++                Text("Helper-only test. Actual live source mesh, not a saved-room replacement. No photos, geometry or logs are uploaded or saved. Stop or leave this page to erase the display. Normal camera stays stopped afterward.")
++                if let controller = model.seatedMeshDiagnostic {
++                    SeatedMeshDiagnosticDisplay(controller: controller)
++                } else {
++                    Button("I am seated with a helper — review camera handoff") {
++                        guard let viewID, let confirmation = model.confirmSeatedMeshDiagnostic(viewID: viewID) else { return }
++                        confirmationID = confirmation; confirming = true
++                    }
++                        .frame(minHeight: 44).accessibilityIdentifier("seated-mesh-start")
++                    Button("Explicitly resume normal camera") { if let viewID { model.resumeNormalCameraAfterMeshDiagnostic(viewID: viewID) } }
++                        .frame(minHeight: 44).accessibilityIdentifier("seated-mesh-resume-normal")
++                }
++                if let entryError { Text(entryError).accessibilityIdentifier("seated-mesh-entry-reason") }
++            }.padding()
++        }
++        .navigationTitle("Seated mesh diagnostic")
++        .confirmationDialog("Phone hazard monitoring will stop. Stay seated; this is not walking guidance.", isPresented: $confirming, titleVisibility: .visible) {
++            Button("Start seated mesh diagnostic") {
++                guard let viewID, let confirmationID else { return }
++                entryError = model.beginSeatedMeshDiagnostic(viewID: viewID, confirmationID: confirmationID)
++                self.confirmationID = nil
++            }
++            Button("Cancel", role: .cancel) { model.cancelSeatedMeshDiagnosticConfirmation(); confirmationID = nil }
++        }
++        .onAppear { viewID = model.openSeatedMeshDiagnosticView() }
++        .onDisappear {
++            if let viewID { model.closeSeatedMeshDiagnosticView(viewID) }
++            viewID = nil; confirmationID = nil; confirming = false
++        }
++    }
++}
++private struct SeatedMeshDiagnosticDisplay: View {
++    @ObservedObject var controller: SeatedMeshDiagnosticController
++    @State private var start = ""
++    @State private var goal = ""
++    @State private var radius = "0.3"
++    @State private var height = "1.7"
++    var body: some View {
++        VStack(alignment: .leading, spacing: 12) {
++            Button("Stop diagnostic and erase geometry", role: .destructive) { controller.stop() }
++                .frame(minHeight: 44).accessibilityIdentifier("seated-mesh-stop")
++            Text(controller.sourceReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-source-receipt")
++            Text("Scale reference: 1 coordinate unit = 1 metre. The viewport fits the source bounds; orbit and zoom only change the view, never geometry scale. Numeric bounds are source extents, not measured passage clearance.")
++                .accessibilityIdentifier("seated-mesh-metre-scale")
++            Text(controller.meshBoundsReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-source-bounds")
++            Text(controller.producerReceipt).accessibilityIdentifier("seated-mesh-producer-receipt")
++            Button("Refresh current tracked-frame anchors — bounded 8 seconds") { controller.reacquire() }
++                .frame(minHeight: 44).disabled(controller.stopped).accessibilityIdentifier("seated-mesh-refresh")
++            if let scene = controller.scene {
++                SceneView(scene: scene, options: [.allowsCameraControl])
++                    .frame(height: 280).accessibilityHidden(true)
++                Text("Actual source wireframe. Purple: normalized floor role, not verified support. Orange: obstacle role. Gray: unavailable role. Cyan: source-only preview, never a safe walking route. Raw ARKit class labels are unavailable. Drag to inspect the model, not to select a location.")
++            }
++            Text("Supplied test coordinates only — session-local X Y Z, metres. No camera-to-body assumption. Radius and height are declared query parameters, not measured clearance.").font(.headline)
++            TextField("Start X Y Z (metres)", text: $start).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-start-point")
++            TextField("Goal X Y Z (metres)", text: $goal).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-goal-point")
++            TextField("Declared radius (metres)", text: $radius).textFieldStyle(.roundedBorder)
++            TextField("Declared height (metres)", text: $height).textFieldStyle(.roundedBorder)
++            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height) }
++                .frame(minHeight: 44).disabled(controller.stopped).accessibilityIdentifier("seated-mesh-preview")
++            Text(controller.routeReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-route-receipt")
++            DisclosureGroup("Diagnostic path coordinates — up to first 256 points, not walking instructions") {
++                ForEach(Array(controller.routePointReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
++            }
++            DisclosureGroup("Anchor delivery receipts (not capture freshness)") {
++                ForEach(Array(controller.anchorReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
++            }
++        }
++        .onChange(of: start) { _ in controller.retirePreview() }
++        .onChange(of: goal) { _ in controller.retirePreview() }
++        .onChange(of: radius) { _ in controller.retirePreview() }
++        .onChange(of: height) { _ in controller.retirePreview() }
++    }
++}
++#endif
+--- /dev/null
++++ b/ios/BlindAssist/SeatedMeshPresentationLease.swift
+@@ -0,0 +1,25 @@
++#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++import Foundation
++
++/// Main-owner UI authorization only; never a tracking, geometry or safety lease.
++/// A queued dialog action cannot outlive Stop, End, background or its exact view.
++struct SeatedMeshPresentationLease {
++    private var view: UUID?
++    private var confirmation: UUID?
++    mutating func open() -> UUID { let id = UUID(); view = id; confirmation = nil; return id }
++    func owns(view id: UUID) -> Bool { view == id }
++    mutating func confirm(view id: UUID) -> UUID? {
++        guard view == id else { return nil }
++        let ticket = UUID(); confirmation = ticket; return ticket
++    }
++    mutating func consume(view id: UUID, confirmation ticket: UUID) -> Bool {
++        guard view == id, confirmation == ticket else { return false }
++        confirmation = nil; return true
++    }
++    mutating func cancelConfirmation() { confirmation = nil }
++    @discardableResult mutating func close(view id: UUID) -> Bool {
++        guard view == id else { return false }
++        view = nil; confirmation = nil; return true
++    }
++}
++#endif
+--- /dev/null
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -0,0 +1,120 @@
++#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
++import XCTest
++import SceneKit
++import ARKit
++@testable import BlindAssist
++
++final class SeatedMeshProjectionTests: XCTestCase {
++    private let identity: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
++    func testIdentityKeepsRawARKitAxesAndMetres() throws {
++        let p = try XCTUnwrap(SeatedMeshProjection.worldVertices(local: [1,2,-3], transform: identity)?.first)
++        XCTAssertEqual(p.x,1); XCTAssertEqual(p.y,2); XCTAssertEqual(p.z,-3)
++    }
++    func testColumnMajorRotationTranslationAppliedExactlyOnce() throws {
++        // +90deg around Y; local(1,2,3) -> world(13,22,29).
++        let m: [Double] = [0,0,-1,0, 0,1,0,0, 1,0,0,0, 10,20,30,1]
++        let p = try XCTUnwrap(SeatedMeshProjection.worldVertices(local: [1,2,3], transform: m)?.first)
++        XCTAssertEqual(p.x,13); XCTAssertEqual(p.y,22); XCTAssertEqual(p.z,29)
++    }
++    func testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution() throws {
++        var b = identity; b[12] = 5
++        let a = try XCTUnwrap(SeatedMeshProjection.worldVertices(local: [0,1,0], transform: identity)?.first)
++        let second = try XCTUnwrap(SeatedMeshProjection.worldVertices(local: [0,1,0], transform: b)?.first)
++        XCTAssertEqual(a.x,0); XCTAssertEqual(second.x,5); XCTAssertEqual(a.y,second.y)
++    }
++    func testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection() {
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: [1,2], transform: identity))
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: [1,2,3], transform: []))
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: [1,.nan,3], transform: identity))
++        var m = identity; m[3] = 1
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: [1,2,3], transform: m))
++        m = identity; m[12] = .infinity
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: [1,2,3], transform: m))
++    }
++    func testWholeProjectionRejectsVertexBudgetAndFloatOverflow() {
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: Array(repeating:0,count:600_003), transform: identity))
++        XCTAssertNil(SeatedMeshProjection.worldVertices(local: [Double.greatestFiniteMagnitude,0,0], transform: identity))
++    }
++    func testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection() throws {
++        var m = identity; m[12] = -1e100
++        let p = try XCTUnwrap(SeatedMeshProjection.worldVertices(local:[1e100,2,3], transform:m)?.first)
++        XCTAssertEqual(p.x,0); XCTAssertEqual(p.y,2); XCTAssertEqual(p.z,3)
++    }
++    func testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision() {
++        typealias Revision = SeatedMeshProjection.Revision
++        let source = Revision(session:"one", generation:2, revision:3)
++        XCTAssertTrue(SeatedMeshProjection.matches(source:source, route:source, sourceCurrent:true, routeCurrent:true))
++        XCTAssertFalse(SeatedMeshProjection.matches(source:source, route:source, sourceCurrent:false, routeCurrent:true))
++        XCTAssertFalse(SeatedMeshProjection.matches(source:source, route:source, sourceCurrent:true, routeCurrent:false))
++        for other in [Revision(session:"two",generation:2,revision:3), Revision(session:"one",generation:1,revision:3), Revision(session:"one",generation:2,revision:4)] {
++            XCTAssertFalse(SeatedMeshProjection.matches(source:source, route:other, sourceCurrent:true, routeCurrent:true))
++        }
++    }
++
++    func testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement() throws {
++        var lease = SeatedMeshPresentationLease()
++        let first = lease.open(), confirmation = try XCTUnwrap(lease.confirm(view: first))
++        XCTAssertFalse(lease.consume(view:UUID(), confirmation:confirmation))
++        XCTAssertFalse(lease.consume(view:first, confirmation:UUID()))
++        XCTAssertTrue(lease.consume(view:first, confirmation:confirmation))
++        XCTAssertFalse(lease.consume(view:first, confirmation:confirmation))
++        let cancelled = try XCTUnwrap(lease.confirm(view:first))
++        lease.cancelConfirmation()
++        XCTAssertFalse(lease.consume(view:first, confirmation:cancelled))
++        let queued = try XCTUnwrap(lease.confirm(view:first)), second = lease.open()
++        XCTAssertFalse(lease.close(view:first))
++        XCTAssertTrue(lease.owns(view:second))
++        XCTAssertFalse(lease.consume(view:first, confirmation:queued))
++        let last = try XCTUnwrap(lease.confirm(view:second))
++        XCTAssertTrue(lease.close(view:second))
++        XCTAssertFalse(lease.consume(view:second, confirmation:last))
++    }
++
++    @MainActor func testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain() async throws {
++        final class Delegate: NSObject, ARSessionDelegate {}
++        let session = ARSession(), original = Delegate()
++        session.delegate = original; session.delegateQueue = .main
++        let native = expectation(description:"native drain"), done = expectation(description:"display and native drain")
++        let hold = DispatchSemaphore(value:0), began = expectation(description:"renderer began")
++        defer { hold.signal() }
++        var finished = false
++        let controller = try SeatedMeshDiagnosticController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
++        controller.onNativeDrainForTesting = { native.fulfill() }
++        controller.enqueueSyntheticDisplayWorkForTesting(work: {
++            began.fulfill(); hold.wait()
++        }, afterEnqueue: {}, delivered: {})
++        await fulfillment(of:[began],timeout:10)
++        controller.stop()
++        await fulfillment(of:[native],timeout:10)
++        XCTAssertFalse(finished); XCTAssertNil(session.configuration)
++        hold.signal()
++        await fulfillment(of:[done],timeout:10)
++        XCTAssertTrue(finished); XCTAssertTrue(session.delegate === original)
++    }
++    @MainActor func testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns() async throws {
++        final class Delegate: NSObject, ARSessionDelegate {}
++        final class Payload {}
++        let session = ARSession(), original = Delegate()
++        session.delegate = original; session.delegateQueue = .main
++        let native = expectation(description:"native drain"), delivered = expectation(description:"main delivery")
++        let done = expectation(description:"both stacks released"), hold = DispatchSemaphore(value:0)
++        defer { hold.signal() }
++        var finished = false, payload: Payload? = Payload()
++        weak var released = payload
++        let controller = try SeatedMeshDiagnosticController(session:session, expectedDelegate:original) { finished = true; done.fulfill() }
++        controller.onNativeDrainForTesting = { native.fulfill() }
++        controller.enqueueSyntheticDisplayWorkForTesting(work: {}, afterEnqueue: { [payload] in
++            withExtendedLifetime(payload) { hold.wait() }
++        }, delivered: { delivered.fulfill() })
++        payload = nil
++        await fulfillment(of:[delivered],timeout:10)
++        controller.stop()
++        await fulfillment(of:[native],timeout:10)
++        XCTAssertFalse(finished); XCTAssertNotNil(released); XCTAssertNil(session.configuration)
++        hold.signal()
++        await fulfillment(of:[done],timeout:10)
++        XCTAssertTrue(finished); XCTAssertNil(released)
++    }
++
++}
++#endif
+--- a/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift
++++ b/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift
+@@ -8,9 +8,9 @@
+ import MeshCandidateIngress83
+ import BlindRoomMesh
+ 
+-/// STAGED ONLY: not an app hook. The caller must first stop the normal camera,
++/// Deliberate helper-only owner. The caller must first stop the normal camera,
+ /// recovery/watchdog, RoomPlan and every source that can restart this same session.
+-/// That handoff is NOT implemented here and is NOT inferred from an ARSession flag.
++/// Handoff is enforced by the app owner, never inferred from an ARSession flag.
+ /// This deliberate seated bench mode has NO phone hazard monitoring or guidance.
+ public final class LiveMeshBenchSession {
+     public enum State: Equatable { case prepared, capturing, draining, stopped(restored: Bool) }
+@@ -29,6 +29,7 @@
+     private let producer: Producer
+     private var backgroundObserver: NSObjectProtocol?
+     private var onStopped: ((Bool) -> Void)?
++    private var reacquisitionRequestPending = false
+ 
+     /// Prepares an already stopped, exclusively handed-off session; it never creates
+     /// another ARSession. No run/camera permission request occurs during preparation.
+@@ -47,8 +48,7 @@
+         backgroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification,
+             object: nil, queue: .main) { [weak self] _ in self?.stop() }
+     }
+-    /// No caller exists in the app. A future explicit warning/confirmation/handoff
+-    /// must precede this. This proposal does not authorize device activation.
++    /// Explicit seated warning/confirmation and exclusive handoff must precede this.
+     public func activateForSeatedBench() throws {
+         dispatchPrecondition(condition: .onQueue(.main))
+         guard state == .prepared else { throw Failure.alreadyStarted }
+@@ -60,8 +60,11 @@
+         configuration.worldAlignment = .gravity
+         configuration.sceneReconstruction = .meshWithClassification
+         // Depth/mesh output is diagnostic only. No floor rectangle or free space is invented.
++        let runStartedAt = ProcessInfo.processInfo.systemUptime
++        guard producer.frameLease.begin() else { throw Failure.unavailable }
++        producer.armFreshnessWatchdog()
+         lifecycle = .capturing
+-        producerQueue.async { [producer] in producer.begin() }
++        producerQueue.async { [producer] in producer.begin(runStartedAt: runStartedAt) }
+         session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+     }
+     /// Explicit supplied session-local test points only. Result delivery remains on
+@@ -69,12 +72,12 @@
+     public func requestPreview(start: [Float], goal: [Float], body: MeshCandidateBody,
+         completion: @escaping (Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) -> Void) {
+         dispatchPrecondition(condition: .onQueue(.main))
+-        guard lifecycle == .capturing, session.delegate === producer, session.delegateQueue === producerQueue else {
++        guard lifecycle == .capturing, producer.frameLease.isCurrent(), session.delegate === producer, session.delegateQueue === producerQueue else {
+             stop(); completion(.failure(.unavailable)); return
+         }
+         producer.ingress.request(generation: producer.ingress.generation, start: start, goal: goal, body: body) { [weak self] result in
+             DispatchQueue.main.async { [weak self] in
+-                guard let self, self.lifecycle == .capturing,
++                guard let self, self.lifecycle == .capturing, self.producer.frameLease.isCurrent(),
+                       self.session.delegate === self.producer, self.session.delegateQueue === self.producerQueue else {
+                     self?.stop(); completion(.failure(.stale)); return
+                 }
+@@ -87,14 +90,70 @@
+     }
+     public func isCurrent(_ candidate: MeshCandidateIngress83.Candidate) -> Bool {
+         dispatchPrecondition(condition: .onQueue(.main))
+-        guard lifecycle == .capturing, session.delegate === producer, session.delegateQueue === producerQueue else { return false }
++        guard lifecycle == .capturing, producer.frameLease.isCurrent(), session.delegate === producer, session.delegateQueue === producerQueue else { return false }
+         return producer.ingress.isCurrent(candidate, generation: producer.ingress.generation)
++    }
++    /// Native source inspection is separate from the strict route request. Neither
++    /// a recent camera frame nor an installed revision proves fresh mesh capture.
++    public func requestSourceSnapshot(completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot, MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
++        dispatchPrecondition(condition: .onQueue(.main))
++        guard lifecycle == .capturing, producer.frameLease.isCurrent(),
++              session.delegate === producer, session.delegateQueue === producerQueue else {
++            completion(.failure(.unavailable)); return
++        }
++        producer.ingress.requestSourceSnapshot(generation: producer.ingress.generation) { [weak self] result in
++            DispatchQueue.main.async { [weak self] in
++                guard let self, self.lifecycle == .capturing, self.producer.frameLease.isCurrent(),
++                      self.session.delegate === self.producer, self.session.delegateQueue === self.producerQueue else {
++                    completion(.failure(.stale)); return
++                }
++                if case .success(let snapshot) = result, !self.isCurrent(snapshot) {
++                    completion(.failure(.stale)); return
++                }
++                completion(result)
++            }
++        }
++    }
++    public var hasCurrentTrackedSession: Bool {
++        dispatchPrecondition(condition: .onQueue(.main))
++        return lifecycle == .capturing && producer.frameLease.isCurrent() &&
++            session.delegate === producer && session.delegateQueue === producerQueue
++    }
++    public func isCurrent(_ snapshot: MeshCandidateIngress83.SourceSnapshot) -> Bool {
++        dispatchPrecondition(condition: .onQueue(.main))
++        return lifecycle == .capturing && producer.frameLease.isCurrent() &&
++            session.delegate === producer && session.delegateQueue === producerQueue &&
++            producer.ingress.isCurrent(snapshot, generation: producer.ingress.generation)
++    }
++    /// Explicit bounded re-read of CURRENT frame anchors, not a retained old native
++    /// buffer or an expectation that unchanged anchors will emit another update.
++    public func reacquireTrackedFrameAnchors() {
++        dispatchPrecondition(condition: .onQueue(.main))
++        guard lifecycle == .capturing, session.delegate === producer, session.delegateQueue === producerQueue else { stop(); return }
++        guard !reacquisitionRequestPending else { return }
++        reacquisitionRequestPending = true
++        let requestedAt = ProcessInfo.processInfo.systemUptime
++        producerQueue.async { [weak self, producer] in
++            producer.requestReacquisition(at: requestedAt)
++            DispatchQueue.main.async { [weak self] in self?.reacquisitionRequestPending = false }
++        }
++    }
++    public func requestStatus(completion: @escaping (String) -> Void) {
++        dispatchPrecondition(condition: .onQueue(.main))
++        guard lifecycle == .capturing, session.delegate === producer, session.delegateQueue === producerQueue else {
++            stop(); completion("Stopped or camera ownership lost. Geometry retired."); return
++        }
++        producerQueue.async { [producer] in
++            let text = producer.diagnosticStatus()
++            DispatchQueue.main.async { completion(text) }
++        }
+     }
+     public func stop() {
+         dispatchPrecondition(condition: .onQueue(.main))
+         guard state != .draining else { return }
+         if case .stopped = state { return }
+         lifecycle = .draining
++        producer.frameLease.stop()
+         producer.ingress.stop() // Immediate cross-queue fence before pause or drains.
+         let ownsSession = session.delegate === producer && session.delegateQueue === producerQueue
+         if ownsSession { session.pause() }
+@@ -126,7 +185,7 @@
+         let session = session, producer = producer, queue = producerQueue
+         let priorDelegate = previousDelegate, priorQueue = previousQueue
+         let callback = onStopped
+-        producer.ingress.stop()
++        producer.frameLease.stop(); producer.ingress.stop()
+         if let backgroundObserver { NotificationCenter.default.removeObserver(backgroundObserver) }
+         DispatchQueue.main.async {
+             if session.delegate === producer, session.delegateQueue === queue { session.pause() }
+@@ -151,6 +210,9 @@
+ 
+     private final class Producer: NSObject, ARSessionDelegate {
+         let ingress: LiveMeshBenchIngress
++        let frameLease = MeshBenchFrameLease()
++        private var reacquisition = MeshBenchReacquisition()
++        private var reacquisitionRequestedAt: Double?
+         private weak var expectedSession: ARSession?
+         private let queue: DispatchQueue
+         private var begun = false
+@@ -165,48 +227,64 @@
+         private let limits = MeshBufferDecoder.Limits(vertices: 32_000, faces: 32_000,
+             inputBytes: 1_500_000, decodedBytes: 1_500_000)
+         init(session: ARSession, queue: DispatchQueue) throws {
+-            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress()
++            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress(deliveryRecoveryPolicy: .latestValidatedAnchorRevision)
+             super.init()
+         }
+-        func begin() {
++        func armFreshnessWatchdog() {
++            dispatchPrecondition(condition: .onQueue(.main))
++            // Independent of producer/native-copy work. Expiry fences source and
++            // route publication immediately even if a callback is still decoding.
++            let timer = DispatchSource.makeTimerSource(queue: DispatchQueue(label: "blind.mesh-bench.freshness", qos: .utility))
++            timer.schedule(deadline: .now() + 0.1, repeating: 0.1)
++            timer.setEventHandler { [weak self] in
++                guard let self, self.frameLease.claimRetirementNotification() else { return }
++                self.ingress.stop(); self.requestStop?()
++            }
++            watchdog = timer; timer.resume()
++        }
++        func begin(runStartedAt: Double) {
+             dispatchPrecondition(condition: .onQueue(queue))
+             guard !begun, !ended else { return }
+-            begun = true; beganAt = ProcessInfo.processInfo.systemUptime
+-            let timer = DispatchSource.makeTimerSource(queue: queue)
+-            timer.schedule(deadline: .now() + 0.25, repeating: 0.25)
+-            timer.setEventHandler { [weak self] in
+-                guard let self, !self.ended else { return }
+-                let now = ProcessInfo.processInfo.systemUptime
+-                if !self.sawNormalTracking, now - self.beganAt > 10 { self.failClosed() }
+-                else if let last = self.lastFrameReceipt {
+-                    if now - last > 0.5 { self.failClosed() }
+-                } else if now - self.beganAt > 10 { self.failClosed() }
+-            }
+-            watchdog = timer; timer.resume()
++            begun = true; beganAt = runStartedAt
++
+         }
+         func end() {
+             dispatchPrecondition(condition: .onQueue(queue))
+-            ended = true; watchdog?.cancel(); watchdog = nil; ingress.stop()
++            ended = true; frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
++            watchdog?.cancel(); watchdog = nil; ingress.stop()
+         }
+         private func accepts(_ session: ARSession) -> Bool {
+             dispatchPrecondition(condition: .onQueue(queue))
+-            guard begun, !ended, session === expectedSession else { return false }
++            guard begun, !ended, !frameLease.isRetired(), session === expectedSession else { return false }
+             guard session.delegate === self, session.delegateQueue === queue else { failClosed(); return false }
+             return true
+         }
+         private func failClosed() {
+             guard !ended else { return }
+-            end(); requestStop?()
++            end(); if frameLease.claimRetirementNotification() { requestStop?() }
+         }
+         func session(_ session: ARSession, didUpdate frame: ARFrame) {
+             guard accepts(session) else { return }
+             let now = ProcessInfo.processInfo.systemUptime
++            let normal: Bool
++            if case .normal = frame.camera.trackingState { normal = true } else { normal = false }
++            guard frameLease.observe(capturedAt: frame.timestamp, normal: normal) else { failClosed(); return }
+             guard frame.timestamp.isFinite, frame.timestamp >= beganAt,
+                   now >= frame.timestamp, now - frame.timestamp <= 0.5,
+                   lastFrameCapture.map({ frame.timestamp > $0 }) ?? true else { failClosed(); return }
+             lastFrameReceipt = now; lastFrameCapture = frame.timestamp
++            let firstNormalFrame = normal && !sawNormalTracking
+             if case .normal = frame.camera.trackingState { sawNormalTracking = true }
+             else if sawNormalTracking { failClosed() }
++            if firstNormalFrame {
++                guard frame.anchors.count <= 128 else { failClosed(); return }
++                // Establish omissions for every currently tracked mesh before any
++                // route can call its delivered subset complete. No buffer copied.
++                let meshes = frame.anchors.compactMap { $0 as? ARMeshAnchor }
++                guard Set(meshes.map(\.identifier)).count == meshes.count else { failClosed(); return }
++                for anchor in meshes { offer(anchor, copyAllowed: false) }
++            }
++            if normal { reacquire(frame: frame, now: now) }
+             // No image/ARFrame escapes this callback and no camera pose becomes body pose.
+         }
+         func session(_ session: ARSession, didAdd anchors: [ARAnchor]) { observe(session, anchors: anchors) }
+@@ -214,31 +292,70 @@
+         private func observe(_ session: ARSession, anchors: [ARAnchor]) {
+             guard accepts(session) else { return }
+             guard anchors.count <= 128 else { failClosed(); return }
+-            if sawNormalTracking, !frameIsCurrent() { failClosed(); return }
++            // Pre-establishment callbacks are not adopted into this world epoch.
++            // First normal frame inventories all current IDs as unresolved instead.
++            guard sawNormalTracking else { return }
++            if !frameIsCurrent() { failClosed(); return }
+             //83's one outstanding slot does not bound sum work if it drains while
+             //this callback loops. Copy at most ONE revision per callback. Rotate
+             //selection to avoid always choosing the first anchor in a stable order.
+             //These native references never escape this synchronous callback scope.
+             let meshes = anchors.compactMap { $0 as? ARMeshAnchor }
+-            func offer(_ anchor: ARMeshAnchor, copyAllowed: Bool) {
+-                let id = anchor.identifier
+-                let normal = sawNormalTracking
+-                _ = ingress.observe(anchorID: id, generation: ingress.generation,
+-                    receiptUptime: ProcessInfo.processInfo.systemUptime) { context in
+-                    guard normal else { return .unknownGap(.init(context: context, anchorID: id, reason: .invalidContext)) }
+-                    guard copyAllowed else { return .unknownGap(.init(context: context, anchorID: id, reason: .budget)) }
+-                    guard frameIsCurrent() else {
+-                        failClosed(); return .unknownGap(.init(context: context, anchorID: id, reason: .invalidContext))
+-                    }
+-                    // THE geometry connection: synchronous native82 copy on the
+-                    // exclusive serialized producer, existing83 decode/native worker.
+-                    // Never async-capture an ARMeshAnchor or MTLBuffer.
+-                    return ARKitMeshAdapter82.capture(anchor, context: context, limits: limits)
+-                }
+-            }
++            guard Set(meshes.map(\.identifier)).count == meshes.count else { failClosed(); return }
+             _ = callbackBudget.deliver(count: meshes.count) { index, copyAllowed in offer(meshes[index], copyAllowed: copyAllowed) }
+         }
++        @discardableResult private func offer(_ anchor: ARMeshAnchor, copyAllowed: Bool) -> Bool {
++            let id = anchor.identifier
++            let normal = sawNormalTracking
++            return ingress.observe(anchorID: id, generation: ingress.generation,
++                receiptUptime: ProcessInfo.processInfo.systemUptime) { context in
++                guard normal else { return .unknownGap(.init(context: context, anchorID: id, reason: .invalidContext)) }
++                guard copyAllowed else { return .unknownGap(.init(context: context, anchorID: id, reason: .budget)) }
++                guard frameIsCurrent() else {
++                    failClosed(); return .unknownGap(.init(context: context, anchorID: id, reason: .invalidContext))
++                }
++                // THE geometry connection: synchronous native82 copy on the
++                // exclusive serialized producer, existing83 decode/native worker.
++                // Never async-capture an ARMeshAnchor or MTLBuffer.
++                return ARKitMeshAdapter82.capture(anchor, context: context, limits: limits)
++            }
++        }
++        func requestReacquisition(at requestedAt: Double) {
++            dispatchPrecondition(condition: .onQueue(queue))
++            guard begun, !ended, !reacquisition.isActive, reacquisitionRequestedAt == nil else { return }
++            reacquisitionRequestedAt = requestedAt
++        }
++        private func reacquire(frame: ARFrame, now: Double) {
++            guard reacquisitionRequestedAt != nil || reacquisition.isActive else { return }
++            // Apple ARFrame.anchors is the current frame's tracked/detected anchor
++            // list. Retain only IDs between callbacks; native geometry never escapes.
++            guard frame.anchors.count <= 128 else { failClosed(); return }
++            let meshes = frame.anchors.compactMap { $0 as? ARMeshAnchor }
++            guard Set(meshes.map(\.identifier)).count == meshes.count else { failClosed(); return }
++            if let requestedAt = reacquisitionRequestedAt {
++                reacquisitionRequestedAt = nil
++                guard now >= requestedAt, now - requestedAt <= 8 else { return }
++                if reacquisition.request(anchorIDs: meshes.map(\.identifier), frameCapturedAt: frame.timestamp, now: now) {
++                    // Every requested anchor is an obligation immediately, including
++                    // stable anchors not yet visited by the one-copy-per-frame pass.
++                    for anchor in meshes { offer(anchor, copyAllowed: false) }
++                }
++                return // At most one later fresh-frame offer; never a seed-frame burst.
++            }
++            guard let id = reacquisition.next(presentIDs: Set(meshes.map(\.identifier)), frameCapturedAt: frame.timestamp, now: now),
++                  let anchor = meshes.first(where: { $0.identifier == id }) else { return }
++            let accepted = offer(anchor, copyAllowed: true)
++            reacquisition.recordAdmission(anchorID: id, accepted: accepted, now: ProcessInfo.processInfo.systemUptime)
++        }
++        func diagnosticStatus() -> String {
++            dispatchPrecondition(condition: .onQueue(queue))
++            let lease = frameLease.receipt()
++            let refresh = reacquisition.receipt(now: ProcessInfo.processInfo.systemUptime)
++            let pending = refresh.anchors.filter { $0.reason != .admitted }.map { "\($0.id):\($0.reason.rawValue),attempts=\($0.attempts)" }.joined(separator: "; ")
++            return "Frame lease: \(lease.phase); reason: \(String(describing: lease.reason)). Bounded refresh: \(refresh.status); seed count \(refresh.inputAnchorCount), rejection \(String(describing: refresh.rejectionReason)), rejected count \(String(describing: refresh.rejectedCount)); requested \(refresh.requested), admitted \(refresh.admitted), pending \(refresh.pending), exhausted \(refresh.exhausted). Admission is not install or capture freshness. Pending: \(pending)"
++        }
+         private func frameIsCurrent() -> Bool {
++            guard frameLease.isCurrent() else { return false }
+             let now = ProcessInfo.processInfo.systemUptime
+             guard let captured = lastFrameCapture, let received = lastFrameReceipt,
+                   now >= captured, now - captured <= 0.5,
+@@ -246,7 +363,7 @@
+             return true
+         }
+         func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+-            guard accepts(session) else { return }
++            guard accepts(session), sawNormalTracking else { return }
+             guard anchors.count <= 128 else { failClosed(); return }
+             for case let anchor as ARMeshAnchor in anchors {
+                 _ = ingress.remove(anchorID: anchor.identifier, generation: ingress.generation,
+--- /dev/null
++++ b/research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift
+@@ -0,0 +1,104 @@
++import Foundation
++
++/// Independent, one-generation freshness fence. A utility watchdog can retire it
++/// while the serialized native producer is busy. The clock is sampled UNDER the
++/// lock so cross-queue call ordering cannot manufacture a backwards timestamp.
++/// Recent camera frames are not evidence of mesh capture time or physical safety.
++final class MeshBenchFrameLease {
++    enum Phase: String { case idle, awaitingNormalTracking, current, retired }
++    enum RetirementReason: String { case stopped, invalidClock, invalidCapture, startupExpired, frameExpired, trackingLost }
++    struct Receipt {
++        let phase: Phase
++        let retirementReason: RetirementReason?
++        var reason: RetirementReason? { retirementReason }
++        let beganAt: Double?
++        let frameCapturedAt: Double?
++        let frameReceivedAt: Double?
++        let authorizesPhysicalGuidance = false
++        let actualWorldCoverageKnown = false
++        let meshCapturedAt: Double? = nil
++    }
++    private let lock = NSLock()
++    private let clock: () -> Double
++    private var phase: Phase = .idle
++    private var reason: RetirementReason?
++    private var notificationClaimed = false
++    private var beganAt: Double?
++    private var lastClock: Double?
++    private var frameCapturedAt: Double?
++    private var frameReceivedAt: Double?
++
++    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime }) { self.clock = clock }
++    @discardableResult func begin() -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        guard phase == .idle else { return false }
++        let now = clock()
++        guard now.isFinite, now >= 0, (now + 10).isFinite, now + 10 > now else {
++            retire(.invalidClock); return false
++        }
++        beganAt = now; lastClock = now; phase = .awaitingNormalTracking
++        return true
++    }
++    /// Called synchronously in the owned frame callback; stores only scalar times.
++    @discardableResult func observe(capturedAt: Double, normal: Bool) -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        guard checkTime(), let now = lastClock, let beganAt else { return false }
++        guard capturedAt.isFinite, capturedAt >= beganAt, now >= capturedAt,
++              now - capturedAt <= 0.5, frameCapturedAt.map({ capturedAt > $0 }) ?? true else {
++            retire(.invalidCapture); return false
++        }
++        guard normal || phase != .current else { retire(.trackingLost); return false }
++        frameCapturedAt = capturedAt; frameReceivedAt = now
++        if normal { phase = .current }
++        return true
++    }
++    func isCurrent() -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        return checkTime() && phase == .current
++    }
++    /// Unlike !isCurrent(), this does not treat initial tracking grace as loss.
++    func isRetired() -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        _ = checkTime(); return phase == .retired
++    }
++    /// At most one cross-queue stop notification may be enqueued for this lease,
++    /// even if the main owner is delayed and the utility watchdog keeps ticking.
++    /// No reset exists; repeated stop/expiry observations preserve this claim.
++    func claimRetirementNotification() -> Bool {
++        lock.lock(); defer { lock.unlock() }
++        _ = checkTime()
++        guard phase == .retired, !notificationClaimed else { return false }
++        notificationClaimed = true
++        return true
++    }
++    func receipt() -> Receipt {
++        lock.lock(); defer { lock.unlock() }
++        _ = checkTime()
++        return Receipt(phase: phase, retirementReason: reason, beganAt: beganAt,
++            frameCapturedAt: frameCapturedAt, frameReceivedAt: frameReceivedAt)
++    }
++    func stop() {
++        lock.lock(); defer { lock.unlock() }
++        if phase != .retired { retire(.stopped) }
++    }
++    /// Must hold lock. Expiry is permanent; a later good frame cannot revive it.
++    private func checkTime() -> Bool {
++        guard phase != .idle, phase != .retired else { return false }
++        let now = clock()
++        guard now.isFinite, let lastClock, now >= lastClock, let beganAt else {
++            retire(.invalidClock); return false
++        }
++        self.lastClock = now
++        if phase == .awaitingNormalTracking, now - beganAt > 10 {
++            retire(.startupExpired); return false
++        }
++        if phase == .current {
++            guard let captured = frameCapturedAt, let received = frameReceivedAt,
++                  now >= captured, now >= received, now - captured <= 0.5, now - received <= 0.5 else {
++                retire(.frameExpired); return false
++            }
++        }
++        return true
++    }
++    private func retire(_ reason: RetirementReason) { phase = .retired; self.reason = reason }
++}
+--- /dev/null
++++ b/research/live-mesh-classified-bench-20261028/Sources/MeshBenchReacquisition.swift
+@@ -0,0 +1,156 @@
++import Foundation
++
++/// A deliberate, finite request to reacquire current native anchor values. The
++/// producer supplies UUIDs from fresh frame callbacks and performs the copy there.
++/// This value retains no ARFrame, anchor, Metal buffer, geometry or closure.
++/// Admission means queued delivery only: it does not mean installation, current
++/// obstacles/support, source completeness, capture freshness or physical clearance.
++struct MeshBenchReacquisition {
++    enum State: String { case idle, active, finished, timedOut, cancelled, rejected, invalidClock, invalidSequence }
++    enum RejectionReason: String { case tooManyAnchors, duplicateAnchorIdentity, tooManyFrameAnchors }
++    enum PendingReason: String {
++        case notYetAttempted, absentFromLatestFrame, admissionRejected, admissionUnconfirmed, inFlight, attemptsExhausted, admitted
++    }
++    struct AnchorReceipt {
++        let id: UUID
++        let attempts: Int
++        let reason: PendingReason
++    }
++    struct Receipt {
++        let state: State
++        let anchors: [AnchorReceipt]
++        let totalAttempts: Int
++        let inputAnchorCount: Int
++        let rejectionReason: RejectionReason?
++        let rejectedCount: Int?
++        let beganAt: Double?
++        let deadline: Double?
++        let authorizesPhysicalGuidance = false
++        let actualWorldCoverageKnown = false
++        let meshCapturedAt: Double? = nil
++        var pendingIDs: [UUID] { anchors.filter { $0.reason != .admitted }.map(\.id) }
++        var admittedIDs: [UUID] { anchors.filter { $0.reason == .admitted }.map(\.id) }
++        var status: State { state }
++        var requested: Int { anchors.count }
++        var admitted: Int { admittedIDs.count }
++        var pending: Int { pendingIDs.count }
++        var exhausted: Int { anchors.filter { $0.reason == .attemptsExhausted }.count }
++    }
++    static let maximumAnchors = 64
++    static let maximumAttemptsPerAnchor = 3
++    static let maximumAttempts = 192
++    static let duration: Double = 8
++    private struct Entry {
++        let id: UUID
++        var attempts = 0
++        var admitted = false
++        var rejected = false
++        var present = true
++    }
++    private(set) var state: State = .idle
++    var isActive: Bool { state == .active }
++    private var entries: [Entry] = []
++    private var inFlight: UUID?
++    private var cursor = 0
++    private var totalAttempts = 0
++    private var inputAnchorCount = 0
++    private var rejectionReason: RejectionReason?
++    private var rejectedCount: Int?
++    private var beganAt: Double?
++    private var lastClock: Double?
++    private var lastFrameCapture: Double?
++
++    /// A second request never replaces active work. Input overflow/duplicates are
++    /// rejected as a whole before UUID allocation; no partial coverage is invented.
++    @discardableResult mutating func request(anchorIDs: [UUID], frameCapturedAt: Double, now: Double) -> Bool {
++        guard state != .active else { return false }
++        entries.removeAll(keepingCapacity: false); inFlight = nil; cursor = 0; totalAttempts = 0
++        beganAt = nil; lastClock = nil; lastFrameCapture = nil
++        inputAnchorCount = anchorIDs.count; rejectionReason = nil; rejectedCount = nil
++        guard anchorIDs.count <= Self.maximumAnchors else {
++            rejectionReason = .tooManyAnchors; rejectedCount = anchorIDs.count; state = .rejected; return false
++        }
++        guard Set(anchorIDs).count == anchorIDs.count else {
++            rejectionReason = .duplicateAnchorIdentity; rejectedCount = anchorIDs.count; state = .rejected; return false
++        }
++        guard validFrame(frameCapturedAt, now: now) else { state = .invalidClock; return false }
++        entries = anchorIDs.map { Entry(id: $0) }
++        beganAt = now; lastClock = now; lastFrameCapture = frameCapturedAt
++        state = entries.isEmpty ? .finished : .active
++        return true
++    }
++
++    /// Exactly one attempt can be issued per strictly newer fresh frame. Missing
++    /// IDs remain unresolved; absence is not a removal, tombstone or free space.
++    mutating func next(presentIDs: Set<UUID>, frameCapturedAt: Double, now: Double) -> UUID? {
++        guard advance(now: now) else { return nil }
++        guard presentIDs.count <= 128 else {
++            rejectionReason = .tooManyFrameAnchors; rejectedCount = presentIDs.count; finish(.rejected); return nil
++        }
++        guard validFrame(frameCapturedAt, now: now) else { finish(.invalidClock); return nil }
++        guard let previousFrame = lastFrameCapture, frameCapturedAt >= previousFrame else {
++            finish(.invalidClock); return nil
++        }
++        guard frameCapturedAt > previousFrame else { return nil }
++        lastFrameCapture = frameCapturedAt
++        guard inFlight == nil else { finish(.invalidSequence); return nil }
++        for index in entries.indices { entries[index].present = presentIDs.contains(entries[index].id) }
++        guard totalAttempts < Self.maximumAttempts else { finish(.finished); return nil }
++        for offset in 0..<entries.count {
++            let index = (cursor + offset) % entries.count
++            guard !entries[index].admitted, entries[index].attempts < Self.maximumAttemptsPerAnchor,
++                  entries[index].present else { continue }
++            entries[index].attempts += 1; entries[index].rejected = false; totalAttempts += 1
++            cursor = (index + 1) % entries.count; inFlight = entries[index].id
++            return entries[index].id
++        }
++        settleIfFinished()
++        return nil
++    }
++
++    /// Must follow the synchronous attempt, even on ingress backpressure. A true
++    /// result suppresses duplicate retries only; snapshot receipts verify install.
++    mutating func recordAdmission(anchorID: UUID, accepted: Bool, now: Double) {
++        guard advance(now: now) else { return }
++        guard inFlight == anchorID, let index = entries.firstIndex(where: { $0.id == anchorID }) else {
++            finish(.invalidSequence); return
++        }
++        entries[index].admitted = accepted; entries[index].rejected = !accepted; inFlight = nil
++        settleIfFinished()
++    }
++    mutating func cancel() { if state == .active { finish(.cancelled) } }
++    mutating func receipt(now: Double) -> Receipt {
++        _ = advance(now: now)
++        return Receipt(state: state, anchors: entries.map { entry in
++            let reason: PendingReason
++            if entry.admitted { reason = .admitted }
++            else if inFlight == entry.id { reason = .inFlight }
++            else if entry.attempts == Self.maximumAttemptsPerAnchor { reason = .attemptsExhausted }
++            else if !entry.present { reason = .absentFromLatestFrame }
++            else if entry.rejected { reason = .admissionRejected }
++            else if entry.attempts > 0 { reason = .admissionUnconfirmed }
++            else { reason = .notYetAttempted }
++            return AnchorReceipt(id: entry.id, attempts: entry.attempts, reason: reason)
++        }, totalAttempts: totalAttempts, inputAnchorCount: inputAnchorCount, rejectionReason: rejectionReason,
++            rejectedCount: rejectedCount, beganAt: beganAt, deadline: beganAt.map { $0 + Self.duration })
++    }
++    private func validFrame(_ capturedAt: Double, now: Double) -> Bool {
++        capturedAt.isFinite && now.isFinite && capturedAt >= 0 && now >= capturedAt && now - capturedAt <= 0.5
++            && (now + Self.duration).isFinite && now + Self.duration > now
++    }
++    private mutating func advance(now: Double) -> Bool {
++        guard state == .active else { return false }
++        guard now.isFinite, let lastClock, now >= lastClock, let beganAt else {
++            finish(.invalidClock); return false
++        }
++        self.lastClock = now
++        guard now - beganAt < Self.duration else { finish(.timedOut); return false }
++        return true
++    }
++    private mutating func settleIfFinished() {
++        if inFlight == nil && entries.allSatisfy({ $0.admitted || $0.attempts >= Self.maximumAttemptsPerAnchor }) {
++            finish(.finished)
++        }
++    }
++    private mutating func finish(_ state: State) { self.state = state; inFlight = nil }
++}
+--- /dev/null
++++ b/research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift
+@@ -0,0 +1,269 @@
++import Foundation
++import XCTest
++@testable import LiveMeshClassifiedBench
++
++/// Pure ownership/freshness schedules. No ARSession is created or activated.
++final class MeshBenchHelperTests: XCTestCase {
++    private final class Clock {
++        private let lock = NSLock()
++        private var value: Double
++        init(_ value: Double) { self.value = value }
++        func read() -> Double { lock.lock(); defer { lock.unlock() }; return value }
++        func set(_ value: Double) { lock.lock(); self.value = value; lock.unlock() }
++    }
++    func testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce() throws {
++        let a = UUID(), b = UUID()
++        var request = MeshBenchReacquisition()
++        XCTAssertTrue(request.request(anchorIDs: [a,b], frameCapturedAt: 1, now: 1))
++        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1, now: 1))
++        XCTAssertEqual(request.next(presentIDs: [a,b], frameCapturedAt: 1.01, now: 1.01), a)
++        request.recordAdmission(anchorID: a, accepted: true, now: 1.01)
++        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1.01, now: 1.01))
++        XCTAssertEqual(request.next(presentIDs: [a,b], frameCapturedAt: 1.02, now: 1.02), b)
++        request.recordAdmission(anchorID: b, accepted: true, now: 1.02)
++        let receipt = request.receipt(now: 1.02)
++        XCTAssertEqual(receipt.state, .finished)
++        XCTAssertEqual(receipt.totalAttempts, 2)
++        XCTAssertEqual(receipt.admittedIDs, [a,b])
++        XCTAssertTrue(receipt.pendingIDs.isEmpty)
++        XCTAssertFalse(receipt.actualWorldCoverageKnown)
++        XCTAssertFalse(receipt.authorizesPhysicalGuidance)
++        XCTAssertNil(receipt.meshCapturedAt) // admission is not capture or installation proof
++        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1.03, now: 1.03))
++    }
++    func testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved() {
++        let a = UUID(), b = UUID()
++        var request = MeshBenchReacquisition()
++        XCTAssertTrue(request.request(anchorIDs: [a,b], frameCapturedAt: 1, now: 1))
++        XCTAssertEqual(request.next(presentIDs: [a], frameCapturedAt: 1.1, now: 1.1), a)
++        request.recordAdmission(anchorID: a, accepted: true, now: 1.1)
++        XCTAssertNil(request.next(presentIDs: [a], frameCapturedAt: 2, now: 2))
++        var receipt = request.receipt(now: 2)
++        XCTAssertEqual(receipt.pendingIDs, [b])
++        XCTAssertEqual(receipt.anchors.last?.reason, .absentFromLatestFrame)
++        XCTAssertEqual(receipt.anchors.last?.attempts, 0)
++        receipt = request.receipt(now: 9)
++        XCTAssertEqual(receipt.state, .timedOut)
++        XCTAssertEqual(receipt.pendingIDs, [b])
++        XCTAssertEqual(receipt.admittedIDs, [a])
++        XCTAssertTrue(request.request(anchorIDs: [b], frameCapturedAt: 10, now: 10))
++        XCTAssertEqual(request.next(presentIDs: [b], frameCapturedAt: 10.1, now: 10.1), b)
++        let interrupted = request.receipt(now: 18)
++        XCTAssertEqual(interrupted.state, .timedOut)
++        XCTAssertEqual(interrupted.anchors.first?.reason, .admissionUnconfirmed)
++        request.recordAdmission(anchorID: b, accepted: true, now: 18)
++        XCTAssertTrue(request.receipt(now: 18).admittedIDs.isEmpty)
++    }
++    func testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates() {
++        let a = UUID(), b = UUID()
++        var request = MeshBenchReacquisition()
++        XCTAssertTrue(request.request(anchorIDs: [a,b], frameCapturedAt: 1, now: 1))
++        for (index, id) in [a,b,a,b,a,b].enumerated() {
++            let now = 1 + Double(index + 1) * 0.01
++            XCTAssertEqual(request.next(presentIDs: [a,b], frameCapturedAt: now, now: now), id)
++            request.recordAdmission(anchorID: id, accepted: false, now: now)
++        }
++        let receipt = request.receipt(now: 1.07)
++        XCTAssertEqual(receipt.state, .finished)
++        XCTAssertEqual(receipt.totalAttempts, 6)
++        XCTAssertEqual(receipt.pendingIDs, [a,b])
++        XCTAssertTrue(receipt.anchors.allSatisfy { $0.attempts == 3 && $0.reason == .attemptsExhausted })
++        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1.08, now: 1.08))
++    }
++    func testMaximumRequestIssuesExactly192AttemptsThenStops() {
++        let ids = (0..<64).map { _ in UUID() }
++        var request = MeshBenchReacquisition()
++        XCTAssertTrue(request.request(anchorIDs: ids, frameCapturedAt: 1, now: 1))
++        for index in 0..<192 {
++            let now = 1 + Double(index + 1) * 0.01
++            let id = request.next(presentIDs: Set(ids), frameCapturedAt: now, now: now)
++            XCTAssertEqual(id, ids[index % ids.count])
++            if let id { request.recordAdmission(anchorID: id, accepted: false, now: now) }
++        }
++        let receipt = request.receipt(now: 3)
++        XCTAssertEqual(receipt.state, .finished)
++        XCTAssertEqual(receipt.totalAttempts, 192)
++        XCTAssertEqual(receipt.anchors.count, 64)
++        XCTAssertTrue(receipt.anchors.allSatisfy { $0.attempts == 3 })
++    }
++    func testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused() {
++        let id = UUID()
++        var request = MeshBenchReacquisition()
++        XCTAssertFalse(request.request(anchorIDs: (0..<65).map { _ in UUID() }, frameCapturedAt: 1, now: 1))
++        XCTAssertEqual(request.receipt(now: 1).state, .rejected)
++        XCTAssertEqual(request.receipt(now: 1).inputAnchorCount, 65)
++        XCTAssertEqual(request.receipt(now: 1).rejectionReason, .tooManyAnchors)
++        XCTAssertEqual(request.receipt(now: 1).rejectedCount, 65)
++        XCTAssertTrue(request.receipt(now: 1).anchors.isEmpty)
++        XCTAssertFalse(request.request(anchorIDs: [id,id], frameCapturedAt: 1, now: 1))
++        XCTAssertEqual(request.receipt(now: 1).rejectionReason, .duplicateAnchorIdentity)
++        XCTAssertTrue(request.receipt(now: 1).anchors.isEmpty)
++        XCTAssertTrue(request.request(anchorIDs: [id], frameCapturedAt: 1, now: 1))
++        XCTAssertNil(request.next(presentIDs: Set((0..<129).map { _ in UUID() }), frameCapturedAt: 1.1, now: 1.1))
++        XCTAssertEqual(request.receipt(now: 1.1).state, .rejected)
++        XCTAssertEqual(request.receipt(now: 1.1).rejectionReason, .tooManyFrameAnchors)
++        XCTAssertEqual(request.receipt(now: 1.1).rejectedCount, 129)
++        XCTAssertEqual(request.receipt(now: 1.1).pendingIDs, [id])
++    }
++    func testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap() {
++        let a = UUID(), b = UUID()
++        var request = MeshBenchReacquisition()
++        XCTAssertTrue(request.request(anchorIDs: [a], frameCapturedAt: 1, now: 1))
++        XCTAssertFalse(request.request(anchorIDs: [b], frameCapturedAt: 1.1, now: 1.1))
++        XCTAssertEqual(request.receipt(now: 1.1).pendingIDs, [a])
++        request.cancel()
++        XCTAssertEqual(request.receipt(now: 1.2).state, .cancelled)
++        XCTAssertNil(request.next(presentIDs: [a], frameCapturedAt: 1.2, now: 1.2))
++        XCTAssertTrue(request.request(anchorIDs: [b], frameCapturedAt: 2, now: 2))
++        XCTAssertEqual(request.next(presentIDs: [b], frameCapturedAt: 2.1, now: 2.1), b)
++        request.recordAdmission(anchorID: a, accepted: true, now: 2.1)
++        XCTAssertEqual(request.receipt(now: 2.1).state, .invalidSequence)
++        XCTAssertEqual(request.receipt(now: 2.1).pendingIDs, [b])
++    }
++    func testSchedulerClockFailuresAreTerminalWithinRequest() {
++        let id = UUID()
++        for (capture, now) in [(Double.nan, 1.0), (1.0, Double.infinity), (2.0, 1.0),
++                               (1.0, 1.6), (-1.0, 0.0), (Double.greatestFiniteMagnitude, Double.greatestFiniteMagnitude)] {
++            var request = MeshBenchReacquisition()
++            XCTAssertFalse(request.request(anchorIDs: [id], frameCapturedAt: capture, now: now))
++            XCTAssertEqual(request.receipt(now: 2).state, .invalidClock)
++        }
++        var request = MeshBenchReacquisition()
++        XCTAssertTrue(request.request(anchorIDs: [id], frameCapturedAt: 1, now: 1))
++        XCTAssertNil(request.next(presentIDs: [id], frameCapturedAt: 0.9, now: 1.1))
++        XCTAssertEqual(request.receipt(now: 1.1).state, .invalidClock)
++        XCTAssertNil(request.next(presentIDs: [id], frameCapturedAt: 1.2, now: 1.2))
++    }
++    func testStartupGraceIsNotCurrentButCanBecomeHealthy() {
++        let clock = Clock(1)
++        // A separate deterministic clock exercises the actual lock-protected state.
++        let tracked = MeshBenchFrameLease(clock: clock.read)
++        XCTAssertFalse(tracked.isCurrent())
++        XCTAssertFalse(tracked.isRetired())
++        XCTAssertFalse(tracked.claimRetirementNotification())
++        XCTAssertTrue(tracked.begin())
++        XCTAssertFalse(tracked.begin())
++        clock.set(2)
++        XCTAssertTrue(tracked.observe(capturedAt: 2, normal: false))
++        XCTAssertFalse(tracked.isCurrent())
++        XCTAssertFalse(tracked.isRetired())
++        XCTAssertEqual(tracked.receipt().phase, .awaitingNormalTracking)
++        clock.set(3)
++        XCTAssertTrue(tracked.observe(capturedAt: 3, normal: true))
++        XCTAssertTrue(tracked.isCurrent())
++        XCTAssertNil(tracked.receipt().meshCapturedAt)
++        XCTAssertFalse(tracked.receipt().authorizesPhysicalGuidance)
++        XCTAssertFalse(tracked.receipt().actualWorldCoverageKnown)
++    }
++    func testStartupExpiryAndFrameExpiryCannotRevive() {
++        let clock = Clock(1)
++        let startup = MeshBenchFrameLease(clock: clock.read)
++        XCTAssertTrue(startup.begin())
++        clock.set(11)
++        XCTAssertFalse(startup.isRetired())
++        clock.set(11.001)
++        XCTAssertTrue(startup.isRetired())
++        XCTAssertEqual(startup.receipt().retirementReason, .startupExpired)
++        XCTAssertFalse(startup.observe(capturedAt: 11.001, normal: true))
++        XCTAssertFalse(startup.begin())
++        let healthy = MeshBenchFrameLease(clock: clock.read)
++        XCTAssertTrue(healthy.begin())
++        XCTAssertTrue(healthy.observe(capturedAt: 11.001, normal: true))
++        clock.set(11.501)
++        XCTAssertTrue(healthy.isCurrent())
++        clock.set(11.502)
++        XCTAssertTrue(healthy.isRetired())
++        XCTAssertEqual(healthy.receipt().retirementReason, .frameExpired)
++        XCTAssertFalse(healthy.observe(capturedAt: 11.502, normal: true))
++    }
++    func testTrackingLossAndStopAreTerminalAndDoNotChangeReason() {
++        let clock = Clock(1), tracked = MeshBenchFrameLease(clock: { 1 })
++        let lease = MeshBenchFrameLease(clock: clock.read)
++        XCTAssertTrue(lease.begin())
++        XCTAssertTrue(lease.observe(capturedAt: 1, normal: true))
++        clock.set(1.1)
++        XCTAssertFalse(lease.observe(capturedAt: 1.1, normal: false))
++        XCTAssertTrue(lease.isRetired())
++        XCTAssertEqual(lease.receipt().retirementReason, .trackingLost)
++        XCTAssertTrue(lease.claimRetirementNotification())
++        XCTAssertFalse(lease.claimRetirementNotification())
++        lease.stop()
++        XCTAssertEqual(lease.receipt().retirementReason, .trackingLost)
++        XCTAssertFalse(lease.claimRetirementNotification())
++        XCTAssertFalse(lease.observe(capturedAt: 1.1, normal: true))
++        tracked.stop()
++        XCTAssertTrue(tracked.isRetired())
++        XCTAssertFalse(tracked.begin())
++        XCTAssertEqual(tracked.receipt().retirementReason, .stopped)
++        XCTAssertTrue(tracked.claimRetirementNotification())
++        XCTAssertFalse(tracked.claimRetirementNotification())
++    }
++    func testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture() {
++        for badCapture in [1.0, 0.9, 1.2, Double.nan, Double.infinity] {
++            let clock = Clock(1)
++            let tracked = MeshBenchFrameLease(clock: clock.read)
++            XCTAssertTrue(tracked.begin())
++            XCTAssertTrue(tracked.observe(capturedAt: 1, normal: true))
++            clock.set(1.1)
++            XCTAssertFalse(tracked.observe(capturedAt: badCapture, normal: true))
++            XCTAssertEqual(tracked.receipt().retirementReason, .invalidCapture)
++        }
++    }
++    func testIndependentWatchdogRetiresWhileProducerDoesNoWork() {
++        let clock = Clock(1)
++        let lease = MeshBenchFrameLease(clock: clock.read)
++        XCTAssertTrue(lease.begin())
++        XCTAssertTrue(lease.observe(capturedAt: 1, normal: true))
++        let checked = expectation(description: "independent watchdog, no producer queue turn")
++        clock.set(2)
++        DispatchQueue(label: "bench.helper.watchdog-test").async {
++            XCTAssertTrue(lease.isRetired())
++            XCTAssertTrue(lease.claimRetirementNotification())
++            XCTAssertFalse(lease.claimRetirementNotification())
++            checked.fulfill()
++        }
++        wait(for: [checked], timeout: 2)
++        XCTAssertFalse(lease.claimRetirementNotification())
++        XCTAssertFalse(lease.isCurrent())
++        XCTAssertEqual(lease.receipt().retirementReason, .frameExpired)
++    }
++    func testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins() {
++        // The main owner establishes the lease before session.run. A later
++        // producer turn must not move that lower bound past a new-run capture.
++        let clock = Clock(1)
++        let lease = MeshBenchFrameLease(clock: clock.read)
++        XCTAssertTrue(lease.begin())
++        clock.set(1.2)
++        XCTAssertTrue(lease.observe(capturedAt: 1.1, normal: true))
++        XCTAssertTrue(lease.isCurrent())
++        XCTAssertEqual(lease.receipt().beganAt, 1)
++        XCTAssertEqual(lease.receipt().frameCapturedAt, 1.1)
++        XCTAssertEqual(lease.receipt().frameReceivedAt, 1.2)
++
++        let olderClock = Clock(1)
++        let older = MeshBenchFrameLease(clock: olderClock.read)
++        XCTAssertTrue(older.begin())
++        olderClock.set(1.2)
++        XCTAssertFalse(older.observe(capturedAt: 0.99, normal: true))
++        XCTAssertTrue(older.isRetired())
++        XCTAssertEqual(older.receipt().retirementReason, .invalidCapture)
++        XCTAssertFalse(older.observe(capturedAt: 1.1, normal: true))
++    }
++    func testLeaseBackwardsAndNonfiniteClockAreTerminal() {
++        for now in [0.9, Double.nan, Double.infinity] {
++            let clock = Clock(1)
++            let lease = MeshBenchFrameLease(clock: clock.read)
++            XCTAssertTrue(lease.begin())
++            XCTAssertTrue(lease.observe(capturedAt: 1, normal: true))
++            clock.set(now)
++            XCTAssertTrue(lease.isRetired())
++            XCTAssertEqual(lease.receipt().retirementReason, .invalidClock)
++        }
++        for now in [-Double.infinity, Double.greatestFiniteMagnitude] {
++            let invalid = MeshBenchFrameLease(clock: { now })
++            XCTAssertFalse(invalid.begin())
++            XCTAssertTrue(invalid.isRetired())
++            XCTAssertEqual(invalid.receipt().retirementReason, .invalidClock)
++        }
++    }
++}
+--- a/tools/generate-xcode-project.mjs
++++ b/tools/generate-xcode-project.mjs
+@@ -19,7 +19,7 @@
+     if (!isAbsolute(objectDetector) || /[\p{Cc}$]/u.test(objectDetector) || !['Detector.mlmodel', 'Detector.mlmodelc'].includes(basename(objectDetector))) throw new Error('Use an absolute Detector.mlmodel or Detector.mlmodelc path.');
+     if (![objectDetectorSHA256, objectDetectorManifestSHA256].every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value))) throw new Error('Object detector requires verified artifact and manifest hashes.');
+   } else if (objectDetectorSHA256 !== undefined || objectDetectorManifestSHA256 !== undefined) throw new Error('Detector hashes require --object-detector.');
+-  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift'];
++  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift', 'SeatedMeshProjectionTests.swift'];
+   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
+   const refs = [], sources = [];
+   for (const file of files) {
+@@ -95,8 +95,12 @@
+   const roomMeshPackage = add('room-mesh-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/room-mesh-package-75/BlindRoomMesh";');
+   const roomMeshDependency = add('room-mesh-product', `isa = XCSwiftPackageProductDependency; package = ${roomMeshPackage}; productName = BlindRoomMesh;`);
+   const roomMeshLibrary = add('room-mesh-library', `isa = PBXBuildFile; productRef = ${roomMeshDependency};`);
++  // DEBUG+explicit-flag seated source viewer; linkage alone never activates capture.
++  const benchPackage = add('seated-mesh-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/live-mesh-classified-bench-20261028";');
++  const benchDependency = add('seated-mesh-product', `isa = XCSwiftPackageProductDependency; package = ${benchPackage}; productName = LiveMeshClassifiedBench;`);
++  const benchLibrary = add('seated-mesh-library', `isa = PBXBuildFile; productRef = ${benchDependency};`);
+   const sourcesPhase = add('sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${sources.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
+-  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${meshLibrary},${roomMeshLibrary},${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
++  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${benchLibrary},${meshLibrary},${roomMeshLibrary},${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
+   let activityTarget, activityEmbed;
+   if (liveActivity) {
+     const activityProduct = add('activity-product', 'isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = BlindAssistLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR;');
+@@ -124,7 +128,7 @@
+     configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "${configurationConditions}"; ${deviceSettings} ${nativeSettings} TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; ONLY_ACTIVE_ARCH = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
+   }
+   const configList = add('configs', `isa = XCConfigurationList; buildConfigurations = (${configs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
+-  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${meshDependency},${roomMeshDependency},${dependency},${memoryDependency},);`);
++  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${benchDependency},${meshDependency},${roomMeshDependency},${dependency},${memoryDependency},);`);
+   const uiFile = add('ui-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT;');
+   const uiBuild = add('ui-build', `isa = PBXBuildFile; fileRef = ${uiFile};`);
+   // Preserve the already-committed opt-in diagnostic IDs and UI-test-only membership.
+@@ -179,12 +183,14 @@
+   const decoderPackage = add('mesh-decoder-package', 'isa = XCLocalSwiftPackageReference; relativePath = "../research/native-mesh-decoder-81";');
+   const unitMeshDecoder = add('unit-mesh-decoder', `isa = XCSwiftPackageProductDependency; package = ${decoderPackage}; productName = MeshBufferDecoder81;`);
+   const unitMeshDecoderBuild = add('unit-mesh-decoder-build', `isa = PBXBuildFile; productRef = ${unitMeshDecoder};`);
+-  const unitFrameworks = add('unit-frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${unitCoreBuild},${unitMemoryBuild},${unitGRDBBuild},${unitRoomMeshBuild},${unitMeshIngressBuild},${unitMeshSnapshotBuild},${unitMeshDecoderBuild},); runOnlyForDeploymentPostprocessing = 0;`);
++  const unitBench = add('unit-seated-mesh', `isa = XCSwiftPackageProductDependency; package = ${benchPackage}; productName = LiveMeshClassifiedBench;`);
++  const unitBenchBuild = add('unit-seated-mesh-build', `isa = PBXBuildFile; productRef = ${unitBench};`);
++  const unitFrameworks = add('unit-frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${unitBenchBuild},${unitCoreBuild},${unitMemoryBuild},${unitGRDBBuild},${unitRoomMeshBuild},${unitMeshIngressBuild},${unitMeshSnapshotBuild},${unitMeshDecoderBuild},); runOnlyForDeploymentPostprocessing = 0;`);
+   const unitConfigs = ['Debug', 'Release'].map(name => add(`unit-${name}`, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)${name === 'Debug' ? ' DEBUG' : ''}"; TARGETED_DEVICE_FAMILY = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = ""; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.tests; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist"; BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; };`));
+   const unitConfigList = add('unit-configs', `isa = XCConfigurationList; buildConfigurations = (${unitConfigs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug;`);
+   const unitDependency = add('unit-dep', `isa = PBXTargetDependency; target = ${target}; targetProxy = ${proxy};`);
+-  const unitTarget = add('unit-target', `isa = PBXNativeTarget; buildConfigurationList = ${unitConfigList}; buildPhases = (${unitSources},${unitFrameworks},${unitResources},); buildRules = (); dependencies = (${unitDependency},); name = BlindAssistTests; productName = BlindAssistTests; productReference = ${unitProduct}; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (${unitCore},${unitMemory},${unitGRDB},${unitRoomMesh},${unitMeshIngress},${unitMeshSnapshot},${unitMeshDecoder},);`);
+-  const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${meshPackage},${snapshotPackage},${decoderPackage},${roomMeshPackage},${pkg},${memoryPackage},${grdbPackage},); targets = (${target},${uiTarget},${unitTarget},${activityTarget ? `${activityTarget},` : ''});`);
++  const unitTarget = add('unit-target', `isa = PBXNativeTarget; buildConfigurationList = ${unitConfigList}; buildPhases = (${unitSources},${unitFrameworks},${unitResources},); buildRules = (); dependencies = (${unitDependency},); name = BlindAssistTests; productName = BlindAssistTests; productReference = ${unitProduct}; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (${unitBench},${unitCore},${unitMemory},${unitGRDB},${unitRoomMesh},${unitMeshIngress},${unitMeshSnapshot},${unitMeshDecoder},);`);
++  const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${benchPackage},${meshPackage},${snapshotPackage},${decoderPackage},${roomMeshPackage},${pkg},${memoryPackage},${grdbPackage},); targets = (${target},${uiTarget},${unitTarget},${activityTarget ? `${activityTarget},` : ''});`);
+   let result = `// !$*UTF8*$!\n{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {\n${objects.join('\n')}\n}; rootObject = ${project}; }\n`;
+   return result;
+ }
+--- a/ios/BlindAssist.xcodeproj/project.pbxproj
++++ b/ios/BlindAssist.xcodeproj/project.pbxproj
+@@ -110,6 +110,12 @@
+ 68593AA83B5D31D157605154 = { isa = PBXBuildFile; fileRef = E1659748D85C38B519D5B0A8; };
+ 2A2F11DB7B9CA9EF3F1C9073 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/SceneQuestionClient.swift"; sourceTree = "<group>"; };
+ 184712533CCF4279E6DA6ACC = { isa = PBXBuildFile; fileRef = 2A2F11DB7B9CA9EF3F1C9073; };
++F5240C02A03B4EC2EA1B654C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/SeatedMeshDiagnosticController.swift"; sourceTree = "<group>"; };
++D6BA00EEA40EAAAEDD51BC1A = { isa = PBXBuildFile; fileRef = F5240C02A03B4EC2EA1B654C; };
++977B4DD3672D76BC554C3D57 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/SeatedMeshDiagnosticView.swift"; sourceTree = "<group>"; };
++4A7F9681538A8D084DE7E368 = { isa = PBXBuildFile; fileRef = 977B4DD3672D76BC554C3D57; };
++7A19EC2439B28686AA0AC0D5 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/SeatedMeshPresentationLease.swift"; sourceTree = "<group>"; };
++C4433267EDAA7C5729830FE3 = { isa = PBXBuildFile; fileRef = 7A19EC2439B28686AA0AC0D5; };
+ 682B7A5E22AFEE40D8D79775 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/SelectedDocumentPDFAdapter.swift"; sourceTree = "<group>"; };
+ 6CC224535A6824B0DDF7E1E1 = { isa = PBXBuildFile; fileRef = 682B7A5E22AFEE40D8D79775; };
+ B23DE30F76259B5216AF561D = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/SelectedDocumentPicker.swift"; sourceTree = "<group>"; };
+@@ -144,13 +150,16 @@
+ 65E48A7C08D04FA45F6123FD = { isa = XCLocalSwiftPackageReference; relativePath = "../research/room-mesh-package-75/BlindRoomMesh"; };
+ 8335B962CC5F0C1DC9B35B1A = { isa = XCSwiftPackageProductDependency; package = 65E48A7C08D04FA45F6123FD; productName = BlindRoomMesh; };
+ 36D42A3EAFA3FE6E679AA81D = { isa = PBXBuildFile; productRef = 8335B962CC5F0C1DC9B35B1A; };
+-878A52FC5FF6A57D50B7B870 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (19DB20F9567465164DE16C18,9E05114B26F4DD93E32BC105,9B3ED182B72B2E0155CDE497,A2996D0CBCDC778FBBB785DB,FB858898A7E6074A9D1EBEF4,29A823B0C5DEED39594A3FE1,6AD9045FC5D6C7DF98996D56,CBA596EA4A7A13AA95B95279,48D1279A90A628052EF7B40C,A1D1E39462A588D90936A04E,14564B17B20C5BC8F7EC180F,47EE78C15292A8891863E45A,7D8FC210A679C8A3361B53EE,FB2B8724D1E0A5635BA3344B,26A4C9C80D8F3A62699E2A22,0E9441DB7BB3C7D7EAD93A66,D822758E908F216659DA2F17,8C02AE920004CB8CD37165B3,1FFEBC234CFF07784E267C76,A9F37C679F54A4255BFB5CC2,8241F45DB510A83BB094D568,A591337BD3B64FBD42E4C4CD,39BEE9AEB83D5740A91E1BF8,C6237D187D961C7EE24427ED,1908108107C61AA0EF6F5D30,4536FB52ADEC02E7D7A9C24E,482691581DF9ACF9C64C4E97,0A6BB6B3A0D620F73C1BAC12,DD48E07D75A8487C6C62BC5A,3D99DDEAD4F4BB5A3431411F,DAE8D035A0C35EC4C46C3B89,7551A8BA7A18642ADB87ECA9,1A9FAAA822EDBA75DAFEA9B6,CCEEEFF158A8E79A361C80A1,350B318E951133B4909A1AAD,69DF1C0CD3929FF3E4BD79D7,3A28D6BA63537A241629B214,79C3B33E606118B689608D5F,E43B2918F9EA7A32FCD46837,759D1E04B629D786EEC87DB1,4E57F7E9CDBBB764A31E2CFE,D163C42526DC07B4493BDEFD,53014FAFD75F1846065CB283,245E4B99838F5706FF48CB41,D2D30AAA82DA833516178FDA,96DB4A3C98E11E23ECD764F2,5A285D28C31EE2EAAF94EEF7,C47CDACCE27EDA3A55BFC5C3,7C6C2304BED789960BFA559F,230259FBECDF7FDBC8EA6AFC,7AF177A8B4E05DBE92695BFB,46AD348392D96487DDC83065,AF02C17A8A6C8DE17160B044,68593AA83B5D31D157605154,184712533CCF4279E6DA6ACC,6CC224535A6824B0DDF7E1E1,3804800F60445D71B93FE8D0,AD3D80452CF358ADE4E8BDF9,AF386C20A0E0B4D55EE258A0,2BAB11BA60C7D00D5283DEC7,1013EBFD575D9EDE249A55E5,CEFB75E1A96E0B5A92EE9897,6EDB24B203C34F64A2C811CA,437A9D43102104190EB8DE7B,514AD2AFD048657CC4A50371,); runOnlyForDeploymentPostprocessing = 0; };
+-E2AA269EB967A8853A258BFA = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (969CE00EF21E6E841975C27C,36D42A3EAFA3FE6E679AA81D,76B5A357391276B282A516F5,36EEDDBBE7685BF40FADE9D8,); runOnlyForDeploymentPostprocessing = 0; };
+-AD936FCBED631FA67E05C3EA = { isa = PBXGroup; children = (69C898D09A7F861EA925F30A,24339E80C725EA11FF0FFE35,CD0A25335058811CAE708448,B7FFB89D9E08BAF2F8C0268E,B232FC2966139EE3C55C4D4D,124AAA588045F837E5EF6788,7F8803F436A7F267127BA22C,8C85FCBC8A470DFD2AAE529C,BC0E96261A4076C507B45DB1,33D66E24128C6DEC3F289907,5C43A161E958D62F7CEC9DC2,4FC74F738368F9307F39B6BD,AB060E3FDCFFBB65E752235B,AF14A90136D3CFE820EA5186,C70285F1D4498792A9AF9D66,F12F029C41AA982ECF348295,BF18057EA19E83F38F859141,346C41A7A7A145D0AB1B3C70,1189D588EED234E0E160BB06,5BDD5968420E59A479817710,AB6A7AAB6C172EAC90E2D8D3,78D07123A4223F136312E43C,A07D1E96B7E3265664B7A4E5,24A390B7D2A626AE4FC832EF,B0F68D2FB969FF7C3D05DA1A,1CD58883DE4B6F1298D58564,8C8CB47DB240ABB97A1D1C91,23EA1C1047270EA90549029B,8E79CAFB76D50E58349A8BF6,EAFF2A3BF0F7D2ED0D486EA2,246776DD4742E59B6417B671,56A5C2ED60132BD23E9AA7F2,FF2547F9C811A0D0F1042BFC,24A9C4CB06BF6BE9D5A6E9BE,65A1A8835BFCEC08830B529A,D21441D3D26F1448A8D109EC,A4A07649EDA67CCF077B0134,A031A5B384F40C5D6BA7208F,40B15E15D7D6053FDB85793E,5787009721FE984E0A19D327,E632116FE62E468CB908F76D,603F47660E4D05F3C9E4D9D9,D182671AB2392B9E5BD54548,1F25E556BA33C5640CB419E9,48CE426066AC3035B91623D5,0838405F62849A5D937F8A5C,DB306741963309D06BEE7E71,D5EBA71AE0402045C2C0B113,B39AF66C2018453939F1A411,81F7791DBDC71ADB029E129D,0353C594483187A3B5DD67E4,136CB1C019B68533DEA2944A,717804A30A35BFAC9DC86BC0,E1659748D85C38B519D5B0A8,2A2F11DB7B9CA9EF3F1C9073,682B7A5E22AFEE40D8D79775,B23DE30F76259B5216AF561D,122846F316B00EEC0E91EE43,99F40E5BF30029B198746FDA,E0F592FDA3346ACDA82866F5,C246B7BBE16827DDF8C59432,67FB565C5A9E1C3CEB5868F6,7D26DC968DFB9C1D555B210C,91674B58518C71267BD6C42F,765822F71FDA15F7D07F9DFC,A8792157CB4F27FB949C035F,7A665CDC8B6BB82F90923CBD,93E46A602338E07A8524AEF6,1DD61F7A3D64032769FF5256,15A8F135B2B9737A64A5D4CE,70CC1009810A9504E187105D,D23EDB8D1F5309D831F4699C,DB138DDC1A3D5AA3A4E70363,325DC6F5822A0A8EFD22F1D6,D5FFBC6AA835540CED653861,70BCE2D5CDF45BDFCF98320D,564D93319FDAD293EBD5FF11,AFFAAC461E02C02BC068B7C1,74D262B78AE96A1A0C23841F,516E1467199CDC26B604DFF6,A0E39C1F6C2AD80E58659576,2B77036D81F218A6039F5CCA,64CE9143E7F8AA10C9B5975F,E06372C27855BEC98128EDC2,C305E8B79202562F67A6826F,56081BBD764F8170A284D27C,63CCC70318D8587ADF6D9842,6B6B738303C81AD3447CA1C3,B99D98437B6D872F7C7AEE92,90E289442538BAED6C51B8F3,D135F6EBDCB9D40FD2F83CD9,438DA66704A1D1C2A3599F62,4632F1795253A162B33ED234,263AA7604F720BBE5B796EE5,F36D673F4CD647DFA13F38A5,F45BC9D0EFD219E8D933B4BE,); sourceTree = "<group>"; };
++6837846EE466424A85949726 = { isa = XCLocalSwiftPackageReference; relativePath = "../research/live-mesh-classified-bench-20261028"; };
++A984EBE9F2B24B22CDF5E8BE = { isa = XCSwiftPackageProductDependency; package = 6837846EE466424A85949726; productName = LiveMeshClassifiedBench; };
++2D4BF1A62DE05C1A5E20C50F = { isa = PBXBuildFile; productRef = A984EBE9F2B24B22CDF5E8BE; };
++878A52FC5FF6A57D50B7B870 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (19DB20F9567465164DE16C18,9E05114B26F4DD93E32BC105,9B3ED182B72B2E0155CDE497,A2996D0CBCDC778FBBB785DB,FB858898A7E6074A9D1EBEF4,29A823B0C5DEED39594A3FE1,6AD9045FC5D6C7DF98996D56,CBA596EA4A7A13AA95B95279,48D1279A90A628052EF7B40C,A1D1E39462A588D90936A04E,14564B17B20C5BC8F7EC180F,47EE78C15292A8891863E45A,7D8FC210A679C8A3361B53EE,FB2B8724D1E0A5635BA3344B,26A4C9C80D8F3A62699E2A22,0E9441DB7BB3C7D7EAD93A66,D822758E908F216659DA2F17,8C02AE920004CB8CD37165B3,1FFEBC234CFF07784E267C76,A9F37C679F54A4255BFB5CC2,8241F45DB510A83BB094D568,A591337BD3B64FBD42E4C4CD,39BEE9AEB83D5740A91E1BF8,C6237D187D961C7EE24427ED,1908108107C61AA0EF6F5D30,4536FB52ADEC02E7D7A9C24E,482691581DF9ACF9C64C4E97,0A6BB6B3A0D620F73C1BAC12,DD48E07D75A8487C6C62BC5A,3D99DDEAD4F4BB5A3431411F,DAE8D035A0C35EC4C46C3B89,7551A8BA7A18642ADB87ECA9,1A9FAAA822EDBA75DAFEA9B6,CCEEEFF158A8E79A361C80A1,350B318E951133B4909A1AAD,69DF1C0CD3929FF3E4BD79D7,3A28D6BA63537A241629B214,79C3B33E606118B689608D5F,E43B2918F9EA7A32FCD46837,759D1E04B629D786EEC87DB1,4E57F7E9CDBBB764A31E2CFE,D163C42526DC07B4493BDEFD,53014FAFD75F1846065CB283,245E4B99838F5706FF48CB41,D2D30AAA82DA833516178FDA,96DB4A3C98E11E23ECD764F2,5A285D28C31EE2EAAF94EEF7,C47CDACCE27EDA3A55BFC5C3,7C6C2304BED789960BFA559F,230259FBECDF7FDBC8EA6AFC,7AF177A8B4E05DBE92695BFB,46AD348392D96487DDC83065,AF02C17A8A6C8DE17160B044,68593AA83B5D31D157605154,184712533CCF4279E6DA6ACC,D6BA00EEA40EAAAEDD51BC1A,4A7F9681538A8D084DE7E368,C4433267EDAA7C5729830FE3,6CC224535A6824B0DDF7E1E1,3804800F60445D71B93FE8D0,AD3D80452CF358ADE4E8BDF9,AF386C20A0E0B4D55EE258A0,2BAB11BA60C7D00D5283DEC7,1013EBFD575D9EDE249A55E5,CEFB75E1A96E0B5A92EE9897,6EDB24B203C34F64A2C811CA,437A9D43102104190EB8DE7B,514AD2AFD048657CC4A50371,); runOnlyForDeploymentPostprocessing = 0; };
++E2AA269EB967A8853A258BFA = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (2D4BF1A62DE05C1A5E20C50F,969CE00EF21E6E841975C27C,36D42A3EAFA3FE6E679AA81D,76B5A357391276B282A516F5,36EEDDBBE7685BF40FADE9D8,); runOnlyForDeploymentPostprocessing = 0; };
++AD936FCBED631FA67E05C3EA = { isa = PBXGroup; children = (69C898D09A7F861EA925F30A,24339E80C725EA11FF0FFE35,CD0A25335058811CAE708448,B7FFB89D9E08BAF2F8C0268E,B232FC2966139EE3C55C4D4D,124AAA588045F837E5EF6788,7F8803F436A7F267127BA22C,8C85FCBC8A470DFD2AAE529C,BC0E96261A4076C507B45DB1,33D66E24128C6DEC3F289907,5C43A161E958D62F7CEC9DC2,4FC74F738368F9307F39B6BD,AB060E3FDCFFBB65E752235B,AF14A90136D3CFE820EA5186,C70285F1D4498792A9AF9D66,F12F029C41AA982ECF348295,BF18057EA19E83F38F859141,346C41A7A7A145D0AB1B3C70,1189D588EED234E0E160BB06,5BDD5968420E59A479817710,AB6A7AAB6C172EAC90E2D8D3,78D07123A4223F136312E43C,A07D1E96B7E3265664B7A4E5,24A390B7D2A626AE4FC832EF,B0F68D2FB969FF7C3D05DA1A,1CD58883DE4B6F1298D58564,8C8CB47DB240ABB97A1D1C91,23EA1C1047270EA90549029B,8E79CAFB76D50E58349A8BF6,EAFF2A3BF0F7D2ED0D486EA2,246776DD4742E59B6417B671,56A5C2ED60132BD23E9AA7F2,FF2547F9C811A0D0F1042BFC,24A9C4CB06BF6BE9D5A6E9BE,65A1A8835BFCEC08830B529A,D21441D3D26F1448A8D109EC,A4A07649EDA67CCF077B0134,A031A5B384F40C5D6BA7208F,40B15E15D7D6053FDB85793E,5787009721FE984E0A19D327,E632116FE62E468CB908F76D,603F47660E4D05F3C9E4D9D9,D182671AB2392B9E5BD54548,1F25E556BA33C5640CB419E9,48CE426066AC3035B91623D5,0838405F62849A5D937F8A5C,DB306741963309D06BEE7E71,D5EBA71AE0402045C2C0B113,B39AF66C2018453939F1A411,81F7791DBDC71ADB029E129D,0353C594483187A3B5DD67E4,136CB1C019B68533DEA2944A,717804A30A35BFAC9DC86BC0,E1659748D85C38B519D5B0A8,2A2F11DB7B9CA9EF3F1C9073,F5240C02A03B4EC2EA1B654C,977B4DD3672D76BC554C3D57,7A19EC2439B28686AA0AC0D5,682B7A5E22AFEE40D8D79775,B23DE30F76259B5216AF561D,122846F316B00EEC0E91EE43,99F40E5BF30029B198746FDA,E0F592FDA3346ACDA82866F5,C246B7BBE16827DDF8C59432,67FB565C5A9E1C3CEB5868F6,7D26DC968DFB9C1D555B210C,91674B58518C71267BD6C42F,765822F71FDA15F7D07F9DFC,A8792157CB4F27FB949C035F,7A665CDC8B6BB82F90923CBD,93E46A602338E07A8524AEF6,1DD61F7A3D64032769FF5256,15A8F135B2B9737A64A5D4CE,70CC1009810A9504E187105D,D23EDB8D1F5309D831F4699C,DB138DDC1A3D5AA3A4E70363,325DC6F5822A0A8EFD22F1D6,D5FFBC6AA835540CED653861,70BCE2D5CDF45BDFCF98320D,564D93319FDAD293EBD5FF11,AFFAAC461E02C02BC068B7C1,74D262B78AE96A1A0C23841F,516E1467199CDC26B604DFF6,A0E39C1F6C2AD80E58659576,2B77036D81F218A6039F5CCA,64CE9143E7F8AA10C9B5975F,E06372C27855BEC98128EDC2,C305E8B79202562F67A6826F,56081BBD764F8170A284D27C,63CCC70318D8587ADF6D9842,6B6B738303C81AD3447CA1C3,B99D98437B6D872F7C7AEE92,90E289442538BAED6C51B8F3,D135F6EBDCB9D40FD2F83CD9,438DA66704A1D1C2A3599F62,4632F1795253A162B33ED234,DBD55641C66B9617921783A3,263AA7604F720BBE5B796EE5,F36D673F4CD647DFA13F38A5,F45BC9D0EFD219E8D933B4BE,); sourceTree = "<group>"; };
+ 1A03BD2FD107C453F3183E30 = { isa = XCBuildConfiguration; name = Debug; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";   TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = YES; ONLY_ACTIVE_ARCH = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; }; };
+ E020E3C67BD0C31227720BD8 = { isa = XCBuildConfiguration; name = Release; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";   TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = NO; ONLY_ACTIVE_ARCH = NO; SWIFT_OPTIMIZATION_LEVEL = "-O"; }; };
+ 175AB01246347EE3CB3AD67C = { isa = XCConfigurationList; buildConfigurations = (1A03BD2FD107C453F3183E30,E020E3C67BD0C31227720BD8,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+-34A04005BCAF206EEC990BD9 = { isa = PBXNativeTarget; buildConfigurationList = 175AB01246347EE3CB3AD67C; buildPhases = (878A52FC5FF6A57D50B7B870,E2AA269EB967A8853A258BFA,41D311A605520FC7B8B9A980,); buildRules = (); dependencies = (); name = BlindAssist; productName = BlindAssist; productReference = A8792157CB4F27FB949C035F; productType = "com.apple.product-type.application"; packageProductDependencies = (D1B43D902579482AF65E0FAE,8335B962CC5F0C1DC9B35B1A,F26350DAFE3F19AABFD69AC4,3BCCF210457B832837AC3B75,); };
++34A04005BCAF206EEC990BD9 = { isa = PBXNativeTarget; buildConfigurationList = 175AB01246347EE3CB3AD67C; buildPhases = (878A52FC5FF6A57D50B7B870,E2AA269EB967A8853A258BFA,41D311A605520FC7B8B9A980,); buildRules = (); dependencies = (); name = BlindAssist; productName = BlindAssist; productReference = A8792157CB4F27FB949C035F; productType = "com.apple.product-type.application"; packageProductDependencies = (A984EBE9F2B24B22CDF5E8BE,D1B43D902579482AF65E0FAE,8335B962CC5F0C1DC9B35B1A,F26350DAFE3F19AABFD69AC4,3BCCF210457B832837AC3B75,); };
+ 7A665CDC8B6BB82F90923CBD = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT; };
+ 746629965A4FF5F5BB45B3B5 = { isa = PBXBuildFile; fileRef = 7A665CDC8B6BB82F90923CBD; };
+ 46F2B9EA8552D92DF137AF80 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/CameraAuditScopeTests.swift; sourceTree = SOURCE_ROOT; };
+@@ -213,7 +222,9 @@
+ 7D71A1952C27BFA0E83E5C6E = { isa = PBXBuildFile; fileRef = 438DA66704A1D1C2A3599F62; };
+ 4632F1795253A162B33ED234 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssistTests/ConversationRuntimeFailureTests.swift"; sourceTree = SOURCE_ROOT; };
+ C7658616AECE6868292D7104 = { isa = PBXBuildFile; fileRef = 4632F1795253A162B33ED234; };
+-C344CB08D39518A3E73D4CE5 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AA3B683DF3D8B936F0C9084F,F0E896A8F2D71CEDB3B1AA15,F0FA6B214A1407A0F28D47F5,DAC82341266B0A05A8C47ECA,0C3587F4A680CE202378055D,BA5487892346B0EE999026AD,B6BDAD7F1862A8E80A2DFC17,4ED9028F380CFC927E089C74,50425C0DD217AA312B3E6002,15A8C8FE4DA2456B23572359,27EC64314FC3DB79190D4040,7758B92CFABAB3961B603750,272176ECF052F670C7C724BD,8E6DD480A582FF69BA846959,3F77D1DAABB54EA81B91BB66,1CCB56FB2518966128661891,41339309AAA8FCAA4CC31C34,8511C8EBEA0591F17949BB0E,826EEA7468E8933F52181EE6,A3CF07834E40E7707FEE9E80,709C773F547F5E4E79157AAF,5E1E70FD42F78FC44ABF3424,47605B358A9F704D684EF795,7D71A1952C27BFA0E83E5C6E,C7658616AECE6868292D7104,); runOnlyForDeploymentPostprocessing = 0; };
++DBD55641C66B9617921783A3 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssistTests/SeatedMeshProjectionTests.swift"; sourceTree = SOURCE_ROOT; };
++C488F4D5FCECDE6F7518FD76 = { isa = PBXBuildFile; fileRef = DBD55641C66B9617921783A3; };
++C344CB08D39518A3E73D4CE5 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AA3B683DF3D8B936F0C9084F,F0E896A8F2D71CEDB3B1AA15,F0FA6B214A1407A0F28D47F5,DAC82341266B0A05A8C47ECA,0C3587F4A680CE202378055D,BA5487892346B0EE999026AD,B6BDAD7F1862A8E80A2DFC17,4ED9028F380CFC927E089C74,50425C0DD217AA312B3E6002,15A8C8FE4DA2456B23572359,27EC64314FC3DB79190D4040,7758B92CFABAB3961B603750,272176ECF052F670C7C724BD,8E6DD480A582FF69BA846959,3F77D1DAABB54EA81B91BB66,1CCB56FB2518966128661891,41339309AAA8FCAA4CC31C34,8511C8EBEA0591F17949BB0E,826EEA7468E8933F52181EE6,A3CF07834E40E7707FEE9E80,709C773F547F5E4E79157AAF,5E1E70FD42F78FC44ABF3424,47605B358A9F704D684EF795,7D71A1952C27BFA0E83E5C6E,C7658616AECE6868292D7104,C488F4D5FCECDE6F7518FD76,); runOnlyForDeploymentPostprocessing = 0; };
+ F36D673F4CD647DFA13F38A5 = { isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomPlanApple"; sourceTree = SOURCE_ROOT; };
+ 73D86D1818DA7238876B5901 = { isa = PBXBuildFile; fileRef = F36D673F4CD647DFA13F38A5; };
+ F45BC9D0EFD219E8D933B4BE = { isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomRouteDiagnostic"; sourceTree = SOURCE_ROOT; };
+@@ -237,11 +248,13 @@
+ 23A8F3D01D54E462874D0053 = { isa = XCLocalSwiftPackageReference; relativePath = "../research/native-mesh-decoder-81"; };
+ 3DAED93D9B0225979DA5C8A9 = { isa = XCSwiftPackageProductDependency; package = 23A8F3D01D54E462874D0053; productName = MeshBufferDecoder81; };
+ 3AFCEC645E18C725DA67B8D9 = { isa = PBXBuildFile; productRef = 3DAED93D9B0225979DA5C8A9; };
+-F56DCEC2CE4329AFFE045478 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (083B548B378C52F25CD6A530,27657D41E94045FD3488DA22,84838102B922F89242350781,D0DE12A99E750B6E523AAB74,20EA9D5ADDA3509B7160DEF8,ADC4279C4CF0B9B06F7511D3,3AFCEC645E18C725DA67B8D9,); runOnlyForDeploymentPostprocessing = 0; };
++2FAC3BC09824B4C3A3AF1FDD = { isa = XCSwiftPackageProductDependency; package = 6837846EE466424A85949726; productName = LiveMeshClassifiedBench; };
++E52B723ACA807DF0EA34CA69 = { isa = PBXBuildFile; productRef = 2FAC3BC09824B4C3A3AF1FDD; };
++F56DCEC2CE4329AFFE045478 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (E52B723ACA807DF0EA34CA69,083B548B378C52F25CD6A530,27657D41E94045FD3488DA22,84838102B922F89242350781,D0DE12A99E750B6E523AAB74,20EA9D5ADDA3509B7160DEF8,ADC4279C4CF0B9B06F7511D3,3AFCEC645E18C725DA67B8D9,); runOnlyForDeploymentPostprocessing = 0; };
+ 381D9EC618156DA6C2C6AFB6 = { isa = XCBuildConfiguration; name = Debug; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG"; TARGETED_DEVICE_FAMILY = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = ""; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.tests; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist"; BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; }; };
+ BCD13D253D4CAF425538F83D = { isa = XCBuildConfiguration; name = Release; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)"; TARGETED_DEVICE_FAMILY = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = ""; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.tests; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist"; BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_STYLE = Automatic; }; };
+ 0DB8278C8DB097FA811D8C1F = { isa = XCConfigurationList; buildConfigurations = (381D9EC618156DA6C2C6AFB6,BCD13D253D4CAF425538F83D,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
+ 8D3EACA3CBACE5161E07DB38 = { isa = PBXTargetDependency; target = 34A04005BCAF206EEC990BD9; targetProxy = F6301EAD2AC55A883FB1AF3A; };
+-3CB7792B4452616AACDE17BC = { isa = PBXNativeTarget; buildConfigurationList = 0DB8278C8DB097FA811D8C1F; buildPhases = (C344CB08D39518A3E73D4CE5,F56DCEC2CE4329AFFE045478,7BAE252701E2586A30C4BEB1,); buildRules = (); dependencies = (8D3EACA3CBACE5161E07DB38,); name = BlindAssistTests; productName = BlindAssistTests; productReference = 263AA7604F720BBE5B796EE5; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (E8F106BDB9F5FBC43CE07E9C,BD85D01E1C5E0EEBF193F909,545FFAE6421DD7AC97AE230B,F144B316B21CCA00A0E653CD,1479B9AE2655D3D337A8D8EF,C7096964D5152AF961A186B5,3DAED93D9B0225979DA5C8A9,); };
+-244210E48437B6556980A702 = { isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { 4EA0BBFB4641B4E941FBF077 = { TestTargetID = 34A04005BCAF206EEC990BD9; }; 3CB7792B4452616AACDE17BC = { TestTargetID = 34A04005BCAF206EEC990BD9; }; }; }; buildConfigurationList = 175AB01246347EE3CB3AD67C; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = AD936FCBED631FA67E05C3EA; projectDirPath = ""; projectRoot = ""; packageReferences = (DD2FA2D57E5C6E1A7D616284,E80AF4E2AC56624AD42E98B2,23A8F3D01D54E462874D0053,65E48A7C08D04FA45F6123FD,BC4A71180870F7945155FBB0,C23C68F4D910C74DAD718039,C544FF32ED3F0A86B2EFFBAA,); targets = (34A04005BCAF206EEC990BD9,4EA0BBFB4641B4E941FBF077,3CB7792B4452616AACDE17BC,); };
++3CB7792B4452616AACDE17BC = { isa = PBXNativeTarget; buildConfigurationList = 0DB8278C8DB097FA811D8C1F; buildPhases = (C344CB08D39518A3E73D4CE5,F56DCEC2CE4329AFFE045478,7BAE252701E2586A30C4BEB1,); buildRules = (); dependencies = (8D3EACA3CBACE5161E07DB38,); name = BlindAssistTests; productName = BlindAssistTests; productReference = 263AA7604F720BBE5B796EE5; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (2FAC3BC09824B4C3A3AF1FDD,E8F106BDB9F5FBC43CE07E9C,BD85D01E1C5E0EEBF193F909,545FFAE6421DD7AC97AE230B,F144B316B21CCA00A0E653CD,1479B9AE2655D3D337A8D8EF,C7096964D5152AF961A186B5,3DAED93D9B0225979DA5C8A9,); };
++244210E48437B6556980A702 = { isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { 4EA0BBFB4641B4E941FBF077 = { TestTargetID = 34A04005BCAF206EEC990BD9; }; 3CB7792B4452616AACDE17BC = { TestTargetID = 34A04005BCAF206EEC990BD9; }; }; }; buildConfigurationList = 175AB01246347EE3CB3AD67C; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = AD936FCBED631FA67E05C3EA; projectDirPath = ""; projectRoot = ""; packageReferences = (6837846EE466424A85949726,DD2FA2D57E5C6E1A7D616284,E80AF4E2AC56624AD42E98B2,23A8F3D01D54E462874D0053,65E48A7C08D04FA45F6123FD,BC4A71180870F7945155FBB0,C23C68F4D910C74DAD718039,C544FF32ED3F0A86B2EFFBAA,); targets = (34A04005BCAF206EEC990BD9,4EA0BBFB4641B4E941FBF077,3CB7792B4452616AACDE17BC,); };
+ }; rootObject = 244210E48437B6556980A702; }

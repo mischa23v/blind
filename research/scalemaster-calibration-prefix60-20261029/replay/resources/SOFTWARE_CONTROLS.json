@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "native_depth_unit_and_invalid_mask_fixture": "passed",
+  "wrong_depth_scale_all_clipped": "passed",
+  "native_pose_direction_plane_fixture": {
+    "correct_inverse": {
+      "vertices": 2680,
+      "median_plane_error_m": 6.77169058715954e-06,
+      "p95_plane_error_m": 5.013915519760371e-05
+    },
+    "wrong_pose_direction": {
+      "vertices": 2680,
+      "median_plane_error_m": 1.3748136779521145,
+      "p95_plane_error_m": 1.9761972090591644
+    }
+  },
+  "meaning": "software convention/units controls only; does not verify real sensor calibration"
+}

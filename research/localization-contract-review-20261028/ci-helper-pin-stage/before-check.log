@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/90f3f6703064/blind/research/native-candidate-app-integration-85/integrated/check.py", line 19, in <module>
+    check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+  File "/workspace/scratch/90f3f6703064/blind/research/native-candidate-app-integration-85/integrated/check.py", line 15, in check
+    assert value, name
+           ^^^^^
+AssertionError: integrated pin ios/BlindAssist/NavigationModel.swift

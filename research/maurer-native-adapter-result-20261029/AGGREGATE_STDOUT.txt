@@ -1,0 +1,32 @@
+PASS threshold R2-1 R2 R2+1 and chamfer witness
+PASS null/nonzero area diagonal ties and perimeter oracle
+PASS absent column is not an independent seed
+PASS valid zero keep mask
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS typed domain/topology refusal without area mutation
+PASS checked work refusal before additional mutation and invalid budget
+PASS four adapter allocations fail closed
+PASS frozen full-layout stock area and all exact mask bits
+PASS frozen full-layout stock area and all exact mask bits
+PASS frozen full-layout stock area and all exact mask bits
+PASS frozen full-layout stock area and all exact mask bits
+PASS frozen full-layout stock area and all exact mask bits
+PASS frozen full-layout stock area and all exact mask bits
+TOTAL 20 named fixture groups passed (native only when actually executed)
+ENVELOPE captured profile 0 all bits passed
+ENVELOPE captured profile 1 all bits passed
+ENVELOPE captured profile 2 all bits passed
+ENVELOPE captured profile 3 all bits passed
+ENVELOPE captured profile 4 all bits passed
+ENVELOPE captured profile 5 all bits passed
+ENVELOPE scope, seven allocation failures, work and schema refusals passed
+ENVELOPE authored side=201 diskBound=13690773 envelopeWork=413682 keep=31329 passed
+ENVELOPE authored side=241 diskBound=20577893 envelopeWork=592402 keep=47089 passed
+ENVELOPE distinct ABI schema2 and retained disk schema1 passed
+ENVELOPE TOTAL adapterParityCases=1033 oracleChecks=159647360 PASS

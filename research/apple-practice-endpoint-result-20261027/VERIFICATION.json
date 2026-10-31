@@ -1,0 +1,70 @@
+{
+  "scope": "Read-only verification of terminal native endpoint run; no rerun or app edit",
+  "verifiedAt": "2026-10-27T21:11:50Z",
+  "repository": "mischa23v/blind",
+  "runId": 40581825973,
+  "jobId": 122462937267,
+  "workflowCommit": "8a657fc9f1610466cb990aa94b6c2883d965469c",
+  "sourceCommit": "fb879d235f38a3f0121b69b023e8ee14c0ded61c",
+  "terminalConclusion": "failure",
+  "artifact": {
+    "id": 12770593353,
+    "bytes": 3495,
+    "sha256": "60689a9583cb2e56c6b71aef8af7ed7dcb06d68f770a180aefa1406671aeb387",
+    "matchesGitHubDigest": true,
+    "crcPassed": true,
+    "relativePathsPassed": true,
+    "expandedBytes": 16965,
+    "entries": [
+      {
+        "path": "blind-practice-endpoint-control/artifacts/outcomes.json",
+        "bytes": 15563,
+        "crc32": "6618dbd7",
+        "sha256": "d5b2e0c3f21ff553d5f6697e49a886a266c8eda05eee7d20a73719851be2f8de"
+      },
+      {
+        "path": "blind-practice-endpoint-provenance/provenance.json",
+        "bytes": 1402,
+        "crc32": "ea63e67b",
+        "sha256": "f54aab11b0d3c7ed75432bfd14307598dcc3000db1c4fa9a97183f7d260926d5"
+      }
+    ]
+  },
+  "diagnosticFiles": [
+    {
+      "path": "research/practice-endpoint-control-20261027/run.py",
+      "sha256": "0a5cc01234fc7f5b35e22e9ccbc3acd6a2afef93be9bf8a40e3d17ab3bc4ce09",
+      "gitBlob": "5e86ca97d099c11a11c63193ce9b558e4947f817",
+      "url": "https://github.com/mischa23v/blind/blob/8a657fc9f1610466cb990aa94b6c2883d965469c/research/practice-endpoint-control-20261027/run.py",
+      "matchesArtifactAndLocal": true
+    },
+    {
+      "path": "research/practice-endpoint-control-20261027/runner.py",
+      "sha256": "0241d95b75fd45b4ff29a29810015ad73c04e637993eda9eb93e378ad2185ddf",
+      "gitBlob": "f68e2e2fa6fe3081fdbc76d7699b61de238bb2fb",
+      "url": "https://github.com/mischa23v/blind/blob/8a657fc9f1610466cb990aa94b6c2883d965469c/research/practice-endpoint-control-20261027/runner.py",
+      "matchesArtifactAndLocal": true
+    },
+    {
+      "path": "research/practice-endpoint-control-20261027/endpoint_receipt.py",
+      "sha256": "1f39894e3363fb9811053f93d5c973b0dc03c21b86f46fc3390135ab91b05c15",
+      "gitBlob": "0fb0b72ae677ca7e2cb6b8f1d9c2860bbe55c5b1",
+      "url": "https://github.com/mischa23v/blind/blob/8a657fc9f1610466cb990aa94b6c2883d965469c/research/practice-endpoint-control-20261027/endpoint_receipt.py",
+      "matchesArtifactAndLocal": true
+    },
+    {
+      "path": "research/practice-endpoint-control-20261027/verify.py",
+      "sha256": "1a1bc6445b9600f9a4d0ba2faacae76deb1e1892179cae2d89a52a442f856394",
+      "gitBlob": "0e6c75262173f2dd5582324842e1a4a67be5fd18",
+      "url": "https://github.com/mischa23v/blind/blob/8a657fc9f1610466cb990aa94b6c2883d965469c/research/practice-endpoint-control-20261027/verify.py",
+      "matchesArtifactAndLocal": true
+    }
+  ],
+  "portableFixtureCountInJob": 42,
+  "endpointTestsStarted": 0,
+  "endpointScreenshots": 0,
+  "sourceIntegrityPassed": false,
+  "buildOutcome": "600-second timeout; PermissionError during cleanup; no compiler error in bounded summary",
+  "processCleanupOutcome": "unknown for build and shutdown; simulator delete succeeded",
+  "interpretation": "Neither endpoint reachability nor accessibility audit passed; no actual endpoint PNGs exist in this run."
+}

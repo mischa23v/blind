@@ -1,0 +1,47 @@
+name: Isolated origin-bound mesh ingress proposal
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/origin-bound-ingress-proposal-86/**'
+      - 'research/mesh-candidate-ingress-83/**'
+      - 'research/native-mesh-decoder-81/**'
+      - 'research/arkit-mesh-adapter-82/**'
+      - 'research/room-mesh-package-75/**'
+      - '.github/workflows/origin-bound-ingress-proposal-86.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-origin-bound-ingress-86-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  proposal:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify isolated lease fixtures and actual ARKit source against existing native products
+        timeout-minutes: 23
+        run: python3 -B research/origin-bound-ingress-proposal-86/apple/ci.py --execute-authorized-apple
+      - name: Preserve bounded receipts and explicit results, never input geometry or arbitrary logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: origin-bound-ingress-proposal-86-receipts
+          path: |
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/*-receipt.json
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/RESULT.json
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/STAGE86_RESULT.json
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/stage86-stage75/RESULT.json
+            ${{ runner.temp }}/blind-mesh-candidate-ingress-83/stage86-stage75/RUNTIME_RESULT.json
+          if-no-files-found: warn
+          retention-days: 3

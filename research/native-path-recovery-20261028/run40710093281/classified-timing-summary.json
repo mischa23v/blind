@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "sourceCommit": "9284719fe477135d4bcd85b2cbd2a587609ed428",
+  "runID": 40710093281,
+  "receiptCount": 10,
+  "unit": "integer milliseconds relative to each query request; scheduling included",
+  "associationLimit": "Receipt IDs do not include scenario/test names in collected bounded stage lines. Do not invent per-test assignment.",
+  "rows": [
+    {
+      "id": "91AD5DCD-E5A8-4AD0-972D-4AD0EC24B2F8",
+      "queueWaitMs": 356,
+      "nativeBuildMs": 5991,
+      "callbackMs": 6347,
+      "handoffMs": 0,
+      "discardCompleteMs": 1,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 356,
+        "nativeBuildBegin": 356,
+        "nativeBuildEnd": 6347,
+        "routeBegin": 6347,
+        "routeEnd": 6347,
+        "completionQueued": 6347,
+        "completionDelivered": 6347,
+        "discardRequested": 6502,
+        "discardWorkerStarted": 6503,
+        "discardReleased": 6503,
+        "discardCompletionDelivered": 6503
+      }
+    },
+    {
+      "id": "F030CB5A-42FF-4948-A340-3788E900C033",
+      "queueWaitMs": 7,
+      "nativeBuildMs": 7350,
+      "callbackMs": 7358,
+      "handoffMs": 0,
+      "discardCompleteMs": 80,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 7,
+        "nativeBuildBegin": 7,
+        "nativeBuildEnd": 7357,
+        "routeBegin": 7357,
+        "nativeFailure": 7358,
+        "completionQueued": 7358,
+        "completionDelivered": 7358,
+        "discardRequested": 7358,
+        "discardWorkerStarted": 7360,
+        "discardReleased": 7360,
+        "discardCompletionDelivered": 7438
+      }
+    },
+    {
+      "id": "C2049FCC-0C3B-4685-B2CC-5307B8E17E0E",
+      "queueWaitMs": 167,
+      "nativeBuildMs": 9781,
+      "callbackMs": 9948,
+      "handoffMs": 0,
+      "discardCompleteMs": 2,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 167,
+        "nativeBuildBegin": 167,
+        "nativeBuildEnd": 9948,
+        "routeBegin": 9948,
+        "nativeFailure": 9948,
+        "completionQueued": 9948,
+        "completionDelivered": 9948,
+        "discardRequested": 9949,
+        "discardWorkerStarted": 9951,
+        "discardReleased": 9951,
+        "discardCompletionDelivered": 9951
+      }
+    },
+    {
+      "id": "203B41AE-DF32-4207-B72F-089AAA2390FC",
+      "queueWaitMs": 0,
+      "nativeBuildMs": 3116,
+      "callbackMs": 3116,
+      "handoffMs": 0,
+      "discardCompleteMs": 2,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 0,
+        "nativeBuildBegin": 0,
+        "nativeBuildEnd": 3116,
+        "routeBegin": 3116,
+        "nativeFailure": 3116,
+        "completionQueued": 3116,
+        "completionDelivered": 3116,
+        "discardRequested": 3117,
+        "discardWorkerStarted": 3119,
+        "discardReleased": 3119,
+        "discardCompletionDelivered": 3119
+      }
+    },
+    {
+      "id": "002D2CBC-8B20-4991-80BE-5B932D98679D",
+      "queueWaitMs": 6,
+      "nativeBuildMs": 1608,
+      "callbackMs": 1616,
+      "handoffMs": 1,
+      "discardCompleteMs": 4,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 6,
+        "nativeBuildBegin": 7,
+        "nativeBuildEnd": 1615,
+        "routeBegin": 1615,
+        "nativeFailure": 1615,
+        "completionQueued": 1615,
+        "completionDelivered": 1616,
+        "discardRequested": 1617,
+        "discardWorkerStarted": 1620,
+        "discardReleased": 1621,
+        "discardCompletionDelivered": 1621
+      }
+    },
+    {
+      "id": "10C62658-B3E4-46AE-AD23-E29A673D6AB8",
+      "queueWaitMs": 0,
+      "nativeBuildMs": 695,
+      "callbackMs": 695,
+      "handoffMs": 0,
+      "discardCompleteMs": 0,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 0,
+        "nativeBuildBegin": 0,
+        "nativeBuildEnd": 695,
+        "routeBegin": 695,
+        "nativeFailure": 695,
+        "completionQueued": 695,
+        "completionDelivered": 695,
+        "discardRequested": 696,
+        "discardWorkerStarted": 696,
+        "discardReleased": 696,
+        "discardCompletionDelivered": 696
+      }
+    },
+    {
+      "id": "6436FF4E-A68A-4D50-AF52-F117531C4A11",
+      "queueWaitMs": 0,
+      "nativeBuildMs": 227,
+      "callbackMs": 227,
+      "handoffMs": 0,
+      "discardCompleteMs": 1,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 0,
+        "nativeBuildBegin": 0,
+        "nativeBuildEnd": 227,
+        "routeBegin": 227,
+        "nativeFailure": 227,
+        "completionQueued": 227,
+        "completionDelivered": 227,
+        "discardRequested": 227,
+        "discardWorkerStarted": 228,
+        "discardReleased": 228,
+        "discardCompletionDelivered": 228
+      }
+    },
+    {
+      "id": "02A8FDE4-5594-4997-AB77-210B673AAD29",
+      "queueWaitMs": 16,
+      "nativeBuildMs": null,
+      "callbackMs": 55,
+      "handoffMs": 0,
+      "discardCompleteMs": 3,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 16,
+        "nativeBuildBegin": 16,
+        "nativeFailure": 55,
+        "completionQueued": 55,
+        "completionDelivered": 55,
+        "discardRequested": 55,
+        "discardWorkerStarted": 58,
+        "discardReleased": 58,
+        "discardCompletionDelivered": 58
+      }
+    },
+    {
+      "id": "39F40211-6A61-48B9-B3A9-FC506A2658DB",
+      "queueWaitMs": 1,
+      "nativeBuildMs": 486,
+      "callbackMs": 488,
+      "handoffMs": 1,
+      "discardCompleteMs": 1,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 1,
+        "nativeBuildBegin": 1,
+        "nativeBuildEnd": 487,
+        "routeBegin": 487,
+        "routeEnd": 487,
+        "completionQueued": 487,
+        "completionDelivered": 488,
+        "discardRequested": 488,
+        "discardWorkerStarted": 489,
+        "discardReleased": 489,
+        "discardCompletionDelivered": 489
+      }
+    },
+    {
+      "id": "6FD256B5-19C1-4383-A16B-A5E77E709A0D",
+      "queueWaitMs": 1,
+      "nativeBuildMs": 302,
+      "callbackMs": 303,
+      "handoffMs": 0,
+      "discardCompleteMs": 1,
+      "stages": {
+        "requestEnqueued": 0,
+        "workerStarted": 1,
+        "nativeBuildBegin": 1,
+        "nativeBuildEnd": 303,
+        "routeBegin": 303,
+        "routeEnd": 303,
+        "completionQueued": 303,
+        "completionDelivered": 303,
+        "discardRequested": 303,
+        "discardWorkerStarted": 304,
+        "discardReleased": 304,
+        "discardCompletionDelivered": 304
+      }
+    }
+  ]
+}

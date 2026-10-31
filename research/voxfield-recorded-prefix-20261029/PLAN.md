@@ -1,0 +1,23 @@
+# Three-frame D1+N2 prefix — preparation only, not accuracy evaluation
+
+**No execution authorized yet.** Prepare exactly trainingframe00001/00002/00003 from the existing original265-frame input freeze. Reviewer and root must admit final adapter/fixture/input/ELF/resource freeze before any native run. No other recorded frame, heldout/reference/GT, camera smoothing, floor classifier, parameter search, depth fill, TSDF reload, new core/dependency build, network, install or spend.
+
+## Purpose and fair arms
+This is an engineering admission check: can original per-frame calibration/pose/full admitted pixel order pass a fail-closed adapter and enter each already-tested native engine with explicit normal availability, finite state and bounded resources? Outputs are counts/domain/runtime evidence, **not reconstruction accuracy, hazard detection, free-space correctness or route safety**.
+
+All three arms share the same D1 `libvoxfield_rayguard.so` and unchanged N2 header. B is fork projective; C0 NP normal_available=false; C1 NP true. Fixed voxel.04m/truncation.2m/block16/maxray5.055m/one integrator thread, no clearing, stock-like projective weighting and disclosedNPexponent2. B/C0 differ beyond normals; C0/C1 changes correction/gradient/grazing together. Historical unpatched stockVoxblox armA remains a confounded historical result; no correctedstockA2 is built or claimed.
+
+Each arm starts empty and uses an uninterrupted map and persistent matching integrator through exactly3frames. Identical shared preflighted points/colors/normals/order across arms; no serialization/resume or map transfer. Native observedvoxel counts are not geometry accuracy or support coverage.
+
+## Original input contract
+Reuse existing input files read-only; freeze exactthree manifest rows and depth/RGB bytes. Original738×994 fullpixel raster, per-frame fx/fy/cx/cy, original Cgl poses; opticalC2W = Cgl·diag(1,-1,-1,1), same prioradapter convention. Little-endian uint16millimetres; admitted iff0<mm<4000. No downsample/resize, source pixel reorder, color reprojection or alteredK. N2 retains every admitted point and zero-normal cause. Required admission ledger: zero/far pixelcounts, admittedcounts, normalreasons, Euclideanrange-band reason counts with denominators, point/pixel identity checks.
+
+## Fail-closed adapter instead of nativeD2 patch
+Preflight all3frames before any integration. Validate exactrows/ids, dimensions/filelengths, no trailingmanifestfields, finitepositiveK, finitepose and properSE3 to a predeclared1e-4 representational tolerance (rotationorthonormality/determinant; fixed homogeneousrow). This is not calibration refinement. Validate all arraylengths, points/normals finite, exact expectedunprojection/order, normal eitherzero or finiteunit, positiveaxialdepth and finitepointnorm. Count any native range rejection explicitly; do not silently omit points. If any admittedpoint is outside the exact nativeconfigdomain (includingnorm>5.055), abortbeforeallarms rather than changingadmission.
+
+For every point usingactualnativefloattransformation, validate physical transformedray nonzero andfinite BEFORE native normalization; norm andtruncationextensionfinite; actualscaledstart/end andfloor+epsilon gridindices representable, and boundedL1stepcount. Guardbounds are defensive arithmeticdomain checks, not a favorablegeometryfilter. No clearing/freepoint flags or clippedemptyinterval is permitted. Config is fixed and validated. Rejection emitsreason/count ledger and prevents integration; nativeinvalidAPIs remain unfixed. Root/reviewer must verify exactbounds/code beforeexecution.
+
+## Outputs, resource and isolation
+Proposed60CPU/90wall,1worker/CPU,2GiB sampled summedRSS,256MiB newoutput; fail/stop atanycap or semanticerror. Compile onlysmalladapter withread-onlyexistingheaders/deps; verifyELF resolvesD1core and notoriginalVoxfield/stockcore. Hashallincludeadapters/core/generatedheaders, exactinputs and selecteddependencyidentities before/after. Dedicatedrun cwd; no inputfilewrites. Runtime checks aftereachframe/arm: totalallocated/observedvoxelcount, invaliddistance/weight/gradientcount, gradientavailability, perframeandarmruntime andsuppliedpointcount. Allinvalids mustbe explicit; not convertedtofreeor validgeometry. Retain complete logs even failure; no auto-retry, no subsequentprefix/fullscene admission.
+
+N2 numericalvalidity ≠ physicalreliability. Small2/4cm hazards remainunresolved despitepreviouscoarsefixturepass; native persistence losesgradient; unknown/support and continuoussweptclearance remainopen. This threeframecheck doesnot close thosegaps or promise90%accuracy.

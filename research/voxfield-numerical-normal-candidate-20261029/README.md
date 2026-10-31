@@ -1,0 +1,17 @@
+# N2 numerical normal candidate — executed synthetic checkpoint
+
+2026-10-29. Read RESULT.md and INDEPENDENT_COMPLETED_REVIEW.json first. This contains only the executed N2 experiment, not a recorded three-frame prefix. No recorded-room gain, engine winner, calibrated confidence or physical-safety acceptance is claimed.
+
+**Actual result:** 1,382 provider assertions and 18 narrow coarse retention gates passed. At close range N2 made more normals numerically available while preserving the same points, but the paired N1/N2 native close-plane sample coverage was identical. Numerical availability is not improved geometry accuracy. Some nine-query coarse gates cover only four unique voxels. Four-centimetre top patches retained zero of 25 queries in the tighter two-centimetre TSDF bin in every arm; 12-centimetre patches retained only 9/5/9. Two- and four-centimetre objects remain unresolved, not detection successes.
+
+The coarse bounds were frozen separately from stricter reporting bins and did not replace them. TSDF-bin counts are not distances to an independently known triangle surface or hazard-detection percentages. Nearest-mesh-vertex proximity and sampled support do not prove full surfaces or continuous body clearance. Warm-history comparisons change history and method and do not witness the cached-gradient branch in isolation. Right/bottom provider bounds are not integrated border-geometry validation. All arms use D1, so historical unpatched stock is not a matched corrected control. Leak checking remains unavailable even though ASan bounds and UBSan passed. Original resource block, serialization gradient loss and failed original baseline remain retained in prior checkpoints.
+
+## Independent publication review
+
+All original packet hashes and the completed independent review's listed resource, integrity, native/provider-log and ELF hashes were checked. The independent review hash is e915ca10bc3af15d97c2ae6d2794249e708046da90da4279464a11c0b892729e. The publication reviewer additionally recounted 18 saved coarse gate records, confirmed their four-or-nine unique-voxel denominators, the provider's 1,382-assertion receipt, the paired close-plane baseline and the retained low-patch negative counts. No native rerun was performed.
+
+The ephemeral absolute workspace prefix is replaced by <WORKSPACE_ROOT> only in environment-specific files; PUBLICATION_REVIEW.json retains original and published hashes. ORIGINAL_PACKET_SHA256SUMS refers to original bytes; PUBLICATION_SHA256SUMS refers to published bytes. No raw recordings, derived real-world geometry, binaries or whole upstream source are included.
+
+## Reproduction boundary
+
+The included sources describe the recorded Linux synthetic fixture, not a turnkey iPhone build. execute.py and guard.py need the earlier reviewed dependency layout, D1 build, a new local execution freeze and explicit local paths. Those environment artifacts are not bundled. Do not invoke the placeholder runner expecting them to exist after checkout. Reconstruct and independently review local source/dependency paths, maintain resource controls and preserve N1 as the same-point baseline. The prior voxfield-build-gate-20261029 and voxfield-zero-direction-candidate-20261029 checkpoints identify source pins and D1 changes. The underlying source is https://github.com/v4rl-ucy/voxfield/tree/78ee6403720e0aed87f4720c04c813bb38a3b260 ; its BSD-3-Clause licence is included, and third-party notices remain separate.

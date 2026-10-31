@@ -1,0 +1,73 @@
+{
+  "status": "independentlyRecountedExistingResultNoNativeRerun",
+  "sourceCommit": "c76d848a87fd0ca7db0065f4505e3bdd192cb3d8",
+  "inputResultSHA256": "1ed63feebdbffbc24b783a1d7691b1a0520a118a013dd8589e298a2c00a6ae29",
+  "guardResultSHA256": "672bf8e9d650b936db256f2f6034e01e1abdd614d84a72094a8b2e04c2f218d0",
+  "proposalPairs": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      8
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      0
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "disconnectedCount": 14,
+  "queryCount": 20,
+  "pair0to8": {
+    "distanceGrid": {
+      "lengthMetres": 6.621807978479697,
+      "minimumResidualWallProxyMetres": 0.0,
+      "interiorMinimumResidualWallProxyMetres": 0.0
+    },
+    "clearanceGrid": {
+      "lengthMetres": 7.02588025218012,
+      "minimumResidualWallProxyMetres": 0.04895737221170478,
+      "interiorMinimumResidualWallProxyMetres": 0.22996199131011963
+    }
+  },
+  "manualContacts0to8": {
+    "original": true,
+    "distanceGrid": true,
+    "clearanceGrid": true
+  },
+  "guardResources": {
+    "aggregateCPUSeconds": 8.279165,
+    "wallSeconds": 8.302534798999659,
+    "peakObservedAggregateRSS": 118046720
+  },
+  "codeSHA256": {
+    "run_aggregate.py": "eeb384f886eeaa59e8946659cade38099e2b321ffaa9e55998a01f3d025e0cf8",
+    "freeze.py": "6cdd1a09461ea1cf44b072e377bdd5ff3eff19a190d473f5771ae39be3edc1f1",
+    "selector.py": "0e94911d0244b9f5b11dd55d5f72b3c42d76077f2bcb66f107704ff51da41125",
+    "prepare_coffee.py": "af81eddc4b3f4b033c942ae95eeeaa2fac98f538c69c3e616655651a6e71029f",
+    "fixtures.py": "fa380d9227b7231c0ee4e3ca364274e903e04d54e65905c79b0ec1544070b4cf"
+  },
+  "physicalAuthority": false,
+  "includesCoordinatesOrRawPhotos": false,
+  "currentCodeHashesEqualFirstGuardInputs": {
+    "research/clearance-first-coffee-source-20261029/selector.py": true,
+    "research/clearance-first-coffee-source-20261029/prepare_coffee.py": true,
+    "research/clearance-first-coffee-source-20261029/fixtures.py": true,
+    "research/clearance-first-coffee-source-20261029/run_aggregate.py": true,
+    "research/clearance-first-coffee-source-20261029/freeze.py": true
+  },
+  "firstGuardBeforeAfterInputHashesEqual": true
+}

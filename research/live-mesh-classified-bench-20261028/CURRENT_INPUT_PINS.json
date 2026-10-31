@@ -1,0 +1,2429 @@
+{
+  "kind": "reviewed_current_local_inputs_not_historical_native_pass",
+  "historical_manifest": "INPUT_PINS.json",
+  "historical_manifest_sha256": "a3de515d8ed3cbda2a764c70c94c75cbffe6df882ef628cc1b1709453ad0236f",
+  "files": [
+    {
+      "path": ".github/workflows/accessibility-diagnostic.yml",
+      "bytes": 3507,
+      "sha256": "f5c3cc4cc3c8b14a37838bb16f22ddb617fdfccc1385ee2a6b7dfad965299005"
+    },
+    {
+      "path": ".github/workflows/body-profile-current.yml",
+      "bytes": 2290,
+      "sha256": "6ae2cbbd53db447bc4a286d2d2c8f9378423dc1f2edea017fe0eb1081ef56476"
+    },
+    {
+      "path": ".github/workflows/j01-actual-model.yml",
+      "bytes": 2144,
+      "sha256": "ce52163a3d4c307779e8d2000c5cdf833cbd4ec40fc8bd713ad978cdc98ad7e6"
+    },
+    {
+      "path": ".github/workflows/mesh-candidate-ingress.yml",
+      "bytes": 2196,
+      "sha256": "b0c137ce1ced087b5b9967e6693b8473c4620742ad104620aeb75c4443c6ceb5"
+    },
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "bytes": 16188,
+      "sha256": "90b59756e593ce76bbcbf299799224f68286b10ab88b2fa9f202e49f7bdffbee"
+    },
+    {
+      "path": ".github/workflows/native-edt-navigation-probe.yml",
+      "bytes": 3864,
+      "sha256": "df81ce645f528e0fed551ba3a3e5af991cdaffa3a12c602e90f9121c735149e4"
+    },
+    {
+      "path": ".github/workflows/native-qos-comparison.yml",
+      "bytes": 2026,
+      "sha256": "0532d0bffbc1ddd87de435172e64f59b279bf88a7ffab2140b968cbf87a89973"
+    },
+    {
+      "path": "BlindCore/Package.swift",
+      "bytes": 1375,
+      "sha256": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AcousticSpeechOnset.swift",
+      "bytes": 7634,
+      "sha256": "0ec66e7ffb2c72217503c32fad1471696f6f241ec18415acb40cc3251ee40b63"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AlertPolicy.swift",
+      "bytes": 2252,
+      "sha256": "b13f4fd8075c6055d604a13fbe027f10b60b55b4dc4b07abbba7d15b0ce489a0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AssistantAudience.swift",
+      "bytes": 3584,
+      "sha256": "65b79b87134553f1f90cb67b151846c5a2b72b4a8591eb5b4e62d90ed4464b95"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AssistantControl.swift",
+      "bytes": 4679,
+      "sha256": "3f7e26055b95c959b173d72afdb026c14c7236ebd51e3309d678f3ad0138719d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AssistantDialogue.swift",
+      "bytes": 10555,
+      "sha256": "cad4cf5218d997a8e9d0391d76c5b328ffe35d42c6b3bd11c5dca4de8e8204ab"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AssistantPreferences.swift",
+      "bytes": 2741,
+      "sha256": "7aafb91760b773d96ffb31fc5d95b5e386deadb04bed2f65d85d950e06d81a7c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AssistantSession.swift",
+      "bytes": 2784,
+      "sha256": "874c356efda3bc6dfd0d984e4b1cfe29f1cf225be20d243f5befda46c2b37cfd"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AttentionPolicy.swift",
+      "bytes": 3504,
+      "sha256": "bc7713a7faead5c10974390b7479132b6b250cde71dd2025b791626bb230668d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BLEProtocol.swift",
+      "bytes": 3762,
+      "sha256": "f1c504a987ccf627e4ca5aec4541846f2229573fedd218c45d6e92feed0cbc18"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BackgroundPerceptionAdmission.swift",
+      "bytes": 4584,
+      "sha256": "3857addb06b8347d7be14866c07e58d336b77d3a0cae5b375b362fc371d048f4"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BoardingPassDispatch.swift",
+      "bytes": 6680,
+      "sha256": "095ab816f817d4f6f3c3db28611eb9f577a40f040cf0c8f4a27ef2519c108794"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BoardingPassReading.swift",
+      "bytes": 20336,
+      "sha256": "a519e50b09648db8f5ec2207de69316f9dcc779c53f30f6140a061284e1b6d32"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BodyCollisionWarning.swift",
+      "bytes": 6691,
+      "sha256": "c06d47fe8e8c49abfb60acaa396cb046fa1b3fc193a50410ae51e257fe21c49c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BodyHeading.swift",
+      "bytes": 13093,
+      "sha256": "903f0889c4ccf98631036887f4d5588a3039bef1efa5b7363e72ecba557e3b3c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BodyProfile.swift",
+      "bytes": 12351,
+      "sha256": "61c8f6cb69944433f6dad350619c702e332306c95fee40da30c5232caf18cea4"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CameraRecoveryPolicy.swift",
+      "bytes": 4499,
+      "sha256": "1d2ac475c27b5036ba60791291296a3bd5002fff85be9d8a5ac3c03d5dd7ad7e"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CapturedTextReference.swift",
+      "bytes": 10751,
+      "sha256": "c76d3b80a4e3905f699f8f6dc3e0cc50326590672c1cffca6cb0f55d295d2fef"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CapturedTextReviewCommand.swift",
+      "bytes": 2891,
+      "sha256": "168705c5248abbb58d84e0938bc7b37ce42937d9dc0d667630583b4f1facd897"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ClothingColor.swift",
+      "bytes": 17452,
+      "sha256": "a674a780698f796b23bb512a798435b2f3460a8c73ddaf062c577d24824ca46d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ClothingColorTarget.swift",
+      "bytes": 7352,
+      "sha256": "b257311e19b25f0e6e089ac5a962b641a2932b6b2933945b79ea8338c6c09382"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ColorInspectionWork.swift",
+      "bytes": 2771,
+      "sha256": "f41d31498eb68695737db8aa1febe78aa94e372edeefca817ccd251d258ac60c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CommandAuthority.swift",
+      "bytes": 1582,
+      "sha256": "6d2e5913d894cfd0a85f94950cb19969911e14a7bc931bdee6091079055f52ef"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionActionProgress.swift",
+      "bytes": 28332,
+      "sha256": "aa2a979d179b2976e1b5aa26c04f3f6b07683be622527292b7e86edc48c1e27b"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionAttention.swift",
+      "bytes": 20052,
+      "sha256": "3fe10d11dad22058b99adbf4a49a747f4056039263fbcc9920eae2d216aaf186"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionCapabilityEvidence.swift",
+      "bytes": 4172,
+      "sha256": "a1c99594651230dbbc2755b821895b7430ceecaa58e9d12eabdc2fbc9ce6fbdd"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionClockDelivery.swift",
+      "bytes": 7719,
+      "sha256": "9b8f9b0987c7e177c93cfdf33e390dbfed28cecbe3dc60558e6f7af08aea2a6e"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionClockInquiry.swift",
+      "bytes": 6974,
+      "sha256": "da2159124928cbef38fe012264ee5dcbcceb5cd8eb9baac75874f6d0d69a7ff1"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionEvidence.swift",
+      "bytes": 33842,
+      "sha256": "f338b3c869d6f4fb8c84735bc2b5d9354ff07a8fb92755b5ef6980ccabef2d98"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionFacts.swift",
+      "bytes": 17578,
+      "sha256": "11ece72d6003b4f17856ae4ea274f447acd82fae0e355c784afc33dd0fb8946d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryRetrieval.swift",
+      "bytes": 13299,
+      "sha256": "1cf16603c72b124ac49614f7a808e8134d4a5290b7fce2d4d89d252513a06af9"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryScope.swift",
+      "bytes": 4031,
+      "sha256": "3ccdb2013403f2fedc4dfe0d9644e7f30f022c230b598eb82a62fbb87a92ba09"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryWriteQueue.swift",
+      "bytes": 5346,
+      "sha256": "44f79fb0abb025051edc8ac442f3728c840b04b79755a72cfe8e4939a94dd13a"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionModelContext.swift",
+      "bytes": 5949,
+      "sha256": "5046a8e100b21184a9264aa856d091bbf80e69db452730f0417d280d6e9e394f"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift",
+      "bytes": 18622,
+      "sha256": "943e0fc67ecf09d44bdebc73728de5795a9d5be2a04895dda6ad1b85a0471388"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionReportedStep.swift",
+      "bytes": 3002,
+      "sha256": "aba66786f105ca686b6a9d599162ce4b612374edfa33f1ab151cded0d863540d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionSearchClue.swift",
+      "bytes": 15164,
+      "sha256": "3331166a2c0b5efdd4ee0f1679cf12a8b23fbc0b4c75c89cfe6b03821851e6ce"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionTaskCompletion.swift",
+      "bytes": 2468,
+      "sha256": "34d1ad7fb506597dcef2c393948b68835bb55211aca71e8e46b28a7adf331202"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionTaskSource.swift",
+      "bytes": 4608,
+      "sha256": "c932948d79e184c6059a963a788f30f04979e4fa9d1c12961d0e4ec8eb649285"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ConnectedJourney.swift",
+      "bytes": 8561,
+      "sha256": "dd5c7aff4702d28eb6cfdb868a252666b0699625a9fc02b9b57fe432f3de0d12"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ConnectedJourneyCatalog.swift",
+      "bytes": 10982,
+      "sha256": "c91884dd4a621ab999b2235abe9d834c1dc91daf060b978706c9e41d2df95234"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift",
+      "bytes": 32587,
+      "sha256": "af5608eaa0e6204e595426b9af1a7d2916a4cb2fecf1cdbb92d072aabe498615"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ContextWindowPolicy.swift",
+      "bytes": 9173,
+      "sha256": "85374875f34f874ba7a8b6c328b4bc68e45dd17a41fed27049bc2fd5e91fa2a1"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ContextualCapabilityScheduler.swift",
+      "bytes": 20330,
+      "sha256": "840b97bafac2d81a8b055b64267e765a354750da5b46ee8cd40c25f9e50e8217"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ContextualTextPolicy.swift",
+      "bytes": 3440,
+      "sha256": "4c8d2c38d869d85b2e401c12cae5aea1e6fe5a40aed262812c8f06469c8714b8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ConversationClaimGuard.swift",
+      "bytes": 5548,
+      "sha256": "bb996c393ec727808ef6d930d1161f8da933a6bafd3dbee769fc80d544681e22"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift",
+      "bytes": 21198,
+      "sha256": "a22ff982c2e2c69a604d98ed6910a695e4df7efb45c173c3eafa3514110b01da"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ConversationIntent.swift",
+      "bytes": 8520,
+      "sha256": "9133d1557215ee40da8a2b2934eb41be956a6d21448e528d88d6a75fc11b5b0b"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CurrencyRetakeSession.swift",
+      "bytes": 4754,
+      "sha256": "63cc32d399085cfc311d43e79a50857a8f2324d0d19a6d6436ec56a3e471b2c7"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CurrentNavigationHazards.swift",
+      "bytes": 3590,
+      "sha256": "7ad37907f0fb752f9a7a328d9f13fff315a7c72221865fec148d8815bd1b2c5d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/DebugSessionLog.swift",
+      "bytes": 19912,
+      "sha256": "a115c0f271c30130ce55d91d7afcd8b4d8e3a744dc1d81957fd8d7e9a6125be8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/DiagnosticBodyFootCandidate.swift",
+      "bytes": 5360,
+      "sha256": "f1441ad17452626985470887f626d3f746031c98027831932357641bea18afa5"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/EverydayRetryWindow.swift",
+      "bytes": 2181,
+      "sha256": "cdd4a3d42be4adc261bef104d92cac74168e54fcd711ae018e1ff178c2550022"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/EverydayShoppingList.swift",
+      "bytes": 4550,
+      "sha256": "cfe40569c7c3f809118517cd1ea4395c2c0c67c177b75db84238cea925ed1ca4"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/EverydayTaskCoordinator.swift",
+      "bytes": 11451,
+      "sha256": "629c856f923c5ebe721cc4fdf5244d02d82961d704b12b6eacf4b6592999ea90"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarActionConfirmation.swift",
+      "bytes": 1522,
+      "sha256": "049351dc610a9172731e998e0c31af9b3473e0752707c3bfe3943def8d33865d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarEncounterPolicy.swift",
+      "bytes": 3456,
+      "sha256": "50b83e6f4490b450003b3675ce7fcae0b73bcec6fcc3dd2f074788e5818d4e84"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarEnrollmentConsent.swift",
+      "bytes": 834,
+      "sha256": "525e90525b6144356b8d17a8aba34eb7c4fe850a58a7d8b1deb99d53cbe047e7"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarFacePolicy.swift",
+      "bytes": 8759,
+      "sha256": "0248c7c3dd298a71b8c9e4a9e321440c85a609363821de9c2d62f286ee9baebf"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarPeopleCommand.swift",
+      "bytes": 5624,
+      "sha256": "99dbefbdc3a695f7e088102c15857e5247f42dd3824f6dc24fbefe697e82ebba"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarSearchBudget.swift",
+      "bytes": 1562,
+      "sha256": "f50064a266090783dd1f5260b904ea773bf3fcdf92d29f67d3d96e1b056332c0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/Geometry.swift",
+      "bytes": 2192,
+      "sha256": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/GroundGeometryEvidence.swift",
+      "bytes": 12810,
+      "sha256": "45f089a9c8f6852f41ede3eedbadf5537de7b8c12ff300ac1f9d3cdf8f2e4cf7"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/GuidanceCadence.swift",
+      "bytes": 1838,
+      "sha256": "b9c93fdda0216862ad06f1c0a46755894e07fc2ddaea4b1976edca68965baf2f"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/GuidanceText.swift",
+      "bytes": 4439,
+      "sha256": "b1f29eeef4a94d9ad1cbc17032bc68c52cdcd4216ea84ff42d94e8d9824c5836"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/GuidePrompt.swift",
+      "bytes": 2684,
+      "sha256": "ab5d4a9dcb3ab143eb2ffc556d79d5cb3d1014a3f1cc51c9de251bf43a99b508"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/HazardDetector.swift",
+      "bytes": 8326,
+      "sha256": "9bbcdae56f58ed76d8a06f0b03651af24a023c48c0a23111187ec2a511c1d615"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/HeldSearchIntent.swift",
+      "bytes": 1883,
+      "sha256": "81f6f637bcde884610235adb1b717e88ca6a7bbe7502b1039883cd0cfc7d52cc"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/IndoorMap.swift",
+      "bytes": 8712,
+      "sha256": "9729b6a738bd994bd8aedf76f862bf38a58a1a18a4363deb73fb9cc6879001f6"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/InterruptedObjectSearch.swift",
+      "bytes": 2605,
+      "sha256": "878a116d64eebd58e63f9644df579c841495971dc98f83e72d35ac1e9ba99fb0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ItemAppearanceMatch.swift",
+      "bytes": 2250,
+      "sha256": "f288fd3f0188f8e6a8c126c35efd1160a4727269473bc6f28d1d25c79a0fd5bc"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ItemMemory.swift",
+      "bytes": 17831,
+      "sha256": "4b883c8230193043e8285fa1b4e7f9491e0e4b2d17d570fc622168dd8c306191"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/Journey.swift",
+      "bytes": 2019,
+      "sha256": "011a296b2a685fee6fbb61b0ca1c347f75c3fa0453e4a1ce85d18cd4467e3918"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/KeepOutZone.swift",
+      "bytes": 2162,
+      "sha256": "eddf790cac4ca97596b42631af7e86501f7089024443a5d30c19570469035968"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LandmarkPose.swift",
+      "bytes": 11155,
+      "sha256": "b32693ebe91cd2ce94d15b00e0b3303d02b6a027ed33e94505b424f33e6f8df0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalEmailDraft.swift",
+      "bytes": 12259,
+      "sha256": "01f9f9d614d7275309317fb0e79d313b2501f78978593ed46134a107640a136f"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalPlanner.swift",
+      "bytes": 6505,
+      "sha256": "04da3a8ca35f4bfa3dd98aa4b4c9c11ae90a291504adf77f8420d51a41deedd8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalRecipeCompanion.swift",
+      "bytes": 8309,
+      "sha256": "1db5eacc76dbe90acae69a3a9f08125d29303e8d7bcd3d7c2d8eb39f75e7ecf3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalRecipeReference.swift",
+      "bytes": 4210,
+      "sha256": "c826be8289a7d557abc5f157b5363e2cfa18e5e11b1099bcfc93c0befb2d0e34"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocateCommand.swift",
+      "bytes": 1981,
+      "sha256": "3e0f193f2c38ec2c3c58ec66c5fc6edefaa4d36e10a70638cb2c2e9f3c9c3435"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/MapContext.swift",
+      "bytes": 2549,
+      "sha256": "ded465f5cfd5eb494714bfef17bbcb41bf1b11f600445e3bfd951842eadaa919"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ModelResponseAuthority.swift",
+      "bytes": 5897,
+      "sha256": "034be0c186021e27b0f14e82d795825283434cd4596d15fc0bb3f8d3feec98e1"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/MonitoringRecovery.swift",
+      "bytes": 4017,
+      "sha256": "7f031367494fae7cc47720560b83cfea72ff6283e051c6be892102b41d069fae"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NarrationBudget.swift",
+      "bytes": 1782,
+      "sha256": "4cc4993bdc63734fb2fc415c8208844a355be76af10d3af17a87fc10e8af68af"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NarrationDelivery.swift",
+      "bytes": 191,
+      "sha256": "f52b67b4669481a8caa4105ed4340f67c46703cb47d16b6f56143e71a88351c0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeClassifiedHitEvidence.swift",
+      "bytes": 6729,
+      "sha256": "25f0b2becd0329a2183696e1ec65854f3d540507720f376adbe654463857300e"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift",
+      "bytes": 2076,
+      "sha256": "0e6e55ddc3321b6b89998ca43c9fcd3711ec8e54d7395ea99b6edeb52e2b6e7c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeLocalGrid.swift",
+      "bytes": 17248,
+      "sha256": "4c607a6df58b155c3b42573c40124911271bbeaeee10dcd4498de29bed809343"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift",
+      "bytes": 14540,
+      "sha256": "362ce43dbfd7b7821bf1e1a0d6cfc580cffefb28010921d60e8a5068cdcf5dc3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeLocalizationSelection.swift",
+      "bytes": 1444,
+      "sha256": "c2cb3aed99912a0199d70d8343ebeb0848e5e2395670636d4da9fd938798f696"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservation.swift",
+      "bytes": 20518,
+      "sha256": "ec92693545086adc5236ab93fb06e90e8ecc80f58f8736a9e4af3ddf3067fadd"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservationDurabilityBudget.swift",
+      "bytes": 8633,
+      "sha256": "45e02eb347a0d90e0283226b51cfa44dc0430cdbd82abc471c66e35a6b5e549c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservationPipeline.swift",
+      "bytes": 20192,
+      "sha256": "8b67496c2e58e4eb3a2cab66ecef714fb3e96fb8d86c9878a18a5a17c7fec913"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationSurface.swift",
+      "bytes": 5154,
+      "sha256": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationTestArchive.swift",
+      "bytes": 1262,
+      "sha256": "5291e3a4bd0045859af0eaab6cac7b7c4bb39efda3ddbdbe7bc859810040ac81"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationTestRecording.swift",
+      "bytes": 16951,
+      "sha256": "6fa90d6e17ac83adfa53d16c2dc8a9a25e425742260dd89f5135dfa38568330d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ObjectSearch.swift",
+      "bytes": 6460,
+      "sha256": "8d33959da91fc8d8dd042871f9e6d4704b5a60a135efea52d623e7d636977841"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ObservedObjectMemory.swift",
+      "bytes": 36657,
+      "sha256": "bb187e70f5fb50a5597d43cd0e1735a0a6ef18df20927dadf53ab66291fd49dd"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ObservedScene.swift",
+      "bytes": 11152,
+      "sha256": "664d334664a5633b1d3f414b55fac32d83883970ba8340c62c2b7fb3b786f285"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/OnDeviceLanguage.swift",
+      "bytes": 5803,
+      "sha256": "332fc111730a5871c2ec0e6fd8d423bff3eecd68243a3c83c50d24b5b6366783"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PassiveSceneDelivery.swift",
+      "bytes": 3561,
+      "sha256": "6092fafa0c379f68e00b1c07483dca513419b960a2542ce20d53fcd7b49f9b3b"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PendingQuestion.swift",
+      "bytes": 1572,
+      "sha256": "7f02732073497cb3de35ea306dbe141bbc1dc315c33ebfbb5cc93816af2b174f"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PeopleRegistry.swift",
+      "bytes": 4581,
+      "sha256": "02bd7ca790c20d30859dbeb3af6f5551779e8e0485b57a8a2ee1ea22639de9e0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PlaceChanges.swift",
+      "bytes": 1920,
+      "sha256": "596952430dde9e945bed8b4e516256088a85cfe25bf58d35228a45f80e6b74a9"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PlacePackage.swift",
+      "bytes": 10824,
+      "sha256": "6c23c635ed8fc9fbb62608f1475e0aa28f2a9762d32e4700a5a0e84d395dacaa"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PlaceRecovery.swift",
+      "bytes": 1462,
+      "sha256": "657aada7ea65e19120de922f8fe4080c0fdf9cfd1bb00621513997845e7e89ba"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ReadingTools.swift",
+      "bytes": 13654,
+      "sha256": "6e0ec17b2c6b280cc143897b60b3cdfaf474907c2efda43fe7922c5ab3a47ad3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ReadingWorkSession.swift",
+      "bytes": 1784,
+      "sha256": "144af929aa2d2062ae318fc91b6715783a1c4e631c4ff51ff7863b2df3d018cd"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RecordedRouteHistory.swift",
+      "bytes": 13864,
+      "sha256": "11ff46516cd534aa6da5da6b6bce713c2c7eff6a9015b0c8f5102eae9b87a9a3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RecordedRoutePlayback.swift",
+      "bytes": 4957,
+      "sha256": "9c07d1b5fa0fb9cee74d222db4cb76e3b85a1ecdba945b03aeccd6c0e43adcec"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RequestedVisualCapturePose.swift",
+      "bytes": 2188,
+      "sha256": "1c2b4fe930133b03bba76d3a1865656b3f015c3e1f824997783e431e5ddff5a8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/Resources/guide-prompt.txt",
+      "bytes": 1839,
+      "sha256": "39edfdaf9f7acfe75e3cf0a1fc604ac23d763dcc576355ae8f263d669954bbc0"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ReturnTrail.swift",
+      "bytes": 4064,
+      "sha256": "7ff7d8612ff62b516d8bc0939f17b1204cd00b53f2e23ea9aecd9fdc93601c57"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoadCrossingPolicy.swift",
+      "bytes": 2328,
+      "sha256": "dc1b2aad5975f1d1cb3742bfbb83d3c5664e732a4526719c82e87e3b4f159245"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoomLayout.swift",
+      "bytes": 4289,
+      "sha256": "3e7609313a1d781e5b6c0c40071439442df88fddfe2005e86078e54ae6d0af18"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoomMeshPreview.swift",
+      "bytes": 7130,
+      "sha256": "61e308bdc4f5c4b2bc3c55ae6e0cf25faaa63f209e28b68049881e836938d169"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoomRecognizer.swift",
+      "bytes": 12558,
+      "sha256": "06fec42162b8a5d41626aa5b353ac6da4af26a792518a070330699990efde5dd"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoomRecoveryCoordinator.swift",
+      "bytes": 8128,
+      "sha256": "d2e71b9ff24958814c89ef02eaafac7654b35bc8d310ae59a295698dc51975ce"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoomRegistrationAcquisition.swift",
+      "bytes": 8477,
+      "sha256": "4bb59e8572eae9a3d79724650231fcb06a53dd29bc3c0727741e1f4025b6528c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SaudiBanknotePolicy.swift",
+      "bytes": 7261,
+      "sha256": "65f27a6e3754e1f26471bb17fa613f8704614827862779aedcb5c63d533bfc44"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SaudiBanknoteReferencePolicy.swift",
+      "bytes": 30897,
+      "sha256": "e908269cf206d8f83ebd9c56ab5b564313d1cb9428ed9157301527e4358de512"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SavedRoomDiagnosticGeometry.swift",
+      "bytes": 6897,
+      "sha256": "7c591f00b560d194cf800093cbb4c431a3839399114389bf328fd2d629b02c75"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SavedWorldFrame.swift",
+      "bytes": 9188,
+      "sha256": "2238b9b9bbc9a49c9ead6adc7ef15e035345208dc764b2cb14716a0922205ea6"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SceneChangeDetector.swift",
+      "bytes": 12511,
+      "sha256": "a88a7f88a6b2fe6b615fea3c44338bfc2f8ed69f3b7bfcf9a94a1cdd750b9e37"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SceneContext.swift",
+      "bytes": 5766,
+      "sha256": "35c3e0933a4c6b47556b2550b0fbf8d610d00f286b2dd6faa812a20ad9d52252"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SelectedDocumentReference.swift",
+      "bytes": 12399,
+      "sha256": "adab90a4619c2a07ec50ec9664193f6c88f0148d066ce694182b9396d4cdeb25"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SelectedPhotoReference.swift",
+      "bytes": 7610,
+      "sha256": "8b6ad053cdc65e3c3fd0bc9f46c1eec9766e05ebdc8a9603bc197d78891a9659"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SensorMeasurements.swift",
+      "bytes": 3154,
+      "sha256": "4d6c2f105a502f8797d4490c24bfc01494a88523c0f63c3ef5ab4824885f6f99"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialClaimGuard.swift",
+      "bytes": 14754,
+      "sha256": "fa3495c74ad625f6a1fbb2d832890ca61f623cd236254bb58ce4cae9391a5233"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialFacts.swift",
+      "bytes": 7435,
+      "sha256": "c99d1ffa433ca6b6688c09c7e995667b04a44b80fb8ed62a6b5f94d7e25e96c3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialFrameRegistry.swift",
+      "bytes": 16933,
+      "sha256": "071ef36c69b23f563886212fcdc72be91e6389c56dc8e22c05f85cf1490d0cc5"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift",
+      "bytes": 8687,
+      "sha256": "88a9e9f888a1c23b0e27a3da270008c6dbc6d88fff61f016cef5344280c60193"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialMapInstallation.swift",
+      "bytes": 12090,
+      "sha256": "ad5432bd759f9494e0df3ed12ef1153239e5df42502f80bfea0810ec682b4e42"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
+      "bytes": 19949,
+      "sha256": "f08fa5a16b99a846aef261dde7d6344b60ef8b09912a77aaeeec0133fe4a90b6"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpeechDeliveryLedger.swift",
+      "bytes": 5696,
+      "sha256": "dd5b5f8ee2438bfe8c09447a779fb8320e5ef8dec376e149a7a0fb5389aab83c"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpeechPriority.swift",
+      "bytes": 474,
+      "sha256": "d8006b537aee905dd5f8d71fb2b7a3e85864463f486f0cf76dd7a20d98b03c6d"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift",
+      "bytes": 3157,
+      "sha256": "53a0cf8756ed4ce9c445f889f31eac88b8333f6b8d8ed471b5c08d923817b3a8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SurveyCoverage.swift",
+      "bytes": 2560,
+      "sha256": "eea489cd0dfbd90c08af2b1b9dec1918946e114cf192d26d4d31d8b954133c13"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/TrackedTarget.swift",
+      "bytes": 3744,
+      "sha256": "64747f7e78a39e2cefb3293eb1a04f061b0cc0d404d692f4e7f0b23830b872dc"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VenueCatalog.swift",
+      "bytes": 5607,
+      "sha256": "5f86363530c00b665a789d9216a941c12fd8452a17335509144af2cb3f53805f"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VisualGrounding.swift",
+      "bytes": 12608,
+      "sha256": "b71390ce4d557ec66913e66d09226606bc255c949d009fd59ee14394aec62191"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VisualHazard.swift",
+      "bytes": 1754,
+      "sha256": "3620a4605d309d1ed11f1a6d5cd6e9cd0c73b2e87ad02a97937592ca3cd341c3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VoiceAuthority.swift",
+      "bytes": 4627,
+      "sha256": "74f08de326fe7267b98ec601f78222807699c8c8c9ee77a7bc2621edf939d8cf"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VoiceCaptureRecoveryPolicy.swift",
+      "bytes": 5402,
+      "sha256": "29905d6c174e0edb43415ccf73ca59bd98dc5794ddcb6dc760b6557872fd4628"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VoiceRoomScanConfirmation.swift",
+      "bytes": 10802,
+      "sha256": "64547bb0ac1e72b9c7627563c0bc44624c0e690211392624078cee286c9340f5"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/WearableEvidence.swift",
+      "bytes": 2453,
+      "sha256": "c5801540e03385ef902c904a48ee365f1f2114715ad42f1be9cf0eccb5b939b1"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/WorkRevision.swift",
+      "bytes": 901,
+      "sha256": "63b67123799b2db4f46f7e4b594f692337939c573d7c74997f155d8f2f0101d5"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/AssistantControlTests.swift",
+      "bytes": 4315,
+      "sha256": "932d91745559ae7862a80096af8c2ca9fc622bbccc8971ab3a84e1bd4073fa48"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CurrentNavigationHazardsTests.swift",
+      "bytes": 4353,
+      "sha256": "268b7b2f7c3d3ac18e47d6cc4bcb083bd7be81fdd9d843c7aac0b093e0ac60cc"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/DiagnosticBodyFootCandidateTests.swift",
+      "bytes": 6987,
+      "sha256": "211386177b1b636b3eb5fdf391e5195d10344a58ab3fa760e62a16ae02d9819e"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/FamiliarPhotoImportOwnershipTests.swift",
+      "bytes": 12989,
+      "sha256": "d8c4ba2b23342defdd9cb9a97eb02d967399d0c5b3e8c708fa7151646f38dda6"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/Fixtures/companion-evidence.json",
+      "bytes": 22377,
+      "sha256": "33be5ec6e9715e9e4fcd2ba08ff1c6d72e249ca28071e2dd6c07c2f2ff8ee1b0"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalEmailDraftTests.swift",
+      "bytes": 11472,
+      "sha256": "4be674d0c2dbb8637870b930ee62e854fe5fa8c6aecfc0319e40eff5e3a9d3b5"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalRecipeCompanionTests.swift",
+      "bytes": 9310,
+      "sha256": "a29af6a443e6739b17922a292569c1b841703dcbae3790ad28988a14fd0931cd"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalRecipeReferenceTests.swift",
+      "bytes": 2594,
+      "sha256": "9a55624ddd1adbdd164e0222ed6f4ab740f5288c02e6220b502e1a93318d16f3"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeCaptureRetentionTests.swift",
+      "bytes": 12589,
+      "sha256": "5718fa0781d381a69dd6e656ae53b2f9a50312d3941b0eae6aad089d864a10d8"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeLocalGridTests.swift",
+      "bytes": 18743,
+      "sha256": "8f78d26a1dd1484c15e98c8afe9561a31f0067881d4268456ffc08470480267c"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeLocalizationEvidenceGateTests.swift",
+      "bytes": 13480,
+      "sha256": "ff19a650989b15806fc3369818a1d09225e260be33e450503d106b56be0f48ae"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift",
+      "bytes": 13231,
+      "sha256": "bd9fbe493ae7edd1ab83e11b1de06b2bd45396ca65af3de824f954e4c97e9965"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SceneFrameProvenanceTests.swift",
+      "bytes": 2519,
+      "sha256": "4eba63c00c46159fc6ed35e8dc3849c64ac748931b638dc6dfe52d595d4f2286"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SpatialMapInstallationTests.swift",
+      "bytes": 9617,
+      "sha256": "31a12712af37a29332ae6fecce20518584f3eb88a2f458dc8b341c99678f522f"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/VoiceCaptureRecoveryPolicyTests.swift",
+      "bytes": 12408,
+      "sha256": "d692c97af3e34f7245fa609998eab297cf3caea297c05c5c0c738824d0191809"
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "bytes": 46117,
+      "sha256": "f6c5b86e2fdb5ae9a6ef10283c218cd4ac7fe9fe2b928178224dae0e4b872f1c"
+    },
+    {
+      "path": "ios/BlindAssist/CommunityLibrary.swift",
+      "bytes": 21714,
+      "sha256": "a561896bebb08489b861eab9275344bd51155d78949b5ffedc00afb28fb8ff91"
+    },
+    {
+      "path": "ios/BlindAssist/CommunityMapsView.swift",
+      "bytes": 23474,
+      "sha256": "3e432ce58a82e3e09984cf24d3646c97b29bcf866cb138e9622d146052aaf194"
+    },
+    {
+      "path": "ios/BlindAssist/ConnectedJourneyRuntime.swift",
+      "bytes": 46882,
+      "sha256": "7b38fc5aa86fcfcdf845e61c181a20701a97a21b9a9472db1ca4d2ef34de0589"
+    },
+    {
+      "path": "ios/BlindAssist/DashboardView.swift",
+      "bytes": 90434,
+      "sha256": "42244dc19e3c4b0c3eeeea81455dc5e2ba84b1ad23eec47a3530c508ed1b0037"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
+      "bytes": 56312,
+      "sha256": "2be6627cce59271cc3ca15ee5ecb44880e19f1ecfce232b823042efea788c9b3"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarPeopleView.swift",
+      "bytes": 19869,
+      "sha256": "e519cb942998113af2f5fc4ee2923ce3df2d414366101379dd872c404185df4a"
+    },
+    {
+      "path": "ios/BlindAssist/IndoorNavigator.swift",
+      "bytes": 30153,
+      "sha256": "179ed9a372d175f439e33c5eddedf6320f951d610bc168159c1e2826aebbac2d"
+    },
+    {
+      "path": "ios/BlindAssist/LocalEmailDraftView.swift",
+      "bytes": 8613,
+      "sha256": "4c551fa73eed42a780999a4525f2a7dbdff271ec5319d503c9c0dd56e6381382"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "bytes": 97938,
+      "sha256": "2683c9e8dc3200cca7d7a88d12151a004538f09d30eb6061becc608895ca2ef6"
+    },
+    {
+      "path": "ios/BlindAssist/LocalRecipeView.swift",
+      "bytes": 9427,
+      "sha256": "494ded2a9ffcc40a94fc01166cfb42d1da6c2eb0d1fb5611909c4fd46a50f9ea"
+    },
+    {
+      "path": "ios/BlindAssist/MeshCandidateDiagnostics.swift",
+      "bytes": 21434,
+      "sha256": "2bc0cee5ce01f53abc5c1ffebb7e5b790ccdeef2158ef362f4dc0036cddf117c"
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+      "bytes": 9751,
+      "sha256": "e806eec1da9d012b94159984e22e3a1014de51590ef3c5e9aaaad29f2afdff96"
+    },
+    {
+      "path": "ios/BlindAssist/NativeLocalizationIssuer.swift",
+      "bytes": 3607,
+      "sha256": "25fa457499cd263795a98c43ad210e90b601fdccf7ce48870261d5903f98aa29"
+    },
+    {
+      "path": "ios/BlindAssist/NativeLocalizationRouter.swift",
+      "bytes": 8524,
+      "sha256": "9c85e545ec717111850705c03f3db181e6f4b1ca49b4626efd013f833a7e8c28"
+    },
+    {
+      "path": "ios/BlindAssist/NativeMapping.swift",
+      "bytes": 12033,
+      "sha256": "81bb9e3bb42ae3eede0f2f81db837ab6faa885b0fad1dbc394189890ce3d6bd2"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "bytes": 567216,
+      "sha256": "a1f0b9ce8084a47378ecdae5e65ae3e64bd18236fb1846fa76ec6a4c1cdebd7d"
+    },
+    {
+      "path": "ios/BlindAssist/ObservedSceneRuntime.swift",
+      "bytes": 13027,
+      "sha256": "b074bd8cfb19d3727c52bfed7707d01f1480a15e8e9fd4c2f026066df5f33f31"
+    },
+    {
+      "path": "ios/BlindAssist/PlaceStore.swift",
+      "bytes": 55499,
+      "sha256": "f485e70fcfec2b075f61c524adad7e7bc9efa9a0a8439fc6f8199eb609a29880"
+    },
+    {
+      "path": "ios/BlindAssist/RegisteredIndoorNavigation.swift",
+      "bytes": 18416,
+      "sha256": "90fe9cf88127607f6bb89178a404113007c172005c2257438a084fa4faa25636"
+    },
+    {
+      "path": "ios/BlindAssist/RoomDetailView.swift",
+      "bytes": 34880,
+      "sha256": "ca466753a07f7f03bd19e84d40377299974fba01d3bcc8ec44b2d70b03c4ed23"
+    },
+    {
+      "path": "ios/BlindAssist/SavedRoomDiagnosticGeometryProvider.swift",
+      "bytes": 10567,
+      "sha256": "09d25cb1b1056cd605c3bfda9375be23d70b179651d195c0ef7307df4f5a8bcc"
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
+      "bytes": 48177,
+      "sha256": "bb6527ad5e018e6316db2f4f103c16faf53cd4e5e142a8e513506c253a505565"
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
+      "bytes": 10008,
+      "sha256": "61981c8f5447b8b4b3dc8852e2ad8d7aa8442f217a34e9df896f7c02b68ac57f"
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshRouteAudit.swift",
+      "bytes": 13610,
+      "sha256": "e217126cda66bdb6299cea7da55d414b8d12b9d3293e15dc98bcd21fe23c433f"
+    },
+    {
+      "path": "ios/BlindAssist/SelectedPhotoDecoder.swift",
+      "bytes": 2949,
+      "sha256": "5e40101bec994d45461a14c1244eb34785df02a76ddd6b9368955af324453778"
+    },
+    {
+      "path": "ios/BlindAssist/VoiceInput.swift",
+      "bytes": 26488,
+      "sha256": "7b1f5b96f45470748fce3326d985ebcc455353cc28b7cde1936b36dde8c34c96"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassificationIngressTests.swift",
+      "bytes": 21177,
+      "sha256": "078af9324b47cf0fb75cecf511ef6c5ea6f93577ac734f32a13495ea80f7798b"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift",
+      "bytes": 12808,
+      "sha256": "ba282d15ad4d00d43288fc07697cf3044387cac72bd72fb6ee73b705464befb2"
+    },
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "bytes": 97622,
+      "sha256": "7beb0dd62c6efde5097243529dccce76f1e55d9db2069f93697e07ab127c72db"
+    },
+    {
+      "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
+      "bytes": 59355,
+      "sha256": "a744313687fd03bffa3b0eb87333a08875a6a9ede9983c62f673fbb9e309d5af"
+    },
+    {
+      "path": "ios/BlindAssistTests/ConnectedNavigationBenchIntegrationTests.swift",
+      "bytes": 27813,
+      "sha256": "787524c250282db2e910d9541c372ff09238d4b274c6ac9cb26740e0569c938a"
+    },
+    {
+      "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
+      "bytes": 45251,
+      "sha256": "cba80b2e7b6e435203ca53514fbd3153eee7657562d5d65c42fa202426f82e73"
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json",
+      "bytes": 2726,
+      "sha256": "a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663"
+    },
+    {
+      "path": "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
+      "bytes": 18228,
+      "sha256": "414ebb6c8345cd1ed097307b3e41c2832ad94676206566068d3c000a5ae08d6f"
+    },
+    {
+      "path": "ios/BlindAssistTests/NativeQoSComparisonTests.swift",
+      "bytes": 6758,
+      "sha256": "84248e3bc80f8b48cb6b4a6cfca890cd34da45b02a52e294324965aa2fc67965"
+    },
+    {
+      "path": "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift",
+      "bytes": 17587,
+      "sha256": "c2fb6db3d1822cd42736fe121a245da7e8c2af914dc14014c351cc4fba9b31a3"
+    },
+    {
+      "path": "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+      "bytes": 19507,
+      "sha256": "468990293d238e35ac77bd65457af4113fc6f87636cf1019e44564b578d9ca3d"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomDiagnosticGeometryProviderTests.swift",
+      "bytes": 17195,
+      "sha256": "9799af698ac5ddcf36f2fb605315683d60cb84578f16f0cb5b7235595a45add5"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
+      "bytes": 35309,
+      "sha256": "cd0b86b0db9a15973e6b2cf39d2a013a4006d3bf93a2974a161cdaf1a8088140"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift",
+      "bytes": 37825,
+      "sha256": "06a5fa848a9d228cecdd29896f6269c052b293752ee5363b5942693874d7d816"
+    },
+    {
+      "path": "ios/BlindAssistTests/SeatedCollisionBridgeTests.swift",
+      "bytes": 5195,
+      "sha256": "822e368e110da4c436fb1bf1768be30668ff85db1e980e5eede01112ca82455f"
+    },
+    {
+      "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+      "bytes": 60813,
+      "sha256": "55355dfc5d8ab037030b85b1d1390eecb57571e6178d31ebd4bf5cb1d8a9d238"
+    },
+    {
+      "path": "ios/BlindAssistUITests/LaunchTests.swift",
+      "bytes": 29818,
+      "sha256": "49210fc74eeda8bfe697da249cf16dd089dc6ee1242c4648e2e77129060bc9e5"
+    },
+    {
+      "path": "research/arkit-mesh-adapter-82/Package.swift",
+      "bytes": 529,
+      "sha256": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e"
+    },
+    {
+      "path": "research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift",
+      "bytes": 3892,
+      "sha256": "73c26289773688db28c6caaeb0d84430dd81c78df5a4fa8718b50f332da4687f"
+    },
+    {
+      "path": "research/arkit-mesh-adapter-82/Sources/MeshSnapshot.swift",
+      "bytes": 7626,
+      "sha256": "d7318f9a2564c62677abaf53934ea7721a25fe13a1d59ffab9ecd717762b4fdc"
+    },
+    {
+      "path": "research/depth-raster-integrity-20261030/README.md",
+      "bytes": 2512,
+      "sha256": "7afba98b05c5b24a01c70c983e1f455aff972b81d19618cbfa57f2056f9a9e4f"
+    },
+    {
+      "path": "research/depth-raster-integrity-20261030/RESULTS.json",
+      "bytes": 720,
+      "sha256": "011664e839c2be82d0bd6967ee719bf7f859cc7d5ec67843efd715c6c547f4c0"
+    },
+    {
+      "path": "research/depth-raster-integrity-20261030/source_check.py",
+      "bytes": 2653,
+      "sha256": "f0aee87f530aba57d87e147b6f0679c1775a71d8579311bdeca464a4761fcf73"
+    },
+    {
+      "path": "research/ingress-fixture-owned-drain-20261030/OBSERVATIONS.json",
+      "bytes": 3220,
+      "sha256": "12f59341e9a1e345975f949d35e42dbbc66018820daef7851b944758f1ece81e"
+    },
+    {
+      "path": "research/ingress-fixture-owned-drain-20261030/README.md",
+      "bytes": 4089,
+      "sha256": "00103e01f646a9bd1040b02bfc11e86078fcbef3f629b3072fc4d7f2dd0d7ceb"
+    },
+    {
+      "path": "research/ingress-fixture-owned-drain-20261030/SOURCE_PINS.json",
+      "bytes": 1583,
+      "sha256": "b9bc93647e600839af37fbf0094b27f887ad9673079634a223f0a48c4248f2d4"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/ATTESTATION.md",
+      "bytes": 7050,
+      "sha256": "ead87e93b41bc538c70489757f6718a08c2cecbcf2f35cce310501cfcf495346"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/README.md",
+      "bytes": 6135,
+      "sha256": "390d261fdb2862599dfa9169a14e57fe8d47e5450cd0c9d40c38312e90b419a3"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/SUPPORTED.json",
+      "bytes": 3861,
+      "sha256": "1995f554988570d61ee4a768226a6d631e30dc534a51341d93ba02a83145f655"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/app_adapter.py",
+      "bytes": 7368,
+      "sha256": "9b4b2f5f5e995664dd885d669bae6d5a6be8c1c34d43fcabbb6ef0bc3c67d6b0"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/build_attestation.py",
+      "bytes": 12374,
+      "sha256": "9aa53907c305bbb0472bdf773c0110f8a5b77801994300333980056ea7c3f3ff"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/test_adapter.py",
+      "bytes": 4834,
+      "sha256": "7c5a0e2e135fd7eea15efa85ec60940651f9fd88af8018bb79bc3829d5e5f5c3"
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
+      "bytes": 11465,
+      "sha256": "60aab6415052f291b8e4fd84ff08e52829042e2dd47035a34e555a1729e6e741"
+    },
+    {
+      "path": "research/j01-temp-fixture-portability-20261030/README.md",
+      "bytes": 2447,
+      "sha256": "72bc6f64bf10b2c36d76b25e06b40a495717046457e212d53665cb560e2401d3"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/README.md",
+      "bytes": 16141,
+      "sha256": "8acd7427d206110fa63ce2f5a7e3943603ccf25a3457776e28c6b7c15a0a307f"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/RESULTS.json",
+      "bytes": 2362,
+      "sha256": "6b38f0661da1b786474fbe4cc0ab030730c82ce3d134379c09e99d53a0222211"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/SOURCE_PINS.json",
+      "bytes": 3307,
+      "sha256": "f201ea4d97887dde0ba6eef31ac9c35bdc92f34b4d4bb33292b8175fd469f2ac"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/UPSTREAM_REFERENCES.json",
+      "bytes": 2155,
+      "sha256": "25607bed5004a851bcbdf05295c88f9db40d3f5bdbfcc9a66ed4cf20ae763c29"
+    },
+    {
+      "path": "research/live-floor-support-gap-20261030/audit.py",
+      "bytes": 5718,
+      "sha256": "069e7366d3a1507525c3762b5f837401102000406f1d430626c12a011f9db212"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/DEPENDENCY_PINS.json",
+      "bytes": 1839,
+      "sha256": "f549b452952c0b59945ae8bfe65fb842680df53af8c87794a511dfad2359f808"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/MANIFEST.json",
+      "bytes": 2663,
+      "sha256": "4b29e3f5c70ba743c2bbb21c99aa36ddfbb7b14a917129e93d3a608520cf53a7"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Package.swift",
+      "bytes": 1402,
+      "sha256": "0e71546f2377fcb4df676e8dcbeac54ad68a8f21344f6e225bc64bfe9b972f95"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/README.md",
+      "bytes": 9021,
+      "sha256": "5d275a59ade60bfce3f2a96b2d0b5a1a29f01066f7c814a3d4515ba828d837a2"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/STATIC_RESULT.json",
+      "bytes": 1312,
+      "sha256": "171f66bf0fc7189221ee525ad479d9c4cdf9613882f5f5745b92fc22623d3c1c"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Sources/LiveMeshBenchIngress.swift",
+      "bytes": 4080,
+      "sha256": "4a1e7a16d84a8a5ee7822b3216afd2ae6014571bc8d72c2b7453478d56748e20"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Sources/LiveMeshBenchSession.swift",
+      "bytes": 15341,
+      "sha256": "6779285aabbe1f5964938be4e9707ce9dc24eb3ad56aeeaeb126116d97e81bd7"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Tests/LiveMeshBenchIngressTests.swift",
+      "bytes": 11222,
+      "sha256": "4637fb2f9189287bbc85d94996ea246359d19e4800238584bd1f7ee4be17e64b"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Tests/LiveMeshBenchSessionTests.swift",
+      "bytes": 4545,
+      "sha256": "7d4ea67bf4925e3194caf4321aa98ec36a35973350f2c088fb7b07f3c2b0ea82"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/verify_staging.py",
+      "bytes": 4385,
+      "sha256": "4823cf597b29d73d74038a4440f02c5fe86ea81c9b0a8749c9bbcd9eb67ca7f0"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Package.swift",
+      "bytes": 1583,
+      "sha256": "b74efac5a48710a6b98b9ab70b767f7d0ea751bc06bf56ccf9605b2a78d3aba1"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+      "bytes": 7499,
+      "sha256": "48a8329aea5dba8486aa2943ef52cbb44df57f422dd447f10d45eb9cf0cfd0b0"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+      "bytes": 29334,
+      "sha256": "db8fcf844c97b92e66068fa1dbf10c9dbaeedea96abd666c3c1edfad5cb11b24"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchCameraSnapshot.swift",
+      "bytes": 2464,
+      "sha256": "440eadb3ebc43ec1a47a6fa87fa8eaf9b96eceaaa250b8a643b3eb6e3131538d"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift",
+      "bytes": 4722,
+      "sha256": "009b9bb29dfff7d0496b792fadf1c7ab530d781bb725d53a96aa18f89ca49c3b"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchReacquisition.swift",
+      "bytes": 8075,
+      "sha256": "245fc5522177807a46ed39891ed949f5b4deab160066ff8963441b5508cc8aae"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchSavedWorldRecovery.swift",
+      "bytes": 2244,
+      "sha256": "638b4266dde54dc0747c2a9141f867d70420669e079c297a836f1edefceca656"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
+      "bytes": 23931,
+      "sha256": "00f690bf3e22c29273533b1ed7a44c547f8c9688467cbd55cc6f2b114ec4c15b"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift",
+      "bytes": 30425,
+      "sha256": "231f444e91103a81f67eb686da03d566541ca0794b7f6e282e78b432aed78b83"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchSessionTests.swift",
+      "bytes": 4547,
+      "sha256": "b97c01ee43b5fa9a777aa11c317a5cf7d5d42f741bd1032df96d72ba455352d1"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
+      "bytes": 25481,
+      "sha256": "8ab39b3c8da0b686cc86b3f90e258294b16c78561b7eb7cc3408eb6155d5aa30"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift",
+      "bytes": 19963,
+      "sha256": "0ee0f21b0489e401010e3dabd0d00e4c94c6891663c5f88ecd00898791fcc245"
+    },
+    {
+      "path": "research/local-map-pipeline-20261030/README.md",
+      "bytes": 1905,
+      "sha256": "6ada2fa578ff926007e2fe9190665e97d5313f31b29017886c9d3964929f52c0"
+    },
+    {
+      "path": "research/local-map-pipeline-20261030/SWIFT_FIXTURE_IDENTITIES.json",
+      "bytes": 21307,
+      "sha256": "e5b9658b6aab58fe12472dc7e3889b58c3ac0568d1f9f363b3e55816a8247552"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+      "bytes": 8707,
+      "sha256": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Package.swift",
+      "bytes": 805,
+      "sha256": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/SOURCE_PINS.json",
+      "bytes": 1782,
+      "sha256": "5d54a3c436166fd1ee1568cc15f2c34ce724958eee6a630d006c1e448cd1663a"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/ARKitIngress.swift",
+      "bytes": 1043,
+      "sha256": "b67267f1079a6f14e289ad8b795ead282973e662a7a18774bc2c842211225b2e"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "bytes": 18533,
+      "sha256": "a57e1c8e72e6e06ce6fda25ba34022a2f452a03573f14541ce80e8aa9a7929b4"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+      "bytes": 6901,
+      "sha256": "615d816abcf85013f3d4d35eba806eba25a53101ac9f58e26d3b7cbc771e5c91"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/workflow-proposal.yml",
+      "bytes": 1661,
+      "sha256": "e21aaf8b0dc2a041ac0f861c0828ba429aae9c763afb9b00ff4d5566e5ba3638"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/check_static.py",
+      "bytes": 3575,
+      "sha256": "aaf42076dc534d0efb5faa8cb8e88dceb5516cbfb9c4e88641c7392a17f45186"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/tests/main.swift",
+      "bytes": 23965,
+      "sha256": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20"
+    },
+    {
+      "path": "research/n04-portal-recovery-20261030/README.md",
+      "bytes": 5948,
+      "sha256": "d8f5ecbe0352dcc8c23d4380d0484c1caf7c173800b03b86975ddb0fb32a0953"
+    },
+    {
+      "path": "research/n04-portal-recovery-20261030/VALIDATION.json",
+      "bytes": 3185,
+      "sha256": "f8e1ee663a249056c0767137c7fa9bba6e0bb84b01d69478aea5f67561283320"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/CURRENT_CONTACT_COMPOSITION.json",
+      "bytes": 1193,
+      "sha256": "38986f45a6c6735bdc1002fe3db17a89b31233474ac931dfb87184df46fbbc04"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch",
+      "bytes": 6425,
+      "sha256": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/MANIFEST.json",
+      "bytes": 1460,
+      "sha256": "54275b4a7767696240fcad9c35393c0dfc1b0678518ce9bfa4c38b7f1e28563b"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/OVERRIDES.json",
+      "bytes": 1391,
+      "sha256": "91fdeeed54d8e76f3644bbefab2adbdc156df53b8735ad01c2610ab7941bb674"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/README.md",
+      "bytes": 5271,
+      "sha256": "eae09c8cbb9ebad31500105225140d47668aa58cfe8eec0680c80d9ba115cee5"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/RUNNER_ADAPTER.diff",
+      "bytes": 2375,
+      "sha256": "c8fb1516aff505203220f92a0cfeef1a0cfe1e691b6fa2eace8a2c2d0c1b7598"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/SOURCE_RECONSTRUCTION_RECEIPT.json",
+      "bytes": 800,
+      "sha256": "18ec5e81213ca0f510d999309fafba5074e7df282f2349b461a4ffad32163e50"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/NATIVE_SOURCE_PINS.json",
+      "bytes": 10218,
+      "sha256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/SavedRoomRouteCollisionOracle.swift.txt",
+      "bytes": 33036,
+      "sha256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/blind_detour.h.txt",
+      "bytes": 2925,
+      "sha256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/blind_detour_exclusion.cpp.txt",
+      "bytes": 17989,
+      "sha256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/run_native.py.txt",
+      "bytes": 11994,
+      "sha256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/run_snapshot.py",
+      "bytes": 7059,
+      "sha256": "50b55900980406b63eb06431a556d55ad4c9edfcb6c73e0b01e59d5f4913ead5"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/test_snapshot.py",
+      "bytes": 7159,
+      "sha256": "45e492c68131f9dbc3b270bbfc0fc28b7bb586271f13818a45be40fb471fc35e"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
+      "bytes": 812,
+      "sha256": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/MANIFEST.json",
+      "bytes": 1002,
+      "sha256": "a830d8e5ab5f81c0dac4736171da46442d202dbe6f88c090d417ab928674f7c2"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/ORACLE_GUARD.diff",
+      "bytes": 1002,
+      "sha256": "ba564965a2dce787d5469183c67f9bdb3c444bb2bafa7948566ad63d4b252c1b"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/README.md",
+      "bytes": 5271,
+      "sha256": "95e2e18136b9ca9d5b844d49446f24d14772a4ca382ae908ba9849afa454dc31"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/RUNNER_ADAPTER.diff",
+      "bytes": 1764,
+      "sha256": "1b70a626368a171ce109fe05eadc859c60013e42fb816910547cf6bdd5471873"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/SOURCE_REVERSAL_RECEIPT.json",
+      "bytes": 812,
+      "sha256": "961e23c7ae3133c45575a084a2577d86abfbf46eae4399041de2ccd9770414a6"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/baseline/NATIVE_SOURCE_PINS.json",
+      "bytes": 10218,
+      "sha256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/baseline/SavedRoomRouteCollisionOracle.swift.txt",
+      "bytes": 33036,
+      "sha256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/baseline/run_native.py.txt",
+      "bytes": 11994,
+      "sha256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/run_bridge.py",
+      "bytes": 6278,
+      "sha256": "3a623f00db8fbda1a5dfe19b3d5bce425c74a79f6d484986f7d2f9b542ddcc69"
+    },
+    {
+      "path": "research/native-edt-oracle-bridge-20261030/test_bridge.py",
+      "bytes": 2728,
+      "sha256": "759d8d29961081af13279569b3b6bc06a565a5d6f45a55f0b89d71dde23e51de"
+    },
+    {
+      "path": "research/native-mesh-decoder-81/Package.swift",
+      "bytes": 434,
+      "sha256": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3"
+    },
+    {
+      "path": "research/native-mesh-decoder-81/Sources/MeshBufferDecoder.swift",
+      "bytes": 7945,
+      "sha256": "3e028faafe3094fa103083ddec9e494dafa9065df998924531d20962331e7dc0"
+    },
+    {
+      "path": "research/native-mesh-decoder-81/apple/ci.py",
+      "bytes": 6353,
+      "sha256": "5c8a5f2ac3b3df5cedc2dbab140a16a12be13ae9103989d7c158f40f1139445f"
+    },
+    {
+      "path": "research/native-qos-comparison-20261030/CI_PLAN.md",
+      "bytes": 6861,
+      "sha256": "be831bfcfd91c907c9bcdc7a046da53a0520ad891500d2f432d60bed7c470ad4"
+    },
+    {
+      "path": "research/native-qos-comparison-20261030/README.md",
+      "bytes": 6010,
+      "sha256": "8c591113fb202b1a0416f0903085d85b5ebe432c888ae7d095d1134aa9c7a256"
+    },
+    {
+      "path": "research/normal-owner-full-mesh-connection-20261030/CORE_CHECKPOINT.json",
+      "bytes": 1576,
+      "sha256": "47a113fbb5d15ddf4d4239479bfe27e400f40c9d628b508a3efa2ccec71406eb"
+    },
+    {
+      "path": "research/normal-owner-full-mesh-connection-20261030/README.md",
+      "bytes": 7702,
+      "sha256": "e03785e97737132e309efdccb90a3763f1241181ea963c3787e79e484870d6ed"
+    },
+    {
+      "path": "research/repeat-answer-contrast-20261030/README.md",
+      "bytes": 2120,
+      "sha256": "e06c38d2a904a45293e62aa30d4ec71918404d7c0af1ff2dcdfff0ea6181b69d"
+    },
+    {
+      "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+      "bytes": 17840,
+      "sha256": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/LICENSE-Recast.txt",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Package.swift",
+      "bytes": 960,
+      "sha256": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+      "bytes": 18877,
+      "sha256": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
+      "bytes": 3867,
+      "sha256": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift",
+      "bytes": 1277,
+      "sha256": "100ea24417bd1f10cd3706ac4e984516c6a1f9fadc3987fc6dd7ea1821500ecb"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "bytes": 42239,
+      "sha256": "3c60d732429988709fc54fbfc3e3711b08eb954a154fe1f51beded07ef551a80"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+      "bytes": 11361,
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
+      "bytes": 473,
+      "sha256": "e5747cdfed2266316c820853df9307cfee1217f0bf74c4e822e63945721df4a6"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h",
+      "bytes": 5742,
+      "sha256": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+      "bytes": 21712,
+      "sha256": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp",
+      "bytes": 1316,
+      "sha256": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
+      "bytes": 9664,
+      "sha256": "cae4eab88d01ee6331623c95f20a68b5b944a3f7b75a97471c043c48d293b567"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+      "bytes": 9092,
+      "sha256": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+      "bytes": 5874,
+      "sha256": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/module.modulemap",
+      "bytes": 52,
+      "sha256": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h",
+      "bytes": 2657,
+      "sha256": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h",
+      "bytes": 2302,
+      "sha256": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourCommon.h",
+      "bytes": 19435,
+      "sha256": "24d69468f73782718855b3691ae348e50437febc7594635b37a940f1c0c8db46"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourMath.h",
+      "bytes": 754,
+      "sha256": "1251390f71e85b8b20cfd33340a42f712f2e8305e363c001fcdd9b55578a3cd4"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMesh.h",
+      "bytes": 31772,
+      "sha256": "aee0d0d332d3ac352ed14d0a3d86fe0fdfd1d9cd424e67c2a0438e1c41bb6e31"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshBuilder.h",
+      "bytes": 6759,
+      "sha256": "e2734317981bb9dfb973af6a33025f926ce28535389696d9babf15254817c682"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshQuery.h",
+      "bytes": 31195,
+      "sha256": "fa80858bb80c984f85ec15182c31e1757858bc86511f81fb8bb265b8fe20f6d6"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNode.h",
+      "bytes": 4644,
+      "sha256": "7c295c61f09dff0de42bdcc873a5d698d687bb2052aca8b293425c0ef0444a9e"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourStatus.h",
+      "bytes": 2707,
+      "sha256": "7255e33173c4bdb26f4224514d098fdc5c31e19cd80263a4e56475627602ade9"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAlloc.cpp",
+      "bytes": 1515,
+      "sha256": "ddf4d9857e9e1714daa9dd9b687ac8139085cc602359db0dba4f1dedbedc69c1"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAssert.cpp",
+      "bytes": 1206,
+      "sha256": "3caf6f89119fab5b89f3454cfb13b3776f429c9f0e4e5c8acb3ac56ab813273c"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourCommon.cpp",
+      "bytes": 9831,
+      "sha256": "c28eb2d5fd251e1b2e24a7c03a679ff82684e51a0ce95db3cf457fda60362008"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMesh.cpp",
+      "bytes": 45489,
+      "sha256": "637d8750f0d097ba00d9ef3fd4d8f30a36de5e482b8f8c3c8930d6df05b86600"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshBuilder.cpp",
+      "bytes": 24214,
+      "sha256": "159b4bacae86bdb2ff40225e837ff7b84e306456fbf08ec717b1da1dfeba4555"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshQuery.cpp",
+      "bytes": 105016,
+      "sha256": "73651e2cea3c162cd01574e24668a30ab4c3dc985e07d51a9d7038c0523b0db1"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNode.cpp",
+      "bytes": 4884,
+      "sha256": "067ffb9a81f7315f2253ff217263acb1c01590d130e01d4de4500308d756132b"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourCrowd.h",
+      "bytes": 18147,
+      "sha256": "66053c29eddcdb8794569e4f60d0a3d2102740f403822d451d63a1b336cf4855"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourLocalBoundary.h",
+      "bytes": 2077,
+      "sha256": "61a0bef8538a48de8e30a4e0e49442383c83543ce0b8d749affa24d452c8132c"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourObstacleAvoidance.h",
+      "bytes": 5346,
+      "sha256": "f3c6e39dd4b8c60a4a8ae4c1202ab06170fe673bcb43568cb910601fad993065"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathCorridor.h",
+      "bytes": 7498,
+      "sha256": "f252e962a4b3aef1e7f31caa367134c85d27264f9238d06763383b8a78dfce62"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathQueue.h",
+      "bytes": 2381,
+      "sha256": "7c48d76be6a59a9ec82ed11e687d4bdd414a6ba96aabd3adb28e869dccdceb82"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourProximityGrid.h",
+      "bytes": 2122,
+      "sha256": "b98a88367f2eb29ed5e615d73dc3c8bcd7742a8010eec21fdbfa6ca048af6198"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourCrowd.cpp",
+      "bytes": 38144,
+      "sha256": "c0d5164dabc3e68ee25ba479d13ae7f77066ccf7bfb461963d16a144caaf3ac5"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp",
+      "bytes": 3491,
+      "sha256": "ecb0196533c654d43894c061f1dd551008f95f3f03e2d03558962f82c77e486e"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp",
+      "bytes": 15386,
+      "sha256": "a385493b551ea6a72af687fceaf1283e738570ea288a1ebe73e11c32aa3a386a"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathCorridor.cpp",
+      "bytes": 17857,
+      "sha256": "09fd84d977b48789fc5d999e53850ce9f47bcc3ab6d4c9dea98beec2789ced05"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathQueue.cpp",
+      "bytes": 4731,
+      "sha256": "69360fd1e15efb427fa43948234a3fb516ec1b53db2154c1bbf3e0df36f8bfea"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourProximityGrid.cpp",
+      "bytes": 4813,
+      "sha256": "ba4acb2161cfca60ec10669eafc665230150b6856efa33c0afa0c39f321a2521"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/Recast.h",
+      "bytes": 63085,
+      "sha256": "712634ac8d933af70ef08270a2f439270cddb821cc901c216494fa843e4e5990"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAlloc.h",
+      "bytes": 13046,
+      "sha256": "36dcd90719f0ff80d568eee808d7a05416265f2e370a32842411cd67f30eb4cd"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAssert.h",
+      "bytes": 2210,
+      "sha256": "22feb557dfcd302cff1ef882741a608a338b0a99689ea56d4320d8dafecd7912"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/Recast.cpp",
+      "bytes": 13572,
+      "sha256": "865595763451cde0aad5b99088bfab48d4ea35050fefd67f3d4f95885ba38d66"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAlloc.cpp",
+      "bytes": 1545,
+      "sha256": "e77600ee0a1f4b36e9e0700480fcfccf8a62e31eb9e16aa7cb8eab5e93511a2e"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastArea.cpp",
+      "bytes": 24692,
+      "sha256": "445cce010d7a3220355497a3c2c3f45fbc4fcd2436db5cca15157d935a42d477"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAssert.cpp",
+      "bytes": 1187,
+      "sha256": "335af77176d9ee1fb5c9763df6ce21a818aed19524f3dc251a50ae61ae853496"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastContour.cpp",
+      "bytes": 30361,
+      "sha256": "a9282897a5a5cb56cf8bbab97e0fd5edc3cd394ae8fe5266a28ce4199a4f3bfa"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastFilter.cpp",
+      "bytes": 7559,
+      "sha256": "0d133cdce1446babbf01bf47dc152c843e9cb2ee5dbb537c2e0ae566b6c95b9d"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastLayers.cpp",
+      "bytes": 17586,
+      "sha256": "f01d325fd096feee2971f71f9b03b1d37a6d0a4777bb9d529ce698253b484820"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMesh.cpp",
+      "bytes": 42215,
+      "sha256": "9667e69e1886a520fcc84044b2e96154ff75e5c804fa32520b1cc0d991e42fd9"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMeshDetail.cpp",
+      "bytes": 40115,
+      "sha256": "e77e8fc479215fe9a14c68051090fa16884a13ba03b0e424a80bbf6f506f818f"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRasterization.cpp",
+      "bytes": 18226,
+      "sha256": "30ed7b12d42bd61dda5aa9eff2e559574d91a61145f40fe4cea449b9eabf792a"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRegion.cpp",
+      "bytes": 46156,
+      "sha256": "174e00a76287e03eff20d889c0b744ea24c9cababd22c42f2d1f83e8d512c345"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CEarcut/LICENSE",
+      "bytes": 738,
+      "sha256": "828f2aed51b6526881a236758ec9b08cd69928fbfc70346d9d44a0b3a3444fe1"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CEarcut/earcut_adapter.cpp",
+      "bytes": 1491,
+      "sha256": "fcb8a65d9ca65bbe92109ffe65107e0ef65a0b64e0ce9b261362966b46a5f90f"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h",
+      "bytes": 584,
+      "sha256": "42febc3208e25671a7eab5a8d3d1b26168ad4038b02de4eaae118654d42d54dd"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CEarcut/upstream/mapbox/earcut.hpp",
+      "bytes": 47693,
+      "sha256": "ded9fbf9922d7d16374d4f55e1f7f76d605e53fb7fc2ef5c9e146bb669ed3d51"
+    },
+    {
+      "path": "research/seated-fixture-owned-drain-20261030/README.md",
+      "bytes": 4815,
+      "sha256": "95e6a3c5d03f3051aca4ce331c58d5430311a0650da06d2f3dd47ee29ec3cfe3"
+    },
+    {
+      "path": "research/seated-fixture-owned-drain-20261030/SOURCE_PINS.json",
+      "bytes": 1326,
+      "sha256": "9aa81ab11b348a28742bd7cbd53c8ade36dd0bfa26708965dda76bc66de96fbb"
+    },
+    {
+      "path": "research/seated-mapped-destination-20261030/README.md",
+      "bytes": 8619,
+      "sha256": "10105730d69cff38eb8abbe02b45b55869bcce414743a6e863e24c1449ba4062"
+    },
+    {
+      "path": "research/seated-mapped-destination-20261030/SOURCE_RECEIPT.json",
+      "bytes": 2190,
+      "sha256": "699dd48d63edf524ec36a0bd774f18e029a476a5d715022005336d1546272a3d"
+    },
+    {
+      "path": "tools/ci/collect-classified-bench.py",
+      "bytes": 11312,
+      "sha256": "32ef1459bde2ab98abda0019c38f01f4c59b1ba4fd9846db56736b4c93b9c9fc"
+    },
+    {
+      "path": "tools/ci/collect-seated-projection.py",
+      "bytes": 9605,
+      "sha256": "3c3a523c7e7ab35f96a0c53ab0d37ec84024b03213c2133223b8db48dfaf9960"
+    },
+    {
+      "path": "tools/ci/collect_j01_metadata.py",
+      "bytes": 9454,
+      "sha256": "49d388c88a9fba379c0aa9d521bdcceada0fd13b5783d58bad4fa3cbe94f20e1"
+    },
+    {
+      "path": "tools/ci/emit-ci-log-receipts.py",
+      "bytes": 9637,
+      "sha256": "364611854efb39a84709d0eb041a395ecc21abeb6c622d983c63eea7f4787cc8"
+    },
+    {
+      "path": "tools/ci/export-seated-case-diagnostics.py",
+      "bytes": 10799,
+      "sha256": "4c21ec29cf7792a49e121182a77129072245bed57ffdf4c189fb65feb6ea3fce"
+    },
+    {
+      "path": "tools/ci/extract-seated-candidate-timing.py",
+      "bytes": 6818,
+      "sha256": "e66e9abfe3f7d8398430992785268f8711afdef2211d607dc8cb4fd26cee2866"
+    },
+    {
+      "path": "tools/ci/fixtures/default-project-valid.json",
+      "bytes": 3468,
+      "sha256": "7fb1d0574b5e94f28f5f96074d5dc38ce12257fbcd49ebe11d7ce2022e521358"
+    },
+    {
+      "path": "tools/ci/j01-actual-model.py",
+      "bytes": 20253,
+      "sha256": "763381a32c5d8b5e06cc23abf98dd150fccb78d30be9de82dbb7f3f10eddd04e"
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "bytes": 13012,
+      "sha256": "49e233866efa0cce408f9a779dbe0ff42c1a27939cc9d1698296ec5fa9a2b03f"
+    },
+    {
+      "path": "tools/ci/native-qos-comparison.py",
+      "bytes": 18084,
+      "sha256": "42be731425576c22a166a5fa44a399b8ac3c5a5bb6d75794138d1360aad5c8e4"
+    },
+    {
+      "path": "tools/ci/native-route-diagnostic-evidence.py",
+      "bytes": 87230,
+      "sha256": "829669d351307c85301a2ec1a471592a5c80983f0f592cb51c44ad09f8876e08"
+    },
+    {
+      "path": "tools/ci/test-collect-seated-projection.py",
+      "bytes": 22756,
+      "sha256": "0440a2b890b18433503ddee0ea930dae96326e88e45df9295f1aabc3446feba3"
+    },
+    {
+      "path": "tools/ci/test-native-route-diagnostic-evidence.py",
+      "bytes": 87512,
+      "sha256": "9c0e26f28c7ea44b6c51f69a796a2ecddaf3150a9b2ff04c8adff7a514e76dc4"
+    },
+    {
+      "path": "tools/ci/test_collect_classified_bench.py",
+      "bytes": 13379,
+      "sha256": "d09225d11a9edc1b62c40cc93dd4a02dccac844c9ca443d6672ae1f222d65b24"
+    },
+    {
+      "path": "tools/ci/test_collect_j01_metadata.py",
+      "bytes": 6775,
+      "sha256": "ed5b79d34ea497567af27aadf3e1af82bce68980e128d32625f0b261440ea6d6"
+    },
+    {
+      "path": "tools/ci/test_emit_ci_log_receipts.py",
+      "bytes": 15395,
+      "sha256": "8aada3114a663af91bec088e5230d4b06e0d71fc0b2f0118ba78789541202498"
+    },
+    {
+      "path": "tools/ci/test_export_seated_case_diagnostics.py",
+      "bytes": 19233,
+      "sha256": "a15590ad89e8bbfa834fac9fae8b7aca1c4a5b6fc3526226342e3f9e59ae33a1"
+    },
+    {
+      "path": "tools/ci/test_extract_seated_candidate_timing.py",
+      "bytes": 17921,
+      "sha256": "3cdc44c19bccf756c3025ffcfee74a902fc0e3006a9b77d5a9c2af4794a62e30"
+    },
+    {
+      "path": "tools/ci/test_j01_actual_model.py",
+      "bytes": 23681,
+      "sha256": "7e729a178e765c04c54e3441912d25c9ce10d2589ae28491cc566c427d024288"
+    },
+    {
+      "path": "tools/ci/test_j01_portable_failure_diagnostic.py",
+      "bytes": 2492,
+      "sha256": "a40f90786ca5c3e2526eb21b20026c493b23058a2dcf0ca4a3fa0fe4fcb1e147"
+    },
+    {
+      "path": "tools/ci/test_j01_project_membership.py",
+      "bytes": 6564,
+      "sha256": "1775b33db1f224e7601771e3bd3ac897d507baa43e8045fba0bdec49c1947026"
+    },
+    {
+      "path": "tools/ci/test_native_qos_comparison.py",
+      "bytes": 20473,
+      "sha256": "2a575392e632e33b94565c68c2c9d80c04bfa68ec7d090ae9c2fdd0237c226a3"
+    },
+    {
+      "path": "tools/ci/test_normal_owner_project.py",
+      "bytes": 6348,
+      "sha256": "e1f8bc2cd7b6d07954fef556743b44fcc93aaffda49a96d95973e8a9a01b182e"
+    },
+    {
+      "path": "tools/ci/test_verify_default_project.py",
+      "bytes": 10275,
+      "sha256": "5ca07d4dd2dee1c0f7f3497706ebc87e8e13456a0305e5c10a794ecde622994d"
+    },
+    {
+      "path": "tools/ci/verify-default-project.py",
+      "bytes": 8504,
+      "sha256": "030589e65110e8ac68d0ecc81d278a70d95dbb8e303e25c1a5ed32fc823f7fdd"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "bytes": 52418,
+      "sha256": "489008e0aa9183da04b7770b90a147ae1bc5b84edd1b2543f19fd16b265be976"
+    },
+    {
+      "path": "tools/test/accessibility-voice-continuity.test.py",
+      "bytes": 10098,
+      "sha256": "dd23f98b05ef830ce56524609b1aa26dfcc7c7a8a804deff605a21ce0004ffef"
+    },
+    {
+      "path": "tools/test/captured-photo-retention.test.mjs",
+      "bytes": 6172,
+      "sha256": "87e63c7e52f451caf835773fa97951c25d590c5e8d7240d628e774157ea9281e"
+    },
+    {
+      "path": "tools/test/classification-fixture-drain.test.py",
+      "bytes": 12276,
+      "sha256": "010524489712c0079a701b13443810437a4b337da3e70547ed3b20e23de3e314"
+    },
+    {
+      "path": "tools/test/classified-hit-current.test.py",
+      "bytes": 5510,
+      "sha256": "1c603497b3993f6f3454f7339a23a2e7ef9a077979eaf9e1691ea053370a5d57"
+    },
+    {
+      "path": "tools/test/collision-contact-addendum.test.py",
+      "bytes": 5129,
+      "sha256": "59870d0f3e13d62ae00a3d281a631397fdc8b9c5d3478a2ad0c3b2d3f1542bac"
+    },
+    {
+      "path": "tools/test/connected-beacon-bool.test.py",
+      "bytes": 3514,
+      "sha256": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f"
+    },
+    {
+      "path": "tools/test/connected-portal-recovery.test.py",
+      "bytes": 9279,
+      "sha256": "85eb098fe1d5ec316f02a3b336616f91331f8e1e7829a2b2535af86ceb633cd2"
+    },
+    {
+      "path": "tools/test/conversation-failure-diagnostics.test.py",
+      "bytes": 3170,
+      "sha256": "ed471c01760b6e3016ef547c23e75b3521d851346332bfa7fc6616810048a8ad"
+    },
+    {
+      "path": "tools/test/familiar-people.test.mjs",
+      "bytes": 21298,
+      "sha256": "fa26c9c0fce5fb00ed74aa8c2ec557c2938412d84d1595f26224865a811bf352"
+    },
+    {
+      "path": "tools/test/familiar-photo-import-bounds.test.mjs",
+      "bytes": 5628,
+      "sha256": "c3d916dfb590c3da170008e582d5f6b1c5eaba28056d639a35e291f47863c2ba"
+    },
+    {
+      "path": "tools/test/local-email-draft-companion.test.py",
+      "bytes": 10989,
+      "sha256": "fb59a9a0afa8df7d0bdf98473bda941853dd1b640c0dd7b8fc5885d99cc2e22b"
+    },
+    {
+      "path": "tools/test/local-map-pipeline-current.test.py",
+      "bytes": 9708,
+      "sha256": "9ff74171a98a3877b2ac9756ce173228167dcc5e9356e6d86730e371c34ae367"
+    },
+    {
+      "path": "tools/test/local-recipe-companion.test.py",
+      "bytes": 6621,
+      "sha256": "c494130e36f0a71127a1a6c83b31a2c6fa8c34eb7b1a1282d9940e9f32488b8c"
+    },
+    {
+      "path": "tools/test/navigation-integration-current.test.py",
+      "bytes": 17511,
+      "sha256": "2b6c1c428481373e87e06961f18b13cefd71c04542999d9b57373eee079e36bf"
+    },
+    {
+      "path": "tools/test/normal-owner-mesh-current.test.py",
+      "bytes": 9732,
+      "sha256": "58d5deec36acbdfa05d7a3ac470b215ec27ee65a4bbf7937aee855f98df9fcaf"
+    },
+    {
+      "path": "tools/test/repeat-answer-contrast.test.py",
+      "bytes": 3715,
+      "sha256": "3c607e563a6e1f983a04686a7264cc5e7825742e51f74cd60bbaa4a89b1ce7b5"
+    },
+    {
+      "path": "tools/test/room-photo-import-bounds.test.mjs",
+      "bytes": 3881,
+      "sha256": "4b6129f60da6e469aaaf7922e331bf87c6a9d4dc60f9066111f3183486362867"
+    },
+    {
+      "path": "tools/test/saved-frame-camera-association.test.mjs",
+      "bytes": 5525,
+      "sha256": "fe3abe1d5a295fbe27d1d02fdbed1157951f4e1057df7280bb29ba5aa1f4db12"
+    },
+    {
+      "path": "tools/test/sc53-current-source.py",
+      "bytes": 6860,
+      "sha256": "df2957ef0fbbac7f19870eda42d5d5e348ebc7242479d3718a2fbe4776b6b856"
+    },
+    {
+      "path": "tools/test/scene-frame-provenance.test.mjs",
+      "bytes": 6525,
+      "sha256": "984666f888e61dbc87d985037bf7d9863d5b42335fc49e3faaf1c90217816b8a"
+    },
+    {
+      "path": "tools/test/seated-fixture-drain.test.py",
+      "bytes": 10550,
+      "sha256": "aed44d30cb803ade555ef80580f57f1d58494c624ccd8b966b412804f96ee9a5"
+    },
+    {
+      "path": "tools/test/visual-absence-contract.test.mjs",
+      "bytes": 1976,
+      "sha256": "32c81f254e0db6bbf7668dd6ee990f84ae717879d0c56268c346a96b7403df18"
+    }
+  ],
+  "changes": [
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "before": "3943fc01cbe915f941d653827ff14c80093bbceef9215f77fa60c03e795cf7b1",
+      "after": "36fe671be479ca0e6a0a92808920892045ecfad7c52f98eb3ae8152319585966"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "before": "733a7bdcc4a8da7ff4fc95c087b690e369ca03c79adcc729e277934d708b53b1",
+      "after": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+      "before": "03fff8f2bf62e1cf2ea2ac5a0a0d2b11c78a17225a5a6314b0a68ff8b6ed92b3",
+      "after": "615d816abcf85013f3d4d35eba806eba25a53101ac9f58e26d3b7cbc771e5c91"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/tests/main.swift",
+      "before": "b4d00b36d9dc58a7160817510f0e29d5f56dfd40358faec810db6b743ffd8123",
+      "after": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Package.swift",
+      "before": "0b847f71419fa2f74e5231e5c32fc5db049ae512fbafe57ace7d7bf41ed8dfba",
+      "after": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+      "before": "321a0488cc21b8367779b14898e551ac493af5472724fff74f682d3fa1915095",
+      "after": "353e43edd3ece7cd918c01a693c145f2682a59807b3db9c8fb942a31e9959dee"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "before": "264a44959d812e9db9827644f3b5a6629acaa95d822cf4fe122adc2cb7a5f473",
+      "after": "ce3e49d852258585f030377d3b56e2e1dd470c96d4146347735454784643434a"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+      "before": "f20ab288f7e6372b1d615c98d0cf2952e6bfed2956aeea5ae616785b68418d0d",
+      "after": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+      "before": "4f609d5d7db1e16ea257672d1dba04a178d56bd1d27a514a2bd66cbcf14eaba3",
+      "after": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+    }
+  ],
+  "immutable_snapshot_layer": {
+    "base_manifest_sha256": "d257eb4318e2d85451f7d524ab37bed7b551ba187eca5c9ef12309a7b2e2dbe9",
+    "changes": [
+      {
+        "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+        "before": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d",
+        "after": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510"
+      },
+      {
+        "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+        "before": "353e43edd3ece7cd918c01a693c145f2682a59807b3db9c8fb942a31e9959dee",
+        "after": "be7c71e36a0e550958df505cea900a87ace05b9f3f7728f944bd1a78d1aad68d"
+      },
+      {
+        "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+        "before": "ce3e49d852258585f030377d3b56e2e1dd470c96d4146347735454784643434a",
+        "after": "92c17791144f079914ef87a4a0115e89d59449d8d3ec9aa50cebda3e02d9b27d"
+      }
+    ],
+    "new_files": [
+      "research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift",
+      "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift"
+    ],
+    "nativeTestsExecuted": false
+  },
+  "anchor_delivery_recovery_layer": {
+    "base_manifest_sha256": "ecbb0c9f3daa42db6a7ad1eae4dd10aad22fcd3da970ce85acff63786c599c1e",
+    "changes": [
+      {
+        "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+        "before": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510",
+        "after": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
+      },
+      {
+        "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+        "before": "be7c71e36a0e550958df505cea900a87ace05b9f3f7728f944bd1a78d1aad68d",
+        "after": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681"
+      },
+      {
+        "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+        "before": "92c17791144f079914ef87a4a0115e89d59449d8d3ec9aa50cebda3e02d9b27d",
+        "after": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e"
+      },
+      {
+        "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+        "before": "ceb631ee375e4c01111a7bf3a721684a43eece6d8542d8db6e23867f6be2f32b",
+        "after": "fbc76b115b10f5e033a90a05e9d064717885d8fc5501d9cfa3758448d425b1b3"
+      }
+    ],
+    "new_files": [
+      "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift"
+    ],
+    "nativeTestsExecuted": false
+  },
+  "seated_viewer_layer": {
+    "base_manifest_sha256": "ce3394462a71de481d6403aa9268df210f4084832332c40567b7d54eb0ca11e5",
+    "changes": [
+      {
+        "path": "ios/BlindAssist/NavigationModel.swift",
+        "before": "12fc1a2cc0f0bdda0b804318ff66b66df02770af8f833d44c3a5aaafb3831759",
+        "after": "d0ff7752d5044c91ce50382f9671fa6a011897bce2c59eb98de0a194d9d1e06e"
+      }
+    ],
+    "new_files": [
+      "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+      "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift",
+      "research/live-mesh-classified-bench-20261028/Sources/MeshBenchReacquisition.swift",
+      "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift"
+    ],
+    "nativeTestsExecuted": false
+  },
+  "seated_initializer_label_repair": {
+    "baseManifestSHA256": "225df33f2b41b93f08966190cfb9ce592137b21a0ca73edee9291fe4079cd02b",
+    "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+    "before": "e22bc9e977327382a04361aed694cb9c54f1adc838938c01d049eb467dc5c445",
+    "after": "9ec520430877c8d3975b59e9105510e309dae11fc23d9631ec9fdd3c1ef451e2",
+    "nativeExecutionPending": true
+  },
+  "optional_exact_seed_radius_layer": {
+    "baselineManifestSHA256": "472a4a3116f918c8c5bf136e421ee934aab426357502a1b9e9fdbba81934cee6",
+    "sourceManifestSHA256": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+    "before": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+    },
+    "defaultCallerActivation": false
+  },
+  "optional_envelope_layer": {
+    "beforeManifestSHA256": "440af8deebef6b826bb9d6308b8f348b2218bbb618ec7d00444a432863005e42",
+    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
+    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
+    "before": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+    },
+    "added": [
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
+    ],
+    "defaultCallerActivation": false,
+    "nativeSwiftExecuted": false
+  },
+  "synthetic_diagnostics_layer": {
+    "beforeManifestSHA256": "35ecc7f6575a5c6025821b32f5c666a57edce6c23cfb1b71bf95a0c6003e3875",
+    "before": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4"
+    },
+    "after": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
+    },
+    "defaultCallerActivation": false,
+    "nativeSwiftExecuted": false
+  },
+  "seated_body_foot_candidate_layer": {
+    "status": "unbuilt_source",
+    "beforeManifestSHA256": "fb45495a6c7045d52ef653baf88b2e2f5092210e93603a352e1e20f87ba7843e",
+    "scope": "explicit seated historical candidate plus executable fixtures and no-artifact CI; not device validation"
+  },
+  "expected_source_fixture_repair": {
+    "baseCommit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+    "status": "unexecuted_targeted_fixture_fix",
+    "beforeManifestSHA256": "d1f057db25572e8391aff327cf13d16871ba1598598a1b0cefe75395757b3cf8",
+    "beforeTestSHA256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85",
+    "cause": "no-owner source request correctly unavailable; fixture must ingest actual owned classified geometry",
+    "productionUnchanged": true,
+    "seatedTimeout": "unresolved10s callback wait; metadata-only phase/workerCPU instrumented without deadline change"
+  },
+  "source_delivery_diagnostic_layer": {
+    "baseCommit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+    "status": "unexecuted_debug_metadata_only",
+    "scope": "source-request, native worker/delivery and render checkpoints; fail-fast source test; same ten-second waits"
+  },
+  "roommesh_no_artifact_layer": {
+    "baseCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+    "status": "source_only_no_artifact_default",
+    "scope": "default-off room-mesh artifact action plus bounded metadata-only log receipts; native commands unchanged"
+  },
+  "source_readiness_split": {
+    "baseCommit": "276b1c522bd5ff4ff26df23ba83a7728bdce3df9",
+    "status": "isolated_unexecuted_proposal",
+    "scope": "actual source admission independent of optional SceneKit rendering; no physical authority"
+  },
+  "single_wait_fixture_repair": {
+    "baseCommit": "74dd3e6f71da19a5df7c522384281eec88d2157a",
+    "status": "source_review_only_native_not_executed",
+    "scope": "teardown owns one expectation wait; body uses new stopped predicate from actual full controller drain"
+  },
+  "independent_collision_bridge": {
+    "baseCommit": "c1fc5de6499f84f94f2c5d62adf3fcbf2666db00",
+    "status": "isolated_unexecuted_proposal",
+    "scope": "same original source, distinct Apple collision algorithm; no independent observation or physical clearance"
+  },
+  "apple_preflight_historical_edt_repair": {
+    "baseCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
+    "status": "source_only_native_unexecuted",
+    "scope": "exact unit-target-only default-project exception and separately labelled historical EDT source view; preserve7bb failures"
+  },
+  "seated_expectation_ownership_repair": {
+    "baseCommit": "e418290ac2a70f93c4250bb094091082408f7093",
+    "status": "source_only_native_unexecuted",
+    "scope": "standalone cleanup expectation ownership and admitted audit stages; preserve e418 real runtime failures"
+  },
+  "synthetic_qos_comparison": {
+    "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
+    "status": "source_only_unexecuted",
+    "defaultSchedulingChanged": false,
+    "scope": "fixed four-arm ABBA diagnostic;10s deadlines preserved;45s late-drain observation is not recovery to pass"
+  },
+  "tracker_implementation_batch": {
+    "status": "source_only_native_unrun",
+    "sourceCheckpointSHA256": "2c72d734fcfc862e718ecd3784e25bea20e66e5e05c6869b0e60ef849904cce2",
+    "classifiedExpectedCases": 71,
+    "seatedExpectedCases": 21,
+    "blindCoreProductionClosurePinned": true,
+    "historicalResultsUnchanged": true
+  },
+  "second_tracker_implementation_batch": {
+    "status": "source_only_native_unrun",
+    "requiresFirstBatchManifestSHA256": "a70c408e6a846e59da7ce7cb54fbc737321708954223d516236e74a59745101d",
+    "sourceManifestSHA256": "45079b1c0551c5366052b4621fbaf1235a794da5dc23780cdba86d728390089e",
+    "classifiedExpectedCases": 71,
+    "seatedExpectedCases": 21,
+    "j01RealExecutionDefaultEnabled": false,
+    "j01SourceAttestationVerified": false,
+    "historicalResultsUnchanged": true
+  },
+  "j01SameJobObservationLane": {
+    "status": "source_only_native_unrun",
+    "requiresNext40ManifestSHA256": "70cba571bbcf7044299cc93ee7c9fa6b3f99b94b8f17c7667f49d1fe1882cc3d",
+    "explicitPublicationTriggersExecution": true,
+    "actualBuildReceiptProduced": false,
+    "fullJourneyComplete": false,
+    "runtimeLoadedBinaryVerified": false
+  },
+  "thirdImplementationBatch": {
+    "status": "source_only_native_unrun",
+    "requiresJ01ManifestSHA256": "1420d5d48a073bf4af84a2687a06a8ad93a512bb89883386744189bf3b98cd63",
+    "sourceManifestSHA256": "f4ffb4c074cd287a1cac6b49b0c07cd46ccd04ed1a39c208b2eb21691d785385",
+    "sourceContractManifestSHA256": "00755d25af2a899df9b9176790e4a91d3d773f67aa45a6b44ee445aea175fcdf",
+    "classifiedExpectedCases": 71,
+    "focusedExpectedCases": 26,
+    "j01ActualSelectedScripts": 3,
+    "j01SupportedScripts": 6,
+    "actualModelObserved": false,
+    "physicalAuthority": false
+  },
+  "publishedBeaconBooleanRepairCarry": {
+    "publishedCommit": "ff0f50df695bfa48fd72697858c574fda653dc4e",
+    "failedCommit": "119752b88c529adf90bde1092137a85870740ace",
+    "repairCheckpointSHA256": "9301edbcc26d70070b32606d1407721d2b3c4b5f132b420d8a516f7625b66ae0",
+    "scope": "exact reviewed Boolean fix carried into frozen NEXT40/J0117/THIRD45 source; original failed and repaired identities preserved",
+    "newNativeExecutionClaim": false,
+    "controllerOptionalBeaconPolicyChanged": false
+  },
+  "localMapPipelineContinuation": {
+    "scope": "Exact public venue selection, private paired reference-only normal-camera context, and interrupted portal source recovery; no fabricated walkable geometry",
+    "authoredSwiftMethodsAdded": 25,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "seatedOwnedDrainAndFloorResearch": {
+    "scope": "Seated test-family admission only after actual full controller drain; immutable research-only support-gap audit",
+    "projectionMethodCount": 17,
+    "originalFocusedCount": 21,
+    "currentFocusedCount": 26,
+    "newNativeMethods": 0,
+    "nativeExecuted": false,
+    "floorSupportImplementationChanged": false,
+    "physicalAuthority": false
+  },
+  "repeatAnswerContrastAndJ01FixtureRepair": {
+    "scope": "UI disabled Repeat answer source styling and test-created temporary-root identity only; not a rendered or native acceptance result",
+    "uiNativeTestMethods": 19,
+    "newNativeMethods": 0,
+    "j01FixturePacketIncluded": true,
+    "productionAttestationPolicyChanged": false,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "depthRasterIntegrity": {
+    "scope": "Raw depth accounting only; no calibrated floor producer",
+    "newNativeMethodsUnrun": 4,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "classificationCrossFamilyDrain": {
+    "scope": "Shared test-only acknowledged native ownership; first stalled build not repaired",
+    "nativeMethodsRetained": 15,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "collisionContactPhaseAddendum": {
+    "scope": "Separate authored valid-start/contact-phase diagnostic and exact optional collector; original outcomes not replaced",
+    "newNativeMethodsUnrun": 1,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "journeyRequiredGoalUnwrap": {
+    "scope": "Six required goal UUID optional unwraps in existing tests only",
+    "nativeMethodsRetained": 27,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "edtViewContactComposition": {
+    "scope": "Strict current contact source to historical EDT source composition",
+    "historicalInputsRetained": 58,
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "j01ClosedFailureDiagnostics": {
+    "scope": "Closed stage and fixed guard code only; no raw error disclosure or acceptance change",
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "j01ResolutionPreparation": {
+    "scope": "Bounded fixed dependency resolution before strict build attestation begin",
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "normalOwnerDeliveryRetry": {
+    "scope": "Read-only bounded delivery receipts; fresh-frame explicitly failed present anchors only",
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  }
+}

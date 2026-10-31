@@ -42,7 +42,7 @@ public struct ConnectedJourneyCatalog: Sendable {
         guard installations.count <= 32, portals.count <= 128,
               Set(installations.map(\.binding)).count == installations.count,
               Set(portals.map(\.transitionID)).count == portals.count,
-              installations.allSatisfy({ $0.registry.snapshot == registry.snapshot }),
+              installations.allSatisfy({ $0.map.permitsRoutePlanning && $0.registry.snapshot == registry.snapshot }),
               installations.reduce(0, { $0 + $1.map.nodes.count }) <= 2000 else {
             throw ConnectedJourneyError.invalidCatalog
         }

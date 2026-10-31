@@ -27,6 +27,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     /// Ephemeral RoomPlan observations for the sighted helper, never saved as a finished room.
     @Published private(set) var liveScanLayout: RoomLayout?
     @Published private(set) var needsDeletionCleanup = false
+    // Independent room-import lane: one app-owned transfer/decode across view recreation.
+    @MainActor private var referencePhotoImportLease: UUID?
     private var directory: URL
     private(set) var memory: MemoryStore?
     private var capture: RoomCaptureSession?
@@ -36,6 +38,22 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var scanID = UUID()
     private var processing: Task<Void, Never>?
     private var worldFrameRecovery = SavedWorldFrameRecovery()
+    private var worldFrameRecoveryMemoryOwner: UUID?
+    private var worldFrameRecoverySessionID: UUID?
+    private var localReferenceContext: NativeLocalizationRouteContext?
+    private var localReferenceRequest = UUID()
+    private var localReferenceWorker: UUID?
+    typealias LocalReferenceLoader = @Sendable (SavedRoomDiagnosticGeometrySource, URL) -> Result<SpatialMapInstallation, SavedRoomDiagnosticGeometryDecoder.Failure>
+    private let localReferenceLoader: LocalReferenceLoader
+    private struct LocalReferenceWork: Sendable {
+        let source: SavedRoomDiagnosticGeometrySource
+        let worldMapURL: URL
+        let sessionID: UUID
+        let request: UUID
+    }
+    private var pendingLocalReference: LocalReferenceWork?
+    private var diagnosticGeometryDeletionGeneration = UUID()
+    private var diagnosticGeometryBlockedPlaces = Set<UUID>()
     @Published private(set) var registration: RoomRegistrationAcquisition?
     @Published private(set) var registrationStatus = ""
     @Published private(set) var registrationSaving = false
@@ -71,14 +89,21 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     /// Supplied by the app from on-device location; nil when location is off or unavailable.
     var currentCoordinate: (() -> (latitude: Double, longitude: Double)?)?
     var onMessage: ((String) -> Void)?
-    override init() {
-        directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Places", isDirectory: true)
+    override convenience init() {
+        self.init(directory: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Places", isDirectory: true))
+    }
+    /// The default app destination is unchanged; tests can exercise the actual
+    /// source/deletion owner against an isolated protected local directory.
+    init(directory: URL, localReferenceLoader: @escaping LocalReferenceLoader = SavedRoomDiagnosticGeometryDecoder.localSavedFrameReference) {
+        self.localReferenceLoader = localReferenceLoader
+        self.directory = directory
         super.init()
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             var storage = URLResourceValues(); storage.isExcludedFromBackup = true
-            try directory.setResourceValues(storage)
+            var protectedDirectory = directory
+            try protectedDirectory.setResourceValues(storage)
             try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: directory.path)
             do {
             let memoryDirectory = directory.deletingLastPathComponent().appendingPathComponent("AssistantMemory", isDirectory: true)
@@ -271,15 +296,17 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         try worldMapArtifacts(for: place).map
     }
     private func worldMapArtifacts(for place: SavedPlace) throws -> (map: ARWorldMap, room: Data, descriptor: SavedWorldFrame?) {
-        guard let memory, try !memory.isDeleted(room: place.id.uuidString) else { throw MemoryError.missing }
-        let data = try Data(contentsOf: directory.appendingPathComponent("\(place.id).worldmap"))
+        guard let memory, !diagnosticGeometryBlockedPlaces.contains(place.id),
+              places.contains(where: { $0.id == place.id && $0.worldFrame == place.worldFrame }),
+              try !memory.isDeleted(room: place.id.uuidString) else { throw MemoryError.missing }
+        let data = try SpatialMapFileStorage.readBounded(directory.appendingPathComponent("\(place.id).worldmap"), maximumBytes: 32 * 1024 * 1024)
         guard let map = try NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: data) else {
             throw CocoaError(.fileReadCorruptFile)
         }
         // Legacy scans remain available for preview/semantic recognition. They do not
         // acquire a coordinate binding retroactively from matching names or filenames.
         guard let descriptor = place.worldFrame else { return (map, Data(), nil) }
-        let room = try Data(contentsOf: directory.appendingPathComponent("\(place.id).room.json"))
+        let room = try SpatialMapFileStorage.readBounded(directory.appendingPathComponent("\(place.id).room.json"), maximumBytes: Self.maximumRegistrationRoomBytes)
         guard descriptor.placeID == place.id.uuidString,
               descriptor.matches(worldMapSHA256: Self.sha256(data), roomCaptureSHA256: Self.sha256(room)),
               map.anchors.contains(where: { Self.matchesOrigin($0, descriptor: descriptor) }) else {
@@ -299,23 +326,88 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                artifacts.room.count <= Self.maximumRegistrationRoomBytes {
                 registrationBytes = RegistrationBytes(frame: descriptor, owner: owner, data: artifacts.room)
             }
+            worldFrameRecoveryMemoryOwner = memory?.writeOwner
+            worldFrameRecoverySessionID = sessionID
             worldFrameRecovery.begin(frame: descriptor, sessionID: sessionID, now: now)
+            prepareLocalSavedFrameReference(frame: descriptor, sessionID: sessionID)
         }
         return artifacts.map
     }
     func invalidateWorldMapRecovery() {
-        worldFrameRecovery.reset()
+        worldFrameRecovery.reset(); worldFrameRecoveryMemoryOwner = nil; worldFrameRecoverySessionID = nil
+        localReferenceContext = nil; pendingLocalReference = nil; localReferenceRequest = UUID()
+        // Keep the physical utility-worker lease until it completes: cancellation
+        // never starts overlapping pair readers or RoomPlan decoders.
         registrationBytes = nil
         registrationBaseline = nil
         registrationRequestID = UUID()
         registrationCapture.invalidate()
     }
+    /// Reference construction uses one utility worker and one latest lightweight
+    /// request. No pair reads, hashes or RoomPlan decode run in an AR callback.
+    private func prepareLocalSavedFrameReference(frame: SavedWorldFrame, sessionID: UUID) {
+        guard let memory, ownsWorldMapRecovery(frame), let id = UUID(uuidString: frame.placeID) else { return }
+        let source = SavedRoomDiagnosticGeometrySource(frame: frame,
+            url: directory.appendingPathComponent("\(id).room.json"), memory: memory,
+            memoryOwner: memory.writeOwner, deletionGeneration: diagnosticGeometryDeletionGeneration)
+        pendingLocalReference = .init(source: source, worldMapURL: directory.appendingPathComponent("\(id).worldmap"),
+            sessionID: sessionID, request: localReferenceRequest)
+        drainLocalSavedFrameReference()
+    }
+    private func drainLocalSavedFrameReference() {
+        guard localReferenceWorker == nil, let work = pendingLocalReference else { return }
+        pendingLocalReference = nil
+        let worker = UUID(); localReferenceWorker = worker
+        let loader = localReferenceLoader
+        Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .utility) {
+                loader(work.source, work.worldMapURL)
+            }.value
+            guard let self, self.localReferenceWorker == worker else { return }
+            self.localReferenceWorker = nil
+            defer { self.drainLocalSavedFrameReference() }
+            guard self.localReferenceRequest == work.request, self.worldFrameRecoverySessionID == work.sessionID,
+                  self.ownsWorldMapRecovery(work.source.frame), self.ownsDiagnosticGeometrySource(work.source) else { return }
+            guard case .success(let installation) = result,
+                  installation.map.purpose == .localizationReferenceOnly,
+                  let revision = try? installation.registry.map(for: installation.binding),
+                  revision.savedWorldFrame == work.source.frame, revision.floorLevels.isEmpty else {
+                self.localReferenceContext = nil; return
+            }
+            self.localReferenceContext = .init(sessionID: work.sessionID, artifact: installation.artifact,
+                revision: revision, goalRevision: nil, scope: .localSavedFrameReference)
+        }
+    }
+    /// Current local normal-AR owner only. This context requests association, not
+    /// a location claim. The exact-frame receipt is still required by the router.
+    func nativeSavedFrameReferenceContext(sessionID: UUID) -> NativeLocalizationRouteContext? {
+        guard worldFrameRecoverySessionID == sessionID, let context = localReferenceContext,
+              context.sessionID == sessionID, let frame = context.revision.savedWorldFrame,
+              ownsWorldMapRecovery(frame) else { return nil }
+        return context
+    }
+    #if DEBUG
+    /// Hosted scheduling seam only: starts UNKNOWN recovery; never observes
+    /// tracking, returns a camera receipt, sets a pose or enables physical output.
+    func debugRequestLocalReference(for place: SavedPlace, sessionID: UUID) {
+        invalidateWorldMapRecovery()
+        guard let frame = place.worldFrame, let memory,
+              places.contains(where: { $0.id == place.id && $0.worldFrame == frame }) else { return }
+        worldFrameRecoveryMemoryOwner = memory.writeOwner; worldFrameRecoverySessionID = sessionID
+        worldFrameRecovery.begin(frame: frame, sessionID: sessionID, now: 0)
+        prepareLocalSavedFrameReference(frame: frame, sessionID: sessionID)
+    }
+    var debugHasPendingLocalReferenceWork: Bool { localReferenceWorker != nil || pendingLocalReference != nil }
+    func debugReplaceLocalReferenceMemory(_ replacement: MemoryStore?) { memory = replacement }
+    #endif
     /// Observes ARKit's own relocalizing -> normal transition and the restored named
     /// anchor. No appearance match, user room-name answer or imported map can call this
     /// a restored coordinate frame. A returned frame does not authorize physical speech.
     @discardableResult func observeWorldMapRecovery(for place: SavedPlace, frame: ARFrame,
         sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
-        guard let descriptor = place.worldFrame else { return nil }
+        guard let descriptor = place.worldFrame, ownsWorldMapRecovery(descriptor) else {
+            invalidateWorldMapRecovery(); return nil
+        }
         let tracking: SavedWorldFrameRecovery.Tracking
         switch frame.camera.trackingState {
         case .normal: tracking = .normal
@@ -328,8 +420,60 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             frameTime: frame.timestamp, now: now)
         return recovered == descriptor ? recovered : nil
     }
+    /// In-memory local ownership check; no disk/hash/RoomPlan work on a callback.
+    /// Deletion admission blocks receipts even if the durable deletion later fails.
+    private func ownsWorldMapRecovery(_ frame: SavedWorldFrame) -> Bool {
+        guard let memory, worldFrameRecoveryMemoryOwner == memory.writeOwner,
+              let id = UUID(uuidString: frame.placeID),
+              !diagnosticGeometryBlockedPlaces.contains(id) else { return false }
+        return places.contains { $0.id == id && $0.worldFrame == frame }
+    }
     func currentWorldFrame(sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
-        worldFrameRecovery.current(sessionID: sessionID, now: now)
+        guard let frame = worldFrameRecovery.current(sessionID: sessionID, now: now),
+              ownsWorldMapRecovery(frame) else { return nil }
+        return frame
+    }
+    /// Constant-work native loss observation before the normal camera throttle.
+    /// Never inspect anchors or authorize a new association on this path.
+    func observeWorldMapTrackingInterruption(frame: ARFrame, sessionID: UUID,
+        now: Double = ProcessInfo.processInfo.systemUptime) {
+        let tracking: SavedWorldFrameRecovery.Tracking
+        switch frame.camera.trackingState {
+        case .normal: return
+        case .limited(.relocalizing): tracking = .relocalizing
+        default: tracking = .unavailable
+        }
+        worldFrameRecovery.observeTrackingInterruption(sessionID: sessionID, tracking: tracking,
+            frameTime: frame.timestamp, now: now)
+    }
+    /// Diagnostic seam only: SAME saved-frame camera coordinates, uncertainty
+    /// unmeasured. No imported-map transform, body/support evidence or guidance.
+    func cameraWorldFrameAssociation(sessionID: UUID, capturedAt: Double,
+        now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrameCameraAssociation? {
+        guard let association = worldFrameRecovery.cameraAssociation(sessionID: sessionID, capturedAt: capturedAt, now: now),
+              ownsWorldMapRecovery(association.frame) else { return nil }
+        return association
+    }
+    /// Read-only request preparation; byte reads, hashes and CapturedRoom decoding
+    /// belong to the diagnostic provider's bounded utility worker, never a frame.
+    @MainActor func diagnosticGeometrySource(for frame: SavedWorldFrame) -> SavedRoomDiagnosticGeometrySource? {
+        guard frame.valid, let memory, let id = UUID(uuidString: frame.placeID),
+              !diagnosticGeometryBlockedPlaces.contains(id),
+              places.contains(where: { $0.id == id && $0.worldFrame == frame }) else { return nil }
+        return .init(frame: frame, url: directory.appendingPathComponent("\(id).room.json"), memory: memory,
+            memoryOwner: memory.writeOwner, deletionGeneration: diagnosticGeometryDeletionGeneration)
+    }
+    @MainActor func ownsDiagnosticGeometrySource(_ source: SavedRoomDiagnosticGeometrySource) -> Bool {
+        guard let memory, memory === source.memory, memory.writeOwner == source.memoryOwner,
+              diagnosticGeometryDeletionGeneration == source.deletionGeneration,
+              let id = UUID(uuidString: source.frame.placeID), !diagnosticGeometryBlockedPlaces.contains(id)
+        else { return false }
+        return places.contains { $0.id == id && $0.worldFrame == source.frame }
+    }
+    /// User deletion admission can precede asynchronous history erasure. Block new
+    /// geometry reads immediately and keep them blocked if that erasure fails.
+    func retireDiagnosticGeometry(for place: SavedPlace) {
+        if diagnosticGeometryBlockedPlaces.insert(place.id).inserted { diagnosticGeometryDeletionGeneration = UUID() }
     }
     /// Original, hash-bound scan measurements only. They are dated map history, not
     /// live detections and never ownership/personal-item identity. Do not recompute
@@ -348,7 +492,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private static func sha256(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
-    private static func matchesOrigin(_ anchor: ARAnchor, descriptor: SavedWorldFrame) -> Bool {
+    static func matchesOrigin(_ anchor: ARAnchor, descriptor: SavedWorldFrame) -> Bool {
         guard anchor.identifier.uuidString == descriptor.originAnchorID,
               anchor.name == descriptor.originAnchorName else { return false }
         // The marker was created at identity in the saved world. If setWorldOrigin
@@ -378,6 +522,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         }
     }
     func delete(_ place: SavedPlace) {
+        // Retire geometry at deletion admission, even if durable erasure fails.
+        retireDiagnosticGeometry(for: place)
         retireRegistration(for: place)
         do {
             guard let memory else { throw MemoryError.missing }
@@ -387,6 +533,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             worldFrameRecovery.reset()
             if registration?.frame.placeID == place.id.uuidString { registration = nil; registrationStoreOwner = nil }
             places.removeAll { $0.id == place.id }
+            diagnosticGeometryBlockedPlaces.remove(place.id)
             retryDeletionCleanup()
         } catch { message = t("Deleting the place did not finish. Some private files may remain; try again.", "لم يكتمل حذف المكان. قد تبقى بعض الملفات الخاصة؛ أعد المحاولة.") }
     }
@@ -395,7 +542,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             guard let memory else { throw MemoryError.missing }
             for id in try memory.deletedRooms() {
                 guard let uuid = UUID(uuidString: id) else { throw MemoryError.invalid }
-                for ext in ["worldmap", "room.json", "usdz", "layout.json", "svg", "photo.jpg", "json"] {
+                for ext in ["worldmap", "room.json", "usdz", "layout.json", "svg", "photo.jpg", "photo-trash.jpg", "json"] {
                     let url = directory.appendingPathComponent("\(uuid).\(ext)")
                     if FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
                 }
@@ -612,6 +759,40 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             try JSONEncoder().encode(layout).write(to: prefix.appendingPathExtension("layout.json"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
             try Data(layout.svg().utf8).write(to: prefix.appendingPathExtension("svg"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         } catch { message = t("The room was saved; its export could not be refreshed.", "حُفظت الغرفة؛ تعذر تحديث ملف التصدير.") }
+    }
+    /// Claim synchronously on MainActor before starting any transfer. Cancellation
+    /// retires publication, not native work: release only when that worker returns.
+    @MainActor func beginReferencePhotoImport() -> UUID? {
+        guard referencePhotoImportLease == nil else { return nil }
+        let lease = UUID(); referencePhotoImportLease = lease
+        return lease
+    }
+    @MainActor func finishReferencePhotoImport(_ lease: UUID) {
+        if referencePhotoImportLease == lease { referencePhotoImportLease = nil }
+    }
+    /// One recoverable reference-photo slot per room, in the existing protected,
+    /// backup-excluded directory. Moves never overwrite an occupied destination.
+    /// These operations do not alter room geometry, recall fingerprints or Photos.
+    @MainActor func trashPhoto(for place: SavedPlace) throws {
+        try moveReferencePhoto(for: place, source: "photo.jpg", destination: "photo-trash.jpg")
+    }
+    @MainActor func restorePhoto(for place: SavedPlace) throws {
+        try moveReferencePhoto(for: place, source: "photo-trash.jpg", destination: "photo.jpg")
+    }
+    @MainActor private func moveReferencePhoto(for place: SavedPlace, source: String, destination: String) throws {
+        guard places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileNoSuchFile) }
+        let from = directory.appendingPathComponent("\(place.id).\(source)")
+        let to = directory.appendingPathComponent("\(place.id).\(destination)")
+        guard !FileManager.default.fileExists(atPath: to.path) else { throw CocoaError(.fileWriteFileExists) }
+        // Same-directory rename keeps file protection and avoids duplicate image copies.
+        try FileManager.default.moveItem(at: from, to: to)
+        objectWillChange.send()
+    }
+    /// Call only after the explicit permanent-delete confirmation in RoomDetailView.
+    @MainActor func deleteTrashedPhoto(for place: SavedPlace) throws {
+        guard places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileNoSuchFile) }
+        try FileManager.default.removeItem(at: directory.appendingPathComponent("\(place.id).photo-trash.jpg"))
+        objectWillChange.send()
     }
     func savePhoto(_ jpeg: Data, for place: SavedPlace) throws {
         guard jpeg.count <= 2_000_000, places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileWriteUnknown) }

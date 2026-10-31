@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "source_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+  "source_verified": true,
+  "aggregate_counts": {
+    "totalTestCount": 14,
+    "passedTests": 13,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "expectedFailures": 0
+  },
+  "cases": [
+    {
+      "identifier": "SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomStrictEndpointTests/testStrictGoalOutsideMissingPolygonAndNonfiniteRefuseWithoutCandidate",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomStrictEndpointTests/testThreeActualPublicMarginOverlappedStartsKeepInitialOracleAndRejectStrictAdmission",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusEnvelopeAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusEnvelopeAppleTests/testEnvelopeReceiptRejectsUnknownSchemaAlgorithmAndWorkUnit",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusEnvelopeAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusEnvelopeAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusEnvelopeAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusEnvelopeAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusVetoAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusVetoAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusVetoAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeedRadiusVetoAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne",
+      "result": "Passed"
+    }
+  ],
+  "assertion_failures": [
+    {
+      "identifier": "SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation",
+      "origin": "fixed-fixture-log",
+      "line": 34,
+      "message": "Asynchronous wait failed: Exceeded timeout of 10 seconds, with unfulfilled expectations: \"strict endpoint native result\".",
+      "truncated": false
+    },
+    {
+      "identifier": "SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation",
+      "origin": "fixed-fixture-log",
+      "line": 36,
+      "message": "XCTUnwrap failed: expected non-nil value of type \"Result<MeshCandidateRoute, MeshCandidateError>\" - No native completion; no inferred route",
+      "truncated": false
+    }
+  ],
+  "unparsed_failure_record_count": 1,
+  "strict_success_collector": "unavailable; command exit65",
+  "limits": "Two parsed assertion records and one unparsed failure record are preserved; do not claim exhaustive assertion enumeration from this diagnostic alone."
+}

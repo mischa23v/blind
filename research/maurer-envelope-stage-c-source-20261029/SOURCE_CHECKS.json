@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "nativeExecuted": false,
+  "observerGroups": [
+    "stock-only-read-only",
+    "candidate-requires-post-veto-every-bit",
+    "valid-zero-mask-observed-not-applied",
+    "expected-mask-cannot-erase-wrong-native-output",
+    "wrong-typed-receipt-refused",
+    "wrong-full-layout-hash-refused",
+    "expected-promotion-refused",
+    "wrong-phase-never-mutates",
+    "multiple-spans-refused",
+    "unequal-height-refused",
+    "post-veto-topology-change-refused",
+    "repeated-observation-refused",
+    "invalid-work-bounds-refused",
+    "invalid-begin-inputs-refused",
+    "reset-and-null-output-refused",
+    "envelope-schema2-every-bit-read-only",
+    "envelope-wrong-schema-refused",
+    "envelope-wrong-algorithm-refused",
+    "envelope-wrong-unit-refused",
+    "envelope-wrong-bound-refused",
+    "envelope-wrong-padded-domain-refused"
+  ],
+  "baseEngineManifest": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+  "unchangedRecastObserver": "c5be85237ff582f87dd1aa1fb2a094f4d1a19a9c87d18ebf668baa43988c79ee",
+  "newNativeAdapterFreeze": "ea3b2704f46f2a42721b39da07f9e951259186090207b8ef64bd04cc428005d2",
+  "scope": "candidate C ABI/typed observer/result identification only; same controls/oracle",
+  "separateUncompiledRuntimeWrapperManifest": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
+  "matrixDoesNotCompileRuntimeWrapper": true
+}

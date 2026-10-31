@@ -1,0 +1,50 @@
+2026-10-28T08:32:32.6044470Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +adb8fd8f4fa16f0563bdd708635a12ba7888bcf3:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T08:32:38.7043560Z  * [new ref]         adb8fd8f4fa16f0563bdd708635a12ba7888bcf3 -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T08:32:38.7197310Z adb8fd8f4fa16f0563bdd708635a12ba7888bcf3
+2026-10-28T08:32:40.1558660Z adb8fd8f4fa16f0563bdd708635a12ba7888bcf3
+2026-10-28T08:32:40.6616110Z adb8fd8f4fa16f0563bdd708635a12ba7888bcf3
+2026-10-28T08:34:05.2906630Z core exit status: 0
+2026-10-28T08:34:05.3219190Z 	 Executed 1422 tests, with 1 test skipped and 0 failures (0 unexpected) in 9.515 (9.733) seconds
+2026-10-28T08:34:05.3220200Z 	 Executed 1422 tests, with 1 test skipped and 0 failures (0 unexpected) in 9.515 (9.738) seconds
+2026-10-28T08:35:04.6643360Z memory exit status: 0
+2026-10-28T08:35:04.6818690Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 10.194 (10.203) seconds
+2026-10-28T08:35:04.6819590Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 10.194 (10.204) seconds
+2026-10-28T08:37:26.4078390Z build exit status: 0
+2026-10-28T08:37:26.4508000Z ** BUILD SUCCEEDED **
+2026-10-28T08:37:43.8503060Z unit exit status: 65
+2026-10-28T08:37:43.9108650Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:332:24: error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9109710Z     |                        `- error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9110740Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:332:58: error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:43.9111920Z     |                                                          `- error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:43.9112990Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:451:24: error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9113630Z     |                        `- error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9114250Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:451:58: error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:43.9115170Z     |                                                          `- error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:43.9116130Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:466:45: error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9122520Z     |                                             `- error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9123370Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:467:24: error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9124420Z     |                        `- error: cannot find 'entered' in scope
+2026-10-28T08:37:43.9126420Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:467:58: error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:43.9127730Z     |                                                          `- error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:43.9128500Z ** TEST FAILED **
+2026-10-28T08:37:44.0696100Z ** TEST FAILED **
+2026-10-28T08:37:52.4344450Z ui exit status: 65
+2026-10-28T08:37:52.4839780Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:332:24: error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4841300Z     |                        `- error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4842740Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:332:58: error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:52.4844800Z     |                                                          `- error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:52.4847130Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:451:24: error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4848740Z     |                        `- error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4850280Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:451:58: error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:52.4852030Z     |                                                          `- error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:52.4853410Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:466:45: error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4854330Z     |                                             `- error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4854950Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:467:24: error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4855520Z     |                        `- error: cannot find 'entered' in scope
+2026-10-28T08:37:52.4856200Z /Users/runner/work/blind/blind/ios/BlindAssistTests/RecordedRouteStoreTests.swift:467:58: error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:52.4856920Z     |                                                          `- error: type 'Equatable' has no member 'success'
+2026-10-28T08:37:52.4857240Z ** TEST FAILED **
+2026-10-28T08:37:52.5010590Z ** TEST FAILED **
+2026-10-28T08:37:55.1483260Z unit xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793176653.427, "finishTime": 1793176663.731}
+2026-10-28T08:37:55.2165860Z ui xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793176668.233, "finishTime": 1793176672.378}
+2026-10-28T08:37:55.3403390Z NATIVE_UNIT_CASE_STATUSES={"schema":1,"target":"IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame","complete":false,"target_pass_verified":false,"source_verified":false,"expected_commit":"adb8fd8f4fa16f0563bdd708635a12ba7888bcf3","limits":{"query_bytes":4194304,"query_seconds":30,"tree_nodes":10000},"provenance":{"actual_head":"adb8fd8f4fa16f0563bdd708635a12ba7888bcf3","tracked_source_clean":true,"untracked_scopes":["ios","BlindCore","BlindMemory","tools/ci",".github/workflows"],"generated_metadata":[{"path":"BlindMemory/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]},{"path":"ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"89be7e61ccd45eec15fbfda8395e9de3f2f1a6833845ab64b59bb621fd17d44e","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]}]},"source_commit":"adb8fd8f4fa16f0563bdd708635a12ba7888bcf3","error_type":"ValueError","error":"No test case statuses found"}

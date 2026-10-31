@@ -1,0 +1,30 @@
+{
+  "baseLaunchManifestSHA256": "7ba6ac2011bea9bb5df4ba97b735226f8b4a406b21fef65829dc62bab9f57cda",
+  "sourceManifestSHA256": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+  "modifiedExistingFiles": [
+    {
+      "path": "mac_guard.py",
+      "baseSHA256": "840a6974ba91d70949968017380fab04ee6c391dc5e95c836f2d8e3f4adbc2d5",
+      "candidateSHA256": "24fffc700af4f8472859ce615518e989ac7cc89c83a090d559998501568dc499"
+    },
+    {
+      "path": "launch_stage_c.py",
+      "baseSHA256": "446efb31a58893c947f2faac05695eba5676baff0bcf1d0d8ea4c08f370d838b",
+      "candidateSHA256": "b158a80f98680ef2f57e528531bd8fc88fd7bb5ac6d9baeb6f86c5b2239f5971"
+    },
+    {
+      "path": "failure_evidence.py",
+      "baseSHA256": "d5eeca03e58ffb717da71ad06b9feea197424406780b0202edca278c0cef7f11",
+      "candidateSHA256": "fe84ec1eeca7d1dc5e000105b4e98889643c7e56db3eb0818cedd2405ae69e1d"
+    },
+    {
+      "path": "PUBLIC_AGGREGATE_SCHEMA.json",
+      "baseSHA256": "ec2cd8103110e136a04d8a88f2fb08d0d5eda4a8b857266325e0033e7771d6c9",
+      "candidateSHA256": "cd6cba0a4cefcee4b2ec2f19b622edc0ff1b4c3bf86a0ffad2998658d679e741"
+    }
+  ],
+  "addedExecutableSource": [
+    "test_guard003.py"
+  ],
+  "nativeExecution": false
+}

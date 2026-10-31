@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "source-reviewed-native-execution-pending",
+  "physicalAuthority": false,
+  "appActivation": false,
+  "nativeExecutionPerformed": false,
+  "nativeHookChecksExecuted": false,
+  "authoredHookCheckCount": 51,
+  "plannedOriginalControlQueries": 50,
+  "plannedCandidateQueriesIfControlsMatch": 25,
+  "runtimePinCount": 58,
+  "runtimePinsSHA256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b",
+  "upstreamAlgorithmChange": "scratch-only intersection of original erosion keep with fixed released exact EDT mask; no radius or oracle change",
+  "knownExecutedEvidence": {
+    "observationalCaptureStatus": "full-capture-and50-native-controls-reproduced",
+    "fullCaptureSHA256": "71761f53b3567b6ac5e09d38c95f9a015249062c35ee84ae0cbade1a1f1977e1",
+    "rawFullCaptureExcludedFromMinimalPacket": true,
+    "maskSHA256": "13f436a77608178789c6ba19db1f6de7f91d07229b3af3771106d7c4b218ed2a",
+    "actualNativeReferenceSHA256": "0858272d1faca7e16268b772f0cd164652c08eb22277d36514d2eae72b803893"
+  },
+  "review": {
+    "reviewer": "stage_binary_batch_two",
+    "sourceReview": "passed; final58-pin coherence review requested",
+    "independentNativeExecution": "not performed"
+  },
+  "publicationDecision": "root owned; one fixed diagnostic only; no additional variants or tuning",
+  "pipelineWinnerEstablished": false
+}

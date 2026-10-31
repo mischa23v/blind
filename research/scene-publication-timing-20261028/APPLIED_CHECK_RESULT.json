@@ -1,0 +1,27 @@
+{
+  "checks_passed": 18,
+  "checks": [
+    "release runtime byte-identical",
+    "fixed4 slots only",
+    "sync timestamp writes locked and single assignment",
+    "numeric snapshots under lock then returned unlocked",
+    "no timed callback stdout",
+    "four marker calls exactly once",
+    "worker markers bracket real processing",
+    "main entry marker inside actual callback",
+    "elapsed captured before optional phase printing",
+    "unchanged1.2s latency assertion",
+    "each distinct job captured immediately after own fence",
+    "all prior assertions retained",
+    "formatting invoked only after elapsed captured",
+    "numeric snapshot has no formatting",
+    "preimage source retained ios/BlindAssist/ObservedSceneRuntime.swift",
+    "canonical equals reviewed proposal ios/BlindAssist/ObservedSceneRuntime.swift",
+    "preimage source retained ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+    "canonical equals reviewed proposal ios/BlindAssistTests/ObservedSceneRuntimeTests.swift"
+  ],
+  "swift_executed": false,
+  "native_executed": false,
+  "speed_claimed": false,
+  "status": "applied source candidate"
+}

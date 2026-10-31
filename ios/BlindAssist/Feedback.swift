@@ -11,14 +11,34 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private var delivery = SpeechDeliveryLedger()
     private var currentUtterance: AVSpeechUtterance?
     private var currentSpatialRouteID: UUID?
+    private var currentModelReply: ModelResponseAuthority.Lease?
     private var currentPrivateReference = false
     private var beaconOwnership = SpatialRouteBeaconOwnership()
     /// Only the exact route owner can revalidate a registered physical cue.
     var spatialRoutePermission: ((UUID) -> Bool)?
+    var spatialRouteSpeechPermission: ((UUID, String) -> Bool)?
+    /// Exact generated text retains its request owner at platform queue/start.
+    var modelReplyPermission: ((ModelResponseAuthority.Lease, String) -> Bool)?
     /// Recheck source-bound requested information at enqueue and actual start.
     var requestedSpeechPermission: ((UUID, String) -> Bool)?
     #if DEBUG
     private let debugTrace = DebugNativeSessionTrace()
+    private var debugSilentModelTestTransport = false
+    private(set) var debugModelTestQueued: [String] = []
+    private(set) var debugModelTestStarted: [String] = []
+    /// XCTest-only silent platform boundary. All real controller, admission and
+    /// delayed-start checks still run; no synthesizer, beacon or sensor starts.
+    func debugEnableSilentModelTestTransport() -> Bool {
+        guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else { return false }
+        debugSilentModelTestTransport = true
+        return true
+    }
+    func debugStartModelTestPlayback() -> Bool {
+        guard debugSilentModelTestTransport, let utterance = currentUtterance else { return false }
+        speechSynthesizer(speech, didStart: utterance)
+        return currentUtterance === utterance && delivery.active != nil
+    }
+    var debugModelTestHasActiveAttempt: Bool { delivery.active != nil }
     #endif
     private var outputTimeout: Timer?
     private var urgentUntil = -Double.infinity
@@ -99,7 +119,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     /// This sink holds one attempt only, including the time before AVFoundation starts.
     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil,
                                     speechID: UUID? = nil, alert: Detection? = nil,
-                                    independentAlert: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
+                                    independentAlert: Bool = false, spatialRouteID: UUID? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
         #if DEBUG
         var debugAccepted = false
         defer {
@@ -111,10 +131,16 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
         #endif
         guard narrationID == nil || speechID == nil else { return false }
+        if let modelReply {
+            guard spatialRouteID == nil, alert == nil, !independentAlert,
+                  !admitted.urgent, admitted.priority != .mobility,
+                  modelReplyIsCurrent(modelReply, text: admitted.text) else { return false }
+        }
         if let spatialRouteID {
             guard spatialRouteID == speechID, admitted.priority == .mobility,
                   !independentAlert, alert == nil,
-                  spatialRoutePermission?(spatialRouteID) == true else { return false }
+                  spatialRoutePermission?(spatialRouteID) == true,
+                   spatialRouteSpeechPermission?(spatialRouteID, admitted.text) == true else { return false }
         }
         let destination: SpeechDeliveryLedger.Destination
         if let narrationID {
@@ -127,7 +153,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
         let verifiedIndependentAlert = independentAlert && alert != nil &&
             (admitted.priority == .mobility || admitted.urgent)
-        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert, spatialRouteID: spatialRouteID)
+        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert, spatialRouteID: spatialRouteID, modelReply: modelReply)
         #if DEBUG
         debugAccepted = accepted
         #endif
@@ -158,7 +184,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
 
     @discardableResult private func speak(_ admitted: AdmittedSpeech,
                                          destination: SpeechDeliveryLedger.Destination,
-                                         alert: Detection?, independentAlert: Bool, spatialRouteID: UUID?) -> Bool {
+                                         alert: Detection?, independentAlert: Bool, spatialRouteID: UUID?, modelReply: ModelResponseAuthority.Lease?) -> Bool {
         guard !admitted.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         let priority: SpeechPriority = admitted.urgent ? .danger : admitted.priority
         guard priority.canInterrupt(speechPriority) else { return false }
@@ -177,7 +203,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             voiceOverRunning: UIAccessibility.isVoiceOverRunning, independentAlert: independentAlert)
         guard let attempt = delivery.begin(text: admitted.text, priority: priority,
             destination: destination, transport: transport, independentAlert: independentAlert) else { return false }
-        currentSpatialRouteID = spatialRouteID
+        currentSpatialRouteID = spatialRouteID; currentModelReply = modelReply
         currentPrivateReference = admitted.privateReference
         if let alert { alertSignals(alert) }
         #if DEBUG
@@ -191,7 +217,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             return .init(text: admitted.privateReference ? nil : attempt.text, label: "engine.admitted; destinationID=" + destinationID + (transport == .accessibility ? "; VoiceOverID=unbound" : ""))
         }
         #endif
-        armOutputTimeout(token: attempt.token)
+        armOutputTimeout(token: attempt.token, modelReply: modelReply)
         if transport == .accessibility {
             let value = NSAttributedString(string: attempt.text, attributes: [
                 .accessibilitySpeechQueueAnnouncement: false,
@@ -206,12 +232,21 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             currentUtterance = utterance
             // Revalidate after preparation, immediately before handing to the
             // platform queue. didStart below fences a delayed actual start too.
-            if let spatialRouteID, spatialRoutePermission?(spatialRouteID) != true {
+            if let modelReply, !modelReplyIsCurrent(modelReply, text: attempt.text) {
+                finishActive(outcome: .interrupted, stopSynthesizer: true); return false
+            }
+            if let spatialRouteID, spatialRoutePermission?(spatialRouteID) != true || spatialRouteSpeechPermission?(spatialRouteID, attempt.text) != true {
                 finishActive(outcome: .interrupted, stopSynthesizer: true); return false
             }
             if case .requested(let id) = attempt.destination, requestedSpeechPermission?(id, attempt.text) == false {
                 finishActive(outcome: .interrupted, stopSynthesizer: true); return false
             }
+            #if DEBUG
+            if debugSilentModelTestTransport {
+                debugModelTestQueued.append(attempt.text)
+                return true
+            }
+            #endif
             speech.speak(utterance)
         }
         return true
@@ -231,12 +266,23 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         RunLoop.main.add(timer, forMode: .common)
     }
 
-    private func armOutputTimeout(token: UUID) {
+    /// Ordinary chat does not require a running camera watchdog. Its original
+    /// model deadline still bounds playback; an old timer cannot stop a newer
+    /// independent alert, document, or other delivery attempt.
+    static func outputTimeoutInterval(modelReply: ModelResponseAuthority.Lease?, now: Double) -> TimeInterval {
+        guard let modelReply else { return 120 }
+        guard now.isFinite else { return 0 }
+        return max(0, min(120, modelReply.expiresAt - now))
+    }
+
+    private func armOutputTimeout(token: UUID, modelReply: ModelResponseAuthority.Lease?) {
         outputTimeout?.invalidate()
-        let timer = Timer(timeInterval: 120, repeats: false) { [weak self] _ in
+        let interval = Self.outputTimeoutInterval(modelReply: modelReply, now: ProcessInfo.processInfo.systemUptime)
+        let timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
             guard let self, self.delivery.active?.token == token else { return }
             // A lost callback must not strand the controller or claim text was heard.
-            self.finishActive(outcome: .unknown, stopSynthesizer: true, diagnosticCause: "speech.timeout.notCompletion")
+            self.finishActive(outcome: modelReply == nil ? .unknown : .interrupted, stopSynthesizer: true,
+                              diagnosticCause: modelReply == nil ? "speech.timeout.notCompletion" : "model.originalDeadlineExpired")
         }
         outputTimeout = timer
         RunLoop.main.add(timer, forMode: .common)
@@ -302,7 +348,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         #endif
         // Invalidate identity before stopping: didCancel can arrive after new output
         // starts. Clear all old state before invoking controller code, asynchronously.
-        currentUtterance = nil; currentSpatialRouteID = nil; currentPrivateReference = false
+        currentUtterance = nil; currentSpatialRouteID = nil; currentModelReply = nil; currentPrivateReference = false
         outputTimeout?.invalidate(); outputTimeout = nil
         if stopSynthesizer { speech.stopSpeaking(at: .immediate) }
         DispatchQueue.main.async { [weak self] in
@@ -320,17 +366,24 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         guard utterance === currentUtterance, let active = delivery.active, active.transport == .synthesized else { return }
         #if DEBUG
         debugTrace?.event(.speechStarted, source: .speechEngine, utteranceID: active.token) {
-            .init(text: currentPrivateReference ? nil : active.text, label: "AVSpeech.didStart")
+            .init(text: currentPrivateReference ? nil : active.text, label: debugSilentModelTestTransport ? "test.injectedDidStart.silent" : "AVSpeech.didStart")
         }
         #endif
         if case .requested(let id) = active.destination, requestedSpeechPermission?(id, active.text) == false {
             finishActive(outcome: .interrupted, stopSynthesizer: true,
                          diagnosticCause: "source.expiredBeforePlayback"); return
         }
-        if let routeID = currentSpatialRouteID, spatialRoutePermission?(routeID) != true {
+        if let modelReply = currentModelReply, !modelReplyIsCurrent(modelReply, text: active.text) {
+            finishActive(outcome: .interrupted, stopSynthesizer: true,
+                         diagnosticCause: "model.ownerExpiredBeforePlayback"); return
+        }
+        if let routeID = currentSpatialRouteID, spatialRoutePermission?(routeID) != true || spatialRouteSpeechPermission?(routeID, active.text) != true {
             finishActive(outcome: .interrupted, stopSynthesizer: true,
                          diagnosticCause: "route.expiredBeforePlayback"); return
         }
+        #if DEBUG
+        if debugSilentModelTestTransport { debugModelTestStarted.append(active.text) }
+        #endif
         if case .requested(let id) = active.destination { onRequestedSpeechStarted?(id, active.text) }
     }
 
@@ -346,6 +399,21 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
 
     /// Revokes only the short-lived notice with this ID. A camera turn must not
     /// interrupt an unrelated answer or a higher-priority hazard/mobility alert.
+    /// Shared by enqueue, platform start and revalidation; missing owner fails closed.
+    /// Exposed internally for hosted gate tests without invoking speech or audio.
+    func modelReplyIsCurrent(_ lease: ModelResponseAuthority.Lease, text: String) -> Bool {
+        modelReplyPermission?(lease, text) == true
+    }
+
+    /// Does not touch an independent alert or unrelated document/OCR producer.
+    func revalidateModelReply() {
+        guard let lease = currentModelReply, let active = delivery.active else { return }
+        guard modelReplyIsCurrent(lease, text: active.text) else {
+            finishActive(outcome: .interrupted, stopSynthesizer: true,
+                         diagnosticCause: "model.ownerExpiredDuringPlayback"); return
+        }
+    }
+
     func stopRequestedSpeech(_ id: UUID) {
         guard delivery.active?.destination == .requested(id) else { return }
         _ = stopInformation(announceCancellation: false)

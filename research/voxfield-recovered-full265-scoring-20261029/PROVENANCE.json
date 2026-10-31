@@ -1,0 +1,102 @@
+{
+  "original_files": [
+    {
+      "file": "COMPARISON.md",
+      "bytes": 27333,
+      "sha256": "59c7bbbec96f07130017add9f7179e7858908aef81e960d36980bf4b0be44373"
+    },
+    {
+      "file": "SOURCE_FREEZE.json",
+      "bytes": 5164,
+      "sha256": "d43f35a99b470e5c4d3e6e35025a915c6f3cc331bcea2e2445dea4e06d96e2ca"
+    },
+    {
+      "file": "INDEPENDENT_SOURCE_REVIEW.json",
+      "bytes": 726,
+      "sha256": "65e747abf8bec2dfc2059000b89f2dc2643dd038b4d88e686bf193fcdf304431"
+    },
+    {
+      "file": "INDEPENDENT_ARRAY_RECOUNT.json",
+      "bytes": 4899,
+      "sha256": "1a8c46b0cc7644ad39dfbf8964a3620be25853f1d53d54cea6aaa41daa09fb34"
+    },
+    {
+      "file": "INDEPENDENT_EXTENDED_ARRAY_RECOUNT.json",
+      "bytes": 286,
+      "sha256": "9d970ea0700561ec002403f1b9056d2f80f47cf72c3da3fbda573b7fe5d1966b"
+    },
+    {
+      "file": "verify_inputs.py",
+      "bytes": 6684,
+      "sha256": "d0965c1124ddd4d67b58f3c5368d73dcabd7c8bcbee5bba0a424109cb95c0c9b"
+    },
+    {
+      "file": "run_guarded.py",
+      "bytes": 3523,
+      "sha256": "b25a795755244400d6437dc855360c51b419c549c64a4789f02a765238cb5b7c"
+    },
+    {
+      "file": "execute_score.py",
+      "bytes": 1083,
+      "sha256": "fd8a9ec2905268e1f42f4ea496fbc8900868b8a5f210c6893c6bc00cf9007198"
+    },
+    {
+      "file": "B/evaluate_mapper.py",
+      "bytes": 3801,
+      "sha256": "7a8bd3371d049d9178419a9e64ecc680431f3512a6e1b6cb23541b2558c5ad35"
+    },
+    {
+      "file": "B/summarize_mapper.py",
+      "bytes": 3130,
+      "sha256": "adf7f95cb0f9228f321056d08303cdfbea3c55465cbbabd771fc3dcf312b7c67"
+    },
+    {
+      "file": "B/RESOURCE.json",
+      "bytes": 583,
+      "sha256": "37959ca0b09b223d8740b7b392324ee7b3c4ca3914822f04a7aafa59c6ed348c"
+    },
+    {
+      "file": "C0/evaluate_mapper.py",
+      "bytes": 3803,
+      "sha256": "6b22e6e20a2c97b17e51c7f4fcfcff0dbd190f54ce7d4bc1c0ec6af52d38cb21"
+    },
+    {
+      "file": "C0/summarize_mapper.py",
+      "bytes": 3132,
+      "sha256": "d7560dffd7a99e26bb5af63e1da7443baf6bb7c0d255a7b8ec03c2bc7aeb8a2d"
+    },
+    {
+      "file": "C0/RESOURCE.json",
+      "bytes": 567,
+      "sha256": "e1171bb0f82aaee6e0d4854090a7e28e263c6fab94af910bf8ef580a2fcb77a4"
+    },
+    {
+      "file": "C1/evaluate_mapper.py",
+      "bytes": 3809,
+      "sha256": "5186648769f50121158fe9345e379fad6077ab8686e2d660f69ee4cde9e429bb"
+    },
+    {
+      "file": "C1/summarize_mapper.py",
+      "bytes": 3132,
+      "sha256": "2613332c4435cdde08114de12ac1468c8051637dc1ad460ea3b3d4c88f31dca8"
+    },
+    {
+      "file": "C1/RESOURCE.json",
+      "bytes": 567,
+      "sha256": "d9a4197701e8cd45b4af339ac713bba7998f2daacb033836299d63511bb4ba52"
+    }
+  ],
+  "full_output_manifest_retained_locally": {
+    "file": "OUTPUT_FREEZE.json",
+    "sha256": "f18050b5af9ea282ac3d3466262ef3a005091608a0e4811b039ba7246576d699"
+  },
+  "excluded": [
+    "NPZ arrays",
+    "PLY meshes",
+    "raw images",
+    "large perframe COMMON_GEOMETRY_RESULTS JSON",
+    "guard logs",
+    "full output manifest"
+  ],
+  "remote_writes": false
+}

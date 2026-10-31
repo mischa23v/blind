@@ -1,0 +1,663 @@
+{
+  "schema": 1,
+  "status": "worker-complete-aggregate-failed-preserved",
+  "sourceCommit": "c204b0e63e4c7444c02ea8ccf50e347693a15684",
+  "executedManifestSHA256": "ed735949ea0d21bf0fbf64754980a61d67d8b8095193b11d5ba72920dc8d6dc9",
+  "aggregateStatus": "failed",
+  "aggregateError": "ModuleNotFoundError: No module named 'contracts'",
+  "workerStatus": "rawDiagnosticCompleted",
+  "workerError": null,
+  "verification": {
+    "frozenInputPinsBeforeAfterMatch": 32,
+    "commandsExitedZeroAndRetired": 3,
+    "sourceControlsPassed": 6,
+    "kernelControlsPassed": 32,
+    "terminalPayloadFilesVerified": 8,
+    "terminalPayloadBytesExcludingGuardReceipt": 1141964,
+    "allSevenSchedulesExactlyRecounted": true,
+    "registeredMeshAndEveryFirstWitnessHeightReproducedWithStdlib": true,
+    "currentFrozenInputsMatch": 32,
+    "executedSourceUnmodified": true
+  },
+  "aggregateResources": {
+    "cpuSeconds": 65.999001,
+    "wallSeconds": 66.03300030900027,
+    "peakObservedRSSBytes": 172802048,
+    "limits": {
+      "cpuSeconds": 120,
+      "wallSeconds": 180,
+      "observedRSSBytes": 1073741824,
+      "outputBytes": 67108864
+    }
+  },
+  "workerQueries": {
+    "boxes": 27408,
+    "triangles": 8710095,
+    "rays": 0
+  },
+  "events": 13704,
+  "logicalContactLogBytes": 41413079,
+  "totals": {
+    "actualBody": {
+      "queries": 13704,
+      "candidateTriangles": 2634893,
+      "rawOverlapOccurrences": 8221,
+      "contactEvents": 1019,
+      "kind_translate": 144,
+      "firstWitnessWithin25mm": 784,
+      "multiHitEvents": 960,
+      "unidentifiedOtherOverlapOccurrences": 7202,
+      "kind_terminal": 1,
+      "kind_initial": 1,
+      "kind_turn": 873,
+      "otherOrMixedFirstWitnessRange": 235
+    },
+    "horizontalMargin": {
+      "queries": 13704,
+      "rawOverlapOccurrences": 100361,
+      "candidateTriangles": 6075202,
+      "contactEvents": 5284,
+      "kind_initial": 6,
+      "firstWitnessWithin25mm": 2579,
+      "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 442,
+      "otherOrMixedFirstWitnessRange": 2263,
+      "multiHitEvents": 5102,
+      "unidentifiedOtherOverlapOccurrences": 95077,
+      "kind_translate": 594,
+      "kind_turn": 4678,
+      "kind_terminal": 6
+    }
+  },
+  "paths": [
+    {
+      "name": "table_92_to_120",
+      "completedEvents": 1844,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 1844,
+            "rawOverlapOccurrences": 0,
+            "candidateTriangles": 409819
+          },
+          "firstWitnessRangeEnvelopeMetres": null,
+          "firstContactWitness": null,
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 1844,
+            "rawOverlapOccurrences": 11336,
+            "candidateTriangles": 915052,
+            "contactEvents": 855,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 591,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 161,
+            "otherOrMixedFirstWitnessRange": 103,
+            "multiHitEvents": 835,
+            "unidentifiedOtherOverlapOccurrences": 10481,
+            "kind_translate": 67,
+            "kind_turn": 786,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.032792072743177414,
+            1.021841712296009
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 26870,
+            "rawOverlapOccurrencesInQuery": 6,
+            "wholeTriangleAboveStartFootMetres": [
+              0.8391518713349129,
+              0.9358388306015755
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.8391518713349129,
+              0.9358388306015755
+            ]
+          },
+          "firstAtLeast500mmWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 26870,
+            "rawOverlapOccurrencesInQuery": 6,
+            "wholeTriangleAboveStartFootMetres": [
+              0.8391518713349129,
+              0.9358388306015755
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.8391518713349129,
+              0.9358388306015755
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "table_120_to_200",
+      "completedEvents": 2052,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 2052,
+            "rawOverlapOccurrences": 30,
+            "candidateTriangles": 439728,
+            "contactEvents": 2,
+            "kind_translate": 1,
+            "firstWitnessWithin25mm": 2,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 0,
+            "otherOrMixedFirstWitnessRange": 0,
+            "multiHitEvents": 2,
+            "unidentifiedOtherOverlapOccurrences": 28,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.008229875915868878,
+            0.01063278228566289
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 2050,
+            "kind": "translate",
+            "originalFaceID": 19234,
+            "rawOverlapOccurrencesInQuery": 15,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.008229875915868878,
+              -0.0023430268999177217
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.004745933269711733,
+              0.01063278228566289
+            ]
+          },
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 2052,
+            "rawOverlapOccurrences": 13383,
+            "candidateTriangles": 855054,
+            "contactEvents": 652,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 459,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 81,
+            "otherOrMixedFirstWitnessRange": 112,
+            "multiHitEvents": 620,
+            "unidentifiedOtherOverlapOccurrences": 12731,
+            "kind_translate": 95,
+            "kind_turn": 555,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.01627456396818161,
+            0.8419997170567513
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 15858,
+            "rawOverlapOccurrencesInQuery": 13,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.0005613102595167785,
+              0.004183771273229775
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.0005613102595167785,
+              0.004183771273229775
+            ]
+          },
+          "firstAtLeast500mmWitness": {
+            "eventZeroBased": 2,
+            "kind": "translate",
+            "originalFaceID": 24557,
+            "rawOverlapOccurrencesInQuery": 2,
+            "wholeTriangleAboveStartFootMetres": [
+              0.7310968580181322,
+              0.8240684213573656
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.7182179540395737,
+              0.8111895173788071
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "table_200_to_220",
+      "completedEvents": 1530,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 1530,
+            "rawOverlapOccurrences": 30,
+            "candidateTriangles": 152833,
+            "contactEvents": 2,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 2,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 0,
+            "otherOrMixedFirstWitnessRange": 0,
+            "multiHitEvents": 2,
+            "unidentifiedOtherOverlapOccurrences": 28,
+            "kind_translate": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            0.004745933269711733,
+            0.01063278228566289
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 19234,
+            "rawOverlapOccurrencesInQuery": 15,
+            "wholeTriangleAboveStartFootMetres": [
+              0.004745933269711733,
+              0.01063278228566289
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.004745933269711733,
+              0.01063278228566289
+            ]
+          },
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 1530,
+            "rawOverlapOccurrences": 279,
+            "candidateTriangles": 409279,
+            "contactEvents": 101,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 46,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 0,
+            "otherOrMixedFirstWitnessRange": 55,
+            "multiHitEvents": 71,
+            "unidentifiedOtherOverlapOccurrences": 178,
+            "kind_translate": 2,
+            "kind_turn": 97,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.009962874464690685,
+            0.02745564255630084
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 8078,
+            "rawOverlapOccurrencesInQuery": 25,
+            "wholeTriangleAboveStartFootMetres": [
+              0.004470355851205587,
+              0.005941277877988815
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.004470355851205587,
+              0.005941277877988815
+            ]
+          },
+          "firstAtLeast500mmWitness": null
+        }
+      }
+    },
+    {
+      "name": "table_220_to_20",
+      "completedEvents": 1555,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 1555,
+            "rawOverlapOccurrences": 0,
+            "candidateTriangles": 226305
+          },
+          "firstWitnessRangeEnvelopeMetres": null,
+          "firstContactWitness": null,
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 1555,
+            "rawOverlapOccurrences": 335,
+            "candidateTriangles": 652791,
+            "contactEvents": 119,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 37,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 8,
+            "otherOrMixedFirstWitnessRange": 74,
+            "multiHitEvents": 106,
+            "unidentifiedOtherOverlapOccurrences": 216,
+            "kind_translate": 11,
+            "kind_turn": 107
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.012924998998641968,
+            0.8782970979809761
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 20821,
+            "rawOverlapOccurrencesInQuery": 3,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.007645814011344232,
+              0.02745564255630084
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.007645814011344232,
+              0.02745564255630084
+            ]
+          },
+          "firstAtLeast500mmWitness": {
+            "eventZeroBased": 793,
+            "kind": "turn",
+            "originalFaceID": 25529,
+            "rawOverlapOccurrencesInQuery": 4,
+            "wholeTriangleAboveStartFootMetres": [
+              0.7456997707486153,
+              0.8424545004963875
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.7456997707486153,
+              0.8424545004963875
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "table_20_to_92",
+      "completedEvents": 2863,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 2863,
+            "rawOverlapOccurrences": 2094,
+            "candidateTriangles": 456656,
+            "contactEvents": 265,
+            "kind_turn": 195,
+            "firstWitnessWithin25mm": 250,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 0,
+            "otherOrMixedFirstWitnessRange": 15,
+            "multiHitEvents": 246,
+            "unidentifiedOtherOverlapOccurrences": 1829,
+            "kind_translate": 70
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.023995358496904373,
+            0.03153891861438751
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 659,
+            "kind": "turn",
+            "originalFaceID": 3234,
+            "rawOverlapOccurrencesInQuery": 1,
+            "wholeTriangleAboveStartFootMetres": [
+              0.001347857527434826,
+              0.009140294045209885
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.001347857527434826,
+              0.009140294045209885
+            ]
+          },
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 2863,
+            "rawOverlapOccurrences": 34352,
+            "candidateTriangles": 1356202,
+            "contactEvents": 1590,
+            "kind_translate": 233,
+            "firstWitnessWithin25mm": 602,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 188,
+            "otherOrMixedFirstWitnessRange": 800,
+            "multiHitEvents": 1565,
+            "unidentifiedOtherOverlapOccurrences": 32762,
+            "kind_turn": 1356,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.032792072743177414,
+            1.0949802696704865
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 306,
+            "kind": "translate",
+            "originalFaceID": 13319,
+            "rawOverlapOccurrencesInQuery": 1,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.0018437012331560254,
+              0.01017844770103693
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.0018437012331560254,
+              0.01017844770103693
+            ]
+          },
+          "firstAtLeast500mmWitness": {
+            "eventZeroBased": 525,
+            "kind": "turn",
+            "originalFaceID": 26021,
+            "rawOverlapOccurrencesInQuery": 20,
+            "wholeTriangleAboveStartFootMetres": [
+              0.6501300539821386,
+              0.7192935552448034
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              0.6501300539821386,
+              0.7192935552448034
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "varpu_130_to_160",
+      "completedEvents": 1923,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 1923,
+            "rawOverlapOccurrences": 3021,
+            "candidateTriangles": 472876,
+            "contactEvents": 374,
+            "kind_translate": 36,
+            "firstWitnessWithin25mm": 264,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 0,
+            "otherOrMixedFirstWitnessRange": 110,
+            "multiHitEvents": 354,
+            "unidentifiedOtherOverlapOccurrences": 2647,
+            "kind_turn": 338
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.00997301284223795,
+            0.03460676968097687
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 1082,
+            "kind": "translate",
+            "originalFaceID": 18677,
+            "rawOverlapOccurrencesInQuery": 2,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.0011130542261525989,
+              0.003399317152798176
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.0011130542261525989,
+              0.003399317152798176
+            ]
+          },
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 1923,
+            "rawOverlapOccurrences": 20255,
+            "candidateTriangles": 939208,
+            "contactEvents": 979,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 420,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 2,
+            "otherOrMixedFirstWitnessRange": 557,
+            "multiHitEvents": 948,
+            "unidentifiedOtherOverlapOccurrences": 19276,
+            "kind_translate": 93,
+            "kind_turn": 884,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.019184231913338103,
+            1.4262326434254646
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 21954,
+            "rawOverlapOccurrencesInQuery": 19,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.007352010271684639,
+              0.009303283952935226
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.007352010271684639,
+              0.009303283952935226
+            ]
+          },
+          "firstAtLeast500mmWitness": {
+            "eventZeroBased": 960,
+            "kind": "turn",
+            "originalFaceID": 10860,
+            "rawOverlapOccurrencesInQuery": 9,
+            "wholeTriangleAboveStartFootMetres": [
+              1.3309559300541878,
+              1.4262326434254646
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              1.3309559300541878,
+              1.4262326434254646
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "varpu_160_to_130",
+      "completedEvents": 1937,
+      "modes": {
+        "actualBody": {
+          "counts": {
+            "queries": 1937,
+            "rawOverlapOccurrences": 3046,
+            "candidateTriangles": 476676,
+            "contactEvents": 376,
+            "kind_turn": 340,
+            "firstWitnessWithin25mm": 266,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 0,
+            "otherOrMixedFirstWitnessRange": 110,
+            "multiHitEvents": 356,
+            "unidentifiedOtherOverlapOccurrences": 2670,
+            "kind_translate": 36
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.00997301284223795,
+            0.03460676968097687
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 5,
+            "kind": "turn",
+            "originalFaceID": 17252,
+            "rawOverlapOccurrencesInQuery": 1,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.00997301284223795,
+              0.03460676968097687
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.00997301284223795,
+              0.03460676968097687
+            ]
+          },
+          "firstAtLeast500mmWitness": null
+        },
+        "horizontalMargin": {
+          "counts": {
+            "queries": 1937,
+            "rawOverlapOccurrences": 20421,
+            "candidateTriangles": 947616,
+            "contactEvents": 988,
+            "kind_initial": 1,
+            "firstWitnessWithin25mm": 424,
+            "firstWitnessEntirelyAtLeast500mmAboveStartFoot": 2,
+            "otherOrMixedFirstWitnessRange": 562,
+            "multiHitEvents": 957,
+            "unidentifiedOtherOverlapOccurrences": 19433,
+            "kind_translate": 93,
+            "kind_turn": 893,
+            "kind_terminal": 1
+          },
+          "firstWitnessRangeEnvelopeMetres": [
+            -0.022024624049663544,
+            1.4262326434254646
+          ],
+          "firstContactWitness": {
+            "eventZeroBased": 0,
+            "kind": "initial",
+            "originalFaceID": 17252,
+            "rawOverlapOccurrencesInQuery": 17,
+            "wholeTriangleAboveStartFootMetres": [
+              -0.008076312429122101,
+              0.036503470094092716
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              -0.008076312429122101,
+              0.036503470094092716
+            ]
+          },
+          "firstAtLeast500mmWitness": {
+            "eventZeroBased": 966,
+            "kind": "translate",
+            "originalFaceID": 10860,
+            "rawOverlapOccurrencesInQuery": 5,
+            "wholeTriangleAboveStartFootMetres": [
+              1.3309559300541878,
+              1.4262326434254646
+            ],
+            "wholeTriangleAboveEndFootMetres": [
+              1.3309559300541878,
+              1.4262326434254646
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "witnessScope": {
+    "nonGroundWitnessIDsPerContactQuery": 1,
+    "allHitIdentitiesLogged": false,
+    "groundIDsFirst16AlwaysEmpty": true,
+    "wholeTriangleHeightNotContactPoint": true,
+    "locatorFirstNotEarliestContact": true,
+    "nearFootBandMetres": [
+      -0.025,
+      0.025
+    ],
+    "higherWitnessLowerBoundMetres": 0.5,
+    "bandsAreReportingOnlyNotSemanticFloorOrExemptions": true
+  },
+  "physicalAuthority": false,
+  "movementEpisode": false,
+  "arrivalClaimed": false,
+  "evidenceDigests": {
+    "GUARD_RUN/RESULT.json": "bc07cf1fea97e8457cfc0e04819106acf5cb32c9d065a3e5a3d27c9bb2cb0984",
+    "comparison/RECEIPT.json": "1f772214cbf62fa9c78f5a6891d17d4794abdc57d0fb9351809153cd99075b3f",
+    "comparison/CONTACTS.jsonl.gz": "f1b930185ee94b4b61fd8dbd2b85815ebe1d22148e34bbc3e796b010d91395be"
+  },
+  "limits": [
+    "The aggregate failure is preserved; recounting does not turn it into a successful original aggregate.",
+    "Raw overlap occurrences repeat across events and envelopes; they are not unique physical obstacles or impacts.",
+    "Unknown other-hit identities/heights cannot inherit the first witness classification.",
+    "Nominal-body first witnesses being low does not establish that all nominal-body hits were low.",
+    "Margin volumes include nominal bodies; body/margin counts cannot be added as independent physical impacts.",
+    "Historical estimated registration, authored foot/yaw, conservative sweeps and 2 mm lower trim are not actual body pose or complete floor/support evidence.",
+    "Missing mesh surfaces and present-world obstacles remain unknown; no route or child-use safety certification."
+  ]
+}

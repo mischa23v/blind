@@ -1,0 +1,56 @@
+name: Native paper stair reference unit checks
+on:
+  push:
+    branches: [master, codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/paper-stair-baseline-20261029/Package.swift'
+      - 'research/paper-stair-baseline-20261029/Sources/PaperStairReference/Reference.swift'
+      - 'research/paper-stair-baseline-20261029/Tests/PaperStairReferenceTests/ReferenceTests.swift'
+      - 'research/paper-stair-baseline-20261029/SOURCE_MANIFEST.json'
+      - 'research/paper-stair-baseline-20261029/ci/collect.py'
+      - 'research/paper-stair-baseline-20261029/ci/test_collect.py'
+      - 'research/paper-stair-baseline-20261029/ci/run.py'
+      - 'research/paper-stair-baseline-20261029/ci/test_runner_cleanup.py'
+      - '.github/workflows/native-paper-stair-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-paper-stair-reference-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  synthetic-reference:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')
+    runs-on: xcode-27
+    timeout-minutes: 8
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify collector rejection controls then17 synthetic XCTest cases
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          xcrun swift --version
+          python3 -m unittest discover -s research/paper-stair-baseline-20261029/ci -p 'test_*.py'
+          python3 -O -m unittest discover -s research/paper-stair-baseline-20261029/ci -p 'test_*.py'
+          python3 research/paper-stair-baseline-20261029/ci/run.py
+      - name: Preserve only bounded synthetic test metadata
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: paper-stair-reference-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/paper-stair-reference/receipt.json
+            ${{ runner.temp }}/paper-stair-reference/xctest-results.json
+            ${{ runner.temp }}/paper-stair-reference/synthetic-test-records.json
+          if-no-files-found: error
+          retention-days: 3

@@ -1,0 +1,63 @@
+{
+  "sourceFiles": [
+    {
+      "file": "textured.obj",
+      "bytes": 10497144,
+      "sha256": "f10de085426143ad095fefc713b4966d22fdf08beda9ff9ead759019a0a8306a",
+      "sourceMember": "blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.obj"
+    },
+    {
+      "file": "transformations.json",
+      "bytes": 317438,
+      "sha256": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+      "sourceMember": "blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/transformations.json"
+    }
+  ],
+  "objRecordCounts": {
+    "#": 4,
+    "mtllib": 1,
+    "v": 51965,
+    "vt": 262110,
+    "usemtl": 1,
+    "f": 87370
+  },
+  "objBounds": [
+    [
+      -2.672565,
+      -1.786106,
+      -3.404962
+    ],
+    [
+      2.672565,
+      1.786106,
+      3.404962
+    ]
+  ],
+  "objGroupsMaterials": [
+    "mtllib textured.mtl",
+    "usemtl textured_0"
+  ],
+  "poseTopKeys": [
+    "camera_model",
+    "orientation_override",
+    "frames"
+  ],
+  "frameCount": 388,
+  "firstFrameKeys": [
+    "fl_x",
+    "fl_y",
+    "cx",
+    "cy",
+    "h",
+    "w",
+    "file_path",
+    "depth_file_path",
+    "transform_matrix"
+  ],
+  "firstFramePath": "./images/frame_00001.jpg",
+  "lastFramePath": "./images/frame_00391.jpg",
+  "frameNamesUnique": 388,
+  "noSemanticDoorSeatAnnotationClaim": true,
+  "noCameraMeshRegistrationClaim": true,
+  "noExecutedRoutes": true
+}

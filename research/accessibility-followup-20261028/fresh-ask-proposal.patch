@@ -1,0 +1,109 @@
+--- a/ios/BlindAssistUITests/LaunchTests.swift
++++ b/ios/BlindAssistUITests/LaunchTests.swift
+@@ -301,7 +301,7 @@
+         // Only synthetic test content. This is callback-time UI, not the audit's
+         // historical failing-size state; image and snapshot are not atomic.
+         guard app.launchArguments.contains("--ui-testing"),
+-              phase == "camera" || phase == "ask" else { return }
++              phase == "camera" || phase == "ask" || phase == "askfresh" else { return }
+         // Do not observe or spend the capture budget on the existing exemption.
+         // The callback below still owns its original, unchanged return decision.
+         if issue.auditType == .contrast, let element = issue.element,
+@@ -388,6 +388,13 @@
+         reveal(ask); ask.tap()
+         try auditFullDestination("ask", title: "Ask and goals", requiredControl: "local-answer")
+     }
++    @MainActor
++    func testAccessibilityAuditOfAskIndependently() throws {
++        // A separate XCTest setup launches the full app afresh. Camera failures
++        // must not prevent Ask coverage; this is not a largest-size endpoint test.
++        openSettingsPage("ask-screen")
++        try auditFullDestination("askfresh", title: "Ask and goals", requiredControl: "local-answer")
++    }
+     func testOfflineCommunityLibraryKeepsLocalImportAvailable() {
+         openSettingsPage("settings-map-tools")
+         let community = app.buttons["community-maps"]
+--- a/tools/ci/export-full-audit-evidence.py
++++ b/tools/ci/export-full-audit-evidence.py
+@@ -1,8 +1,9 @@
+ #!/usr/bin/env python3
+ """Export bounded authored full-app audit evidence without hiding audit failures.
+ 
+-Only a camera pair is mandatory: the unchanged stop-on-failure XCTest policy may
+-prevent the ask phase from running. A partial ask pair always fails evidence checks.
++Camera and independent Ask pairs are mandatory in the CLI. Legacy combined Ask
++remains optional because Camera can abort it. An after attachment is observation
++only: native case status must be obtained separately from the result bundle.
+ """
+ import json
+ from pathlib import Path
+@@ -11,8 +12,11 @@
+ import subprocess
+ import sys
+ 
++PHASES = ('camera', 'ask', 'askfresh')
+ ROLES = ('camera-before', 'camera-after', 'ask-before', 'ask-after')
++FRESH_ROLES = ('askfresh-before', 'askfresh-after')
+ ISSUE_ROLES = tuple(f'{phase}-issue-{index}-{kind}' for phase in ('camera', 'ask') for index in (1, 2) for kind in ('screen', 'metadata'))
++FRESH_ISSUE_ROLES = tuple(f'askfresh-issue-{index}-{kind}' for index in (1, 2) for kind in ('screen', 'metadata'))
+ MAX_BYTES = 16 * 1024 * 1024
+ 
+ 
+@@ -48,7 +52,7 @@
+     elif 'element' in data: raise ValueError('Unexpected element without captured snapshot')
+ 
+ 
+-def collect(source: Path, destination: Path, export_error=None) -> dict:
++def collect(source: Path, destination: Path, export_error=None, *, require_fresh_ask=False) -> dict:
+     destination.mkdir(parents=True, exist_ok=False)
+     result = {'schema': 1, 'scope': 'synthetic full-app camera/ask accessibility audit',
+               'nativeAuditOutcome': 'not_inferred_from_attachments', 'screenshots': [], 'metadata': [], 'errors': []}
+@@ -75,7 +79,7 @@
+                     name = item.get('suggestedHumanReadableName', '')
+                     if not isinstance(name, str):
+                         raise ValueError('Invalid attachment name')
+-                    match = re.fullmatch(r'full-audit-((?:camera|ask)-(?:before|after|issue-[12]-(?:screen|metadata)))(?:_[^/\\\r\n]+)?(?:\.(?:png|json))?', name)
++                    match = re.fullmatch(r'full-audit-((?:camera|ask|askfresh)-(?:before|after|issue-[12]-(?:screen|metadata)))(?:_[^/\\\r\n]+)?(?:\.(?:png|json))?', name)
+                     if not match:
+                         if name.startswith('full-audit-') and len(errors) < 16: errors.append('Unexpected authored attachment name')
+                         continue
+@@ -112,16 +116,16 @@
+         except (OSError, ValueError, TypeError) as error:
+             if len(errors) < 16: errors.append(error_description(error))
+     phases = {}
+-    for phase in ('camera', 'ask'):
++    for phase in PHASES:
+         wanted = {phase + '-before', phase + '-after'}
+         seen = observed & wanted
+         retained = set(selected) & wanted
+-        required = phase == 'camera' or any(role.startswith(phase + '-') for role in observed)
++        required = phase == 'camera' or (phase == 'askfresh' and require_fresh_ask) or any(role.startswith(phase + '-') for role in observed)
+         missing = sorted(wanted - retained) if required else []
+         phases[phase] = {'status': 'complete' if retained == wanted else ('missing_or_partial' if required else 'not_observed'),
+                          'observedRoles': sorted(seen), 'retainedRoles': sorted(retained), 'missingRoles': missing}
+     issues = {}
+-    for phase in ('camera', 'ask'):
++    for phase in PHASES:
+         for index in (1, 2):
+             prefix = f'{phase}-issue-{index}'
+             wanted = {prefix + '-screen', prefix + '-metadata'}
+@@ -130,8 +134,8 @@
+                 issues[prefix] = {'status': 'complete' if not missing else 'missing_or_partial', 'missingRoles': missing}
+                 if missing and len(errors) < 16: errors.append('Incomplete issue evidence: ' + prefix)
+     result.update(phases=phases, issues=issues,
+-                  screenshots=[selected[role] for role in ROLES + ISSUE_ROLES if role in selected and not role.endswith('-metadata')],
+-                  metadata=[selected[role] for role in ISSUE_ROLES if role in selected and role.endswith('-metadata')],
++                  screenshots=[selected[role] for role in ROLES + ISSUE_ROLES + FRESH_ROLES + FRESH_ISSUE_ROLES if role in selected and not role.endswith('-metadata')],
++                  metadata=[selected[role] for role in ISSUE_ROLES + FRESH_ISSUE_ROLES if role in selected and role.endswith('-metadata')],
+                   screenshotBytes=total, evidenceComplete=not errors and all(not phase['missingRoles'] for phase in phases.values()))
+     payload = json.dumps(result, indent=2) + '\n'
+     if len(payload.encode('utf-8')) > 16 * 1024:
+@@ -155,7 +159,7 @@
+                 error = 'xcresulttool attachment export failed with exit ' + str(completed.returncode)
+         except (OSError, subprocess.TimeoutExpired) as failure:
+             error = 'xcresulttool attachment export unavailable or timed out: ' + type(failure).__name__
+-    status = collect(root / 'export', root / 'artifacts', error)
++    status = collect(root / 'export', root / 'artifacts', error, require_fresh_ask=True)
+     print('ACCESSIBILITY_AUDIT_EVIDENCE=' + json.dumps(status))
+     return 0 if status['evidenceComplete'] else 1
+ 

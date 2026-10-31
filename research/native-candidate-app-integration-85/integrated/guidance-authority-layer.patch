@@ -1,0 +1,2123 @@
+--- a/BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift
++++ b/BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift
+@@ -66,6 +66,11 @@
+         let text = normalizedPhysicalRequest(question)
+         guard !text.isEmpty else { return false }
+         func has(_ pattern: String) -> Bool { text.range(of: pattern, options: .regularExpression) != nil }
++        // A continuation toward a concrete local destination is still navigation,
++        // including when no route exists. Story/topic/appliance continuation stays
++        // under its existing domain rules; this is not a general task ban.
++        if has(#"\b(?:continue|carry on|keep going|head) (?:straight|walking|moving|(?:to|toward|towards|through|past) (?:the |this |that |my )?(?:kitchen|bathroom|door|doorway|exit|entrance|hallway|corridor|stairs|table|bed|chair))\b"#)
++            || has(#"(?:^| )(?:اكمل|اواصل|واصل|كمل|استمر) (?:علي طول|على طول|مباشره|السير|المشي|للمطبخ|للباب|للمخرج|للحمام|(?:الي|نحو|عبر) (?:المطبخ|الباب|المخرج|الحمام|الممر))(?: |$)"#) { return true }
+         // Local object/person presence also needs evidence. Keep these concrete
+         // forms bounded; history and general facts about these subjects remain chat.
+         if has(#"^(?:please |can you tell me |tell me )?(?:where (?:is|are)|where s|wheres|wher is) (?:my |the |this |that )?(?:cane|cup|shoes|shose|mom|mum|mother|apples?|milk|it|they|them)(?: now| right now)?$"#)
+--- /dev/null
++++ b/BlindCore/Sources/BlindCore/ModelResponseAuthority.swift
+@@ -0,0 +1,95 @@
++import Foundation
++
++/// Request ownership/provenance, not a semantic classifier or navigation readiness.
++/// A physical/dedicated request cannot be fulfilled by a model, even with "yes".
++/// A valid route never promotes model prose into code-owned physical guidance.
++/// Language admission remains bounded by the existing domain/evidence guards.
++public struct ModelResponseAuthority: Sendable {
++    public struct Binding: Equatable, Sendable {
++        public let requestID: UUID
++        public let sessionGeneration: UInt64
++        public let goalRevision: String
++        public init(requestID: UUID, sessionGeneration: UInt64, goalRevision: String) {
++            self.requestID = requestID; self.sessionGeneration = sessionGeneration
++            self.goalRevision = goalRevision
++        }
++    }
++    public enum Owner: Equatable, Sendable { case conversation, physicalRequest, dedicatedRequest }
++    public enum Producer: Equatable, Sendable { case conversation, sceneDescription }
++    public struct Lease: Sendable {
++        public let id: UUID
++        public let binding: Binding
++        public let producer: Producer
++        public let text: String
++        public let reports: [String]
++        public let evidence: [CompanionEvidence]
++        public let createdAt: Double
++        public let expiresAt: Double
++        fileprivate let ownerID: UUID
++        fileprivate init(binding: Binding, producer: Producer, text: String, reports: [String],
++                         evidence: [CompanionEvidence], createdAt: Double, expiresAt: Double, ownerID: UUID) {
++            id = UUID(); self.binding = binding; self.producer = producer; self.text = text
++            self.reports = reports; self.evidence = evidence; self.createdAt = createdAt
++            self.expiresAt = expiresAt; self.ownerID = ownerID
++        }
++    }
++    private struct Request: Sendable {
++        let id: UUID
++        let binding: Binding
++        let owner: Owner
++        let producer: Producer
++        let startedAt: Double
++    }
++    private var request: Request?
++    public var owner: Owner? { request?.owner }
++    public init() {}
++
++    /// Called for the original request before inference. Missing geometry does
++    /// not change physical ownership into conversation. A new chat turn is a
++    /// separate owner; it need not erase a retained navigation goal.
++    public mutating func begin(question: String, binding: Binding, producer: Producer = .conversation,
++                               at startedAt: Double = ProcessInfo.processInfo.systemUptime) {
++        guard startedAt.isFinite, startedAt >= 0 else { request = nil; return }
++        let owner: Owner = ConversationDomainPolicy.requiresPhysicalVerification(for: question) ? .physicalRequest
++            : ConversationDomainPolicy.allowsModelResponse(to: question) ? .conversation : .dedicatedRequest
++        request = Request(id: UUID(), binding: binding, owner: owner, producer: producer, startedAt: startedAt)
++    }
++    public mutating func invalidate() { request = nil }
++    /// Ambient interruptions retire ordinary chat without canceling a separate
++    /// scene request or changing the sensor/navigation request identity.
++    public mutating func invalidateConversation() {
++        if request?.producer == .conversation { request = nil }
++    }
++
++    /// Scene callers must already have applied VisualGrounding and their capture
++    /// gates. This lease cannot establish camera facts, geometry or clearance.
++    public func admit(_ text: String, producer: Producer = .conversation, binding: Binding,
++                      reports: [String] = [], evidence: [CompanionEvidence] = [],
++                      createdAt: Double, now: Double, date: Date = Date()) -> Lease? {
++        guard let request, request.owner == .conversation, request.binding == binding, request.producer == producer,
++              createdAt.isFinite, now.isFinite, createdAt >= 0, now >= createdAt,
++              now >= request.startedAt,
++              now - min(createdAt, request.startedAt) < lifetime(producer),
++              Self.allows(text, producer: producer, reports: reports, evidence: evidence, date: date) else { return nil }
++        // Partial/final/display/queue admissions share the original request's
++        // deadline. Re-admitting identical text later cannot renew that deadline.
++        let originalStart = min(createdAt, request.startedAt)
++        return Lease(binding: binding, producer: producer, text: text, reports: reports, evidence: evidence,
++                     createdAt: originalStart, expiresAt: originalStart + lifetime(producer), ownerID: request.id)
++    }
++    /// Repetition reuses the exact original lease. No deadline or ownership can
++    /// be refreshed by copying text, reclassifying it, or borrowing a route ticket.
++    public func permits(_ lease: Lease, text: String, binding: Binding, now: Double, date: Date = Date()) -> Bool {
++        guard let request, request.owner == .conversation, request.id == lease.ownerID,
++              request.binding == binding, lease.binding == binding, request.producer == lease.producer,
++              lease.text.utf8.elementsEqual(text.utf8), now.isFinite,
++              now >= request.startedAt, now >= lease.createdAt, now < lease.expiresAt else { return false }
++        return Self.allows(text, producer: lease.producer, reports: lease.reports, evidence: lease.evidence, date: date)
++    }
++    private func lifetime(_ producer: Producer) -> Double { producer == .conversation ? 30 : 6 }
++    private static func allows(_ text: String, producer: Producer, reports: [String], evidence: [CompanionEvidence], date: Date) -> Bool {
++        guard !text.isEmpty, text.unicodeScalars.count <= 2000,
++              !SpatialClaimGuard.containsSpatialClaim(text) else { return false }
++        return producer == .sceneDescription || CompanionEvidenceGuard.allows(text, reports: reports, evidence: evidence, now: date)
++    }
++}
+--- a/BlindCore/Sources/BlindCore/SpatialClaimGuard.swift
++++ b/BlindCore/Sources/BlindCore/SpatialClaimGuard.swift
+@@ -30,6 +30,10 @@
+     private static let arDirection = regex(#"(يمين|يسار|شمال|جنوب|شرق|غرب|امام|قدام|خلف|وراء|ورا[يكه]|فوق|تحت|اسفل|اعلي|بجانب|بجوار|جنب|قرب|قريب|اقرب|بعيد|بينك|بين يديك|في متناول|متناول يد|في اتجاه|باتجاه)"#)
+     private static let arObjectRelation = regex(#"(?:علي|على|داخل|خارج|عند|بين|حول)\s+(?:ال|هذا |هذه |تلك |ذلك )?(?:مكتب|طاول|سرير|اريك|كنب|كرسي|باب|نافذ|حائط|جدار|ارض|رف|خزان|درج|مصباح|شاش|تلفاز|مقبض|يد|ذراع|قدم|جسم|شخص|سيار|طريق|سكين|كوب|زجاج|حقيب)|(?:يمكنك|تقدر|تستطيع)\s+(?:الوصول|الامساك|التقاط|اخذ|اخذه|اخذها|لمس)"#)
+     private static let arPhysicalAction = regex(#"(?:^|[\s،؛.!؟:«»"'()])(?:و|ف)?(?:امش(?:ي)?|روح|سر|اقترب|اقربي|اتبع|اتبعي|تبع|الحق|امسك(?:ه|ها|يه|يها)?|التقط(?:ه|ها)?|التقطي|خذ(?:ه|ها|يه|يها)?|خدي|المس(?:ه|ها)?|المسي|تسلق|اصعد|انزل|اقفز|ازحف|انحن|ميل|مل|مد(?:ي)?|مدد|ارفع(?:ه|ها)?|ارفعى|اسحب(?:ه|ها)?|ادفع(?:ه|ها)?|اضغط|اضغطي|لف|لفي|ادر|دور|دوري|حرك(?:ه|ها)?|تقدم|تراجع|اعبر|اقطع|افتح(?:ه|ها)?|اغلق(?:ه|ها)?|ضع(?:ه|ها)?|حط(?:ه|ها)?|كل|اشرب|ذق|شم)(?:[\s،؛.!؟:«»"'()]|$)|(?:يمكنك|يمكن|تقدر|تستطيع|حاول|جرب)\s+(?:ان\s+)?(?:تمشي|تقترب|تتبع|توصل|تطول(?:ه|ها)?|تلف|تدور|تمسك(?:ه|ها)?|تاخذ(?:ه|ها)?|تلمس(?:ه|ها)?|تتسلق|تصعد|تنزل|تمد|تحرك|تفتح|تغلق|تاكل|تشرب)"#)
++
++    // Bounded locomotion paraphrases missed by the general action vocabulary.
++    // This is defense in depth; request ownership and typed route output remain separate.
++    private static let continuation = regex(#"\b(?:sidestep(?:ping)?|head\s+straight|(?:continue|carry on|keep going)\s+(?:straight|walking|moving))\b|(?:^|[\s،؛.!؟])(?:كمل|كملي|واصل|واصلي|استمر|استمري|تابع|تابعي)\s+(?:علي طول|على طول|مباشره|السير|المشي|عبر|نحو|باتجاه)(?:[\s،؛.!؟]|$)"#)
+ 
+     private static let reference = regex(#"(?:\b(it|its|they|them|their|this|that|these|those|there)\b|^\s*(?:roughly|about|approximately|around|ahead|behind|to (?:your|the) (?:left|right))\b)"#)
+ 
+@@ -88,7 +92,7 @@
+         let prose = regex(#"\b(?:take your time|move on to (?:another|the next) (?:topic|question|subject))\b|(?:^|\s)خذ وقتك(?=[\s.!؟،]|$)"#)
+             .stringByReplacingMatches(in: science, range: NSRange(science.startIndex..., in: science), withTemplate: "")
+         let arabic = normalizeArabic(prose)
+-        if found(direction, prose) || found(objectRelation, prose) || found(physicalAction, prose) ||
++        if found(continuation, arabic) || found(direction, prose) || found(objectRelation, prose) || found(physicalAction, prose) ||
+             found(arDirection, arabic) || found(arObjectRelation, arabic) || found(arPhysicalAction, arabic) ||
+             found(clearance, canonical) || found(stepCount, canonical) || found(arClearance, arabic) || found(arStepCount, arabic) { return true }
+         // Conservative lexical defense, not a semantic safety proof. Preserve hazard
+--- a/BlindCore/Sources/BlindCore/SpatialRouteOwner.swift
++++ b/BlindCore/Sources/BlindCore/SpatialRouteOwner.swift
+@@ -64,6 +64,23 @@
+     }
+ }
+ 
++/// Immutable code-rendered words for one route ticket. There is deliberately no
++/// initializer accepting caller/model text. This is not a readiness certificate:
++/// the route owner and live sensor gates must revalidate the ticket at delivery.
++/// Imported/authored map labels are not speech authority. Exact-text validation
++/// binds these words to an attempt; it does not sanitize arbitrary metadata.
++public struct SpatialRouteSpeech: Sendable {
++    public let ticket: SpatialRouteTicket
++    public let text: String
++    public init?(ticket: SpatialRouteTicket, arabic: Bool) {
++        guard let cue = ticket.directionalCue() else { return nil }
++        self.ticket = ticket
++        text = arabic
++            ? "نقطة المسار التالية، على بعد نحو \(String(format: "%.1f", cue.distance)) متر."
++            : "Next waypoint, approximately \(String(format: "%.1f", cue.distance)) meters."
++    }
++}
++
+ public enum SpatialRouteError: Error, Equatable {
+     case invalidBody, staleGoal, noRoute, unsupportedTransition, missingSupport, blockedLeg, staleTicket, offRoute, ambiguousDirection, unpersistedRestrictions
+ }
+--- a/BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json
++++ b/BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json
+@@ -186,7 +186,15 @@
+     "Light the candle.",
+     "Heat the milk.",
+     "Light-the-candle.",
+-    "Heat–the–milk."
++    "Heat–the–milk.",
++    "Continue straight.",
++    "Continue straight through the doorway.",
++    "Head straight.",
++    "Sidestep twice.",
++    "كمل على طول.",
++    "واصل على طول.",
++    "استمر مباشرة.",
++    "تابع السير."
+   ],
+   "allowed": [
+     "The sign reads Exit.",
+@@ -229,6 +237,9 @@
+     "Visible wavelengths bend by different amounts.",
+     "Rays of light bend when they pass through glass.",
+     "The sun gives us light and heat.",
+-    "Six times seven is forty-two."
++    "Six times seven is forty-two.",
++    "Continue the story.",
++    "Tell us what the character is feeling.",
++    "صف شعور الشخصية في تلك اللحظة."
+   ]
+ }
+--- /dev/null
++++ b/BlindCore/Tests/BlindCoreTests/ModelResponseAuthorityTests.swift
+@@ -0,0 +1,245 @@
++import Foundation
++import XCTest
++@testable import BlindCore
++
++/// Request/receipt policy only. These fixtures inject model strings; they do not
++/// run a model, ARKit, TTS, a real route, or a physical-device safety evaluation.
++final class ModelResponseAuthorityTests: XCTestCase {
++    private let requestID = UUID(uuidString: "2C1188D6-C9BF-4A98-A952-0DCB7A69F152")!
++    private let wallTime = Date(timeIntervalSince1970: 1_000_000)
++    private let ordinaryText = "I enjoy jokes."
++
++    private func binding(requestID: UUID? = nil, session: UInt64 = 7,
++                         goal: String = "retained-kitchen-goal") -> ModelResponseAuthority.Binding {
++        .init(requestID: requestID ?? self.requestID, sessionGeneration: session, goalRevision: goal)
++    }
++
++    private func conversation(question: String = "Tell me a joke.",
++                              producer: ModelResponseAuthority.Producer = .conversation) -> ModelResponseAuthority {
++        var authority = ModelResponseAuthority()
++        authority.begin(question: question, binding: binding(), producer: producer, at: 100)
++        return authority
++    }
++
++    private func admitted(_ authority: ModelResponseAuthority, text: String? = nil,
++                          producer: ModelResponseAuthority.Producer = .conversation,
++                          createdAt: Double = 100, now: Double = 100) throws -> ModelResponseAuthority.Lease {
++        try XCTUnwrap(authority.admit(text ?? ordinaryText, producer: producer, binding: binding(),
++                                     createdAt: createdAt, now: now, date: wallTime))
++    }
++
++    func testPhysicalRequestRejectsBareModelAnswerWithoutDependingOnItsWords() {
++        for question in ["Can I walk to the door?", "هل أستطيع أن أصعد هذا الدرج؟"] {
++            var authority = ModelResponseAuthority()
++            authority.begin(question: question, binding: binding(), at: 100)
++            XCTAssertEqual(authority.owner, .physicalRequest, question)
++            for reply in ["Yes.", "نعم.", ordinaryText] {
++                for producer in [ModelResponseAuthority.Producer.conversation, .sceneDescription] {
++                    XCTAssertNil(authority.admit(reply, producer: producer, binding: binding(),
++                                                 createdAt: 100, now: 100, date: wallTime), question + " / " + reply)
++                }
++            }
++        }
++    }
++
++    func testKnownContinuationRequestsRetainPhysicalOwnershipEvenForBareYes() {
++        for question in ["How do I continue to the kitchen?", "كيف أكمل للمطبخ؟", "كيف أواصل للمطبخ؟"] {
++            var authority = ModelResponseAuthority()
++            authority.begin(question: question, binding: binding(), at: 100)
++            XCTAssertEqual(authority.owner, .physicalRequest, question)
++            for reply in ["Yes.", "نعم."] {
++                XCTAssertNil(authority.admit(reply, binding: binding(), createdAt: 100, now: 100, date: wallTime), question)
++            }
++        }
++    }
++
++    func testKnownMovementOutputsAreRejectedEvenDuringOrdinaryConversation() {
++        let authority = conversation()
++        for reply in ["Continue straight through the doorway.", "Continue straight.", "Head straight.",
++                      "Sidestep twice.", "كمل على طول.", "واصل على طول."] {
++            XCTAssertNil(authority.admit(reply, binding: binding(), createdAt: 100, now: 100, date: wallTime), reply)
++        }
++    }
++
++    func testGeneratedSceneCannotBorrowNavigationAuthority() {
++        let authority = conversation(question: "Describe my surroundings.", producer: .sceneDescription)
++        XCTAssertEqual(authority.owner, .conversation)
++        for reply in ["Head straight.", "Continue straight through the doorway.", "كمل على طول.", "واصل على طول."] {
++            XCTAssertNil(authority.admit(reply, producer: .sceneDescription, binding: binding(),
++                                         createdAt: 100, now: 100, date: wallTime), reply)
++        }
++    }
++
++    func testPhysicalOwnerCannotBeOverriddenByFreshMeasuredTextOrSourceLabel() {
++        var authority = ModelResponseAuthority()
++        authority.begin(question: "Can I walk to the door?", binding: binding(), at: 100)
++        // A test record deliberately claims an authoritative source. Even a
++        // fresh exact evidence record cannot change who owns the answer.
++        let evidence = CompanionEvidence(kind: .measuredState, text: "Yes.", source: "verified route",
++                                         observedAt: wallTime, expiresAt: wallTime.addingTimeInterval(5))
++        XCTAssertNil(authority.admit("Yes.", binding: binding(), evidence: [evidence],
++                                     createdAt: 100, now: 100, date: wallTime))
++    }
++
++    func testDedicatedInspectionCannotFallBackToModelAnswer() {
++        var authority = ModelResponseAuthority()
++        authority.begin(question: "Is this note fifty?", binding: binding(), at: 100)
++        XCTAssertEqual(authority.owner, .dedicatedRequest)
++        XCTAssertNil(authority.admit("Yes.", binding: binding(), createdAt: 100, now: 100, date: wallTime))
++    }
++
++    func testOrdinaryEnglishAndArabicChatRemainAvailable() throws {
++        for (question, reply) in [("Tell me a joke.", ordinaryText), ("قل لي نكتة.", "أحب القصص.")] {
++            let authority = conversation(question: question)
++            XCTAssertEqual(authority.owner, .conversation, question)
++            let lease = try admitted(authority, text: reply)
++            XCTAssertTrue(authority.permits(lease, text: reply, binding: binding(), now: 101, date: wallTime))
++        }
++    }
++
++    func testNonphysicalStoryContinuationIsNotGloballyBanned() throws {
++        for (question, reply) in [("How do I continue my story?", "A funny surprise could happen."),
++                                  ("كيف أكمل قصتي؟", "أحب القصص.")] {
++            let authority = conversation(question: question)
++            XCTAssertEqual(authority.owner, .conversation, question)
++            let lease = try admitted(authority, text: reply)
++            XCTAssertTrue(authority.permits(lease, text: reply, binding: binding(), now: 101, date: wallTime))
++        }
++    }
++
++    func testRetainedNavigationGoalDoesNotDisableANewChatTurn() throws {
++        var authority = ModelResponseAuthority()
++        let retained = binding()
++        authority.begin(question: "Can I walk to the door?", binding: retained, at: 100)
++        XCTAssertEqual(authority.owner, .physicalRequest)
++        authority.begin(question: "Tell me a joke.", binding: retained, at: 100)
++        let lease = try admitted(authority)
++        XCTAssertEqual(lease.binding.goalRevision, retained.goalRevision)
++        XCTAssertTrue(authority.permits(lease, text: ordinaryText, binding: retained, now: 101, date: wallTime))
++    }
++
++    func testUnstartedOrInvalidatedOwnerCannotAdmitOrPlay() throws {
++        var authority = ModelResponseAuthority()
++        XCTAssertNil(authority.owner)
++        XCTAssertNil(authority.admit(ordinaryText, binding: binding(), createdAt: 100, now: 100, date: wallTime))
++        authority.begin(question: "Tell me a joke.", binding: binding(), at: 100)
++        let lease = try admitted(authority)
++        authority.invalidate()
++        XCTAssertNil(authority.owner)
++        XCTAssertNil(authority.admit(ordinaryText, binding: binding(), createdAt: 101, now: 101, date: wallTime))
++        XCTAssertFalse(authority.permits(lease, text: ordinaryText, binding: binding(), now: 101, date: wallTime))
++    }
++
++    func testRequestSessionAndGoalMismatchRejectAdmissionAndDelayedPlayback() throws {
++        let authority = conversation()
++        let lease = try admitted(authority)
++        let changed = [binding(requestID: UUID()), binding(session: 8), binding(goal: "new-goal")]
++        for next in changed {
++            XCTAssertNil(authority.admit(ordinaryText, binding: next, createdAt: 100, now: 100, date: wallTime))
++            XCTAssertFalse(authority.permits(lease, text: ordinaryText, binding: next, now: 101, date: wallTime))
++        }
++    }
++
++    func testRestartingEvenTheSameBindingRetiresOldQueueAndRepeatLease() throws {
++        var authority = conversation()
++        let old = try admitted(authority)
++        authority.begin(question: "Tell me a joke.", binding: binding(), at: 101)
++        XCTAssertFalse(authority.permits(old, text: ordinaryText, binding: binding(), now: 101, date: wallTime))
++        let current = try admitted(authority, createdAt: 101, now: 101)
++        XCTAssertTrue(authority.permits(current, text: ordinaryText, binding: binding(), now: 101, date: wallTime))
++        XCTAssertNotEqual(old.id, current.id)
++    }
++
++    func testQueuedReplyAndRepeatsNeverRefreshTheOriginalDeadline() throws {
++        let authority = conversation()
++        let lease = try admitted(authority)
++        XCTAssertEqual(lease.createdAt, 100)
++        XCTAssertEqual(lease.expiresAt, 130)
++        for now in [100.0, 110.0, 129.999] {
++            XCTAssertTrue(authority.permits(lease, text: ordinaryText, binding: binding(), now: now, date: wallTime))
++            XCTAssertEqual(lease.expiresAt, 130)
++        }
++        XCTAssertFalse(authority.permits(lease, text: ordinaryText, binding: binding(), now: 130, date: wallTime))
++        XCTAssertFalse(authority.permits(lease, text: ordinaryText, binding: binding(), now: 131, date: wallTime))
++        XCTAssertNil(authority.admit(ordinaryText, binding: binding(), createdAt: 100, now: 130, date: wallTime))
++    }
++
++    func testLateFinalDisplayOrQueueAdmissionCannotRenewTheSameRequest() throws {
++        let authority = conversation()
++        let streamed = try admitted(authority)
++        let final = try admitted(authority, createdAt: 125, now: 125)
++        XCTAssertEqual(streamed.expiresAt, 130)
++        XCTAssertEqual(final.expiresAt, streamed.expiresAt)
++        XCTAssertTrue(authority.permits(final, text: ordinaryText, binding: binding(), now: 129, date: wallTime))
++        XCTAssertFalse(authority.permits(final, text: ordinaryText, binding: binding(), now: 130, date: wallTime))
++        XCTAssertNil(authority.admit(ordinaryText, binding: binding(), createdAt: 130, now: 130, date: wallTime))
++    }
++
++    func testConversationInterruptionRetiresDisplayedAndQueuedConversationLeases() throws {
++        var authority = conversation()
++        let lease = try admitted(authority)
++        authority.invalidateConversation()
++        XCTAssertNil(authority.owner)
++        XCTAssertFalse(authority.permits(lease, text: ordinaryText, binding: binding(), now: 101, date: wallTime))
++        XCTAssertNil(authority.admit(ordinaryText, binding: binding(), createdAt: 101, now: 101, date: wallTime))
++    }
++
++    func testConversationInterruptionDoesNotRetireAnUnrelatedSceneOwner() throws {
++        var authority = conversation(question: "Describe my surroundings.", producer: .sceneDescription)
++        let lease = try admitted(authority, text: "A book.", producer: .sceneDescription)
++        authority.invalidateConversation()
++        XCTAssertEqual(authority.owner, .conversation)
++        XCTAssertTrue(authority.permits(lease, text: lease.text, binding: binding(), now: 101, date: wallTime))
++    }
++
++    func testProducerCannotBeChangedToBorrowADifferentAdmissionPolicy() {
++        let chat = conversation()
++        XCTAssertNil(chat.admit("A book.", producer: .sceneDescription, binding: binding(),
++                                createdAt: 100, now: 100, date: wallTime))
++        let scene = conversation(question: "Describe my surroundings.", producer: .sceneDescription)
++        XCTAssertNil(scene.admit(ordinaryText, producer: .conversation, binding: binding(),
++                                 createdAt: 100, now: 100, date: wallTime))
++    }
++
++    func testSceneLeaseExpiresAtCaptureDeadlineNotAtDelayedAdmission() throws {
++        let authority = conversation(question: "Describe my surroundings.", producer: .sceneDescription)
++        let lease = try admitted(authority, text: "A book.", producer: .sceneDescription, createdAt: 100, now: 104)
++        XCTAssertEqual(lease.expiresAt, 106)
++        XCTAssertTrue(authority.permits(lease, text: "A book.", binding: binding(), now: 105, date: wallTime))
++        XCTAssertFalse(authority.permits(lease, text: "A book.", binding: binding(), now: 106, date: wallTime))
++        XCTAssertNil(authority.admit("A book.", producer: .sceneDescription, binding: binding(),
++                                     createdAt: 100, now: 106, date: wallTime))
++    }
++
++    func testExactTextCannotBeReplacedOrNormalizedAtDelivery() throws {
++        let authority = conversation()
++        let lease = try admitted(authority)
++        for altered in [" " + ordinaryText, ordinaryText.lowercased(), ordinaryText + " Yes.", "Head straight."] {
++            XCTAssertFalse(authority.permits(lease, text: altered, binding: binding(), now: 101, date: wallTime), altered)
++        }
++    }
++
++    func testNonfiniteFutureAndNegativeMonotonicTimesAreRejected() throws {
++        let authority = conversation()
++        for (createdAt, now) in [(Double.nan, 100.0), (100.0, Double.nan),
++                                 (Double.infinity, 100.0), (100.0, Double.infinity), (-1.0, 100.0), (101.0, 100.0)] {
++            XCTAssertNil(authority.admit(ordinaryText, binding: binding(), createdAt: createdAt, now: now, date: wallTime))
++        }
++        let lease = try admitted(authority)
++        for now in [Double.nan, .infinity, -1, 99.999] {
++            XCTAssertFalse(authority.permits(lease, text: ordinaryText, binding: binding(), now: now, date: wallTime))
++        }
++    }
++
++    func testFreshObservationCannotOutliveItsOwnEvidenceDuringQueueDelay() throws {
++        let authority = conversation()
++        let text = "Current observation: a book."
++        let evidence = CompanionEvidence(kind: .currentObservation, text: text, source: "synthetic test capture",
++                                         observedAt: wallTime, expiresAt: wallTime.addingTimeInterval(5))
++        let lease = try XCTUnwrap(authority.admit(text, binding: binding(), evidence: [evidence],
++                                                 createdAt: 100, now: 100, date: wallTime))
++        XCTAssertTrue(authority.permits(lease, text: text, binding: binding(), now: 101, date: wallTime.addingTimeInterval(1)))
++        XCTAssertFalse(authority.permits(lease, text: text, binding: binding(), now: 105, date: wallTime.addingTimeInterval(5)))
++        XCTAssertEqual(lease.expiresAt, 130) // The shorter evidence expiry still wins.
++    }
++}
+--- a/ios/BlindAssist/Feedback.swift
++++ b/ios/BlindAssist/Feedback.swift
+@@ -11,14 +11,34 @@
+     private var delivery = SpeechDeliveryLedger()
+     private var currentUtterance: AVSpeechUtterance?
+     private var currentSpatialRouteID: UUID?
++    private var currentModelReply: ModelResponseAuthority.Lease?
+     private var currentPrivateReference = false
+     private var beaconOwnership = SpatialRouteBeaconOwnership()
+     /// Only the exact route owner can revalidate a registered physical cue.
+     var spatialRoutePermission: ((UUID) -> Bool)?
++    var spatialRouteSpeechPermission: ((UUID, String) -> Bool)?
++    /// Exact generated text retains its request owner at platform queue/start.
++    var modelReplyPermission: ((ModelResponseAuthority.Lease, String) -> Bool)?
+     /// Recheck source-bound requested information at enqueue and actual start.
+     var requestedSpeechPermission: ((UUID, String) -> Bool)?
+     #if DEBUG
+     private let debugTrace = DebugNativeSessionTrace()
++    private var debugSilentModelTestTransport = false
++    private(set) var debugModelTestQueued: [String] = []
++    private(set) var debugModelTestStarted: [String] = []
++    /// XCTest-only silent platform boundary. All real controller, admission and
++    /// delayed-start checks still run; no synthesizer, beacon or sensor starts.
++    func debugEnableSilentModelTestTransport() -> Bool {
++        guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else { return false }
++        debugSilentModelTestTransport = true
++        return true
++    }
++    func debugStartModelTestPlayback() -> Bool {
++        guard debugSilentModelTestTransport, let utterance = currentUtterance else { return false }
++        speechSynthesizer(speech, didStart: utterance)
++        return currentUtterance === utterance && delivery.active != nil
++    }
++    var debugModelTestHasActiveAttempt: Bool { delivery.active != nil }
+     #endif
+     private var outputTimeout: Timer?
+     private var urgentUntil = -Double.infinity
+@@ -99,7 +119,7 @@
+     /// This sink holds one attempt only, including the time before AVFoundation starts.
+     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil,
+                                     speechID: UUID? = nil, alert: Detection? = nil,
+-                                    independentAlert: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
++                                    independentAlert: Bool = false, spatialRouteID: UUID? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
+         #if DEBUG
+         var debugAccepted = false
+         defer {
+@@ -111,10 +131,16 @@
+         }
+         #endif
+         guard narrationID == nil || speechID == nil else { return false }
++        if let modelReply {
++            guard spatialRouteID == nil, alert == nil, !independentAlert,
++                  !admitted.urgent, admitted.priority != .mobility,
++                  modelReplyIsCurrent(modelReply, text: admitted.text) else { return false }
++        }
+         if let spatialRouteID {
+             guard spatialRouteID == speechID, admitted.priority == .mobility,
+                   !independentAlert, alert == nil,
+-                  spatialRoutePermission?(spatialRouteID) == true else { return false }
++                  spatialRoutePermission?(spatialRouteID) == true,
++                   spatialRouteSpeechPermission?(spatialRouteID, admitted.text) == true else { return false }
+         }
+         let destination: SpeechDeliveryLedger.Destination
+         if let narrationID {
+@@ -127,7 +153,7 @@
+         }
+         let verifiedIndependentAlert = independentAlert && alert != nil &&
+             (admitted.priority == .mobility || admitted.urgent)
+-        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert, spatialRouteID: spatialRouteID)
++        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert, spatialRouteID: spatialRouteID, modelReply: modelReply)
+         #if DEBUG
+         debugAccepted = accepted
+         #endif
+@@ -158,7 +184,7 @@
+ 
+     @discardableResult private func speak(_ admitted: AdmittedSpeech,
+                                          destination: SpeechDeliveryLedger.Destination,
+-                                         alert: Detection?, independentAlert: Bool, spatialRouteID: UUID?) -> Bool {
++                                         alert: Detection?, independentAlert: Bool, spatialRouteID: UUID?, modelReply: ModelResponseAuthority.Lease?) -> Bool {
+         guard !admitted.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+         let priority: SpeechPriority = admitted.urgent ? .danger : admitted.priority
+         guard priority.canInterrupt(speechPriority) else { return false }
+@@ -177,7 +203,7 @@
+             voiceOverRunning: UIAccessibility.isVoiceOverRunning, independentAlert: independentAlert)
+         guard let attempt = delivery.begin(text: admitted.text, priority: priority,
+             destination: destination, transport: transport, independentAlert: independentAlert) else { return false }
+-        currentSpatialRouteID = spatialRouteID
++        currentSpatialRouteID = spatialRouteID; currentModelReply = modelReply
+         currentPrivateReference = admitted.privateReference
+         if let alert { alertSignals(alert) }
+         #if DEBUG
+@@ -191,7 +217,7 @@
+             return .init(text: admitted.privateReference ? nil : attempt.text, label: "engine.admitted; destinationID=" + destinationID + (transport == .accessibility ? "; VoiceOverID=unbound" : ""))
+         }
+         #endif
+-        armOutputTimeout(token: attempt.token)
++        armOutputTimeout(token: attempt.token, modelReply: modelReply)
+         if transport == .accessibility {
+             let value = NSAttributedString(string: attempt.text, attributes: [
+                 .accessibilitySpeechQueueAnnouncement: false,
+@@ -206,12 +232,21 @@
+             currentUtterance = utterance
+             // Revalidate after preparation, immediately before handing to the
+             // platform queue. didStart below fences a delayed actual start too.
+-            if let spatialRouteID, spatialRoutePermission?(spatialRouteID) != true {
++            if let modelReply, !modelReplyIsCurrent(modelReply, text: attempt.text) {
++                finishActive(outcome: .interrupted, stopSynthesizer: true); return false
++            }
++            if let spatialRouteID, spatialRoutePermission?(spatialRouteID) != true || spatialRouteSpeechPermission?(spatialRouteID, attempt.text) != true {
+                 finishActive(outcome: .interrupted, stopSynthesizer: true); return false
+             }
+             if case .requested(let id) = attempt.destination, requestedSpeechPermission?(id, attempt.text) == false {
+                 finishActive(outcome: .interrupted, stopSynthesizer: true); return false
+             }
++            #if DEBUG
++            if debugSilentModelTestTransport {
++                debugModelTestQueued.append(attempt.text)
++                return true
++            }
++            #endif
+             speech.speak(utterance)
+         }
+         return true
+@@ -231,12 +266,23 @@
+         RunLoop.main.add(timer, forMode: .common)
+     }
+ 
+-    private func armOutputTimeout(token: UUID) {
++    /// Ordinary chat does not require a running camera watchdog. Its original
++    /// model deadline still bounds playback; an old timer cannot stop a newer
++    /// independent alert, document, or other delivery attempt.
++    static func outputTimeoutInterval(modelReply: ModelResponseAuthority.Lease?, now: Double) -> TimeInterval {
++        guard let modelReply else { return 120 }
++        guard now.isFinite else { return 0 }
++        return max(0, min(120, modelReply.expiresAt - now))
++    }
++
++    private func armOutputTimeout(token: UUID, modelReply: ModelResponseAuthority.Lease?) {
+         outputTimeout?.invalidate()
+-        let timer = Timer(timeInterval: 120, repeats: false) { [weak self] _ in
++        let interval = Self.outputTimeoutInterval(modelReply: modelReply, now: ProcessInfo.processInfo.systemUptime)
++        let timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
+             guard let self, self.delivery.active?.token == token else { return }
+             // A lost callback must not strand the controller or claim text was heard.
+-            self.finishActive(outcome: .unknown, stopSynthesizer: true, diagnosticCause: "speech.timeout.notCompletion")
++            self.finishActive(outcome: modelReply == nil ? .unknown : .interrupted, stopSynthesizer: true,
++                              diagnosticCause: modelReply == nil ? "speech.timeout.notCompletion" : "model.originalDeadlineExpired")
+         }
+         outputTimeout = timer
+         RunLoop.main.add(timer, forMode: .common)
+@@ -302,7 +348,7 @@
+         #endif
+         // Invalidate identity before stopping: didCancel can arrive after new output
+         // starts. Clear all old state before invoking controller code, asynchronously.
+-        currentUtterance = nil; currentSpatialRouteID = nil; currentPrivateReference = false
++        currentUtterance = nil; currentSpatialRouteID = nil; currentModelReply = nil; currentPrivateReference = false
+         outputTimeout?.invalidate(); outputTimeout = nil
+         if stopSynthesizer { speech.stopSpeaking(at: .immediate) }
+         DispatchQueue.main.async { [weak self] in
+@@ -320,17 +366,24 @@
+         guard utterance === currentUtterance, let active = delivery.active, active.transport == .synthesized else { return }
+         #if DEBUG
+         debugTrace?.event(.speechStarted, source: .speechEngine, utteranceID: active.token) {
+-            .init(text: currentPrivateReference ? nil : active.text, label: "AVSpeech.didStart")
++            .init(text: currentPrivateReference ? nil : active.text, label: debugSilentModelTestTransport ? "test.injectedDidStart.silent" : "AVSpeech.didStart")
+         }
+         #endif
+         if case .requested(let id) = active.destination, requestedSpeechPermission?(id, active.text) == false {
+             finishActive(outcome: .interrupted, stopSynthesizer: true,
+                          diagnosticCause: "source.expiredBeforePlayback"); return
+         }
+-        if let routeID = currentSpatialRouteID, spatialRoutePermission?(routeID) != true {
++        if let modelReply = currentModelReply, !modelReplyIsCurrent(modelReply, text: active.text) {
++            finishActive(outcome: .interrupted, stopSynthesizer: true,
++                         diagnosticCause: "model.ownerExpiredBeforePlayback"); return
++        }
++        if let routeID = currentSpatialRouteID, spatialRoutePermission?(routeID) != true || spatialRouteSpeechPermission?(routeID, active.text) != true {
+             finishActive(outcome: .interrupted, stopSynthesizer: true,
+                          diagnosticCause: "route.expiredBeforePlayback"); return
+         }
++        #if DEBUG
++        if debugSilentModelTestTransport { debugModelTestStarted.append(active.text) }
++        #endif
+         if case .requested(let id) = active.destination { onRequestedSpeechStarted?(id, active.text) }
+     }
+ 
+@@ -346,6 +399,21 @@
+ 
+     /// Revokes only the short-lived notice with this ID. A camera turn must not
+     /// interrupt an unrelated answer or a higher-priority hazard/mobility alert.
++    /// Shared by enqueue, platform start and revalidation; missing owner fails closed.
++    /// Exposed internally for hosted gate tests without invoking speech or audio.
++    func modelReplyIsCurrent(_ lease: ModelResponseAuthority.Lease, text: String) -> Bool {
++        modelReplyPermission?(lease, text) == true
++    }
++
++    /// Does not touch an independent alert or unrelated document/OCR producer.
++    func revalidateModelReply() {
++        guard let lease = currentModelReply, let active = delivery.active else { return }
++        guard modelReplyIsCurrent(lease, text: active.text) else {
++            finishActive(outcome: .interrupted, stopSynthesizer: true,
++                         diagnosticCause: "model.ownerExpiredDuringPlayback"); return
++        }
++    }
++
+     func stopRequestedSpeech(_ id: UUID) {
+         guard delivery.active?.destination == .requested(id) else { return }
+         _ = stopInformation(announceCancellation: false)
+--- a/ios/BlindAssist/LocalImageAssistant.swift
++++ b/ios/BlindAssist/LocalImageAssistant.swift
+@@ -991,6 +991,8 @@
+     }
+     #endif
+ 
++    /// Provenance reaches onSpeechCandidate before onPartial so display can use
++    /// the same admitted evidence, without changing the display callback API.
+     /// onPartial receives each new validated sentence exactly once (not a
+     /// cumulative snapshot) for display. onSpeechCandidate carries provenance
+     /// for a second freshness/safety check at actual queued speech dispatch.
+@@ -1114,9 +1116,9 @@
+                                     logger.info("First verified sentence after \(ProcessInfo.processInfo.systemUptime - started, privacy: .public) seconds")
+                                     sentFirst = true
+                                 }
++                                await onSpeechCandidate?(chunk, reports, evidence)
++                                try Task.checkCancellation()
+                                 await onPartial?(chunk)
+-                                try Task.checkCancellation()
+-                                await onSpeechCandidate?(chunk, reports, evidence)
+                             }
+                             if chunks.rejected {
+                                 #if DEBUG
+@@ -1138,9 +1140,9 @@
+                             let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
+                             if !suffix.isEmpty {
+                                 try Task.checkCancellation()
++                                await onSpeechCandidate?(suffix, reports, evidence)
++                                try Task.checkCancellation()
+                                 await onPartial?(suffix)
+-                                try Task.checkCancellation()
+-                                await onSpeechCandidate?(suffix, reports, evidence)
+                             }
+                             let kept = [chunks.delivered, suffix].filter { !$0.isEmpty }.joined(separator: " ")
+                             try Task.checkCancellation()
+@@ -1156,9 +1158,9 @@
+                 let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
+                 for chunk in chunks.append(text, final: true, reports: reports, evidence: evidence) {
+                     try Task.checkCancellation()
++                    await onSpeechCandidate?(chunk, reports, evidence)
++                    try Task.checkCancellation()
+                     await onPartial?(chunk)
+-                    try Task.checkCancellation()
+-                    await onSpeechCandidate?(chunk, reports, evidence)
+                 }
+                 text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                 let finalRejected = chunks.rejected || !usableChatReply(text) || !CompanionEvidenceGuard.allows(text, reports: reports, evidence: evidence)
+@@ -1180,9 +1182,9 @@
+                     if fallback.split(whereSeparator: \.isWhitespace).count > remainingWords { fallback = "" }
+                     try Task.checkCancellation()
+                     if !fallback.isEmpty {
++                        await onSpeechCandidate?(fallback, reports, evidence)
++                        try Task.checkCancellation()
+                         await onPartial?(fallback)
+-                        try Task.checkCancellation()
+-                        await onSpeechCandidate?(fallback, reports, evidence)
+                     }
+                     let safeText = [chunks.delivered, fallback].filter { !$0.isEmpty }.joined(separator: " ")
+                     await onReplyComplete?(safeText)
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -52,7 +52,10 @@
+     @Published private(set) var assistantSession = AssistantSession() {
+         didSet {
+             if oldValue.generation != assistantSession.generation { lastCapturedTextPlaybackReceipt = nil }
+-            if oldValue.generation != assistantSession.generation { clearSelectedDocument() }
++            if oldValue.generation != assistantSession.generation {
++                clearSelectedDocument()
++                revalidateModelDisplays(); feedback.revalidateModelReply()
++            }
+         }
+     }
+     @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {
+@@ -76,6 +79,191 @@
+             else if !cameraAwareness { stopCameraMonitoring() }
+         }
+     }
++    /// Model text keeps its original request owner through display, repeat and playback.
++    /// Code receipts are a separate producer, not a Boolean a model callback can set.
++    private enum ConversationContent {
++        case model(ModelResponseAuthority.Lease)
++        case codeReply(String)
++        var text: String { switch self { case .model(let lease): return lease.text; case .codeReply(let text): return text } }
++        var modelReply: ModelResponseAuthority.Lease? { if case .model(let lease) = self { return lease }; return nil }
++    }
++    #if DEBUG
++    private var debugModelResponseTesting = false
++    private var debugModelResponseNow: Double?
++    #endif
++    private var modelResponseAuthority = ModelResponseAuthority()
++    private var latestModelReports: [String] = []
++    private var latestModelEvidence: [CompanionEvidence] = []
++    private struct ModelDisplayReceipt {
++        let lease: ModelResponseAuthority.Lease
++        let revision: UUID
++        let text: String
++        let historical: Bool
++    }
++    private var sceneModelDisplay: ModelDisplayReceipt?
++    private var currentModelDisplay: ModelDisplayReceipt?
++    private var modelDisplayExpiryTimer: Timer?
++    private var modelDisplayTimerOwner = UUID()
++    private var silentModelTestDelivery: Bool {
++        #if DEBUG
++        return debugModelResponseTesting
++        #else
++        return false
++        #endif
++    }
++    private func beginModelResponse(question: String, producer: ModelResponseAuthority.Producer = .conversation) {
++        modelResponseAuthority.begin(question: question, binding: modelResponseBinding, producer: producer, at: modelResponseNow)
++        revalidateModelDisplays()
++        feedback.revalidateModelReply()
++    }
++    private var modelResponseNow: Double {
++        #if DEBUG
++        if let debugModelResponseNow { return debugModelResponseNow }
++        #endif
++        return ProcessInfo.processInfo.systemUptime
++    }
++    private var lastSceneModelReply: ModelResponseAuthority.Lease?
++    private var modelSceneCapture: (id: UUID, capturedAt: Double, origin: Point3, forward: Point3)?
++    private var modelResponseBinding: ModelResponseAuthority.Binding {
++        .init(requestID: requestID, sessionGeneration: assistantSession.generation, goalRevision: companionWorkingState.goalRevision)
++    }
++    private func modelReplyAllowed(_ lease: ModelResponseAuthority.Lease, text: String) -> Bool {
++        guard modelResponseAuthority.permits(lease, text: text, binding: modelResponseBinding,
++            now: modelResponseNow) else { return false }
++        if lease.producer == .sceneDescription {
++            guard running, !simulation, !places.scanning, let capture = modelSceneCapture, capture.id == lease.id else { return false }
++            return SceneDelivery.allowed(capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime,
++                origin: capture.origin, current: lastObservation?.camera, currentFrameAt: lastFrameWallTime,
++                hazard: detection.hazard, tracking: lastObservation?.trackingNormal == true,
++                originForward: capture.forward, currentForward: lastObservation?.forward)
++        }
++        guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: lease.reports, evidence: lease.evidence) else { return false }
++        let captures = required.compactMap { conversationEvidenceCaptures[$0.id] }
++        return captures.count == required.count && captures.allSatisfy(conversationCaptureIsCurrent)
++    }
++    private func retainedModelReply(for text: String) -> ModelResponseAuthority.Lease? {
++        // A same-text code/document replacement has a new display revision and
++        // must not inherit an older model's provenance or retirement callback.
++        if let display = sceneModelDisplay, display.revision == sceneAnswerRevision,
++           (display.text.utf8.elementsEqual(text.utf8) || display.lease.text.utf8.elementsEqual(text.utf8)) { return display.lease }
++        if let display = currentModelDisplay, display.revision == currentReplyRevision,
++           (display.text.utf8.elementsEqual(text.utf8) || display.lease.text.utf8.elementsEqual(text.utf8)) { return display.lease }
++        return nil
++    }
++    private func retainedNarrationModelReply(for text: String) -> ModelResponseAuthority.Lease? {
++        retainedModelReply(for: text) ?? lastSceneModelReply.flatMap { $0.text.utf8.elementsEqual(text.utf8) ? $0 : nil }
++    }
++    private func modelHistoryLabel(_ lease: ModelResponseAuthority.Lease) -> String {
++        if lease.producer == .sceneDescription {
++            return (arabic ? "وصف سابق، وليس ملاحظة حالية أو إرشاداً للحركة: " : "Earlier description, not a current observation or movement guidance: ") + lease.text
++        }
++        return (arabic ? "محادثة سابقة، وليست إرشاداً حالياً للحركة: " : "Earlier conversation, not current movement guidance: ") + lease.text
++    }
++    /// Retire only the exact model-owned display revision. Keep ordinary chat
++    /// readable as explicit history; never clear a newer code/document/OCR reply.
++    private func revalidateModelDisplays() {
++        if let display = sceneModelDisplay {
++            if display.revision != sceneAnswerRevision { sceneModelDisplay = nil }
++            else if !display.historical, !modelReplyAllowed(display.lease, text: display.lease.text) {
++                sceneAnswer = modelHistoryLabel(display.lease)
++                sceneModelDisplay = .init(lease: display.lease, revision: sceneAnswerRevision, text: sceneAnswer, historical: true)
++            }
++        }
++        if let display = currentModelDisplay {
++            if display.revision != currentReplyRevision { currentModelDisplay = nil }
++            else if !display.historical, !modelReplyAllowed(display.lease, text: display.lease.text) {
++                currentReply = modelHistoryLabel(display.lease)
++                currentModelDisplay = .init(lease: display.lease, revision: currentReplyRevision, text: currentReply, historical: true)
++            }
++        }
++        armModelDisplayExpiry()
++    }
++    private func armModelDisplayExpiry() {
++        modelDisplayExpiryTimer?.invalidate(); modelDisplayExpiryTimer = nil
++        let owner = UUID(); modelDisplayTimerOwner = owner
++        let live = [(sceneModelDisplay, sceneAnswerRevision), (currentModelDisplay, currentReplyRevision)]
++            .compactMap { pair -> ModelDisplayReceipt? in
++                let (display, revision) = pair
++                guard let display, display.revision == revision, !display.historical else { return nil }
++                return display
++            }
++        guard let deadline = live.map({ $0.lease.expiresAt }).min() else { return }
++        // Independent of camera operation. The exact deadline wins over the
++        // short revalidation interval; all callbacks are revision/owner checked.
++        let timer = Timer(timeInterval: max(0.001, min(0.25, deadline - modelResponseNow)), repeats: false) { [weak self] _ in
++            self?.modelDisplayExpiryFired(owner: owner)
++        }
++        modelDisplayExpiryTimer = timer
++        RunLoop.main.add(timer, forMode: .common)
++    }
++    private func modelDisplayExpiryFired(owner: UUID) {
++        guard modelDisplayTimerOwner == owner else { return }
++        revalidateModelDisplays()
++    }
++    #if DEBUG
++    /// Bounded injected-result seam for native hosted tests. No model, camera,
++    /// microphone, route activation or AVSpeech playback is invoked. These tests
++    /// exercise actual display/queue/drain/Feedback methods with a silent sink;
++    /// they are not proof of platform audio delivery or physical safety.
++    @discardableResult func debugBeginModelResponseTest(question: String, at now: Double) -> Bool {
++        guard textOnly, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil,
++              now.isFinite, now >= 0, feedback.debugEnableSilentModelTestTransport() else { return false }
++        debugModelResponseTesting = true; debugModelResponseNow = now
++        companion = CompanionAttention()
++        assistantSession.start()
++        requestID = UUID()
++        modelResponseAuthority.begin(question: question, binding: modelResponseBinding, at: now)
++        revalidateModelDisplays()
++        return true
++    }
++    @discardableResult func debugInjectModelResponse(_ text: String, settled: Bool = true, enqueue: Bool = true) -> Bool {
++        guard debugModelResponseTesting else { return false }
++        let shown = showModelConversationReply(text, settled: settled, reports: [], evidence: [])
++        if shown && enqueue {
++            queueModelConversationSpeech(text, request: requestID, generation: assistantSession.generation, reports: [], evidence: [])
++        }
++        return shown
++    }
++    func debugAdvanceModelResponseTime(to now: Double, revalidate: Bool = true) {
++        guard debugModelResponseTesting, now.isFinite else { return }
++        debugModelResponseNow = now
++        if revalidate { revalidateModelDisplays(); feedback.revalidateModelReply() }
++    }
++    func debugCancelModelResponseTest() {
++        guard debugModelResponseTesting else { return }
++        cancelDescription()
++    }
++    func debugInterruptModelResponseTest() {
++        guard debugModelResponseTesting else { return }
++        interruptOrdinaryConversation(origin: .unverifiedMicrophone)
++    }
++    func debugReplaceModelDisplayWithCode(_ text: String) {
++        guard debugModelResponseTesting else { return }
++        _ = showConversationReply(text, settled: true)
++    }
++    func debugReplaceModelDisplayWithDocument(_ text: String) {
++        guard debugModelResponseTesting else { return }
++        showSelectedDocumentReply(text)
++    }
++    func debugReplaceModelDisplayWithOCR(_ text: String) {
++        guard debugModelResponseTesting else { return }
++        // The captured-page callback uses these same published properties.
++        sceneAnswer = text; currentReply = text
++    }
++    func debugStartModelResponsePlayback() -> Bool {
++        debugModelResponseTesting && feedback.debugStartModelTestPlayback()
++    }
++    var debugModelDisplayTimerOwner: UUID { modelDisplayTimerOwner }
++    func debugFireModelDisplayExpiry(owner: UUID) {
++        guard debugModelResponseTesting else { return }
++        modelDisplayExpiryFired(owner: owner)
++    }
++    var debugModelResponseSinkSnapshot: (queued: [String], started: [String], active: Bool, pending: Int) {
++        (feedback.debugModelTestQueued, feedback.debugModelTestStarted,
++         feedback.debugModelTestHasActiveAttempt, conversationSpeech.count)
++    }
++    #endif
++
+     private struct ConversationSpeech {
+         let id: UUID
+         let text: String
+@@ -85,7 +273,8 @@
+         let reports: [String]
+         let evidence: [CompanionEvidence]
+         let captures: [ConversationCapture]
+-        var codeOwned = false
++        let content: ConversationContent
++        var codeOwned: Bool { content.modelReply == nil }
+         var clockReceipt: CompanionClockDeliveryReceipt? = nil
+         var origin: CompanionCommandOrigin = .trustedInterface
+         var searchAreaQuestionID: UUID? = nil
+@@ -238,6 +427,7 @@
+         didSet {
+             if oldValue.goalRevision != companionWorkingState.goalRevision {
+                 withObservedScene { $0.bindGoalRevision(companionWorkingState.goalRevision) }
++                revalidateModelDisplays(); feedback.revalidateModelReply()
+             }
+         }
+     }
+@@ -741,6 +931,12 @@
+         feedback.spatialRoutePermission = { [weak self] id in
+             self?.spatialRouteOutput.validateForStart(id) == true
+         }
++        feedback.spatialRouteSpeechPermission = { [weak self] id, text in
++            self?.spatialRouteOutput.validateSpeechStart(id, text: text) == true
++        }
++        feedback.modelReplyPermission = { [weak self] lease, text in
++            self?.modelReplyAllowed(lease, text: text) == true
++        }
+         #if DEBUG
+         NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
+             .sink { [debugTrace] _ in debugTrace?.finish() }.store(in: &subscriptions)
+@@ -1581,6 +1777,11 @@
+             originForward: observation.forward, currentForward: lastObservation?.forward)
+     }
+     private func cancelDescription() {
++        modelResponseAuthority.invalidate()
++        latestModelReports = []; latestModelEvidence = []
++        // Preserve explicit history but retire its current-observation authority.
++        revalidateModelDisplays()
++        feedback.revalidateModelReply()
+         companionWorkingState.searchAreaClue.retireAnswerWindow()
+         if let id = passiveSceneDelivery.cancelPending() {
+             companion.release("passive-scene:" + id.uuidString)
+@@ -2629,6 +2830,7 @@
+         let passiveOwner = passiveSceneOwner
+         busy = true; questionIsAutomatic = automatic; questionIsChat = false
+         let currentRequest = UUID(); requestID = currentRequest
++        beginModelResponse(question: question, producer: .sceneDescription)
+         questionTask = Task { @MainActor [weak self] in
+             guard let self else { return }
+             let timing = AssistantPerformance.signposter.beginInterval("SceneResponse", id: AssistantPerformance.signposter.makeSignpostID())
+@@ -2776,6 +2978,13 @@
+                       words <= self.narrationBudget.allowance(limit: self.wordsPerMinute, now: now) else {
+                     if !automatic { self.message = "The answer exceeded your word allowance. Request a shorter answer or increase the allowance." }; return
+                 }
++                let modelReply: ModelResponseAuthority.Lease?
++                if fromModel {
++                    guard let lease = self.modelResponseAuthority.admit(answer, producer: .sceneDescription,
++                        binding: self.modelResponseBinding, createdAt: capturedAt, now: now) else { return }
++                    self.modelSceneCapture = (lease.id, capturedAt, origin, originForward)
++                    modelReply = lease
++                } else { modelReply = nil }
+                 // Novelty belongs to independent observations and completed playback, not
+                 // model wording or companion admission. All existing budget/priority gates remain.
+                 if automatic {
+@@ -2787,7 +2996,7 @@
+                     kind: automatic ? .discovery : .answer, text: answer, words: words,
+                     revision: currentRequest.uuidString,
+                     createdAt: capturedAt, expiresAt: capturedAt + 6, requested: !automatic)
+-                let spoken = self.deliverCandidate(candidate, narrationID: currentRequest)
++                let spoken = self.deliverCandidate(candidate, narrationID: currentRequest, modelReply: modelReply)
+                 guard spoken else {
+                     if automatic {
+                         self.passiveSceneDelivery.finish(id: currentRequest, completed: false,
+@@ -2804,6 +3013,10 @@
+                     goalRevision: dialogue.goalRevision, snapshotID: snapshotID, sourceIDs: sourceIDs, text: answer, at: at) }
+                 self.narrationBudget.charge(words: words, limit: self.wordsPerMinute, now: now)
+                 self.sceneAnswer = answer; self.currentReply = answer
++                self.sceneModelDisplay = modelReply.map { .init(lease: $0, revision: self.sceneAnswerRevision, text: answer, historical: false) }
++                self.currentModelDisplay = modelReply.map { .init(lease: $0, revision: self.currentReplyRevision, text: answer, historical: false) }
++                self.lastSceneModelReply = modelReply
++                self.armModelDisplayExpiry()
+                 self.lastSceneContent = answer; self.lastSceneSpoken = ProcessInfo.processInfo.systemUptime
+                 if !automatic {
+                     self.requestedVisualDialogue = (currentRequest, self.assistantSession.generation)
+@@ -2820,7 +3033,7 @@
+     /// One admission point for new candidates; approved producers use the private
+     /// already-admitted path so the same words are never charged twice here.
+     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
+-        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
++        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
+         let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) || selectedDocumentSpeechIDs.contains($0) } ?? false
+         #if DEBUG
+         var debugDelivered = false
+@@ -2830,7 +3043,13 @@
+             }
+         }
+         #endif
+-        guard !textOnly else { return false }
++        // Only an XCTest-installed silent transport may exercise text-only
++        // delivery. The production property is always false.
++        guard !textOnly || silentModelTestDelivery else { return false }
++        if let modelReply {
++            guard candidate.kind == .answer || candidate.kind == .discovery,
++                  alert == nil, spatialRouteID == nil, modelReplyAllowed(modelReply, text: candidate.text) else { return false }
++        }
+         // A disconnected private audio route cannot leak names, goals or replies
+         // through the speaker. Independent hazard/mobility cues remain available.
+         let independentAlert = alert != nil && (candidate.kind == .hazard || candidate.kind == .mobility)
+@@ -2859,11 +3078,11 @@
+         }
+         if let spatialRouteID {
+             guard candidate.kind == .mobility, alert == nil,
+-                  spatialRouteOutput.validateForStart(spatialRouteID) else { return false }
++                  spatialRouteOutput.validateSpeechStart(spatialRouteID, text: candidate.text) else { return false }
+         }
+         let admitted = AdmittedSpeech(candidate, privateReference: privateReference)
+         let spoken = feedback.deliver(admitted, narrationID: narrationID, speechID: speechID, alert: alert,
+-            independentAlert: independentAlert, spatialRouteID: spatialRouteID)
++            independentAlert: independentAlert, spatialRouteID: spatialRouteID, modelReply: modelReply)
+         #if DEBUG
+         debugDelivered = spoken
+         #endif
+@@ -2875,18 +3094,29 @@
+     }
+     @discardableResult private func dispatchText(_ text: String, kind: InformationCandidate.Kind,
+         requested: Bool = false, replace: Bool = false, revision: String = UUID().uuidString,
+-        narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil) -> Bool {
++        narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
+         let now = ProcessInfo.processInfo.systemUptime
+         let candidate = InformationCandidate(key: "speech:" + revision, kind: kind, text: text,
+             words: Self.wordCount(text), revision: revision, createdAt: now, expiresAt: now + 2,
+             requested: requested)
+         if replace { _ = feedback.stopInformation(announceCancellation: false) }
+-        let delivered = deliverCandidate(candidate, narrationID: narrationID, speechID: speechID, alert: alert)
++        let delivered = deliverCandidate(candidate, narrationID: narrationID, speechID: speechID, alert: alert, modelReply: modelReply)
+         if replace && !delivered && !assistantSession.privateAudioHeld { feedback.requestCancellationAnnouncement() }
+         return delivered
+     }
+     /// Descriptive answers and repeats retain normal information budgets.
+-    @discardableResult func speakRequested(_ text: String, replace: Bool = true, narrationID: UUID? = nil, speechID: UUID? = nil) -> Bool {
++    @discardableResult func speakRequested(_ text: String, replace: Bool = true, narrationID: UUID? = nil, speechID: UUID? = nil, modelReply suppliedReply: ModelResponseAuthority.Lease? = nil) -> Bool {
++        // Only unowned UI repeats recover provenance by exact displayed text.
++        // Document/OCR and other independently owned speech IDs keep their own gates.
++        let modelReply = suppliedReply ?? (speechID == nil && narrationID == nil ? retainedModelReply(for: text) : nil)
++        if let modelReply {
++            guard modelReplyAllowed(modelReply, text: text) else { return false }
++            if speechID == nil && narrationID == nil {
++                enqueueConversationSpeech(.model(modelReply), request: modelReply.binding.requestID,
++                    generation: modelReply.binding.sessionGeneration, reports: modelReply.reports, evidence: modelReply.evidence)
++                return false // Repeats retain the original lease, never mint a fresh one.
++            }
++        }
+         // Prefer the ORIGINAL displayed receipt. Admission against a newer equal
+         // minute read cannot refresh a repeated answer.
+         let retained = [sceneClockReceipt, currentClockReceipt].compactMap { $0 }.first { $0.text == text }
+@@ -2894,11 +3124,11 @@
+             revalidateClockReplies(); return false
+         }
+         if !receipt.replyIDs.isEmpty, speechID == nil {
+-            queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+-                codeOwned: true, origin: ([sceneClockReceipt, currentClockReceipt].enumerated().contains { index, value in value?.text == text && (index == 0 ? sceneClockOrigin : currentClockOrigin) == .unverifiedMicrophone } ? .unverifiedMicrophone : .trustedInterface), clockReceipt: receipt)
++            queueCodeConversationSpeech(text, request: requestID, generation: assistantSession.generation,
++                origin: ([sceneClockReceipt, currentClockReceipt].enumerated().contains { index, value in value?.text == text && (index == 0 ? sceneClockOrigin : currentClockOrigin) == .unverifiedMicrophone } ? .unverifiedMicrophone : .trustedInterface), clockReceipt: receipt)
+             return false // queue admission is not proof of audible delivery
+         }
+-        return dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID, speechID: speechID)
++        return dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID, speechID: speechID, modelReply: modelReply)
+     }
+     /// Only short current-action consent/progress/confirmation/error, never scene descriptions.
+     @discardableResult func speakOperation(_ text: String, replace: Bool = true, revision: String = UUID().uuidString) -> Bool {
+@@ -3511,11 +3741,12 @@
+ 
+     private func queueModelConversationSpeech(_ phrase: String, request: UUID, generation: UInt64,
+                                                reports: [String], evidence: [CompanionEvidence]) {
++        guard modelResponseAuthority.owner == .conversation else { return }
+         if let id = activeModelClockReplyID {
+             guard modelClockSpeechQueuedID != id, let receipt = modelClockReceipt(),
+                   let lease = clockReplies[id] else { return }
+-            queueConversationSpeech(receipt.text, request: request, generation: generation,
+-                evidence: [lease.evidence], codeOwned: true, clockReceipt: receipt)
++            queueCodeConversationSpeech(receipt.text, request: request, generation: generation,
++                evidence: [lease.evidence], clockReceipt: receipt)
+             modelClockSpeechQueuedID = id
+         } else {
+             queueConversationSpeech(phrase, request: request, generation: generation,
+@@ -3539,15 +3770,27 @@
+ 
+     /// Both streaming previews and settled replies keep their original receipt.
+     /// An unrelated later screen update is never overwritten by clock expiry.
+-    @discardableResult private func showConversationReply(_ text: String, settled: Bool, origin: CompanionCommandOrigin = .trustedInterface) -> Bool {
++    @discardableResult private func showConversationReply(_ text: String, settled: Bool, origin: CompanionCommandOrigin = .trustedInterface, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
++        if let modelReply, !modelReplyAllowed(modelReply, text: text) { return false }
+         guard let receipt = clockDeliveryReceipt(text) else { return false }
+         sceneAnswer = text; sceneClockOrigin = origin
++        sceneModelDisplay = modelReply.map { .init(lease: $0, revision: sceneAnswerRevision, text: text, historical: false) }
+         sceneClockReceipt = receipt.replyIDs.isEmpty ? nil : receipt
+         if settled {
+             currentReply = text; currentClockOrigin = origin
++            currentModelDisplay = modelReply.map { .init(lease: $0, revision: currentReplyRevision, text: text, historical: false) }
+             currentClockReceipt = receipt.replyIDs.isEmpty ? nil : receipt
+         }
++        armModelDisplayExpiry()
+         return true
++    }
++
++    @discardableResult private func showModelConversationReply(_ text: String, settled: Bool, origin: CompanionCommandOrigin = .trustedInterface,
++        reports: [String], evidence: [CompanionEvidence]) -> Bool {
++        let now = modelResponseNow
++        guard let lease = modelResponseAuthority.admit(text, binding: modelResponseBinding,
++            reports: reports, evidence: evidence, createdAt: now, now: now) else { return false }
++        return showConversationReply(text, settled: settled, origin: origin, modelReply: lease)
+     }
+ 
+     /// Pure information lane: no goal/search/route/report or camera mutation.
+@@ -3561,12 +3804,12 @@
+               showConversationReply(lease.reply, settled: true, origin: origin) else {
+             let unavailable = arabic ? "تعذر قراءة ساعة الجهاز. حاول مرة أخرى." : "I couldn't read the device clock. Please ask again."
+             sceneAnswer = unavailable; currentReply = unavailable
+-            queueConversationSpeech(unavailable, request: requestID, generation: assistantSession.generation,
+-                codeOwned: true, origin: origin)
++            queueCodeConversationSpeech(unavailable, request: requestID, generation: assistantSession.generation,
++                origin: origin)
+             return true
+         }
+-        queueConversationSpeech(lease.reply, request: requestID, generation: assistantSession.generation,
+-            evidence: [lease.evidence], codeOwned: true, origin: origin, clockReceipt: receipt)
++        queueCodeConversationSpeech(lease.reply, request: requestID, generation: assistantSession.generation,
++            evidence: [lease.evidence], origin: origin, clockReceipt: receipt)
+         return true
+     }
+ 
+@@ -3620,6 +3863,9 @@
+     /// and perception identities unchanged so ongoing sensor work is not retired.
+     private func interruptOrdinaryConversation(origin: CompanionCommandOrigin) {
+         guard CommandAuthority.permits(.interruptOrdinarySpeech, from: origin) else { return }
++        modelResponseAuthority.invalidateConversation()
++        revalidateModelDisplays()
++        feedback.revalidateModelReply()
+         if CommandAuthority.permits(.changeGoal, from: origin) { clearBoardingReading() }
+         unverifiedConversationID = UUID()
+         unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
+@@ -3639,8 +3885,8 @@
+ 
+     private func unverifiedConversationReply(_ text: String) {
+         sceneAnswer = text; currentReply = text
+-        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+-            codeOwned: true, origin: .unverifiedMicrophone)
++        queueCodeConversationSpeech(text, request: requestID, generation: assistantSession.generation,
++            origin: .unverifiedMicrophone)
+     }
+ 
+     /// Release fallback, not verified-speaker recognition. Free-form chat has its
+@@ -3684,6 +3930,7 @@
+         // No speaker binding exists yet: prior microphone speakers are not context.
+         let dialogue = VoiceConversationPrivacy.anonymousTurn(text)
+         let id = unverifiedConversationID, generation = assistantSession.generation, request = requestID
++        beginModelResponse(question: text)
+         unverifiedConversationTimeout = Task { @MainActor [weak self] in
+             do { try await Task.sleep(for: .seconds(30)) } catch { return }
+             guard let self, self.unverifiedConversationID == id else { return }
+@@ -3712,7 +3959,8 @@
+                 self.unverifiedConversationReply(self.arabic ? "لم أتمكن من إعداد رد موثوق. حاول بطريقة أخرى." : "I couldn't prepare a supported reply. Try asking another way.")
+                 return
+             }
+-            guard self.showConversationReply(reply, settled: true, origin: origin) else {
++            guard self.showModelConversationReply(reply, settled: true, origin: origin,
++                reports: dialogue.userRecords.map(\.text), evidence: []) else {
+                 self.unverifiedConversationReply(CompanionEvidenceGuard.unavailableReply(arabic: self.arabic))
+                 return
+             }
+@@ -3902,11 +4150,24 @@
+         return true
+     }
+ 
+-    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
++    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], origin: CompanionCommandOrigin = .trustedInterface) {
++        let now = modelResponseNow
++        guard let lease = modelResponseAuthority.admit(text, binding: modelResponseBinding, reports: reports,
++            evidence: evidence, createdAt: now, now: now) else { return }
++        enqueueConversationSpeech(.model(lease), request: request, generation: generation,
++            reports: reports, evidence: evidence, origin: origin)
++    }
++    private func queueCodeConversationSpeech(_ text: String, request: UUID, generation: UInt64, evidence: [CompanionEvidence] = [], origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
++        enqueueConversationSpeech(.codeReply(text), request: request, generation: generation,
++            evidence: evidence, origin: origin, clockReceipt: clockReceipt, searchAreaQuestionID: searchAreaQuestionID)
++    }
++    private func enqueueConversationSpeech(_ content: ConversationContent, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
++        let text = content.text, codeOwned = content.modelReply == nil
++        if let lease = content.modelReply, !modelReplyAllowed(lease, text: text) { return }
+         #if DEBUG
+         let trace = DebugNativeSessionTrace(requestID: origin == .unverifiedMicrophone || codeOwned ? nil : request)
+         #endif
+-        guard !textOnly, assistantSession.state == .active,
++        guard (!textOnly || silentModelTestDelivery), assistantSession.state == .active,
+               assistantSession.accepts(generation: generation), requestID == request,
+               (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else {
+             #if DEBUG
+@@ -3922,7 +4183,7 @@
+         }
+         // Only receipts actually used by this sentence retain a visual lease.
+         let current: [CompanionEvidence]
+-        if codeOwned { current = [] }
++        if codeOwned || content.modelReply?.producer == .sceneDescription { current = [] }
+         else {
+             guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: reports, evidence: evidence) else {
+                 #if DEBUG
+@@ -3947,7 +4208,7 @@
+         #endif
+         conversationSpeech.append(ConversationSpeech(id: speechID, text: text, request: request,
+             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
+-            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, clockReceipt: receipt.replyIDs.isEmpty ? nil : receipt, origin: origin, searchAreaQuestionID: searchAreaQuestionID))
++            reports: reports, evidence: evidence, captures: captures, content: content, clockReceipt: receipt.replyIDs.isEmpty ? nil : receipt, origin: origin, searchAreaQuestionID: searchAreaQuestionID))
+         drainConversationSpeech()
+     }
+ 
+@@ -3969,11 +4230,12 @@
+             guard requestID == next.request, assistantSession.state == .active,
+                   assistantSession.accepts(generation: next.generation),
+                   ProcessInfo.processInfo.systemUptime - next.createdAt < 30,
+-                  (next.codeOwned || CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date())) else { continue }
++                  (next.codeOwned || next.content.modelReply?.producer == .sceneDescription || CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date())) else { continue }
+             if let receipt = next.clockReceipt, !clockDeliveryIsCurrent(receipt, text: next.text) { continue }
+             guard next.captures.allSatisfy(conversationCaptureIsCurrent) else { continue }
++            if let lease = next.content.modelReply, !modelReplyAllowed(lease, text: next.text) { continue }
+             activeConversationSpeech = next
+-            if speakRequested(next.text, replace: false, speechID: next.id) {
++            if speakRequested(next.text, replace: false, speechID: next.id, modelReply: next.content.modelReply) {
+                 #if DEBUG
+                 debugDispatched = true
+                 #endif
+@@ -3988,6 +4250,8 @@
+     /// Ordinary conversation without visual evidence is independent of this gate.
+     private func revalidateConversationSpeech() {
+         revalidateClockReplies()
++        revalidateModelDisplays()
++        feedback.revalidateModelReply()
+         guard let active = activeConversationSpeech, !active.captures.isEmpty else { return }
+         guard active.captures.allSatisfy(conversationCaptureIsCurrent) else {
+             #if DEBUG
+@@ -4347,14 +4611,15 @@
+         }
+         // Code-owned receipts use the same bounded queue and delivery completion ledger.
+         // Only this controller can set codeOwned; model callbacks always use the guarded default.
+-        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+-            codeOwned: true, searchAreaQuestionID: searchAreaQuestionID)
++        queueCodeConversationSpeech(text, request: requestID, generation: assistantSession.generation,
++            searchAreaQuestionID: searchAreaQuestionID)
+     }
+ 
+     /// A recognized physical-action request cannot fall through to a plausible model
+     /// instruction, a bare yes/no, or a model's own assertion that it verified the target.
+     @discardableResult private func routeUnverifiedPhysicalRequest(_ question: String, searchClueInput: CompanionSearchClue? = nil) -> Bool {
+         guard ConversationDomainPolicy.requiresPhysicalVerification(for: question) else { return false }
++        defer { beginModelResponse(question: question) }
+         if RoadCrossingPolicy.requiresCodeOwnedReply(question) {
+             cancelDescription(); stopReturn(); indoor.invalidatePosition()
+             deliverConversationReply(RoadCrossingPolicy.reply(audience: assistantAudience, arabic: arabic))
+@@ -4439,6 +4704,8 @@
+         ]
+         let id = UUID()
+         requestID = id; busy = true; sceneAnswer = ""; questionIsChat = true
++        latestModelReports = []; latestModelEvidence = []
++        beginModelResponse(question: question)
+         questionTimeoutTask?.cancel()
+         questionTimeoutTask = Task { @MainActor [weak self] in
+             do { try await Task.sleep(for: .seconds(30)) } catch { return }
+@@ -4474,6 +4741,7 @@
+                           self.companionWorkingState.goalRevision == revision, self.conversationMemoryRevision == memoryRevision,
+                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
+                           self.assistantSession.generation == sessionGeneration else { return }
++                    self.latestModelReports = reports; self.latestModelEvidence = evidence
+                     self.queueModelConversationSpeech(phrase, request: id, generation: sessionGeneration,
+                                                       reports: reports, evidence: evidence)
+                 }) { @MainActor [weak self] phrase in
+@@ -4484,7 +4752,11 @@
+                     guard let rendered = self.modelReplyText(phrase) else { return }
+                     let displayed = self.activeModelClockReplyID != nil ? rendered
+                         : self.streamedConversationText + (self.streamedConversationText.isEmpty ? "" : " ") + rendered
+-                    guard self.showConversationReply(displayed, settled: false) else { return }
++                    let reports = self.latestModelReports, evidence = self.latestModelEvidence
++                    let shown = self.activeModelClockReplyID != nil
++                        ? self.showConversationReply(displayed, settled: false)
++                        : self.showModelConversationReply(displayed, settled: false, reports: reports, evidence: evidence)
++                    guard shown else { return }
+                     self.streamedConversationText = displayed
+                 }
+             // Re-evaluate the action prerequisites after inference; a new request or
+@@ -4529,7 +4801,10 @@
+             }
+             // Publication stays after the existing proposal gate. Validate again
+             // at this display boundary without reacquiring or renewing the read.
+-            guard self.showConversationReply(text, settled: true) else {
++            let shown = self.activeModelClockReplyID != nil
++                ? self.showConversationReply(text, settled: true)
++                : self.showModelConversationReply(text, settled: true, reports: self.latestModelReports, evidence: self.latestModelEvidence)
++            guard shown else {
+                 self.revalidateClockReplies()
+                 self.deliverConversationReply(CompanionEvidenceGuard.unavailableReply(arabic: self.arabic))
+                 return
+@@ -4648,6 +4923,16 @@
+         let englishPrefix = "Earlier description; the scene may have changed: ", arabicPrefix = "وصف سابق وقد تغير المشهد: "
+         var original = record.text
+         for prefix in [englishPrefix, arabicPrefix] where original.hasPrefix(prefix) { original = String(original.dropFirst(prefix.count)) }
++        if let lease = retainedNarrationModelReply(for: original) {
++            // A live model repeat uses its original request/capture lease, not a
++            // history prefix that could launder it into a new code-owned answer.
++            guard modelReplyAllowed(lease, text: original) else { return }
++            _ = speakRequested(original, modelReply: lease)
++            return
++        }
++        // Legacy persisted descriptions have no producer receipt. They remain
++        // labelled history, never a source of replayed movement/geometry advice.
++        guard !SpatialClaimGuard.containsSpatialClaim(original) else { return }
+         let text = (arabic ? arabicPrefix : englishPrefix) + original
+         let tokenizer = NLTokenizer(unit: .word); tokenizer.string = text
+         let count = tokenizer.tokens(for: text.startIndex..<text.endIndex).count
+@@ -4830,9 +5115,8 @@
+         let ticket = held.route, revision = ticket.goalRevision.uuidString
+         let key = "\(ticket.routeID):\(ticket.target.id):\(cue.sector):\(cue.distance <= 1)"
+         if automatic, key == lastIndoorCueKey { return }
+-        let text = arabic ? "\(ticket.target.localizedName(arabic: true))، على بعد نحو \(String(format: "%.1f", cue.distance)) متر."
+-            : "\(ticket.target.name), approximately \(String(format: "%.1f", cue.distance)) meters."
+-        if spatialRouteOutput.deliver(ticket: ticket, goalRevision: revision, speech: { id in
++        guard let speech = SpatialRouteSpeech(ticket: ticket, arabic: arabic) else { return }
++        if spatialRouteOutput.deliver(message: speech, goalRevision: revision, speech: { id, text in
+             let candidate = InformationCandidate(key: "spatial-route:" + id.uuidString, kind: .mobility,
+                 text: text, words: Self.wordCount(text), revision: id.uuidString,
+                 createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
+@@ -5660,8 +5944,8 @@
+         let reply = Self.wordCount(summary) <= 30 ? summary : fallback
+         message = reply; sceneAnswer = reply; currentReply = reply
+         interruptOrdinaryConversation(origin: origin)
+-        queueConversationSpeech(reply,
+-            request: requestID, generation: assistantSession.generation, codeOwned: true)
++        queueCodeConversationSpeech(reply,
++            request: requestID, generation: assistantSession.generation)
+         return true
+     }
+ 
+@@ -5673,8 +5957,8 @@
+         let reply = Self.wordCount(summary) <= 30 ? summary : fallback
+         message = reply; sceneAnswer = reply; currentReply = reply
+         interruptOrdinaryConversation(origin: .trustedInterface)
+-        queueConversationSpeech(reply,
+-            request: requestID, generation: assistantSession.generation, codeOwned: true)
++        queueCodeConversationSpeech(reply,
++            request: requestID, generation: assistantSession.generation)
+         // Ambiguous cross-place history asks a question instead of selecting an
+         // instance. A single history clue does not suppress an available fresh look.
+         if allowNewSensorWork,
+--- a/ios/BlindAssist/SpatialRouteOutputController.swift
++++ b/ios/BlindAssist/SpatialRouteOutputController.swift
+@@ -8,8 +8,9 @@
+ final class SpatialRouteOutputController {
+     struct Attempt {
+         let id: UUID
+-        let ticket: SpatialRouteTicket
++        let message: SpatialRouteSpeech
+         let goalRevision: String
++        var ticket: SpatialRouteTicket { message.ticket }
+     }
+     private(set) var active: Attempt?
+     var permits: ((SpatialRouteTicket, String) -> Bool)?
+@@ -17,19 +18,29 @@
+     var stopBeacon: ((UUID) -> Void)?
+ 
+     @discardableResult
+-    func deliver(ticket: SpatialRouteTicket, goalRevision: String,
+-                 speech: (UUID) -> Bool, beacon: (UUID) -> Bool) -> Bool {
++    func deliver(message: SpatialRouteSpeech, goalRevision: String,
++                 speech: (UUID, String) -> Bool, beacon: (UUID) -> Bool) -> Bool {
+         retire()
+-        let attempt = Attempt(id: UUID(), ticket: ticket, goalRevision: goalRevision)
++        let attempt = Attempt(id: UUID(), message: message, goalRevision: goalRevision)
+         active = attempt
+         guard validateForStart(attempt.id) else { return false }
+-        guard speech(attempt.id) else { retire(id: attempt.id); return false }
++        guard speech(attempt.id, message.text) else { retire(id: attempt.id); return false }
+         // A synchronous callback or priority change can invalidate the ticket
+         // between sinks. Do not promote speech admission into beacon permission.
+         guard validateForStart(attempt.id) else { return false }
+         _ = beacon(attempt.id)
+         guard validateForStart(attempt.id) else { return false }
+         return true
++    }
++    /// A borrowed ticket/attempt cannot authorize different words at a speech
++    /// sink. A stale callback must not retire a newer route or independent alert.
++    @discardableResult
++    func validateSpeechStart(_ id: UUID, text: String) -> Bool {
++        guard let active, active.id == id else { return false }
++        guard active.message.text.utf8.elementsEqual(text.utf8) else {
++            retire(id: id); return false
++        }
++        return validateForStart(id)
+     }
+     @discardableResult
+     func validateForStart(_ id: UUID) -> Bool {
+--- a/ios/BlindAssistTests/ConversationRuntimeFailureTests.swift
++++ b/ios/BlindAssistTests/ConversationRuntimeFailureTests.swift
+@@ -1,4 +1,5 @@
+ import XCTest
++import BlindCore
+ @testable import BlindAssist
+ 
+ /// Deterministic result-policy tests, not Foundation Models acceptance.
+@@ -47,3 +48,328 @@
+         XCTAssertEqual(answer.text, "Already delivered.")
+     }
+ }
++
++/// Executes the exact Feedback permission hook used before enqueue, platform
++/// start and watchdog. It does not start AVFoundation playback or a sensor.
++@MainActor
++final class ModelResponseDeliveryTests: XCTestCase {
++    private func fixture() throws -> (ModelResponseAuthority, ModelResponseAuthority.Binding, ModelResponseAuthority.Lease) {
++        var authority = ModelResponseAuthority()
++        let binding = ModelResponseAuthority.Binding(requestID: UUID(), sessionGeneration: 1, goalRevision: "test-goal")
++        authority.begin(question: "Tell me a joke.", binding: binding, at: 10)
++        let lease = try XCTUnwrap(authority.admit("I enjoy jokes.", binding: binding, createdAt: 10, now: 10))
++        return (authority, binding, lease)
++    }
++    func testMissingDeliveryOwnerRejectsGeneratedTextWithoutAudio() throws {
++        let (_, _, lease) = try fixture()
++        XCTAssertFalse(Feedback().modelReplyIsCurrent(lease, text: lease.text))
++    }
++    func testExactCurrentConversationPassesFinalHookButBorrowedWordsDoNot() throws {
++        let (authority, binding, lease) = try fixture(), feedback = Feedback()
++        feedback.modelReplyPermission = { lease, text in authority.permits(lease, text: text, binding: binding, now: 11) }
++        XCTAssertTrue(feedback.modelReplyIsCurrent(lease, text: lease.text))
++        for text in ["Head straight.", "كمل على طول.", "Yes.", "نعم."] {
++            XCTAssertFalse(feedback.modelReplyIsCurrent(lease, text: text), text)
++        }
++    }
++    func testQueueDelayAndRepeatUseOriginalDeadlineAtFinalHook() throws {
++        let (authority, binding, lease) = try fixture(), feedback = Feedback()
++        var now = 11.0
++        feedback.modelReplyPermission = { lease, text in authority.permits(lease, text: text, binding: binding, now: now) }
++        XCTAssertTrue(feedback.modelReplyIsCurrent(lease, text: lease.text))
++        now = 40
++        XCTAssertFalse(feedback.modelReplyIsCurrent(lease, text: lease.text))
++        now = 41
++        XCTAssertFalse(feedback.modelReplyIsCurrent(lease, text: lease.text))
++        XCTAssertEqual(lease.expiresAt, 40)
++    }
++    func testPlaybackTimeoutUsesOriginalModelDeadlineWithoutCameraTicks() throws {
++        let (_, _, lease) = try fixture()
++        XCTAssertEqual(Feedback.outputTimeoutInterval(modelReply: lease, now: 11), 29)
++        XCTAssertEqual(Feedback.outputTimeoutInterval(modelReply: lease, now: 39), 1)
++        XCTAssertEqual(Feedback.outputTimeoutInterval(modelReply: lease, now: 40), 0)
++        XCTAssertEqual(Feedback.outputTimeoutInterval(modelReply: lease, now: 45), 0)
++        XCTAssertEqual(Feedback.outputTimeoutInterval(modelReply: nil, now: 11), 120)
++    }
++    func testNewSessionRejectsOldQueuedReplyAtFinalHook() throws {
++        let (authority, binding, lease) = try fixture(), feedback = Feedback()
++        let next = ModelResponseAuthority.Binding(requestID: binding.requestID, sessionGeneration: 2, goalRevision: binding.goalRevision)
++        feedback.modelReplyPermission = { lease, text in authority.permits(lease, text: text, binding: next, now: 11) }
++        XCTAssertFalse(feedback.modelReplyIsCurrent(lease, text: lease.text))
++    }
++    func testPhysicalOwnerCannotBeSatisfiedByAnOlderConversationLease() throws {
++        var (authority, binding, lease) = try fixture()
++        let feedback = Feedback()
++        authority.begin(question: "How do I continue to the kitchen?", binding: binding, at: 10)
++        feedback.modelReplyPermission = { lease, text in authority.permits(lease, text: text, binding: binding, now: 11) }
++        XCTAssertFalse(feedback.modelReplyIsCurrent(lease, text: lease.text))
++    }
++}
++
++/// Hosted controller/sink regressions with injected model results. The DEBUG
++/// seam is available only to XCTest in text-only mode. It enters the production
++/// display, queue, drain, delivery and delayed-start checks, but substitutes a
++/// silent platform sink: no model, camera, microphone, route or audio runs.
++@MainActor
++final class NavigationModelResponseSinkTests: XCTestCase {
++    private let ordinaryText = "I enjoy jokes."
++
++    private func fixture(question: String = "Tell me a joke.", at now: Double,
++                         file: StaticString = #filePath, line: UInt = #line) -> NavigationModel {
++        let model = NavigationModel()
++        XCTAssertTrue(model.textOnly, file: file, line: line)
++        XCTAssertTrue(model.debugBeginModelResponseTest(question: question, at: now), file: file, line: line)
++        return model
++    }
++
++    private func assertHistorical(_ displayed: String, original: String,
++                                  file: StaticString = #filePath, line: UInt = #line) {
++        // Do not assume the simulator's saved language preference. The complete
++        // original ordinary conversation remains readable with a new label.
++        XCTAssertTrue(displayed.contains(original), file: file, line: line)
++        XCTAssertNotEqual(displayed, original, file: file, line: line)
++    }
++
++    private func assertEmptySink(_ model: NavigationModel,
++                                 file: StaticString = #filePath, line: UInt = #line) {
++        let snapshot = model.debugModelResponseSinkSnapshot
++        XCTAssertTrue(snapshot.queued.isEmpty, file: file, line: line)
++        XCTAssertTrue(snapshot.started.isEmpty, file: file, line: line)
++        XCTAssertFalse(snapshot.active, file: file, line: line)
++        XCTAssertEqual(snapshot.pending, 0, file: file, line: line)
++    }
++
++    func testOrdinaryChatReachesRealQueueAndDelayedStartThroughSilentSink() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText))
++        XCTAssertEqual(model.sceneAnswer, ordinaryText)
++        XCTAssertEqual(model.currentReply, ordinaryText)
++        let queued = model.debugModelResponseSinkSnapshot
++        XCTAssertEqual(queued.queued, [ordinaryText])
++        XCTAssertTrue(queued.started.isEmpty)
++        XCTAssertTrue(queued.active)
++        XCTAssertEqual(queued.pending, 0)
++
++        model.debugAdvanceModelResponseTime(to: now + 1, revalidate: false)
++        XCTAssertTrue(model.debugStartModelResponsePlayback())
++        let started = model.debugModelResponseSinkSnapshot
++        XCTAssertEqual(started.queued, [ordinaryText])
++        XCTAssertEqual(started.started, [ordinaryText])
++        XCTAssertTrue(started.active)
++    }
++
++    func testOrdinaryArabicChatReachesSilentSinkWithoutNavigationAuthority() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(question: "قل لي نكتة.", at: now)
++        defer { model.debugCancelModelResponseTest() }
++        let text = "أحب القصص."
++        XCTAssertTrue(model.debugInjectModelResponse(text))
++        XCTAssertEqual(model.currentReply, text)
++        XCTAssertEqual(model.debugModelResponseSinkSnapshot.queued, [text])
++        XCTAssertTrue(model.debugStartModelResponsePlayback())
++        XCTAssertEqual(model.debugModelResponseSinkSnapshot.started, [text])
++    }
++
++    func testKnownEnglishAndArabicMovementOutputsNeverReachDisplayOrSink() {
++        let model = fixture(at: ProcessInfo.processInfo.systemUptime)
++        defer { model.debugCancelModelResponseTest() }
++        let scene = model.sceneAnswer, current = model.currentReply
++        for text in ["Continue straight through the doorway.", "Continue straight.",
++                     "Head straight.", "Sidestep twice.", "كمل على طول.", "واصل على طول."] {
++            XCTAssertFalse(model.debugInjectModelResponse(text), text)
++            XCTAssertEqual(model.sceneAnswer, scene, text)
++            XCTAssertEqual(model.currentReply, current, text)
++            assertEmptySink(model)
++        }
++    }
++
++    func testPhysicalRequestBareYesCannotReachDisplayOrSinkInEitherLanguage() {
++        for question in ["Can I walk to the door?", "هل أستطيع أن أصعد هذا الدرج؟",
++                         "How do I continue to the kitchen?", "كيف أكمل للمطبخ؟", "كيف أواصل للمطبخ؟"] {
++            let model = fixture(question: question, at: ProcessInfo.processInfo.systemUptime)
++            defer { model.debugCancelModelResponseTest() }
++            let scene = model.sceneAnswer, current = model.currentReply
++            for text in ["Yes.", "نعم."] {
++                XCTAssertFalse(model.debugInjectModelResponse(text), question + " / " + text)
++                XCTAssertEqual(model.sceneAnswer, scene)
++                XCTAssertEqual(model.currentReply, current)
++                assertEmptySink(model)
++            }
++        }
++    }
++
++    func testExpiryLabelsOriginalConversationAsHistoryAndRetiresPlayback() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText))
++        XCTAssertTrue(model.debugStartModelResponsePlayback())
++        model.debugAdvanceModelResponseTime(to: now + 31)
++        assertHistorical(model.sceneAnswer, original: ordinaryText)
++        assertHistorical(model.currentReply, original: ordinaryText)
++        let expired = model.debugModelResponseSinkSnapshot
++        XCTAssertEqual(expired.queued, [ordinaryText])
++        XCTAssertEqual(expired.started, [ordinaryText])
++        XCTAssertFalse(expired.active)
++        XCTAssertEqual(expired.pending, 0)
++    }
++
++    func testCancellationImmediatelyLabelsConversationAndRetiresQueuedAttempt() {
++        let model = fixture(at: ProcessInfo.processInfo.systemUptime)
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText))
++        model.debugCancelModelResponseTest()
++        assertHistorical(model.sceneAnswer, original: ordinaryText)
++        assertHistorical(model.currentReply, original: ordinaryText)
++        XCTAssertFalse(model.debugStartModelResponsePlayback())
++        let cancelled = model.debugModelResponseSinkSnapshot
++        XCTAssertEqual(cancelled.queued, [ordinaryText])
++        XCTAssertTrue(cancelled.started.isEmpty)
++        XCTAssertFalse(cancelled.active)
++        XCTAssertEqual(cancelled.pending, 0)
++    }
++
++    func testMicrophoneInterruptionRetiresConversationDisplayAndPlayback() {
++        let model = fixture(at: ProcessInfo.processInfo.systemUptime)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText))
++        model.debugInterruptModelResponseTest()
++        assertHistorical(model.sceneAnswer, original: ordinaryText)
++        assertHistorical(model.currentReply, original: ordinaryText)
++        XCTAssertFalse(model.debugStartModelResponsePlayback())
++        XCTAssertFalse(model.debugModelResponseSinkSnapshot.active)
++        XCTAssertEqual(model.debugModelResponseSinkSnapshot.pending, 0)
++        XCTAssertEqual(model.debugModelResponseSinkSnapshot.queued, [ordinaryText])
++        XCTAssertTrue(model.debugModelResponseSinkSnapshot.started.isEmpty)
++    }
++
++    private enum Replacement { case code, document, ocr }
++    private func assertSameTextReplacementSurvivesRetirement(_ replacement: Replacement,
++                                                            file: StaticString = #filePath, line: UInt = #line) {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now, file: file, line: line)
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText, enqueue: false), file: file, line: line)
++        switch replacement {
++        case .code: model.debugReplaceModelDisplayWithCode(ordinaryText)
++        case .document: model.debugReplaceModelDisplayWithDocument(ordinaryText)
++        case .ocr: model.debugReplaceModelDisplayWithOCR(ordinaryText)
++        }
++        model.debugAdvanceModelResponseTime(to: now + 31)
++        XCTAssertEqual(model.sceneAnswer, ordinaryText, file: file, line: line)
++        XCTAssertEqual(model.currentReply, ordinaryText, file: file, line: line)
++        model.debugCancelModelResponseTest()
++        XCTAssertEqual(model.sceneAnswer, ordinaryText, file: file, line: line)
++        XCTAssertEqual(model.currentReply, ordinaryText, file: file, line: line)
++        assertEmptySink(model, file: file, line: line)
++    }
++
++    func testSameTextCodeReplacementSurvivesOldModelExpiryAndCancellation() {
++        assertSameTextReplacementSurvivesRetirement(.code)
++    }
++
++    func testSameTextDocumentReplacementSurvivesOldModelExpiryAndCancellation() {
++        assertSameTextReplacementSurvivesRetirement(.document)
++    }
++
++    func testSameTextOCRReplacementSurvivesOldModelExpiryAndCancellation() {
++        assertSameTextReplacementSurvivesRetirement(.ocr)
++    }
++
++    func testOlderDeadlineUpdateDoesNotRelabelNewerModelReply() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText, enqueue: false))
++        XCTAssertTrue(model.debugBeginModelResponseTest(question: "Tell me a story.", at: now + 20))
++        assertHistorical(model.sceneAnswer, original: ordinaryText)
++        assertHistorical(model.currentReply, original: ordinaryText)
++        let newerText = "A funny surprise could happen."
++        XCTAssertTrue(model.debugInjectModelResponse(newerText, enqueue: false))
++
++        // The older reply's deadline has passed, but the newer original lease
++        // still owns both display revisions. No run-loop/timer sleep is needed.
++        model.debugAdvanceModelResponseTime(to: now + 31)
++        XCTAssertEqual(model.sceneAnswer, newerText)
++        XCTAssertEqual(model.currentReply, newerText)
++        model.debugAdvanceModelResponseTime(to: now + 51)
++        assertHistorical(model.sceneAnswer, original: newerText)
++        assertHistorical(model.currentReply, original: newerText)
++        assertEmptySink(model)
++    }
++
++    func testRetiredTimerCallbackCannotRelabelNewerReplyEvenAfterItsExpiry() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText, enqueue: false))
++        let oldTimerOwner = model.debugModelDisplayTimerOwner
++        XCTAssertTrue(model.debugBeginModelResponseTest(question: "Tell me another joke.", at: now + 20))
++        // Equal text is still a different response owner and display revision.
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText, enqueue: false))
++        let newTimerOwner = model.debugModelDisplayTimerOwner
++        XCTAssertNotEqual(oldTimerOwner, newTimerOwner)
++
++        model.debugAdvanceModelResponseTime(to: now + 51, revalidate: false)
++        model.debugFireModelDisplayExpiry(owner: oldTimerOwner)
++        XCTAssertEqual(model.sceneAnswer, ordinaryText)
++        XCTAssertEqual(model.currentReply, ordinaryText)
++        XCTAssertEqual(model.debugModelDisplayTimerOwner, newTimerOwner)
++
++        // Invoke the exact timer callback, not a copy of its policy. Only the
++        // current owner may retire this display; no run-loop wait or audio runs.
++        model.debugFireModelDisplayExpiry(owner: newTimerOwner)
++        assertHistorical(model.sceneAnswer, original: ordinaryText)
++        assertHistorical(model.currentReply, original: ordinaryText)
++        assertEmptySink(model)
++    }
++
++    func testDelayedPlatformStartAfterExpiryIsRejectedWithoutWatchdogRevalidation() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText))
++        XCTAssertEqual(model.debugModelResponseSinkSnapshot.queued, [ordinaryText])
++        // Preserve the queued attempt and current display until the production
++        // AVSpeech delegate's actual-start permission checks see the late time.
++        model.debugAdvanceModelResponseTime(to: now + 31, revalidate: false)
++        XCTAssertTrue(model.debugModelResponseSinkSnapshot.active)
++        XCTAssertEqual(model.currentReply, ordinaryText)
++        XCTAssertFalse(model.debugStartModelResponsePlayback())
++        let rejected = model.debugModelResponseSinkSnapshot
++        XCTAssertEqual(rejected.queued, [ordinaryText])
++        XCTAssertTrue(rejected.started.isEmpty)
++        XCTAssertFalse(rejected.active)
++        XCTAssertEqual(rejected.pending, 0)
++    }
++
++    func testRepeatAfterExpiryCannotRemintOriginalOrHistoryLabelAsCodeSpeech() {
++        let now = ProcessInfo.processInfo.systemUptime
++        let model = fixture(at: now)
++        defer { model.debugCancelModelResponseTest() }
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText, enqueue: false))
++        model.debugAdvanceModelResponseTime(to: now + 31)
++        let history = model.currentReply
++        assertHistorical(history, original: ordinaryText)
++        // Both a stale UI callback holding original bytes and a current history
++        // card repeat retain the original expired model receipt.
++        XCTAssertFalse(model.speakRequested(ordinaryText))
++        XCTAssertFalse(model.speakRequested(history))
++        XCTAssertFalse(model.debugInjectModelResponse(ordinaryText))
++        XCTAssertEqual(model.currentReply, history)
++        assertEmptySink(model)
++    }
++
++    func testRepeatAfterCancellationCannotRemintOriginalOrHistoryLabelAsCodeSpeech() {
++        let model = fixture(at: ProcessInfo.processInfo.systemUptime)
++        XCTAssertTrue(model.debugInjectModelResponse(ordinaryText, enqueue: false))
++        model.debugCancelModelResponseTest()
++        let history = model.currentReply
++        assertHistorical(history, original: ordinaryText)
++        XCTAssertFalse(model.speakRequested(ordinaryText))
++        XCTAssertFalse(model.speakRequested(history))
++        XCTAssertFalse(model.debugInjectModelResponse(ordinaryText))
++        XCTAssertEqual(model.currentReply, history)
++        assertEmptySink(model)
++    }
++}
+--- a/ios/BlindAssistTests/SpatialRouteOutputControllerTests.swift
++++ b/ios/BlindAssistTests/SpatialRouteOutputControllerTests.swift
+@@ -18,14 +18,15 @@
+         var goal: String
+         var hazard = false
+         var speechID: UUID?
++        var speechText: String?
+         var beacon = SpatialRouteBeaconOwnership()
+         var stoppedSpeech: [UUID] = []
+         var stoppedBeacon: [UUID] = []
+         var speechStarts = 0
+         var beaconStarts = 0
+         let controller = SpatialRouteOutputController()
+-        init() throws {
+-            (owner, support) = try F.prepared()
++        init(map: IndoorMap = F.map()) throws {
++            (owner, support) = try F.prepared(map: map)
+             goal = try XCTUnwrap(owner.goalRevision).uuidString
+             controller.permits = { [weak self] ticket, goal in
+                 guard let self else { return false }
+@@ -42,9 +43,13 @@
+             }
+         }
+         func ticket() throws -> SpatialRouteTicket { try owner.next(support: support, now: now) }
+-        @discardableResult func deliver(_ ticket: SpatialRouteTicket) -> Bool {
+-            controller.deliver(ticket: ticket, goalRevision: goal,
+-                speech: { id in self.speechID = id; self.speechStarts += 1; return true },
++        @discardableResult func deliver(_ ticket: SpatialRouteTicket, arabic: Bool = false) -> Bool {
++            guard let message = SpatialRouteSpeech(ticket: ticket, arabic: arabic) else { return false }
++            return controller.deliver(message: message, goalRevision: goal,
++                speech: { id, text in
++                    guard self.controller.validateSpeechStart(id, text: text) else { return false }
++                    self.speechID = id; self.speechText = text; self.speechStarts += 1; return true
++                },
+                 beacon: { id in self.beacon.replace(routeID: id); self.beaconStarts += 1; return true })
+         }
+     }
+@@ -54,6 +59,7 @@
+         XCTAssertEqual(h.speechID, h.controller.active?.id)
+         XCTAssertEqual(h.beacon.routeID, h.controller.active?.id)
+         XCTAssertTrue(h.controller.validateForStart(try XCTUnwrap(h.speechID)))
++        XCTAssertTrue(h.controller.validateSpeechStart(try XCTUnwrap(h.speechID), text: try XCTUnwrap(h.speechText)))
+     }
+     func testExpiredTicketReachesNeitherSink() throws {
+         let h = try Harness(), ticket = try h.ticket()
+@@ -64,7 +70,7 @@
+     }
+     func testPermissionChangesBetweenSpeechAndBeacon() throws {
+         let h = try Harness(), ticket = try h.ticket()
+-        XCTAssertFalse(h.controller.deliver(ticket: ticket, goalRevision: h.goal, speech: { id in
++        XCTAssertFalse(h.controller.deliver(message: try XCTUnwrap(SpatialRouteSpeech(ticket: ticket, arabic: false)), goalRevision: h.goal, speech: { id, _ in
+             h.speechID = id; h.hazard = true; return true
+         }, beacon: { _ in XCTFail("A speech admission is not beacon permission"); return true }))
+         XCTAssertNil(h.speechID); XCTAssertNil(h.controller.active)
+@@ -80,7 +86,7 @@
+         let h = try Harness(); XCTAssertTrue(h.deliver(try h.ticket()))
+         let id = try XCTUnwrap(h.controller.active?.id)
+         h.owner.loseTracking()
+-        XCTAssertFalse(h.controller.validateForStart(id))
++        XCTAssertFalse(h.controller.validateSpeechStart(id, text: try XCTUnwrap(h.speechText)))
+         XCTAssertNil(h.speechID); XCTAssertNil(h.controller.active)
+     }
+     func testOldCallbackCannotRetireNewRouteOrIndependentAlert() throws {
+@@ -115,9 +121,120 @@
+     }
+     func testFailedSpeechDoesNotStartBeaconOrHoldAttempt() throws {
+         let h = try Harness(), ticket = try h.ticket()
+-        XCTAssertFalse(h.controller.deliver(ticket: ticket, goalRevision: h.goal,
+-            speech: { _ in false }, beacon: { _ in XCTFail("Speech was rejected"); return true }))
+-        XCTAssertNil(h.controller.active)
++        XCTAssertFalse(h.controller.deliver(message: try XCTUnwrap(SpatialRouteSpeech(ticket: ticket, arabic: false)), goalRevision: h.goal,
++            speech: { _, _ in false }, beacon: { _ in XCTFail("Speech was rejected"); return true }))
++        XCTAssertNil(h.controller.active)
++    }
++    func testOnlyCodeRenderedEnglishAndArabicWordsReachSpeechSink() throws {
++        for arabic in [false, true] {
++            let h = try Harness(), ticket = try h.ticket()
++            let message = try XCTUnwrap(SpatialRouteSpeech(ticket: ticket, arabic: arabic))
++            XCTAssertTrue(h.deliver(ticket, arabic: arabic))
++            XCTAssertEqual(h.speechText, message.text)
++            XCTAssertEqual(message.ticket.routeID, ticket.routeID)
++            let distance = try XCTUnwrap(ticket.directionalCue()).distance
++            XCTAssertEqual(message.text, arabic
++                ? "نقطة المسار التالية، على بعد نحو \(String(format: "%.1f", distance)) متر."
++                : "Next waypoint, approximately \(String(format: "%.1f", distance)) meters.")
++            XCTAssertEqual(h.speechStarts, 1); XCTAssertEqual(h.beaconStarts, 1)
++        }
++    }
++    func testEnglishMapLabelCannotBecomeRouteSpeech() throws {
++        try assertMapLabelsCannotBecomeRouteSpeech(
++            name: "Head straight through the table. Continue down the stairs.", nameArabic: nil)
++    }
++    func testArabicMapLabelCannotBecomeRouteSpeech() throws {
++        try assertMapLabelsCannotBecomeRouteSpeech(
++            name: "Waypoint", nameArabic: "واصل على طول عبر الطاولة. انزل الدرج الآن.")
++    }
++    private func assertMapLabelsCannotBecomeRouteSpeech(name: String, nameArabic: String?,
++                                                       file: StaticString = #filePath, line: UInt = #line) throws {
++        let baseline = try Harness(), baselineTicket = try baseline.ticket()
++        var map = F.map()
++        // These are user/imported metadata, not model output. Mutate before the
++        // fixture validates/installs the map and the owner mints its route ticket.
++        for index in map.nodes.indices {
++            map.nodes[index].name = name; map.nodes[index].nameArabic = nameArabic
++        }
++        let h = try Harness(map: map), ticket = try h.ticket()
++        XCTAssertEqual(ticket.target.name, name, file: file, line: line)
++        XCTAssertEqual(ticket.target.nameArabic, nameArabic, file: file, line: line)
++        for arabic in [false, true] {
++            let expected = try XCTUnwrap(SpatialRouteSpeech(ticket: baselineTicket, arabic: arabic))
++            let message = try XCTUnwrap(SpatialRouteSpeech(ticket: ticket, arabic: arabic))
++            XCTAssertEqual(message.text, expected.text, file: file, line: line)
++            XCTAssertTrue(h.deliver(ticket, arabic: arabic), file: file, line: line)
++            XCTAssertEqual(h.speechText, expected.text, file: file, line: line)
++            XCTAssertFalse(message.text.contains(ticket.target.localizedName(arabic: arabic)), file: file, line: line)
++        }
++    }
++    func testValidTicketCannotAuthorizeBorrowedModelWords() throws {
++        for borrowed in ["Continue straight through the doorway.", "Head straight.", "Sidestep twice.",
++                         "كمل على طول.", "واصل على طول.", "Yes.", "نعم."] {
++            let h = try Harness(); XCTAssertTrue(h.deliver(try h.ticket()))
++            let id = try XCTUnwrap(h.controller.active?.id)
++            XCTAssertFalse(h.controller.validateSpeechStart(id, text: borrowed), borrowed)
++            XCTAssertNil(h.controller.active)
++            XCTAssertNil(h.speechID); XCTAssertNil(h.beacon.routeID)
++            XCTAssertEqual(h.stoppedSpeech, [id]); XCTAssertEqual(h.stoppedBeacon, [id])
++        }
++    }
++    func testNoActiveRouteTicketCannotAuthorizeSpeech() {
++        let controller = SpatialRouteOutputController()
++        var stops = 0
++        controller.stopSpeech = { _ in stops += 1 }
++        controller.stopBeacon = { _ in stops += 1 }
++        for text in ["Yes.", "نعم.", "Continue straight through the doorway.", "كمل على طول."] {
++            XCTAssertFalse(controller.validateSpeechStart(UUID(), text: text), text)
++        }
++        XCTAssertNil(controller.active)
++        XCTAssertEqual(stops, 0) // No ownership was acquired or unrelated output stopped.
++    }
++    func testMissingAuthorityCallbackRejectsEvenCodeRenderedMessage() throws {
++        let h = try Harness(), ticket = try h.ticket()
++        let message = try XCTUnwrap(SpatialRouteSpeech(ticket: ticket, arabic: false))
++        h.controller.permits = nil
++        XCTAssertFalse(h.controller.deliver(message: message, goalRevision: h.goal,
++            speech: { _, _ in XCTFail("No route authority"); return true },
++            beacon: { _ in XCTFail("No route authority"); return true }))
++        XCTAssertNil(h.controller.active)
++        XCTAssertEqual(h.speechStarts, 0); XCTAssertEqual(h.beaconStarts, 0)
++    }
++    func testRetainedMapWithoutCurrentLocalizationCannotDeliverOldTicket() throws {
++        let h = try Harness(), ticket = try h.ticket()
++        h.owner.withholdLocalizationEvidence()
++        XCTAssertNotNil(h.owner.installation)
++        XCTAssertFalse(h.owner.route.isEmpty) // Retained geometry/intent is not live authority.
++        XCTAssertNil(h.owner.currentPose(now: h.now))
++        XCTAssertThrowsError(try h.ticket())
++        XCTAssertFalse(h.deliver(ticket))
++        XCTAssertNil(h.controller.active)
++        XCTAssertEqual(h.speechStarts, 0); XCTAssertEqual(h.beaconStarts, 0)
++    }
++    func testTextMatchIsExactAndCannotBorrowOtherLanguageOrWhitespace() throws {
++        let h = try Harness(), ticket = try h.ticket()
++        XCTAssertTrue(h.deliver(ticket))
++        let id = try XCTUnwrap(h.controller.active?.id), text = try XCTUnwrap(h.speechText)
++        XCTAssertFalse(h.controller.validateSpeechStart(id, text: text + " "))
++        XCTAssertNil(h.controller.active)
++        XCTAssertTrue(h.deliver(ticket))
++        let newID = try XCTUnwrap(h.controller.active?.id)
++        let arabic = try XCTUnwrap(SpatialRouteSpeech(ticket: ticket, arabic: true))
++        XCTAssertFalse(h.controller.validateSpeechStart(newID, text: arabic.text))
++        XCTAssertNil(h.controller.active)
++    }
++    func testOldSpeechValidationCannotRetireNewAttemptOrIndependentAlert() throws {
++        let h = try Harness(), ticket = try h.ticket()
++        XCTAssertTrue(h.deliver(ticket)); let old = try XCTUnwrap(h.controller.active?.id)
++        XCTAssertTrue(h.deliver(ticket)); let current = try XCTUnwrap(h.controller.active?.id)
++        XCTAssertFalse(h.controller.validateSpeechStart(old, text: "Head straight."))
++        XCTAssertEqual(h.controller.active?.id, current)
++        XCTAssertEqual(h.speechID, current); XCTAssertEqual(h.beacon.routeID, current)
++        let independent = UUID()
++        h.speechID = independent; h.beacon.replace(routeID: nil)
++        XCTAssertFalse(h.controller.validateSpeechStart(current, text: "Continue straight."))
++        XCTAssertEqual(h.speechID, independent)
++        XCTAssertNil(h.beacon.routeID)
+     }
+     func testBeaconOwnershipRejectsStaleRetirementAfterReplacement() {
+         var ownership = SpatialRouteBeaconOwnership()
+--- a/server/src/spatial-guard.mjs
++++ b/server/src/spatial-guard.mjs
+@@ -45,6 +45,9 @@
+   return HAZARD.test(normalized) || AR_HAZARD.test(normalized);
+ }
+ 
++// Bounded locomotion paraphrases; not a semantic safety certificate.
++const CONTINUATION = /\b(?:sidestep(?:ping)?|head\s+straight|(?:continue|carry on|keep going)\s+(?:straight|walking|moving))\b|(?:^|[\s،؛.!؟])(?:كمل|كملي|واصل|واصلي|استمر|استمري|تابع|تابعي)\s+(?:علي طول|على طول|مباشره|السير|المشي|عبر|نحو|باتجاه)(?:[\s،؛.!؟]|$)/i;
++
+ export function containsSpatialClaim(text, context = text) {
+   // Normalize spoken-equivalent separators before checking physical phrases.
+   const canonical = text.replace(/[-‐‑‒–—−]+/gu, ' ');
+@@ -54,7 +57,7 @@
+   // Fixed conversational idioms only; no quotation/whole-sentence exemption.
+   const prose = science.replace(/\b(?:take your time|move on to (?:another|the next) (?:topic|question|subject))\b|(?:^|\s)خذ وقتك(?=[\s.!؟،]|$)/gi, '');
+   const arabic = normalizeArabic(prose);
+-  if (DIRECTION.test(prose) || OBJECT_RELATION.test(prose) || PHYSICAL_ACTION.test(prose) ||
++  if (CONTINUATION.test(arabic) || DIRECTION.test(prose) || OBJECT_RELATION.test(prose) || PHYSICAL_ACTION.test(prose) ||
+       AR_DIRECTION.test(arabic) || AR_OBJECT_RELATION.test(arabic) || AR_PHYSICAL_ACTION.test(arabic) ||
+       CLEARANCE.test(canonical) || STEP_COUNT.test(canonical) || AR_CLEARANCE.test(arabic) || AR_STEP_COUNT.test(arabic)) return true;
+   const normalizedContext = normalizeArabic(context.replace(/[-‐‑‒–—−]+/gu, ' '));
+--- /dev/null
++++ b/tools/test/model-response-authority.test.mjs
+@@ -0,0 +1,166 @@
++// Source contracts + exact JavaScript guard execution only. Native XCTest,
++// Foundation Models and AVFoundation are separate acceptance stages.
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { containsSpatialClaim, normalizeArabic } from '../../server/src/spatial-guard.mjs';
++
++const read = p => readFile(new URL('../../' + p, import.meta.url), 'utf8');
++const [nav, feedback, adapter, authority, domain, swiftGuard, mirror, route, controller, fixtureText] = await Promise.all([
++  'ios/BlindAssist/NavigationModel.swift', 'ios/BlindAssist/Feedback.swift', 'ios/BlindAssist/LocalImageAssistant.swift',
++  'BlindCore/Sources/BlindCore/ModelResponseAuthority.swift', 'BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift',
++  'BlindCore/Sources/BlindCore/SpatialClaimGuard.swift', 'server/src/spatial-guard.mjs',
++  'BlindCore/Sources/BlindCore/SpatialRouteOwner.swift', 'ios/BlindAssist/SpatialRouteOutputController.swift',
++  'BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json'
++].map(read));
++
++test('shared bilingual output fixtures remain blocked/allowed without weakening expectations', () => {
++  const f = JSON.parse(fixtureText);
++  for (const text of f.blocked) assert.equal(containsSpatialClaim(text), true, text);
++  for (const text of f.allowed) assert.equal(containsSpatialClaim(text), false, text);
++  for (const text of ['Continue straight.', 'Continue straight through the doorway.', 'Head straight.',
++    'Sidestep twice.', 'كمل على طول.', 'واصل على طول.']) assert.ok(f.blocked.includes(text));
++});
++
++test('new continuation expression is exactly shared by Swift and JavaScript', () => {
++  const a = swiftGuard.match(/private static let continuation = regex\(#"(.*?)"#\)/s)?.[1];
++  const b = mirror.match(/const CONTINUATION = \/(.*?)\/i;/s)?.[1];
++  assert.ok(a); assert.equal(a, b);
++});
++
++test('new request expressions catch concrete locomotion without banning story/appliance continuation', () => {
++  const block = domain.split('// A continuation toward')[1].split('// Local object/person')[0];
++  const expressions = [...block.matchAll(/has\(#"(.*?)"#\)/gs)].map(m => new RegExp(m[1], 'u'));
++  assert.equal(expressions.length, 2);
++  const normalize = text => normalizeArabic(text.toLowerCase()).replace(/ى/g, 'ي').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
++  for (const text of ['How do I continue to the kitchen?', 'كيف أكمل للمطبخ؟', 'كيف أواصل للمطبخ؟']) {
++    assert.ok(expressions.some(re => re.test(normalize(text))), text);
++  }
++  for (const text of ['How do I continue my story?', 'كيف أكمل قصتي؟', 'How do I continue the dishwasher program?']) {
++    assert.ok(expressions.every(re => !re.test(normalize(text))), text);
++  }
++});
++
++test('model leases retain private creation, physical ownership and exact binding/text/deadline', () => {
++  assert.match(authority, /fileprivate init\(binding:/);
++  assert.match(authority, /request\.owner == \.conversation/);
++  for (const term of ['request.id == lease.ownerID', 'lease.binding == binding', 'now < lease.expiresAt',
++    'lease.text.utf8.elementsEqual(text.utf8)']) assert.ok(authority.includes(term), term);
++  assert.doesNotMatch(authority, /SpatialRouteTicket|isNavigationReady|geometryReady/);
++  assert.match(authority, /request\.producer == producer/);
++  assert.match(authority, /let originalStart = min\(createdAt, request\.startedAt\)/);
++  assert.match(authority, /expiresAt: originalStart \+ lifetime\(producer\)/);
++});
++
++test('ordinary interruptions retire model ownership without changing sensor identities or a scene owner', () => {
++  assert.match(authority, /func invalidateConversation\(\) \{\s*if request\?\.producer == \.conversation \{ request = nil \}/);
++  const interrupt = nav.split('private func interruptOrdinaryConversation(')[1].split('private func unverifiedConversationReply')[0];
++  assert.match(interrupt, /modelResponseAuthority\.invalidateConversation\(\)/);
++  assert.match(interrupt, /feedback\.revalidateModelReply\(\)/);
++  assert.doesNotMatch(interrupt, /requestID =|assistantSession\./);
++});
++
++test('camera-independent playback expiry is model-deadline and delivery-attempt owned', () => {
++  assert.match(feedback, /max\(0, min\(120, modelReply\.expiresAt - now\)\)/);
++  assert.match(feedback, /armOutputTimeout\(token: attempt\.token, modelReply: modelReply\)/);
++  const timeout = feedback.split('private func armOutputTimeout(')[1].split('func interruptAmbient')[0];
++  assert.match(timeout, /self\.delivery\.active\?\.token == token/);
++  assert.match(timeout, /model\.originalDeadlineExpired/);
++});
++
++test('model producer cannot choose codeOwned Boolean and both model paths attach the typed lease', () => {
++  const signature = nav.split('private func queueConversationSpeech(')[1].split('{')[0];
++  assert.doesNotMatch(signature, /codeOwned/);
++  assert.match(nav, /enqueueConversationSpeech\(\.model\(lease\)/);
++  assert.match(nav, /self\.deliverCandidate\(candidate, narrationID: currentRequest, modelReply: modelReply\)/);
++  assert.match(nav, /beginModelResponse\(question: question\)/);
++  assert.match(nav, /modelResponseAuthority\.begin\(question: question, binding: modelResponseBinding, producer: producer, at: modelResponseNow\)/);
++  assert.match(nav, /if let modelReply \{\s*guard candidate.kind == \.answer \|\| candidate.kind == \.discovery,/);
++});
++
++test('Feedback enforces model owner before dispatch, before platform queue, at start and while active', () => {
++  assert.match(feedback, /modelReplyPermission\?\(lease, text\) == true/);
++  assert.equal([...feedback.matchAll(/modelReplyIsCurrent\(/g)].length, 5); // declaration + four boundaries
++  assert.match(feedback, /spatialRouteID == nil, alert == nil, !independentAlert/);
++  const prepared = feedback.split('let utterance = AVSpeechUtterance')[1].split('private func reserveUrgentOutput')[0];
++  assert.ok(prepared.indexOf('modelReplyIsCurrent') < prepared.indexOf('speech.speak(utterance)'));
++  assert.ok(prepared.indexOf('modelReplyIsCurrent') < prepared.indexOf('debugModelTestQueued.append'));
++  assert.match(nav, /feedback\.modelReplyPermission =/);
++  assert.match(nav, /feedback\.revalidateModelReply\(\)/);
++});
++
++test('display receives the same evidence before it can render model text', () => {
++  assert.match(nav, /showModelConversationReply\(displayed, settled: false, reports: reports, evidence: evidence\)/);
++  assert.match(nav, /showModelConversationReply\(text, settled: true, reports: self\.latestModelReports, evidence: self\.latestModelEvidence\)/);
++  for (const text of ['chunk', 'suffix', 'fallback']) {
++    const first = adapter.indexOf('await onSpeechCandidate?(' + text + ', reports, evidence)');
++    assert.ok(first >= 0);
++    assert.ok(first < adapter.indexOf('await onPartial?(' + text + ')', first));
++  }
++});
++
++test('scene admission keeps capture-time deadline and revalidates capture before model playback', () => {
++  assert.match(nav, /producer: \.sceneDescription,[\s\S]*?createdAt: capturedAt, now: now/);
++  assert.match(nav, /capture\.id == lease\.id/);
++  assert.match(nav.split('private func modelReplyAllowed')[1].split('private func retainedModelReply')[0], /SceneDelivery\.allowed/);
++});
++
++test('repeat cannot remint a model lease or launder old navigation wording as history', () => {
++  const live = nav.split('func speakRequested(')[1].split('// Prefer the ORIGINAL')[0];
++  assert.match(live, /suppliedReply \?\? \(speechID == nil && narrationID == nil \? retainedModelReply/);
++  assert.match(live, /enqueueConversationSpeech\(\.model\(modelReply\)/);
++  assert.doesNotMatch(live, /\.admit\(/);
++  const history = nav.split('func repeatDescription()')[1].split('// Developer comparison builds')[0];
++  assert.match(history, /retainedNarrationModelReply\(for: original\)/);
++  assert.match(history, /guard !SpatialClaimGuard\.containsSpatialClaim\(original\)/);
++});
++
++test('route speech is code rendered and borrowed model text fails exact sink validation', () => {
++  const speech = route.split('public struct SpatialRouteSpeech')[1].split('public enum SpatialRouteError')[0];
++  assert.match(speech, /init\?\(ticket: SpatialRouteTicket, arabic: Bool\)/);
++  assert.doesNotMatch(speech, /init[^\n]*text:/);
++  assert.doesNotMatch(speech, /target\.name|localizedName/);
++  assert.match(speech, /Next waypoint, approximately/);
++  assert.match(speech, /نقطة المسار التالية/);
++  assert.match(controller, /speech\(attempt\.id, message\.text\)/);
++  assert.match(controller, /active\.message\.text\.utf8\.elementsEqual\(text\.utf8\)/);
++  assert.match(nav, /SpatialRouteSpeech\(ticket: ticket, arabic: arabic\)/);
++  assert.match(nav, /validateSpeechStart\(spatialRouteID, text: candidate\.text\)/);
++  assert.match(feedback, /spatialRouteSpeechPermission\?\(spatialRouteID, admitted\.text\)/);
++  assert.match(feedback, /spatialRouteSpeechPermission\?\(routeID, active\.text\)/);
++});
++
++
++test('current model displays retire as explicit history only while their exact revisions remain owned', () => {
++  const retire = nav.split('private func revalidateModelDisplays()')[1].split('private func armModelDisplayExpiry')[0];
++  assert.match(retire, /display\.revision != sceneAnswerRevision/);
++  assert.match(retire, /display\.revision != currentReplyRevision/);
++  assert.match(retire, /sceneAnswer = modelHistoryLabel\(display\.lease\)/);
++  assert.match(retire, /currentReply = modelHistoryLabel\(display\.lease\)/);
++  assert.match(retire, /historical: true/);
++  const retained = nav.split('private func retainedModelReply')[1].split('private func modelHistoryLabel')[0];
++  assert.match(retained, /display\.text\.utf8\.elementsEqual\(text\.utf8\) \|\| display\.lease\.text\.utf8\.elementsEqual\(text\.utf8\)/);
++});
++
++test('display expiry is camera independent, timer owned, and wired to cancellation and replacement', () => {
++  const timer = nav.split('private func armModelDisplayExpiry()')[1].split('#if DEBUG')[0];
++  assert.match(timer, /modelDisplayTimerOwner == owner/);
++  assert.match(timer, /deadline - modelResponseNow/);
++  assert.match(timer, /revalidateModelDisplays\(\)/);
++  for (const name of ['cancelDescription', 'interruptOrdinaryConversation', 'beginModelResponse']) {
++    const method = nav.split('private func ' + name + '(')[1].split('\n    }')[0];
++    assert.match(method, /revalidateModelDisplays\(\)/, name);
++  }
++});
++
++test('native controller fixture reaches real queue and sink with an XCTest-only silent platform boundary', () => {
++  const seam = nav.split('func debugBeginModelResponseTest')[1].split('private struct ConversationSpeech')[0];
++  assert.match(seam, /guard textOnly, ProcessInfo\.processInfo\.environment\["XCTestConfigurationFilePath"\] != nil/);
++  assert.match(seam, /feedback\.debugEnableSilentModelTestTransport\(\)/);
++  assert.match(seam, /showModelConversationReply\(text/);
++  assert.match(seam, /queueModelConversationSpeech\(text/);
++  assert.match(nav, /guard \(!textOnly \|\| silentModelTestDelivery\), assistantSession\.state == \.active/);
++  assert.match(feedback, /speechSynthesizer\(speech, didStart: utterance\)/);
++  assert.match(feedback, /if debugSilentModelTestTransport \{\s*debugModelTestQueued\.append\(attempt\.text\)\s*return true/);
++  assert.match(feedback, /test\.injectedDidStart\.silent/);
++});

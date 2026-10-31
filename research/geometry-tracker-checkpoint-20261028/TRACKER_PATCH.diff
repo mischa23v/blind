@@ -1,0 +1,36 @@
+--- a/PROGRESS.md
++++ b/PROGRESS.md
+@@ -1,3 +1,9 @@
++## Geometry evidence checkpoint — 2026-10-28 17:40 UTC
++
++The independent Apple comparison confirms a representation-validation defect; fresh Open3D reconstruction and held-out reference scoring are complete, with substantial residual tails. Neither establishes navigation readiness. See the [current geometry-first status and open acceptance](research/geometry-tracker-checkpoint-20261028/STATUS.md). The older dated entries below remain unchanged historical evidence.
++
++---
++
+ ## Apple route failures isolated before movement — 2026-10-28 13:25 UTC
+ 
+ Rechecked published commit `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95` and native run 40677832625. Hosted tests: 218 total, 198 passed, 18 failed, 2 skipped. The exact collected reports contain 12 baseline and 6 width-28 route outcomes plus 16 supplied-pose journey stages, all `unsupported-geometry / missingMetadata`. No route was admitted by these reports. Six collision-oracle tests fail the mandatory bidirectional thin-plane backend control. Neither failure proves that the actual rooms lack space.
+--- a/TODO.md
++++ b/TODO.md
+@@ -1,3 +1,9 @@
++## Current first priority: verified geometry — 2026-10-28 17:40 UTC
++
++Follow [GEO-01–04, then NAV-01–04](research/geometry-tracker-checkpoint-20261028/STATUS.md): native all-feature parity and support-contract correction; compatible reconstruction comparisons; then unchanged route/full-body acceptance and current localization/guidance. RTAB-Map is ongoing and InfiniTAM CPU feasibility is under review. No geometry or navigation task is closed merely by producing a mesh. Earlier dated instructions below are historical checkpoints.
++
++---
++
+ ## Immediate navigation work — 2026-10-28 13:25 UTC
+ 
+ Verified published head: `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95`. Native run 40677832625 builds, but **18 route cases and 16 supplied-pose journey stages are blocked before movement by `missingMetadata`**. These are not physical room-clearance results.
+--- a/TASKS.md
++++ b/TASKS.md
+@@ -1,3 +1,9 @@
++## Active geometry-first acceptance — 2026-10-28 17:40 UTC
++
++The [current dependency-ordered checklist](research/geometry-tracker-checkpoint-20261028/STATUS.md) records completed evidence separately from open geometry correction, route/full-body validation and live localization work. All navigation readiness and complete-journey tasks remain open. Existing task definitions and historical evidence below are preserved.
++
++---
++
+ ## Navigation checkpoint and open acceptance — 2026-10-28 13:26 UTC
+ 
+ - [ ] Repair Apple mesh metadata adapter using actual export/node evidence. Run 40677832625: all 18 route outcomes and 16 supplied-pose journey stages blocked by missingMetadata; zero admitted paths.

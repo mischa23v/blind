@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "kind": "reviewed-synthetic-single-span-heightfield-result",
+  "source_commit": "de10b306f58033c204ea8c781cb2076df55eb388",
+  "attempt": "attempt-001",
+  "status": "scoped-authored-suite-passed",
+  "executed_once_by": "root",
+  "independent_review_reran_payload": false,
+  "counts": {
+    "mask_comparisons": 23,
+    "refusal_cases": 37,
+    "integer_oracle_visits": 935940
+  },
+  "guard": {
+    "status": "completed-zero-exit",
+    "compile_exit": 0,
+    "compare_exit": 0,
+    "both_process_groups_retired": true,
+    "aggregate_cpu_seconds": 2.814536,
+    "elapsed_seconds": 2.8419335450000744,
+    "peak_observed_aggregate_rss_bytes": 120164352,
+    "peak_fast_exit_child_rss_bytes": 107360256,
+    "retained_attempt_file_bytes": 705928,
+    "limits": {
+      "cpuSeconds": 60,
+      "wallSeconds": 120,
+      "observedRSSBytes": 536870912,
+      "outputBytes": 10485760
+    }
+  },
+  "compiler": {
+    "description": "GCC 14.2.0 (Debian 14.2.0-19)",
+    "language": "C++17",
+    "sanitizer": "undefined; no recovery",
+    "warnings": 7,
+    "warning_category": "-Wmisleading-indentation",
+    "warning_location": "research/single-span-heightfield-rebuild-20261029/tests.cpp",
+    "warning_lines": [
+      153,
+      154,
+      155,
+      156,
+      158,
+      160,
+      161
+    ],
+    "comparison_stderr_bytes": 0
+  },
+  "verified": {
+    "input_pins_before_after_and_current": 21,
+    "final_payload_size_and_sha256_records": 5,
+    "manifest_equals_admitted_commit": true,
+    "executable_digest_matches_before_after_and_current": true,
+    "no_extra_attempt_files": true
+  },
+  "sha256": {
+    "candidate_manifest": "9f3db3063c97a312b11d48180c117472faf31a29c91fd3fd1b4dfbf2d77e98b2",
+    "runner": "c4dc7b1c9b438d5199114339447b089293dc7741fc674a3d743577c1c89968e5",
+    "run_manifest": "9ec9aed20b5ef273dc85b629950321a0f49dacf8912ad4f0c006dabada5ccf3b",
+    "retained_private_full_receipt": "25d413aac645a4f5de7038f2ce952d176d941c7d97107bebe9bb9ca7aeb1fa2f",
+    "executable_digest_only": "d574a4c676b7dc7a7863200c680f98a24d43519dbe8aef10b62c3803928bf93d",
+    "compile_stderr": "9954b1e6f04ea7e66c37ff164ecd3b5fc91cee063b090001bd8e3c280258f210",
+    "compare_stdout": "cb0a9a19edefeb636574241f76d4152bd4ceb524343c511c0a8d99e4be97099e",
+    "compare_stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "limitations": [
+    "Observed sampled RSS/time/output, not a hard hostile-process sandbox or full peak proof.",
+    "Selected compiler/backend pins, not a hermetic host toolchain.",
+    "Synthetic authored compact fields only; no captured profile or rasterizer integration qualification.",
+    "No Apple/native app API adoption, route, physical clearance, sensor/full-body, or device/child-use acceptance.",
+    "Compiler warnings remain preserved; no claim of warning-free build."
+  ],
+  "physical_authority": false,
+  "app_activation": false
+}

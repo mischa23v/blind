@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "sourceManifestSHA256": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+  "derivation": "SOURCE_CHECKS.json + prepared-stage-c-final/BUILD_RECIPE.json + every recipe sourcePins @packet entry + every generatedSources entry under prepared-stage-c-final; original recipe unchanged",
+  "files": {
+    "SOURCE_CHECKS.json": {
+      "bytes": 22045,
+      "sha256": "e6176d5f59575b3f3473124d45b2ca6e7ae1ebea827573f04c41c6ce187fb715"
+    },
+    "candidate/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": {
+      "bytes": 19814,
+      "sha256": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5"
+    },
+    "candidate/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": {
+      "bytes": 9092,
+      "sha256": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5"
+    },
+    "candidate/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": {
+      "bytes": 4428,
+      "sha256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+    },
+    "prepared-stage-c-final/BUILD_RECIPE.json": {
+      "bytes": 51522,
+      "sha256": "894b47c676d0205d204d821e12c04b1866493d382829c7a21eb3c7ad82e170ec"
+    },
+    "prepared-stage-c-final/OBSERVATION_ONLY.patch": {
+      "bytes": 2581,
+      "sha256": "e293bbcf598b916ce3192ffdf892953b88e9e9ff5e44527fc52c3e2c17a27b58"
+    },
+    "prepared-stage-c-final/RecastArea-observed.cpp": {
+      "bytes": 24950,
+      "sha256": "c5be85237ff582f87dd1aa1fb2a094f4d1a19a9c87d18ebf668baa43988c79ee"
+    },
+    "prepared-stage-c-final/adapter-observed.cpp": {
+      "bytes": 20813,
+      "sha256": "e2752a77e7273f3690e6818b1d2bdad03ac110c73ab95915b0789ba1d5e87c8a"
+    },
+    "prepared-stage-c-final/include/blind_detour.h": {
+      "bytes": 4428,
+      "sha256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+    },
+    "prepared-stage-c-final/include/module.modulemap": {
+      "bytes": 58,
+      "sha256": "04d466e692f073db9eb30b0599ae79cc7b7597012433d61a50ff258c59b1dca5"
+    },
+    "prepared-stage-c-final/include/seed_probe.h": {
+      "bytes": 766,
+      "sha256": "45029bb287489da53225f71c73feb4b91b1b350c2550009538b022c3bf35fddf"
+    },
+    "stage-c/hook_test_digest.hpp": {
+      "bytes": 265,
+      "sha256": "3a8e961cf90f2f19523a53d0e136b9284168d5320115fd5488c66ad06f44f1b4"
+    },
+    "stage-c/main.swift": {
+      "bytes": 36807,
+      "sha256": "b8fa2e9523665f29210801b8ad3461d11a76e602581f1d7a0eac16062d20492d"
+    },
+    "stage-c/observer_tests.cpp": {
+      "bytes": 7413,
+      "sha256": "d2627c20b044f4720843f7e56070b0b7ccbfb88877d067c27d77ad303af81cb8"
+    },
+    "stage-c/prepare_build.py": {
+      "bytes": 9059,
+      "sha256": "0110c5cdb945df6df5e1338ac4561897994150ec198400f361bcb784de3d0d5a"
+    },
+    "stage-c/seed_observer.cpp": {
+      "bytes": 10327,
+      "sha256": "e3d8c556b37ba122d6fc695b3bb991dcc60a41aaf0ceee81434db94a128ecbb9"
+    },
+    "stage-c/seed_probe.h": {
+      "bytes": 766,
+      "sha256": "45029bb287489da53225f71c73feb4b91b1b350c2550009538b022c3bf35fddf"
+    }
+  },
+  "omittedAuditOrStageBFiles": {
+    "CANDIDATE.patch": {
+      "bytes": 34754,
+      "sha256": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43"
+    },
+    "EXECUTION_ENVELOPE.json": {
+      "bytes": 4831,
+      "sha256": "d9812a5e88b237f80bb9f4e93ee4e2852688414e0ef841de1f584329017d9a04"
+    },
+    "PATCH_DRY_RUN.txt": {
+      "bytes": 564,
+      "sha256": "ac333dbb1ea0e0a8c89d920fddbedbc0127ede5f15e5162cca75b9ca763cbe93"
+    },
+    "README.md": {
+      "bytes": 7548,
+      "sha256": "e621a5fae08b195aca3eddd98738520a6738ea09612ceae2892f0f868bd0c75e"
+    },
+    "REMOTE_BASES.json": {
+      "bytes": 83039,
+      "sha256": "28ba0491211048e5c72990d6153dfee98c6768555dd631dbcdbf379f77efde54"
+    },
+    "REMOTE_TREE.json": {
+      "bytes": 2013411,
+      "sha256": "ba7a286af72329e51603e445c4edc1e60502078c0e21936e8cd6b9c72cd47631"
+    },
+    "SOURCE_PREPARATION_HISTORY.json": {
+      "bytes": 968,
+      "sha256": "6b86f820428df9331094539a246e2d9828616eb09e573155307f7c7c09701c01"
+    },
+    "TARGET_SCOPE.json": {
+      "bytes": 23467,
+      "sha256": "659b3697f1a0f707b4de87d483378ef44f579d59866f042ad7145a8f77fcc58a"
+    },
+    "base/ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift": {
+      "bytes": 9118,
+      "sha256": "7a969afdc1d9ef05d64e04b8cfaf23bff7ce78c1a21b2f2939393a010a32c8c2"
+    },
+    "base/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": {
+      "bytes": 14617,
+      "sha256": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681"
+    },
+    "base/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
+      "bytes": 34949,
+      "sha256": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e"
+    },
+    "base/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": {
+      "bytes": 17989,
+      "sha256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
+    },
+    "base/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": {
+      "bytes": 2925,
+      "sha256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+    },
+    "candidate/ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift": {
+      "bytes": 15168,
+      "sha256": "f3a87f124829c3316a457bd511566a195448a004067829812195cfcfcaf23149"
+    },
+    "candidate/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": {
+      "bytes": 16392,
+      "sha256": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21"
+    },
+    "candidate/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
+      "bytes": 37391,
+      "sha256": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd"
+    },
+    "check_sources.py": {
+      "bytes": 9790,
+      "sha256": "7a307636e224039e5f43397a74b046ecbcf27c6566653064f198ff5f1332dcf4"
+    },
+    "harness-base/edt_mask_hook.cpp": {
+      "bytes": 7276,
+      "sha256": "9c98b1ce880e9ce556dbb69aab83837b3abf96d6185ccc6826651769b43ae840"
+    },
+    "harness-base/hook_tests.cpp": {
+      "bytes": 4604,
+      "sha256": "16d5ad629d67bdf422b3dd35a355d9915d6c54296df45f7ba03afe7d4ec5ac72"
+    },
+    "harness-base/main.swift": {
+      "bytes": 33696,
+      "sha256": "cc1cc7e6423bd35fd767e8a1e3822f10dbda98de9a01656d3bd65e6f094c0546"
+    },
+    "harness-base/run_native.py": {
+      "bytes": 11994,
+      "sha256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f"
+    },
+    "prepared-stage-c/BUILD_RECIPE.json": {
+      "bytes": 51522,
+      "sha256": "de08b57bcc12b0ce5b42edb6fb08f0b833504e9554a6f01d455da60efd58dbdb"
+    },
+    "prepared-stage-c/OBSERVATION_ONLY.patch": {
+      "bytes": 2581,
+      "sha256": "e293bbcf598b916ce3192ffdf892953b88e9e9ff5e44527fc52c3e2c17a27b58"
+    },
+    "prepared-stage-c/RecastArea-observed.cpp": {
+      "bytes": 24950,
+      "sha256": "c5be85237ff582f87dd1aa1fb2a094f4d1a19a9c87d18ebf668baa43988c79ee"
+    },
+    "prepared-stage-c/adapter-observed.cpp": {
+      "bytes": 20813,
+      "sha256": "e2752a77e7273f3690e6818b1d2bdad03ac110c73ab95915b0789ba1d5e87c8a"
+    },
+    "prepared-stage-c/include/blind_detour.h": {
+      "bytes": 4428,
+      "sha256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+    },
+    "prepared-stage-c/include/module.modulemap": {
+      "bytes": 58,
+      "sha256": "04d466e692f073db9eb30b0599ae79cc7b7597012433d61a50ff258c59b1dca5"
+    },
+    "prepared-stage-c/include/seed_probe.h": {
+      "bytes": 766,
+      "sha256": "45029bb287489da53225f71c73feb4b91b1b350c2550009538b022c3bf35fddf"
+    }
+  },
+  "originalSourceBase": "50ea33d6eb2cf37edcd4c1c7daa46f5c6fdd9dfa",
+  "immutableBaseReference": "https://github.com/mischa23v/blind/tree/50ea33d6eb2cf37edcd4c1c7daa46f5c6fdd9dfa",
+  "omissionClaim": "Omitted candidate/audit bytes remain in private frozen packet, not claimed available at base URL. Original source manifest preserves their exact hashes; no runtime input omitted."
+}

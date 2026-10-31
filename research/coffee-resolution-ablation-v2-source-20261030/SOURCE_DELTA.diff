@@ -1,0 +1,37 @@
+--- frozen-500k/evaluate.py
++++ separate-1m-streamhash/evaluate.py
+@@ -12,13 +12,21 @@
+ def check(p,digest,cap):require(p.is_file()and not p.is_symlink()and p.stat().st_size<=cap and sha(p)==digest,'input drift '+str(p))
+ def load(p,name):
+  s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++class HashWriter:
++ """Write-only bounded-memory sink preserving exact NumPy NPY serialization."""
++ def __init__(self):self.digest=hashlib.sha256();self.bytes=0
++ def write(self,data):
++  self.digest.update(data);self.bytes+=len(data);return len(data)
++def canonical_array_digest(np,array):
++ sink=HashWriter();np.lib.format.write_array(sink,array,allow_pickle=False)
++ return {'sha256':sink.digest.hexdigest(),'bytes':sink.bytes}
+ def main():
+  p=argparse.ArgumentParser();p.add_argument('--library',type=pathlib.Path,required=True);p.add_argument('--library-sha256',required=True);p.add_argument('--controls-receipt',type=pathlib.Path,required=True);p.add_argument('--controls-sha256',required=True);p.add_argument('--output',type=pathlib.Path,required=True);p.add_argument('--run-ablation',action='store_true');a=p.parse_args()
+  require(a.run_ablation and os.environ.get('COFFEE_ABLATION_OUTER_GUARD')=='180','explicit bounded admission');require(not a.output.exists(),'fresh output required')
+  resource.setrlimit(resource.RLIMIT_AS,(512*1024**2,)*2);resource.setrlimit(resource.RLIMIT_CPU,(120,)*2);resource.setrlimit(resource.RLIMIT_FSIZE,(32*1024**2,)*2);os.sched_setaffinity(0,{min(os.sched_getaffinity(0))})
+  def stop(*_):raise TimeoutError('internal175second limit')
+  signal.signal(signal.SIGALRM,stop);signal.alarm(175);start=time.monotonic();a.output.mkdir(parents=False)
+- result={'status':'incomplete','physicalAuthority':False,'routeAcceptance':False,'heldoutDepthRead':False,'sameViewConsistencyNotAccuracy':True,'buildFrames':list(BUILD),'cases':[],'fixedResolutionsMetres':[.05,.025],'interpretation':'negative residual means nearer voxel prediction, not independently verified false obstacle; no hardware or safety accuracy claim','limits':{'CPUSeconds':120,'outerWallSeconds':180,'addressSpaceBytes':512*1024**2,'CPUCount':1,'fileBytes':32*1024**2}}
++ result={'status':'incomplete','physicalAuthority':False,'routeAcceptance':False,'heldoutDepthRead':False,'sameViewConsistencyNotAccuracy':True,'buildFrames':list(BUILD),'cases':[],'fixedResolutionsMetres':[.05,.025],'interpretation':'negative residual means nearer voxel prediction, not independently verified false obstacle; no hardware or safety accuracy claim','limits':{'CPUSeconds':120,'outerWallSeconds':180,'addressSpaceBytes':512*1024**2,'CPUCount':1,'fileBytes':32*1024**2,'enumerationLeafCap':1000000,'enumerationNodeCap':1000000}}
+  pinned=[]
+  try:
+   manifest=json.loads((H/'MANIFEST.json').read_text())
+@@ -43,9 +51,9 @@
+    require(d.dtype==np.uint16,'depth type');points,rr,cc=projector.project(d,f);require(len(points)==frozen['acceptedPointCounts'][n],'point count drift');world=np.column_stack(pose.transform_coordinates(points[:,0],points[:,1],points[:,2],t));safe(world);require(hashlib.sha256(world.tobytes()).hexdigest()==old['frames'][BUILD.index(n)]['worldFloat64SHA256'],'projection arithmetic drift')
+    return f,t,origin,d,points,rr,cc,world
+   def snapshot(tree,rays):
+-   state=rays.state();result['lastObservedMapState']=state;require(state['leaves']<=500000 and state['treeNodes']<=500000,'map cap');leaves=tree.leaves();digests={}
++   state=rays.state();result['lastObservedMapState']=state;require(state['leaves']<=1000000 and state['treeNodes']<=1000000,'map cap');leaves=tree.leaves();digests={}
+    for k,v in leaves.items():
+-    stream=io.BytesIO();np.lib.format.write_array(stream,v,allow_pickle=False);data=stream.getvalue();digests[k+'.npy']={'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data)}
++    digests[k+'.npy']=canonical_array_digest(np,v)
+    return {'state':state,'defaults':tree.defaults(),'payload':digests}
+   def construct(names,resolution):
+    tree,rays=raybinding.open_reviewed_tree(a.library,a.library_sha256,resolution=resolution)

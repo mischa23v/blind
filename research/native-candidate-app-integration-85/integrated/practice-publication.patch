@@ -1,0 +1,26 @@
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -1571,7 +1571,11 @@
+         let now = ProcessInfo.processInfo.systemUptime
+         let previousHazard = detection.hazard
+         let visual = !simulation ? visualStairs.detection(at: now).map { [$0] } ?? [] : []
+-        detection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
++        let nextDetection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
++        // Practice keeps processing every tick, but identical presentation values
++        // must not invalidate the whole accessibility tree ten times per second.
++        // Live publication and all safety/policy work below remain unchanged.
++        if !simulation || detection != nextDetection { detection = nextDetection }
+         // Retire route IDs before independent hazard/status sinks run. Never stop
+         // a newer sensor alert when an old route callback arrives later.
+         spatialRouteOutput.revalidate()
+@@ -4839,7 +4843,9 @@
+         }
+         phoneDetection = detector.process(Observation(timestamp: demonstrationTime, camera: Point3(0, 1.3, 0),
+                                                       forward: Point3(0, 0, -1), samples: samples))
+-        calibrationProgress = detector.calibrationProgress
++        if calibrationProgress != detector.calibrationProgress {
++            calibrationProgress = detector.calibrationProgress
++        }
+     }
+ }
+ 

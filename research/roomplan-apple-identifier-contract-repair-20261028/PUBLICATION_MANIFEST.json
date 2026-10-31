@@ -1,0 +1,52 @@
+{
+  "scope": "Test-only correction of unsupported cross-decode CapturedRoom UUID equality; same-instance metadata and stable original source/feature checks retained and strengthened",
+  "originalNativeRun": "40664336968",
+  "originalNativeSource": "9e8585c",
+  "runtimeFilesChanged": false,
+  "fixtureBytesChanged": false,
+  "validation": {
+    "localNodePassed": 11,
+    "localNodeFailed": 0,
+    "independentFocusedNodePassed": 5,
+    "independentReview": "No source blocker",
+    "hostedMethodsAfterRepair": 5,
+    "correctedNativeExecuted": false
+  },
+  "files": [
+    {
+      "path": "ios/BlindAssistTests/SavedRoomDiagnosticGeometryAppleFixtureTests.swift",
+      "sha256": "6c1d8fce117c52dcb82db8ee54d44a443caa993015a5575b0bbff95b5745ccc9",
+      "bytes": 13134
+    },
+    {
+      "path": "tools/test/roomplan-apple-decoder-fixtures.test.mjs",
+      "sha256": "4dddd4eae5bdc6a6de6281cff30f56009e9a7f5917dd27405825cd0866603927",
+      "bytes": 8898
+    },
+    {
+      "path": "research/roomplan-apple-identifier-contract-repair-20261028/README.md",
+      "sha256": "c77fe629ce96c1d2be39eff62ba6aab0db7690fb4ab495559215e045da5cc39d",
+      "bytes": 5741
+    },
+    {
+      "path": "research/roomplan-apple-identifier-contract-repair-20261028/node-regression.tap",
+      "sha256": "2adb5575deeb9ad5bd2eeae9b0cf78b220be000d98998122208724bf1fb5e7c1",
+      "bytes": 1281
+    },
+    {
+      "path": "research/roomplan-apple-identifier-contract-repair-20261028/original-native-failure.txt",
+      "sha256": "94eef50426f11ff0be34689e0920eee90faf72dc4c48ec744d7f46b47278e5bf",
+      "bytes": 1223
+    },
+    {
+      "path": "research/roomplan-apple-identifier-contract-repair-20261028/preimage/SavedRoomDiagnosticGeometryAppleFixtureTests.swift.txt",
+      "sha256": "4d98e8518655d4cf918f57b8118a18c88cbba3e264b7af7aa249faebd0b7b02c",
+      "bytes": 10928
+    },
+    {
+      "path": "research/roomplan-apple-identifier-contract-repair-20261028/preimage/roomplan-apple-decoder-fixtures.test.mjs.txt",
+      "sha256": "75dc80b071d12835775e3e3609e8f663073c2e0887c9c29c3468c8de3121ecef",
+      "bytes": 6274
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "source_only",
+  "checks": [
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift: release token text unchanged",
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift: release token text unchanged",
+    "ios/BlindAssistTests/ClassificationIngressTests.swift: deadlines, assertions, store/fulfill callbacks unchanged",
+    "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift: deadlines, assertions, store/fulfill callbacks unchanged",
+    "contract: pending<16",
+    "contract: diagnosticDeliveryCount<8",
+    "contract: diagnosticReceipts.count<64",
+    "contract: CLOCK_THREAD_CPUTIME_ID",
+    "contract: pthread_threadid_np(nil,&thread)==0",
+    "contract: Self.diagnosticDeliveryGate.submit { completion(id,snapshot) }",
+    "contract: syntheticTimingCompletion: ((UUID,[DiagnosticStageReceipt])->Void)? = nil",
+    "ios/BlindAssistTests/ClassificationIngressTests.swift: CPU identity/monotonicity/missing-pair refusal",
+    "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift: CPU identity/monotonicity/missing-pair refusal"
+  ],
+  "checksPassed": 13,
+  "swiftCompiled": false,
+  "nativeTestsExecuted": false,
+  "files": [
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "bytes": 18415,
+      "sha256": "ce3e49d852258585f030377d3b56e2e1dd470c96d4146347735454784643434a"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "bytes": 13055,
+      "sha256": "8b3eddcc383d08c71770d538c7ffe2429bd1b6e07e03e3ae99d9c9584c177ea9"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassificationIngressTests.swift",
+      "bytes": 17791,
+      "sha256": "00efadb2602cbcb6dae7cdb9c7c21a7d35f98aaeb6791dc0d10a75dce3fa173a"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift",
+      "bytes": 10743,
+      "sha256": "4032fa8a950e246f25a60ba136ea4ee6ec4a2948d4509bd2ed112545a39835e9"
+    }
+  ]
+}

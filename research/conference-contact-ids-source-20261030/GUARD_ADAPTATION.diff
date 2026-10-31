@@ -1,0 +1,39 @@
+--- blind/research/conference-body-postrun-source-20261030/run_aggregate_isolated.py	2026-10-30 03:12:21.418034644 +0300
++++ blind/research/conference-contact-ids-source-20261030/run_aggregate_ids.py	2026-10-30 03:17:36.162725241 +0300
+@@ -276,11 +276,16 @@
+         if not re.search(r'\nRan 6 tests in [^\n]+\n\nOK\n\Z',source_text):
+             raise RuntimeError('Expected six source controls with no skips')
+         receipt['sourceControlsExecuted']=6
++        command([expand(arg) for arg in pins['recorderSourceControlsCommand']],'recorder-source-controls')
++        recorder_text=(out/'recorder-source-controls.stderr').read_text()
++        if not re.search(r'\nRan 6 tests in [^\n]+\n\nOK\n\Z',recorder_text):
++            raise RuntimeError('Expected six recorder-only source controls')
++        receipt['recorderSourceControlsExecuted']=6
+         command([expand(arg) for arg in pins['controlsCommand']],'controls')
+         control_text=(out/'controls.stderr').read_text()
+-        if not re.search(r'\nRan 32 tests in [^\n]+\n\nOK\n\Z',control_text):
+-            raise RuntimeError('Expected 29 unchanged sweep/all-hit controls plus three raw floor controls')
+-        receipt['controlsExecuted']=32
++        if not re.search(r'\nRan 35 tests in [^\n]+\n\nOK\n\Z',control_text):
++            raise RuntimeError('Expected 32 prior controls plus three additive recorder kernel controls')
++        receipt['controlsExecuted']=35
+         command([expand(arg) for arg in pins['comparisonCommand']],'comparison')
+         actual=json.loads((work/'comparison/RECEIPT.json').read_text())
+         frozen_directory=ROOT/'research/conference-body-source-20261029'
+@@ -289,6 +294,16 @@
+         contracts=load_frozen_contracts(frozen_directory,pins['inputs'][prefix+'contracts.py'],
+                                       pins['inputs'][prefix+'schedule_source.py'])
+         contracts.validate_receipt(actual,frozen)
++        debug=actual['hitRecorder']
++        if (debug['complete'] is not True or debug['completedEvents']!=13704 or
++            debug['loggedHitOccurrences']!=108582 or debug['allOldPerEventCountsMatched'] is not True or
++            debug['candidateTriangles']!=8710095 or debug['oldCandidateCountStreamMatched'] is not True or
++            debug['fixedIDCap']!=200000 or debug['fixedLogicalByteCap']!=8*1024**2 or
++            debug['geometryOrClassificationChanged'] is not False or debug['physicalAuthority'] is not False):
++            raise RuntimeError('complete bounded exact-count ID recording not established')
++        if actual['sourceCountsSHA256']!=pins['inputs']['research/conference-contact-ids-source-20261030/EXPECTED_COUNTS.json'] or actual['sourcePriorContactsSHA256']!='f1b930185ee94b4b61fd8dbd2b85815ebe1d22148e34bbc3e796b010d91395be':
++            raise RuntimeError('old exact per-event count source changed')
++        receipt['completeHitRecorder']=debug
+         receipt['comparison']={key:actual[key] for key in
+             ('status','error','proposalSHA256','sourceMeshSHA256','registeredFloat32VerticesSHA256',
+              'trianglesInt32SHA256','bodyWidthDepthHeightMetres','horizontalMarginMetres',

@@ -1,0 +1,47 @@
+{
+  "redactions": [
+    {
+      "file": "SCORE_ADMISSION.json",
+      "original_sha256": "8daa138759ed6ce7b88e605d7d4abee4b27c9be1581a2f3f2b1500cbfca8dc28",
+      "published_sha256": "5c45898ddd261d701f1dcf82ce99f5a061f5e1a5f633db6f064049160dbd6b6b"
+    },
+    {
+      "file": "SOURCE_FREEZE.json",
+      "original_sha256": "3865e42f7fd3bc15fdbb08f731229c32e89ca213d73c861002a1b630cb4c063a",
+      "published_sha256": "48bb817dad057012e7fdd91fc1b802961f339e7ee2a864b037431adcf9ea92e7"
+    },
+    {
+      "file": "C1_N3/SUMMARY_PATH_ONLY.patch",
+      "original_sha256": "6a5f0147117ec339ed2b582f5f12634f825fad43e570d170138d36a60af28807",
+      "published_sha256": "ee1878c2699c9df31a68e2e86267e9336d9c4f42ac81dc70e5505c55fc031efa"
+    },
+    {
+      "file": "C1_N3/evaluate_mapper.py",
+      "original_sha256": "dcba8ddf0568b157dd13b8b8a37a501b580ef4b0289045189b520b3fab30fc33",
+      "published_sha256": "c20a068abb8f3f7aacf5413a740ad9a9e71bbf287e8cbbcb7e509be06b415462"
+    },
+    {
+      "file": "C1_N3/summarize_mapper.py",
+      "original_sha256": "15f17b49010d8243521748011c4484f011866c1e78b7b2ccbb4631ce1ea2dc0c",
+      "published_sha256": "097ea8a75e7466275b061562dd37073db02905c1ff94a5971cb6b28b70ab601b"
+    },
+    {
+      "file": "C1_N3/PATH_ONLY.patch",
+      "original_sha256": "a795a4cfeb0d9928d3a7ab00e976e565993c0ff5406bbef2b9cf33a6d293d008",
+      "published_sha256": "ce5a41ba604d393356d44812964033a05b14899f66a5a56bc1c0b2dae01db273"
+    },
+    {
+      "file": "C1_N3/FINAL_INTEGRITY.json",
+      "original_sha256": "075d2194ba41ffe0f150a31746e58badc0d02d17aec78ebf7e18f5a1119c7cc4",
+      "published_sha256": "3048f5e23c96342b4ed9dac9e354608796088d4553c0ef8d390c22f6d1d4451b"
+    }
+  ],
+  "remote_writes": false,
+  "originalVerifiedDigests": {
+    "COMPARISON.md": "059f83ccd764e15edbc3e94181b69f0328b048152e8ae2128e325fb239063fac",
+    "OUTPUT_FREEZE.json": "bf3aca662bad7a77041d9b75dd2fef812d0d5abe840c76057e1bdc7017bf8940",
+    "INDEPENDENT_ARRAY_RECOUNT.json": "785b77298ad85ded0fc0bfecde771e6e4b45c621f0ed077e5ae9282294696e7c"
+  },
+  "sourcePinsVerified": 17,
+  "scope": "Text/source freeze and completed receipt review only; no mapper/scorer rerun; aggregate-only publication."
+}

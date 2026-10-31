@@ -1,0 +1,424 @@
+import Foundation
+import BlindCore
+import XCTest
+import MeshCandidateIngress83
+import BlindRoomMesh
+@testable import MeshSnapshot82
+@testable import LiveMeshClassifiedBench
+
+/// Pure ownership/freshness schedules. No ARSession is created or activated.
+final class MeshBenchHelperTests: XCTestCase {
+    private final class Clock {
+        private let lock = NSLock()
+        private var value: Double
+        init(_ value: Double) { self.value = value }
+        func read() -> Double { lock.lock(); defer { lock.unlock() }; return value }
+        func set(_ value: Double) { lock.lock(); self.value = value; lock.unlock() }
+    }
+    func testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce() throws {
+        let a = UUID(), b = UUID()
+        var request = MeshBenchReacquisition()
+        XCTAssertTrue(request.request(anchorIDs: [a,b], frameCapturedAt: 1, now: 1))
+        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1, now: 1))
+        XCTAssertEqual(request.next(presentIDs: [a,b], frameCapturedAt: 1.01, now: 1.01), a)
+        request.recordAdmission(anchorID: a, accepted: true, now: 1.01)
+        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1.01, now: 1.01))
+        XCTAssertEqual(request.next(presentIDs: [a,b], frameCapturedAt: 1.02, now: 1.02), b)
+        request.recordAdmission(anchorID: b, accepted: true, now: 1.02)
+        let receipt = request.receipt(now: 1.02)
+        XCTAssertEqual(receipt.state, .finished)
+        XCTAssertEqual(receipt.totalAttempts, 2)
+        XCTAssertEqual(receipt.admittedIDs, [a,b])
+        XCTAssertTrue(receipt.pendingIDs.isEmpty)
+        XCTAssertFalse(receipt.actualWorldCoverageKnown)
+        XCTAssertFalse(receipt.authorizesPhysicalGuidance)
+        XCTAssertNil(receipt.meshCapturedAt) // admission is not capture or installation proof
+        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1.03, now: 1.03))
+    }
+    func testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved() {
+        let a = UUID(), b = UUID()
+        var request = MeshBenchReacquisition()
+        XCTAssertTrue(request.request(anchorIDs: [a,b], frameCapturedAt: 1, now: 1))
+        XCTAssertEqual(request.next(presentIDs: [a], frameCapturedAt: 1.1, now: 1.1), a)
+        request.recordAdmission(anchorID: a, accepted: true, now: 1.1)
+        XCTAssertNil(request.next(presentIDs: [a], frameCapturedAt: 2, now: 2))
+        var receipt = request.receipt(now: 2)
+        XCTAssertEqual(receipt.pendingIDs, [b])
+        XCTAssertEqual(receipt.anchors.last?.reason, .absentFromLatestFrame)
+        XCTAssertEqual(receipt.anchors.last?.attempts, 0)
+        receipt = request.receipt(now: 9)
+        XCTAssertEqual(receipt.state, .timedOut)
+        XCTAssertEqual(receipt.pendingIDs, [b])
+        XCTAssertEqual(receipt.admittedIDs, [a])
+        XCTAssertTrue(request.request(anchorIDs: [b], frameCapturedAt: 10, now: 10))
+        XCTAssertEqual(request.next(presentIDs: [b], frameCapturedAt: 10.1, now: 10.1), b)
+        let interrupted = request.receipt(now: 18)
+        XCTAssertEqual(interrupted.state, .timedOut)
+        XCTAssertEqual(interrupted.anchors.first?.reason, .admissionUnconfirmed)
+        request.recordAdmission(anchorID: b, accepted: true, now: 18)
+        XCTAssertTrue(request.receipt(now: 18).admittedIDs.isEmpty)
+    }
+    func testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates() {
+        let a = UUID(), b = UUID()
+        var request = MeshBenchReacquisition()
+        XCTAssertTrue(request.request(anchorIDs: [a,b], frameCapturedAt: 1, now: 1))
+        for (index, id) in [a,b,a,b,a,b].enumerated() {
+            let now = 1 + Double(index + 1) * 0.01
+            XCTAssertEqual(request.next(presentIDs: [a,b], frameCapturedAt: now, now: now), id)
+            request.recordAdmission(anchorID: id, accepted: false, now: now)
+        }
+        let receipt = request.receipt(now: 1.07)
+        XCTAssertEqual(receipt.state, .finished)
+        XCTAssertEqual(receipt.totalAttempts, 6)
+        XCTAssertEqual(receipt.pendingIDs, [a,b])
+        XCTAssertTrue(receipt.anchors.allSatisfy { $0.attempts == 3 && $0.reason == .attemptsExhausted })
+        XCTAssertNil(request.next(presentIDs: [a,b], frameCapturedAt: 1.08, now: 1.08))
+    }
+    func testMaximumRequestIssuesExactly192AttemptsThenStops() {
+        let ids = (0..<64).map { _ in UUID() }
+        var request = MeshBenchReacquisition()
+        XCTAssertTrue(request.request(anchorIDs: ids, frameCapturedAt: 1, now: 1))
+        for index in 0..<192 {
+            let now = 1 + Double(index + 1) * 0.01
+            let id = request.next(presentIDs: Set(ids), frameCapturedAt: now, now: now)
+            XCTAssertEqual(id, ids[index % ids.count])
+            if let id { request.recordAdmission(anchorID: id, accepted: false, now: now) }
+        }
+        let receipt = request.receipt(now: 3)
+        XCTAssertEqual(receipt.state, .finished)
+        XCTAssertEqual(receipt.totalAttempts, 192)
+        XCTAssertEqual(receipt.anchors.count, 64)
+        XCTAssertTrue(receipt.anchors.allSatisfy { $0.attempts == 3 })
+    }
+    func testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused() {
+        let id = UUID()
+        var request = MeshBenchReacquisition()
+        XCTAssertFalse(request.request(anchorIDs: (0..<65).map { _ in UUID() }, frameCapturedAt: 1, now: 1))
+        XCTAssertEqual(request.receipt(now: 1).state, .rejected)
+        XCTAssertEqual(request.receipt(now: 1).inputAnchorCount, 65)
+        XCTAssertEqual(request.receipt(now: 1).rejectionReason, .tooManyAnchors)
+        XCTAssertEqual(request.receipt(now: 1).rejectedCount, 65)
+        XCTAssertTrue(request.receipt(now: 1).anchors.isEmpty)
+        XCTAssertFalse(request.request(anchorIDs: [id,id], frameCapturedAt: 1, now: 1))
+        XCTAssertEqual(request.receipt(now: 1).rejectionReason, .duplicateAnchorIdentity)
+        XCTAssertTrue(request.receipt(now: 1).anchors.isEmpty)
+        XCTAssertTrue(request.request(anchorIDs: [id], frameCapturedAt: 1, now: 1))
+        XCTAssertNil(request.next(presentIDs: Set((0..<129).map { _ in UUID() }), frameCapturedAt: 1.1, now: 1.1))
+        XCTAssertEqual(request.receipt(now: 1.1).state, .rejected)
+        XCTAssertEqual(request.receipt(now: 1.1).rejectionReason, .tooManyFrameAnchors)
+        XCTAssertEqual(request.receipt(now: 1.1).rejectedCount, 129)
+        XCTAssertEqual(request.receipt(now: 1.1).pendingIDs, [id])
+    }
+    func testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap() {
+        let a = UUID(), b = UUID()
+        var request = MeshBenchReacquisition()
+        XCTAssertTrue(request.request(anchorIDs: [a], frameCapturedAt: 1, now: 1))
+        XCTAssertFalse(request.request(anchorIDs: [b], frameCapturedAt: 1.1, now: 1.1))
+        XCTAssertEqual(request.receipt(now: 1.1).pendingIDs, [a])
+        request.cancel()
+        XCTAssertEqual(request.receipt(now: 1.2).state, .cancelled)
+        XCTAssertNil(request.next(presentIDs: [a], frameCapturedAt: 1.2, now: 1.2))
+        XCTAssertTrue(request.request(anchorIDs: [b], frameCapturedAt: 2, now: 2))
+        XCTAssertEqual(request.next(presentIDs: [b], frameCapturedAt: 2.1, now: 2.1), b)
+        request.recordAdmission(anchorID: a, accepted: true, now: 2.1)
+        XCTAssertEqual(request.receipt(now: 2.1).state, .invalidSequence)
+        XCTAssertEqual(request.receipt(now: 2.1).pendingIDs, [b])
+    }
+    func testSchedulerClockFailuresAreTerminalWithinRequest() {
+        let id = UUID()
+        for (capture, now) in [(Double.nan, 1.0), (1.0, Double.infinity), (2.0, 1.0),
+                               (1.0, 1.6), (-1.0, 0.0), (Double.greatestFiniteMagnitude, Double.greatestFiniteMagnitude)] {
+            var request = MeshBenchReacquisition()
+            XCTAssertFalse(request.request(anchorIDs: [id], frameCapturedAt: capture, now: now))
+            XCTAssertEqual(request.receipt(now: 2).state, .invalidClock)
+        }
+        var request = MeshBenchReacquisition()
+        XCTAssertTrue(request.request(anchorIDs: [id], frameCapturedAt: 1, now: 1))
+        XCTAssertNil(request.next(presentIDs: [id], frameCapturedAt: 0.9, now: 1.1))
+        XCTAssertEqual(request.receipt(now: 1.1).state, .invalidClock)
+        XCTAssertNil(request.next(presentIDs: [id], frameCapturedAt: 1.2, now: 1.2))
+    }
+    func testStartupGraceIsNotCurrentButCanBecomeHealthy() {
+        let clock = Clock(1)
+        // A separate deterministic clock exercises the actual lock-protected state.
+        let tracked = MeshBenchFrameLease(clock: clock.read)
+        XCTAssertFalse(tracked.isCurrent())
+        XCTAssertFalse(tracked.isRetired())
+        XCTAssertFalse(tracked.claimRetirementNotification())
+        XCTAssertTrue(tracked.begin())
+        XCTAssertFalse(tracked.begin())
+        clock.set(2)
+        XCTAssertTrue(tracked.observe(capturedAt: 2, normal: false))
+        XCTAssertFalse(tracked.isCurrent())
+        XCTAssertFalse(tracked.isRetired())
+        XCTAssertEqual(tracked.receipt().phase, .awaitingNormalTracking)
+        clock.set(3)
+        XCTAssertTrue(tracked.observe(capturedAt: 3, normal: true))
+        XCTAssertTrue(tracked.isCurrent())
+        XCTAssertNil(tracked.receipt().meshCapturedAt)
+        XCTAssertFalse(tracked.receipt().authorizesPhysicalGuidance)
+        XCTAssertFalse(tracked.receipt().actualWorldCoverageKnown)
+    }
+    func testStartupExpiryAndFrameExpiryCannotRevive() {
+        let clock = Clock(1)
+        let startup = MeshBenchFrameLease(clock: clock.read)
+        XCTAssertTrue(startup.begin())
+        clock.set(11)
+        XCTAssertFalse(startup.isRetired())
+        clock.set(11.001)
+        XCTAssertTrue(startup.isRetired())
+        XCTAssertEqual(startup.receipt().retirementReason, .startupExpired)
+        XCTAssertFalse(startup.observe(capturedAt: 11.001, normal: true))
+        XCTAssertFalse(startup.begin())
+        let healthy = MeshBenchFrameLease(clock: clock.read)
+        XCTAssertTrue(healthy.begin())
+        XCTAssertTrue(healthy.observe(capturedAt: 11.001, normal: true))
+        clock.set(11.501)
+        XCTAssertTrue(healthy.isCurrent())
+        clock.set(11.502)
+        XCTAssertTrue(healthy.isRetired())
+        XCTAssertEqual(healthy.receipt().retirementReason, .frameExpired)
+        XCTAssertFalse(healthy.observe(capturedAt: 11.502, normal: true))
+    }
+    func testTrackingLossAndStopAreTerminalAndDoNotChangeReason() {
+        let clock = Clock(1), tracked = MeshBenchFrameLease(clock: { 1 })
+        let lease = MeshBenchFrameLease(clock: clock.read)
+        XCTAssertTrue(lease.begin())
+        XCTAssertTrue(lease.observe(capturedAt: 1, normal: true))
+        clock.set(1.1)
+        XCTAssertFalse(lease.observe(capturedAt: 1.1, normal: false))
+        XCTAssertTrue(lease.isRetired())
+        XCTAssertEqual(lease.receipt().retirementReason, .trackingLost)
+        XCTAssertTrue(lease.claimRetirementNotification())
+        XCTAssertFalse(lease.claimRetirementNotification())
+        lease.stop()
+        XCTAssertEqual(lease.receipt().retirementReason, .trackingLost)
+        XCTAssertFalse(lease.claimRetirementNotification())
+        XCTAssertFalse(lease.observe(capturedAt: 1.1, normal: true))
+        tracked.stop()
+        XCTAssertTrue(tracked.isRetired())
+        XCTAssertFalse(tracked.begin())
+        XCTAssertEqual(tracked.receipt().retirementReason, .stopped)
+        XCTAssertTrue(tracked.claimRetirementNotification())
+        XCTAssertFalse(tracked.claimRetirementNotification())
+    }
+    func testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture() {
+        for badCapture in [1.0, 0.9, 1.2, Double.nan, Double.infinity] {
+            let clock = Clock(1)
+            let tracked = MeshBenchFrameLease(clock: clock.read)
+            XCTAssertTrue(tracked.begin())
+            XCTAssertTrue(tracked.observe(capturedAt: 1, normal: true))
+            clock.set(1.1)
+            XCTAssertFalse(tracked.observe(capturedAt: badCapture, normal: true))
+            XCTAssertEqual(tracked.receipt().retirementReason, .invalidCapture)
+        }
+    }
+    func testIndependentWatchdogRetiresWhileProducerDoesNoWork() {
+        let clock = Clock(1)
+        let lease = MeshBenchFrameLease(clock: clock.read)
+        XCTAssertTrue(lease.begin())
+        XCTAssertTrue(lease.observe(capturedAt: 1, normal: true))
+        let checked = expectation(description: "independent watchdog, no producer queue turn")
+        clock.set(2)
+        DispatchQueue(label: "bench.helper.watchdog-test").async {
+            XCTAssertTrue(lease.isRetired())
+            XCTAssertTrue(lease.claimRetirementNotification())
+            XCTAssertFalse(lease.claimRetirementNotification())
+            checked.fulfill()
+        }
+        wait(for: [checked], timeout: 2)
+        XCTAssertFalse(lease.claimRetirementNotification())
+        XCTAssertFalse(lease.isCurrent())
+        XCTAssertEqual(lease.receipt().retirementReason, .frameExpired)
+    }
+    func testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins() {
+        // The main owner establishes the lease before session.run. A later
+        // producer turn must not move that lower bound past a new-run capture.
+        let clock = Clock(1)
+        let lease = MeshBenchFrameLease(clock: clock.read)
+        XCTAssertTrue(lease.begin())
+        clock.set(1.2)
+        XCTAssertTrue(lease.observe(capturedAt: 1.1, normal: true))
+        XCTAssertTrue(lease.isCurrent())
+        XCTAssertEqual(lease.receipt().beganAt, 1)
+        XCTAssertEqual(lease.receipt().frameCapturedAt, 1.1)
+        XCTAssertEqual(lease.receipt().frameReceivedAt, 1.2)
+
+        let olderClock = Clock(1)
+        let older = MeshBenchFrameLease(clock: olderClock.read)
+        XCTAssertTrue(older.begin())
+        olderClock.set(1.2)
+        XCTAssertFalse(older.observe(capturedAt: 0.99, normal: true))
+        XCTAssertTrue(older.isRetired())
+        XCTAssertEqual(older.receipt().retirementReason, .invalidCapture)
+        XCTAssertFalse(older.observe(capturedAt: 1.1, normal: true))
+    }
+    func testLeaseBackwardsAndNonfiniteClockAreTerminal() {
+        for now in [0.9, Double.nan, Double.infinity] {
+            let clock = Clock(1)
+            let lease = MeshBenchFrameLease(clock: clock.read)
+            XCTAssertTrue(lease.begin())
+            XCTAssertTrue(lease.observe(capturedAt: 1, normal: true))
+            clock.set(now)
+            XCTAssertTrue(lease.isRetired())
+            XCTAssertEqual(lease.receipt().retirementReason, .invalidClock)
+        }
+        for now in [-Double.infinity, Double.greatestFiniteMagnitude] {
+            let invalid = MeshBenchFrameLease(clock: { now })
+            XCTAssertFalse(invalid.begin())
+            XCTAssertTrue(invalid.isRetired())
+            XCTAssertEqual(invalid.receipt().retirementReason, .invalidClock)
+        }
+    }
+}
+
+final class MeshBenchCameraSnapshotTests: XCTestCase {
+    private let matrix: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1.2,0,1]
+    func testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes() throws {
+        let owner = MeshBenchCameraSnapshot(), session = UUID()
+        let a = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: matrix)
+        owner.observe(a); let frozenA = try XCTUnwrap(owner.freeze(at: 10))
+        XCTAssertEqual(frozenA.frame,a.frame); XCTAssertEqual(frozenA.columnMajorCameraToWorld,a.columnMajorCameraToWorld)
+        let b = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10.1,columnMajorCameraToWorld: matrix)
+        owner.observe(b)
+        XCTAssertTrue(owner.isCurrent(frozenA,at: 10.2)); XCTAssertFalse(owner.isCurrent(b,at: 10.2))
+        let frozenB = try XCTUnwrap(owner.freeze(at: 10.2))
+        XCTAssertEqual(frozenB.frame,b.frame)
+        XCTAssertFalse(owner.isCurrent(frozenA,at: 10.2)); XCTAssertTrue(owner.isCurrent(frozenB,at: 10.2))
+        // An explicit new request even within the SAME AR frame retires the old lease.
+        let sameFrameNewRequest = try XCTUnwrap(owner.freeze(at: 10.2))
+        XCTAssertEqual(sameFrameNewRequest.frame,frozenB.frame)
+        XCTAssertFalse(owner.isCurrent(frozenB,at: 10.2))
+        owner.retire(); XCTAssertFalse(owner.isCurrent(sameFrameNewRequest,at: 10.2))
+    }
+    func testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot() throws {
+        let owner = MeshBenchCameraSnapshot(), session = UUID()
+        let a = MeshBenchCameraCapture(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: matrix)
+        owner.observe(a); XCTAssertNil(owner.freeze(at: 9.9)); XCTAssertNil(owner.freeze(at: 10.501))
+        let frozen = try XCTUnwrap(owner.freeze(at: 10))
+        XCTAssertTrue(owner.canAdmit(frozen,at: 10.5))
+        XCTAssertFalse(owner.canAdmit(frozen,at: 10.501))
+        XCTAssertTrue(owner.isCurrent(frozen,at: 11)) // Historical display, NOT new admission.
+        XCTAssertFalse(owner.isCurrent(frozen,at: 18.001))
+        owner.observe(.init(session: UUID(),frame: UUID(),capturedAt: 10.1,columnMajorCameraToWorld: matrix))
+        XCTAssertFalse(owner.isCurrent(frozen,at: 10.2))
+        owner.observe(nil); XCTAssertNil(owner.freeze(at: 10.2))
+        owner.observe(.init(session: session,frame: UUID(),capturedAt: 10,columnMajorCameraToWorld: []))
+        XCTAssertNil(owner.freeze(at: 10))
+    }
+}
+
+final class MeshBenchExpectedSourceTests: XCTestCase {
+    func testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan() throws {
+        let decode = DispatchQueue(label: "bench.expected-source.decode")
+        let ingress = try LiveMeshBenchIngress(decodeQueue: decode)
+        // Always acknowledge owned/native drain, including failed unwrap/timeout.
+        defer {
+            let drained = expectation(description: "expected-source owner drained")
+            ingress.stopAndDiscard { drained.fulfill() }
+            wait(for: [drained], timeout: 10)
+        }
+        let anchor = UUID()
+        let vertices: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
+        let bytes = vertices.flatMap { value in
+            (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0 * 8)) }
+        }
+        let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
+        XCTAssertTrue(ingress.observe(anchorID: anchor,generation: ingress.generation,receiptUptime: 1) { context in
+            do {
+                let plan = try MeshSnapshot82.preflight(context: context,
+                    vertices: .init(count: 4,offset: 0,stride: 12,bufferLength: bytes.count,format: .float3),
+                    indices: .init(count: 6,offset: 0,stride: 2,bufferLength: indices.count,format: .uint16),
+                    classification: .init(count: 2,offset: 0,stride: 1,bufferLength: 2,format: .uint8))
+                return .owned(.init(context: context,anchorID: anchor,plan: plan,vertexBytes: bytes,indexBytes: indices,
+                    classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
+            } catch { return .unknownGap(.init(context: context,anchorID: anchor,reason: .invalidDescriptor)) }
+        })
+        decode.sync {} // The actual owned decoder finishes before source inspection.
+        let read = expectation(description: "admitted classified source inspection")
+        var snapshot: MeshCandidateIngress83.SourceSnapshot?
+        ingress.requestSourceSnapshot(generation: ingress.generation) { result in
+            if case .success(let source) = result { snapshot = source }
+            read.fulfill()
+        }
+        wait(for: [read], timeout: 10)
+        let source = try XCTUnwrap(snapshot)
+        XCTAssertEqual(source.geometry.anchors.map(\.anchorID),[anchor.uuidString])
+        XCTAssertTrue(ingress.isCurrent(source,generation: ingress.generation))
+        XCTAssertTrue(ingress.remove(anchorID: anchor,generation: ingress.generation,receiptUptime: 2))
+        XCTAssertFalse(ingress.isCurrent(source,generation: ingress.generation))
+        var refused = false
+        ingress.request(generation: ingress.generation,start: [0,0,0],goal: [1,0,0],
+                        body: try MeshCandidateBody(radius: 0.3,height: 1.7),expectedSource: source) { result in
+            if case .failure(.unavailable) = result { refused = true }
+        }
+        XCTAssertTrue(refused) // Admission refusal is synchronous; no native query submitted.
+    }
+    private func savedDescriptor() -> SavedWorldFrame {
+        .init(placeID:UUID().uuidString,revision:UUID().uuidString,worldMapSHA256:String(repeating:"a",count:64),
+              roomCaptureSHA256:String(repeating:"b",count:64),originAnchorID:UUID().uuidString,capturedAt:Date(timeIntervalSince1970:1))
+    }
+    private func recoveredBench(_ frame:SavedWorldFrame,session:UUID) -> MeshBenchSavedWorldRecovery {
+        let value=MeshBenchSavedWorldRecovery();value.begin(frame:frame,session:session,now:1)
+        value.observe(session:session,tracking:.relocalizing,mappingAvailable:true,originMatches:true,capturedAt:1,now:1)
+        for t in [1.1,1.2,1.3] {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)}
+        return value
+    }
+    func testSavedWorldRecoveryRequiresRelocalizingThenDistinctNormalFrames() {
+        let value=MeshBenchSavedWorldRecovery(),frame=savedDescriptor(),session=UUID()
+        value.begin(frame:frame,session:session,now:1)
+        for t in [1.1,1.2,1.3] {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)}
+        XCTAssertNil(value.association(session:session,capturedAt:1.3,now:1.3))
+        value.observe(session:session,tracking:.relocalizing,mappingAvailable:true,originMatches:true,capturedAt:1.4,now:1.4)
+        for _ in 0..<3 {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:1.5,now:1.5)}
+        XCTAssertNil(value.association(session:session,capturedAt:1.5,now:1.5))
+        for t in [1.6,1.7] {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)}
+        XCTAssertNotNil(value.association(session:session,capturedAt:1.7,now:1.7))
+    }
+    func testSavedWorldRecoveryBindsExactCaptureAndSession() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let association=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        XCTAssertEqual(association.frame,frame);XCTAssertEqual(association.sessionID,session)
+        XCTAssertNil(value.association(session:session,capturedAt:1.2,now:1.3))
+        XCTAssertNil(value.association(session:UUID(),capturedAt:1.3,now:1.3))
+        XCTAssertFalse(association.permitsPhysicalGuidance)
+    }
+    func testSavedWorldRecoveryMaintainsEpochWithoutRebindingOldCapture() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:1.4,now:1.4)
+        let next=try XCTUnwrap(value.association(session:session,capturedAt:1.4,now:1.4))
+        XCTAssertEqual(old.recoveryID,next.recoveryID);XCTAssertNotEqual(old.capturedAt,next.capturedAt)
+        XCTAssertTrue(value.isCurrent(old,now:1.4))
+        XCTAssertNil(value.association(session:session,capturedAt:old.capturedAt,now:1.4))
+    }
+    func testSavedWorldRecoveryRetirementAndRestartDoNotRestoreAssociation() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        value.retire();XCTAssertFalse(value.isCurrent(old,now:1.3))
+        value.begin(frame:frame,session:session,now:1.4)
+        XCTAssertNil(value.association(session:session,capturedAt:1.3,now:1.4))
+        XCTAssertFalse(value.isCurrent(old,now:1.4))
+        let other=recoveredBench(frame,session:session)
+        XCTAssertFalse(other.isCurrent(old,now:1.3)) // Same descriptor/session is not same recovery epoch.
+    }
+    func testSavedWorldRecoveryRejectsOriginLossMappingLossAndStaleFrames() throws {
+        for failure in ["origin","mapping","tracking","stale"] {
+            let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+            let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+            value.observe(session:session,tracking:failure == "tracking" ? .unavailable:.normal,
+                mappingAvailable:failure != "mapping",originMatches:failure != "origin",capturedAt:1.4,now:failure == "stale" ? 2:1.4)
+            XCTAssertFalse(value.isCurrent(old,now:failure == "stale" ? 2:1.4))
+        }
+    }
+    func testSavedWorldRecoveryWrongDescriptorAndNonfiniteClockStayUnknown() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        XCTAssertFalse(value.isCurrent(old,now:.nan));XCTAssertFalse(value.isCurrent(old,now:2))
+        let different=recoveredBench(savedDescriptor(),session:session)
+        XCTAssertFalse(different.isCurrent(old,now:1.3))
+        value.observe(session:UUID(),tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:1.4,now:1.4)
+        XCTAssertFalse(value.isCurrent(old,now:1.4))
+    }
+
+}

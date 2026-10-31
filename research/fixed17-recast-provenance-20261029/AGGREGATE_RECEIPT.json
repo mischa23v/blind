@@ -1,0 +1,57 @@
+{
+  "scope": "aggregate only; original execution, not export execution",
+  "oneAttempt": true,
+  "limits": {
+    "CPUCount": 1,
+    "RSSBytes": 536870912,
+    "cpuSeconds": 10,
+    "outputBytes": 33554432,
+    "wallSeconds": 15
+  },
+  "resources": {
+    "status": "PASS",
+    "aggregateCPUSeconds": 2.7992800000000004,
+    "elapsedSeconds": 2.829728860000614,
+    "peakConservativeAggregateRSSBytes": 206610432,
+    "peakSampledAggregateRSSBytes": 200974336,
+    "verifiedPinnedFileCount": 37,
+    "allPinnedInputsReverifiedAfterWorker": true,
+    "outputBytes": 4812722
+  },
+  "parity": {
+    "models": 2,
+    "fixedCellCount": 17,
+    "fixturesPassed": true,
+    "allNativeCompactLinksHeightsAreasDistancesSeedsMatched": true,
+    "allOriginalObserverSavedErosionOutputsMatched": true,
+    "allOrderedUnionRawColumnsMatched": true,
+    "savedTargetChainControlsPerModel": 3
+  },
+  "models": [
+    {
+      "model": "Voxblox",
+      "candidateTriangles": 176,
+      "chargedTwoPassRasterAABBCells": 12436
+    },
+    {
+      "model": "Open3D",
+      "candidateTriangles": 192,
+      "chargedTwoPassRasterAABBCells": 13630
+    }
+  ],
+  "controls": {
+    "originalRouteRecordsPerModel": 20,
+    "originalWitnessRecordsPerModel": 678,
+    "newRoutes": 0,
+    "newWitnesses": 0,
+    "referenceGeometryLoaded": false,
+    "parametersChanged": false,
+    "physicalAuthority": false
+  },
+  "receiptHashes": {
+    "originalGuardReceiptSHA256": "778a6f3d8cb3a65f76f6573af7388fb7403446c1ee4ae015ac54688eeb90ea16",
+    "originalFreezeSHA256": "5d3d3d16986eb0edd6165c5a4eef01f6d0c60ab1c16bab92a1ac2fa609a7dd80",
+    "originalSummarySHA256": "2ed650cea11adf2c1f8923a96b8c53a026039cf1c0b1668a5cd032a6d9e268ae",
+    "originalFixtureReceiptSHA256": "b8c9359b430dd5f62ed044bf4d602d9f096c502d330f424d89a982f94ff31a20"
+  }
+}

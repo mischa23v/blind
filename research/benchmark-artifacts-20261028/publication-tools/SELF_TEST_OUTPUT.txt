@@ -1,0 +1,30 @@
+test_batch_two_inconsistent_duplicate_sha_rejected (test_assembler.AssemblyTests.test_batch_two_inconsistent_duplicate_sha_rejected) ... ok
+test_batch_two_returned_github_alias_alone_accepted (test_assembler.AssemblyTests.test_batch_two_returned_github_alias_alone_accepted) ... ok
+test_confirmed_ordered_parts_and_original_hashes_preserved (test_assembler.AssemblyTests.test_confirmed_ordered_parts_and_original_hashes_preserved) ... ok
+test_confirmed_single (test_assembler.AssemblyTests.test_confirmed_single) ... ok
+test_conflicting_expected_sha_alias_rejected (test_assembler.AssemblyTests.test_conflicting_expected_sha_alias_rejected) ... ok
+test_conflicting_returned_fields_rejected (test_assembler.AssemblyTests.test_conflicting_returned_fields_rejected) ... ok
+test_duplicate_manifest_path_rejected (test_assembler.AssemblyTests.test_duplicate_manifest_path_rejected) ... ok
+test_index_tampering_rejected (test_assembler.AssemblyTests.test_index_tampering_rejected) ... ok
+test_missing_receipt_reported_not_invented (test_assembler.AssemblyTests.test_missing_receipt_reported_not_invented) ... ok
+test_only_confirmed_part_enters_tree (test_assembler.AssemblyTests.test_only_confirmed_part_enters_tree) ... ok
+test_original_tampering_rejected (test_assembler.AssemblyTests.test_original_tampering_rejected) ... ok
+test_part_tampering_rejected (test_assembler.AssemblyTests.test_part_tampering_rejected) ... ok
+test_pending_original_then_root_confirmation (test_assembler.AssemblyTests.test_pending_original_then_root_confirmation) ... ok
+test_receipt_metadata_mismatch_rejected (test_assembler.AssemblyTests.test_receipt_metadata_mismatch_rejected) ... ok
+test_reordered_parts_rejected (test_assembler.AssemblyTests.test_reordered_parts_rejected) ... ok
+test_restore_corruption_leaves_no_archive_or_temp (test_assembler.AssemblyTests.test_restore_corruption_leaves_no_archive_or_temp) ... ok
+test_restore_exact_reconstruction (test_assembler.AssemblyTests.test_restore_exact_reconstruction) ... ok
+test_restore_never_overwrites (test_assembler.AssemblyTests.test_restore_never_overwrites) ... ok
+test_restore_rejects_traversal (test_assembler.AssemblyTests.test_restore_rejects_traversal) ... ok
+test_root_expected_sha_alias_accepted (test_assembler.AssemblyTests.test_root_expected_sha_alias_accepted) ... ok
+test_uncertain_returned_sha_rejected (test_assembler.AssemblyTests.test_uncertain_returned_sha_rejected) ... ok
+test_unknown_receipt_path_rejected (test_assembler.AssemblyTests.test_unknown_receipt_path_rejected) ... ok
+test_valid_part_hashes_wrong_reconstruction_rejected (test_assembler.AssemblyTests.test_valid_part_hashes_wrong_reconstruction_rejected) ... ok
+test_verified_local_hash_is_not_upload_confirmation (test_assembler.AssemblyTests.test_verified_local_hash_is_not_upload_confirmation) ... ok
+test_wrong_returned_sha_rejected (test_assembler.AssemblyTests.test_wrong_returned_sha_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.020s
+
+OK

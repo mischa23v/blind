@@ -13,6 +13,20 @@ final class NativeMapping: ObservableObject {
     @Published private(set) var active = false
     @Published private(set) var exportURL: URL?
     @Published private(set) var localGridSnapshot: NativeLocalGridSnapshot?
+    /// Navigation consumes exact latest capture evidence, not the 30-second
+    /// retained grid. This remains veto/unknown input, never SpatialFloorSupport.
+    func navigationEvidence(now: Double) -> NativeNavigationEvidence {
+        guard available else { return .unavailable(.dependencyAbsent) }
+        guard active else { return .unavailable(.inactive) }
+        return localGridSnapshot?.navigationEvidence(now: now) ?? .unavailable(.missingCapture)
+    }
+    func isCurrent(_ evidence: NativeCurrentNavigationEvidence, now: Double) -> Bool {
+        guard available, active else { return false }
+        return localGridSnapshot?.isCurrent(evidence, now: now) ?? false
+    }
+    /// Main-owner notification for route retirement/diagnostics. No source data is
+    /// persisted or emitted as guidance. Consumers still recheck at delivery.
+    var navigationEvidenceChanged: ((NativeNavigationEvidence) -> Void)?
     private var localGridConsumer = NativeLocalGridConsumer()
     private var localGridGeneration: UInt64 = 0
     private var gridTrackingLost = false
@@ -21,10 +35,12 @@ final class NativeMapping: ObservableObject {
     private func clearLocalGrid() {
         gridWatchdog?.invalidate(); gridWatchdog = nil
         localGridConsumer.invalidate(); localGridSnapshot = nil
+        navigationEvidenceChanged?(.unavailable(available ? .inactive : .dependencyAbsent))
     }
     private func publishLocalGrid(_ value: NativeLocalGridSnapshot) {
         guard localGridSnapshot != value else { return }
         localGridSnapshot = value
+        navigationEvidenceChanged?(value.navigationEvidence(now: ProcessInfo.processInfo.systemUptime))
         if active {
             status = "Private 3D map: \(value.groundCellCount) ground, \(value.obstacleCellCount) obstacle, \(value.emptyCellCount) empty-ray cells. \(value.status.rawValue). Not walking guidance."
         }

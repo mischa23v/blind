@@ -1,0 +1,62 @@
+"""Tiny prospective reader/convention/query fixtures; executed only by admitted worker."""
+import json,math,struct
+
+def run_fixtures(out,read_mesh,chunks,line_hits,closest,surface_type,categorize):
+    import numpy as np
+    # PUBLIC EXPORT: all synthetic coordinate/float fixture constants are withheld.
+    private_fixture=json.loads((out/'PRIVATE_FIXTURE_PARAMETERS.json').read_text())
+    directory=out/'fixtures';directory.mkdir(exist_ok=False)
+    # Non-origin, asymmetric coordinates and deliberately non-sorted face order.
+    # Lower plane faces up; upper plane faces down. Two-sided source evaluation
+    # must retain both; source normal signing must not be normalized away.
+    vertices=np.array(private_fixture['vertices'],np.float32)
+    faces=np.array(private_fixture['faces'],np.int32)
+    ascii_header='ply\nformat ascii 1.0\nelement vertex 8\nproperty float x\nproperty float y\nproperty float z\nproperty float normal_x\nproperty float normal_y\nproperty float normal_z\nelement face 4\nproperty list uchar int vertex_indices\nend_header\n'
+    ascii_path=directory/'asymmetric_ascii.ply'
+    with ascii_path.open('x')as f:
+        f.write(ascii_header)
+        for p in vertices:f.write(' '.join(format(float(x),'.9g')for x in p)+' 1 0 0\n') # intentionally wrong stored normal; never routing labels
+        for ids in faces:f.write('3 '+' '.join(map(str,ids))+'\n')
+    binary_header='ply\nformat binary_little_endian 1.0\nelement vertex 8\nproperty double x\nproperty double y\nproperty double z\nelement face 4\nproperty list uchar uint vertex_indices\nend_header\n'
+    binary_path=directory/'asymmetric_binary.ply'
+    with binary_path.open('xb')as f:
+        f.write(binary_header.encode())
+        for p in vertices:f.write(struct.pack('<ddd',*map(float,p)))
+        for ids in faces:f.write(struct.pack('<BIII',3,*map(int,ids)))
+    checks=[]
+    for name,path in [('ascii',ascii_path),('binary',binary_path)]:
+        mesh,actual,actual_faces=read_mesh(path,8,4)
+        assert np.array_equal(actual.astype(np.float32),vertices)and np.array_equal(actual_faces,faces)
+        got=np.concatenate(list(chunks(actual,actual_faces)),axis=0)
+        expected=np.ascontiguousarray(vertices[faces][:,:,[0,2,1]]*np.array([1,1,-1]),np.float32)
+        assert np.array_equal(got,expected)
+        normals=np.cross(got[:,1]-got[:,0],got[:,2]-got[:,0])
+        assert np.array_equal(np.sign(normals[:,1]),[-1,1,-1,1]),'winding/sign must not be flipped'
+        assert np.allclose(np.linalg.norm(got[:,1]-got[:,0],axis=1),np.linalg.norm(vertices[faces[:,1]]-vertices[faces[:,0]],axis=1),rtol=0,atol=private_fixture['scalar_03'])
+        s=surface_type(mesh)
+        try:
+            hits=line_hits(s,private_fixture['scalar_04'],-private_fixture['scalar_10'],-private_fixture['scalar_11'],private_fixture['scalar_05'])
+            assert len(hits)==2 and {h['originalTriangleID']for h in hits}<={0,1,2,3}
+            assert np.allclose(sorted(h['worldZ']for h in hits),[-private_fixture['scalar_20'],-private_fixture['scalar_21']],rtol=0,atol=private_fixture['scalar_12'])
+            assert line_hits(s,private_fixture['scalar_13'],-private_fixture['scalar_22'],-private_fixture['scalar_23'],private_fixture['scalar_14'])==[],'missing must stay missing'
+            cp=closest(s,[private_fixture['scalar_15'],-private_fixture['scalar_24'],-private_fixture['scalar_25']]);assert abs(cp['distanceMetres']-private_fixture['scalar_26'])<private_fixture['scalar_06']
+            assert abs(cp['datasetXYZ'][2]+private_fixture['scalar_27'])<private_fixture['scalar_16'] and cp['originalTSDFTriangleID']in(0,2)
+        finally:
+            s.locator.RemoveAllObservers();s.locator.SetDataSet(None);s.mesh=None
+        checks.append({'name':name,'exactFloat32CoordinatesAndFaceOrder':True,'properRotationLengthsAndWinding':True,'storedNormalsNotUsed':True,'allHitAndClosestIDsRetained':True,'missingRayRemainsMissing':True})
+    # Reader must reject nontriangles rather than silently triangulate them.
+    quad=directory/'quad_rejected.ply'
+    with quad.open('x')as f:
+        f.write('ply\nformat ascii 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n')
+        for p in vertices[:4]:f.write(' '.join(map(str,p))+'\n')
+        f.write('4 0 1 2 3\n')
+    refused=False
+    try:read_mesh(quad,4,1)
+    except AssertionError:refused=True
+    assert refused
+    # Fixed reporting channels retain low geometry and absent support separately.
+    low=categorize([{'worldZ':-private_fixture['scalar_17'],'absNormalWorldZ':private_fixture['scalar_07']},{'worldZ':-private_fixture['scalar_18'],'absNormalWorldZ':private_fixture['scalar_08']},{'worldZ':-private_fixture['scalar_19'],'absNormalWorldZ':private_fixture['scalar_09']}],-private_fixture['scalar_01'])
+    assert low['counts']['raised0to4cmAmbiguous']==1 and low['counts']['raisedOver4cm']==1
+    missing=categorize([], -private_fixture['scalar_02']);assert missing['referenceFloorCandidateWorldZ']is None and missing['noHitIsFree'] is False
+    assert low['predictedFootTranslated']is False and low['fullBodyCoverageVerified']is False
+    return {'status':'passed','checks':checks,'nontriangleRejected':True,'lowGeometryAndUnknownCategoriesRetained':True,'recordedDataQueriedBeforeFixtures':False,'physicalAuthority':False}

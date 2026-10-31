@@ -1,0 +1,79 @@
+name: Native floor buffer probe
+
+on:
+  push:
+    branches: [master, codex/recovery-hazard-order-20261027]
+    paths:
+      - '.github/workflows/native-floor-probe.yml'
+      - 'research/native-floor-import-repair-20261028/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-floor-buffer-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    # No private/paid or fork execution. Standard public runner only.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')
+    runs-on: xcode-27
+    timeout-minutes: 5
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Run bounded synthetic platform probe
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/blind-native-floor-probe"
+          mkdir -p "$out"
+          git rev-parse HEAD > "$out/source-sha.txt"
+          test "$(cat "$out/source-sha.txt")" = "$GITHUB_SHA"
+          git diff --exit-code
+          xcodebuild -version > "$out/xcode-version.txt"
+          grep -qx 'Xcode 27.0' "$out/xcode-version.txt"
+          xcrun swift --version > "$out/swift-version.txt"
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, subprocess, time
+          out = pathlib.Path(os.environ['RUNNER_TEMP']) / 'blind-native-floor-probe'
+          source = pathlib.Path('research/native-floor-import-repair-20261028/scnshape_probe.swift')
+          receipt = {'schema': 1, 'source_commit': os.environ['GITHUB_SHA'],
+                     'probe_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
+                     'timeout_seconds': 120, 'physicalAuthority': False}
+          start = time.monotonic()
+          code = 1
+          with (out / 'scnshape-probe.json').open('wb') as stdout, (out / 'stderr.txt').open('wb') as stderr:
+              try:
+                  result = subprocess.run(['xcrun', 'swift', str(source)], stdout=stdout, stderr=stderr, timeout=120)
+                  code = result.returncode
+                  receipt.update(status='completed', exit_code=code)
+              except subprocess.TimeoutExpired:
+                  receipt.update(status='timed-out', exit_code=None)
+          receipt['elapsed_seconds'] = time.monotonic() - start
+          for name in ['scnshape-probe.json', 'stderr.txt']:
+              data = (out / name).read_bytes()
+              receipt[name] = {'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+          (out / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt))
+          raise SystemExit(code)
+          PY
+      - name: Preserve probe result and exact source receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-floor-buffer-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/blind-native-floor-probe/
+          if-no-files-found: error
+          retention-days: 3

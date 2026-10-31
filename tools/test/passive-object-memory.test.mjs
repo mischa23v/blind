@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { assertDepthHazardsBefore, declaration, depthHazardsCall, frameSignature, withoutComments } from './helpers/navigation-source-contract.mjs';
 const read = p => readFile(new URL(`../../${p}`, import.meta.url), 'utf8');
 const section = (s, a, b) => s.slice(s.indexOf(a), s.indexOf(b, s.indexOf(a)));
 test('passive observations enter foreground loop independently of a find command', async () => {
@@ -75,11 +76,35 @@ test('room transitions and privacy changes cannot relabel or resurrect old captu
 
 test('continuous pose/hazard cadence is separate from bounded async visual observations', async () => {
   const source = await readFile(new URL('../../ios/BlindAssist/NavigationModel.swift', import.meta.url), 'utf8');
-  const frames = source.slice(source.indexOf('func session(_ session: ARSession, didUpdate frame: ARFrame)'), source.indexOf('// MARK:', source.indexOf('func session(_ session: ARSession, didUpdate frame: ARFrame)')));
-  assert.match(frames, /frame.timestamp - lastProcessed >= 1.0 \/ 15/);
-  assert.ok(frames.indexOf('detector.process(observation)') < frames.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)'));
-  const beforeSampling = frames.slice(0, frames.indexOf('DepthSampler.observation(from: frame)'));
-  assert.doesNotMatch(beforeSampling, /guard[^\n]*(?:busy|feedback\.speaking|currencyActive|objectSearch)/);
-  assert.match(source, /now - lastPassiveObservation >= 3/);
-  assert.match(source, /Task.detached\(priority: \.utility\)/);
+  const background = 'updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)';
+  const check = candidate => {
+    const frames = declaration(withoutComments(candidate), frameSignature);
+    assert.match(frames, /frame.timestamp - lastProcessed >= 1.0 \/ 15/);
+    assertDepthHazardsBefore(candidate, background);
+    const beforeSampling = frames.slice(0, frames.indexOf('DepthSampler.observation(from: frame)'));
+    assert.doesNotMatch(beforeSampling, /guard[^\n]*(?:busy|feedback\.speaking|currencyActive|objectSearch)/);
+    assert.match(declaration(candidate, 'private func passiveMemoryEligible('), /now - lastPassiveObservation >= 3/);
+    assert.match(declaration(candidate, 'private func updatePassiveObjectMemory('), /Task.detached\(priority: \.utility\)/);
+  };
+  check(source);
+  const frames = declaration(source, frameSignature);
+  const mutateFrame = (from, to) => {
+    assert.ok(frames.includes(from));
+    return source.replace(frames, frames.replace(from, to));
+  };
+  const mutants = [
+    mutateFrame('frame.timestamp - lastProcessed >= 1.0 / 15', 'true'),
+    mutateFrame('guard running, !simulation, !places.scanning,', 'guard !busy, running, !simulation, !places.scanning,'),
+    mutateFrame(depthHazardsCall, `Task { ${depthHazardsCall} }`),
+    mutateFrame(depthHazardsCall, `defer { ${depthHazardsCall} }`),
+    mutateFrame(depthHazardsCall, '').replace(background, `${background}\n${depthHazardsCall}`),
+    source.replace('let legacyDetection = detector.process(observation)', 'let legacyDetection = Detection(.observing)'),
+    source.replace('now - lastPassiveObservation >= 3', 'true'),
+    source.replace(declaration(source, 'private func updatePassiveObjectMemory('),
+      declaration(source, 'private func updatePassiveObjectMemory(').replace('Task.detached(priority: .utility)', 'Task'))
+  ];
+  for (const mutant of mutants) {
+    assert.notEqual(mutant, source);
+    assert.throws(() => check(mutant), { name: 'AssertionError' });
+  }
 });

@@ -1,0 +1,167 @@
+✔ ordinary configurations have no device-test flag or manifest pin (7.928484ms)
+✔ only opted-in app Debug gets both compile gates and the verified manifest pin (6.485909ms)
+✔ device-test choice preserves combined AuraFace multimodal and Live Activity variants (2.957756ms)
+✔ device-test flags require explicit reference pack and native build, with no unchecked CLI hash (1.220089ms)
+✔ device-test preflight pins verified bytes and rejects empty or changed reference packs (72.314865ms)
+✔ Info metadata binds to the build setting rather than committing a reference hash (7.433877ms)
+✔ CLI generates only an isolated temporary project and derives its pin from verified manifest bytes (417.903742ms)
+✔ default remains without native currency, framework, pack or activation (24.520564ms)
+✔ currency-only links the engine and shared static OpenCV without face models (2.836896ms)
+✔ face-only retains its old bridge and model resources without currency code (5.152445ms)
+✔ combined SFace and AuraFace variants link OpenCV and each system framework only once (8.757963ms)
+✔ private folder resource preserves its fixed name and is optional (2.352086ms)
+✔ Mac architecture fix remains Debug YES and Release NO in every feature combination (12.055969ms)
+✔ argument parsing supports currency without familiar models and combined backend selection (0.550806ms)
+✔ missing, repeated, unknown and incompatible generator arguments fail closed (0.329342ms)
+✔ currency-only preflight requires framework version/layout but no face assets (39.583848ms)
+✔ empty private inventory is parseable for packaging but does not activate recognition (10.331891ms)
+✔ packaging verifies exact nested file bytes and manifest digest, not image accuracy (10.278675ms)
+✔ pack rejects missing files, wrong folder name, wrong schema and bounded manifest violations (8.173892ms)
+✔ pack rejects traversal, URL escapes, control characters and ambiguous relative paths (21.853459ms)
+✔ pack rejects duplicate image paths/hashes and oversized source files before reading (4.477955ms)
+✔ folder preflight refuses unlisted private members and symlinks (5.727999ms)
+✔ combined bridge imports declarations and notices identify source rights, not reference rights (1.598952ms)
+✔ regeneration preserves the existing app mesh package/product/framework linkage (30.119715ms)
+✔ linkage assertions reject missing graph edges, not just missing package text (8.522842ms)
+✖ ordinary generation includes the fenced bridge but leaves every feature flag opt-in (9.947602ms)
+✔ multimodal options preserve mesh linkage without enabling diagnostics or developer cloud (4.723593ms)
+✔ liveActivity options preserve mesh linkage without enabling diagnostics or developer cloud (9.640984ms)
+✔ sface options preserve mesh linkage without enabling diagnostics or developer cloud (2.580297ms)
+✔ auraface options preserve mesh linkage without enabling diagnostics or developer cloud (2.808068ms)
+✔ currency options preserve mesh linkage without enabling diagnostics or developer cloud (4.344478ms)
+✔ currencyDeviceTest options preserve mesh linkage without enabling diagnostics or developer cloud (9.448402ms)
+✔ detector options preserve mesh linkage without enabling diagnostics or developer cloud (6.376942ms)
+✔ combined options preserve mesh linkage without enabling diagnostics or developer cloud (10.122065ms)
+✔ object detector is off by default and opt-in flags are paired, bounded and exact (7.055345ms)
+✔ only the verified model artifact is linked in its correct Xcode build phase (66.00169ms)
+✔ detector options preserve combined native, image and Live Activity flags (12.594417ms)
+✔ preflight pins actual artifact and external-manifest bytes and detects tampering (18.759458ms)
+✔ raw tensors, missing provenance, invalid labels and image declarations fail closed (59.424673ms)
+✔ compiled folders reject unlisted images, secrets, symlinks and arbitrary metadata (25.878593ms)
+✔ inventory traversal, duplicate members, root symlinks and internal manifests are rejected (17.272001ms)
+✔ CLI verifies before writing only an isolated temporary project and keeps previous project on failure (350.193597ms)
+✔ all Debug targets define DEBUG while Release omits it and retains feature flags (2.877243ms)
+✔ trash and restore move fixed UUID-owned files without replacing destinations (2.278842ms)
+✔ permanent deletion is restricted to one trash file and requires visible confirmation (0.844709ms)
+✔ pending imports cannot resurrect a moved photo and UI reports storage errors (0.593612ms)
+✔ one-slot limits, existing room tombstone cleanup, and local protection remain (0.568046ms)
+✔ automatic appearance retention remains bounded and is not coupled to reference trash (1.172277ms)
+✔ private photo intent runs after command-origin authorization but before physical mutation (36.556323ms)
+✔ picker assigns source ownership before bounded asynchronous file loading (2.872169ms)
+✔ ImageIO bounds headers and decoded pixels and never persists the transfer (2.112866ms)
+✔ native photo reader preserves complete source records outside model budgets (11.032686ms)
+✔ photo output uses normal gates, actual callbacks, and original source expiry (15.108868ms)
+✔ selected photo Vision retains low-confidence OCR qualifiers without weakening camera threshold (3.796861ms)
+✔ one native photo lease survives UI cancellation until actual decode or Vision completion (19.370619ms)
+✔ camera cancellation is separate; only trusted photo interruption and explicit quiet clear the snapshot (17.709743ms)
+✔ helper ingress and delayed actual speech start enforce photo ownership (14.523928ms)
+✔ selected-photo source text is omitted from opt-in debug output records (18.298769ms)
+✔ failed Vision extraction is unreadable, never a successful empty reference (5.935595ms)
+✔ the normal generated Xcode source phase includes the bounded photo decoder (12.027803ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 59
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 884.403608
+
+✖ failing tests:
+
+test at tools/test/mesh-package-project.test.mjs:72:1
+✖ ordinary generation includes the fenced bridge but leaves every feature flag opt-in (9.947602ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /XCRemoteSwiftPackageReference|PBXShellScriptBuildPhase|https?:\/\//. Input:
+  
+  '// !$*UTF8*$!\n' +
+    '{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {\n' +
+    '69C898D09A7F861EA925F30A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/AlwaysOnShortcuts.swift"; sourceTree = "<group>"; };\n' +
+    '19DB20F9567465164DE16C18 = { isa = PBXBuildFile; fileRef = 69C898D09A7F861EA925F30A; };\n' +
+    '24339E80C725EA11FF0FFE35 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/AssistantPreferencesView.swift"; sourceTree = "<group>"; };\n' +
+    '9E05114B26F4DD93E32BC105 = { isa = PBXBuildFile; fileRef = 24339E80C725EA11FF0FFE35; };\n' +
+    'CD0A25335058811CAE708448 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/AssistantSituation.swift"; sourceTree = "<group>"; };\n' +
+    '9B3ED182B72B2E0155CDE497 = { isa = PBXBuildFile; fileRef = CD0A25335058811CAE708448; };\n' +
+    'B7FFB89D9E08BAF2F8C0268E = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BeltLink.swift"; sourceTree = "<group>"; };\n' +
+    'A2996D0CBCDC778FBBB785DB = { isa = PBXBuildFile; fileRef = B7FFB89D9E08BAF2F8C0268E; };\n' +
+    'B232FC2966139EE3C55C4D4D = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BlindAssistApp.swift"; sourceTree = "<group>"; };\n' +
+    'FB858898A7E6074A9D1EBEF4 = { isa = PBXBuildFile; fileRef = B232FC2966139EE3C55C4D4D; };\n' +
+    '124AAA588045F837E5EF6788 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BodyProfileSettingsView.swift"; sourceTree = "<group>"; };\n' +
+    '29A823B0C5DEED39594A3FE1 = { isa = PBXBuildFile; fileRef = 124AAA588045F837E5EF6788; };\n' +
+    '7F8803F436A7F267127BA22C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BodyProfileStore.swift"; sourceTree = "<group>"; };\n' +
+    '6AD9045FC5D6C7DF98996D56 = { isa = PBXBuildFile; fileRef = 7F8803F436A7F267127BA22C; };\n' +
+    '8C85FCBC8A470DFD2AAE529C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ClothingColorReader.swift"; sourceTree = "<group>"; };\n' +
+    'CBA596EA4A7A13AA95B95279 = { isa = PBXBuildFile; fileRef = 8C85FCBC8A470DFD2AAE529C; };\n' +
+    'BC0E96261A4076C507B45DB1 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/CommunityLibrary.swift"; sourceTree = "<group>"; };\n' +
+    '48D1279A90A628052EF7B40C = { isa = PBXBuildFile; fileRef = BC0E96261A4076C507B45DB1; };\n' +
+    '33D66E24128C6DEC3F289907 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/CommunityMapsView.swift"; sourceTree = "<group>"; };\n' +
+    'A1D1E39462A588D90936A04E = { isa = PBXBuildFile; fileRef = 33D66E24128C6DEC3F289907; };\n' +
+    '5C43A161E958D62F7CEC9DC2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/CompanionLiveActivity.swift"; sourceTree = "<group>"; };\n' +
+    '14564B17B20C5BC8F7EC180F = { isa = PBXBuildFile; fileRef = 5C43A161E958D62F7CEC9DC2; };\n' +
+    '4FC74F738368F9307F39B6BD = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ConnectedJourneyPersistenceView.swift"; sourceTree = "<group>"; };\n' +
+    '47EE78C15292A8891863E45A = { isa = PBXBuildFile; fileRef = 4FC74F738368F9307F39B6BD; };\n' +
+    'AB060E3FDCFFBB65E752235B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ConnectedJourneyRuntime.swift"; sourceTree = "<group>"; };\n' +
+    '7D8FC210A679C8A3361B53EE = { isa = PBXBuildFile; fileRef = AB060E3FDCFFBB65E752235B; };\n' +
+    'AF14A90136D3CFE820EA5186 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/DashboardView.swift"; sourceTree = "<group>"; };\n' +
+    'FB2B8724D1E0A5635BA3344B = { isa = PBXBuildFile; fileRef = AF14A90136D3CFE820EA5186; };\n' +
+    'C70285F1D4498792A9AF9D66 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/DepthSampler.swift"; sourceTree = "<group>"; };\n' +
+    '26A4C9C80D8F3A62699E2A22 = { isa = PBXBuildFile; fileRef = C70285F1D4498792A9AF9D66; };\n' +
+    'F12F029C41AA982ECF348295 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ExplorePictureView.swift"; sourceTree = "<group>"; };\n' +
+    '0E9441DB7BB3C7D7EAD93A66 = { isa = PBXBuildFile; fileRef = F12F029C41AA982ECF348295; };\n' +
+    'BF18057EA19E83F38F859141 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarFaceExperiment.swift"; sourceTree = "<group>"; };\n' +
+    'D822758E908F216659DA2F17 = { isa = PBXBuildFile; fileRef = BF18057EA19E83F38F859141; };\n' +
+    '346C41A7A7A145D0AB1B3C70 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarFaceStore.swift"; sourceTree = "<group>"; };\n' +
+    '8C02AE920004CB8CD37165B3 = { isa = PBXBuildFile; fileRef = 346C41A7A7A145D0AB1B3C70; };\n' +
+    '1189D588EED234E0E160BB06 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarModelConfiguration.swift"; sourceTree = "<group>"; };\n' +
+    '1FFEBC234CFF07784E267C76 = { isa = PBXBuildFile; fileRef = 1189D588EED234E0E160BB06; };\n' +
+    '5BDD5968420E59A479817710 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarPeopleView.swift"; sourceTree = "<group>"; };\n' +
+    'A9F37C679F54A4255BFB5CC2 = { isa = PBXBuildFile; fileRef = 5BDD5968420E59A479817710; };\n' +
+    'AB6A7AAB6C172EAC90E2D8D3 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarVisionComparison.swift"; sourceTree = "<group>"; };\n' +
+    '8241F45DB510A83BB094D568 = { isa = PBXBuildFile; fileRef = AB6A7AAB6C172EAC90E2D8D3; };\n' +
+    '78D07123A4223F136312E43C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/Feedback.swift"; sourceTree = "<group>"; };\n' +
+    'A591337BD3B64FBD42E4C4CD = { isa = PBXBuildFile; fileRef = 78D07123A4223F136312E43C; };\n' +
+    'A07D1E96B7E3265664B7A4E5 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/IndoorNavigator.swift"; sourceTree = "<group>"; };\n' +
+    '39BEE9AEB83D5740A91E1BF8 = { isa = PBXBuildFile; fileRef = A07D1E96B7E3265664B7A4E5; };\n' +
+    '24A390B7D2A626AE4FC832EF = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/IndoorSituation.swift"; sourceTree = "<group>"; };\n' +
+    'C6237D187D961C7EE24427ED = { isa = PBXBuildFile; fileRef = 24A390B7D2A626AE4FC832EF; };\n' +
+    'B0F68D2FB969FF7C3D05DA1A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ItemAppearance.swift"; sourceTree = "<group>"; };\n' +
+    '1908108107C61AA0EF6F5D30 = { isa = PBXBuildFile; fileRef = B0F68D2FB969FF7C3D05DA1A; };\n' +
+    '1CD58883DE4B6F1298D58564 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/JourneyStore.swift"; sourceTree = "<group>"; };\n' +
+    '4536FB52ADEC02E7D7A9C24E = { isa = PBXBuildFile; fileRef = 1CD58883DE4B6F1298D58564; };\n' +
+    '8C8CB47DB240ABB97A1D1C91 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/KeepOutZonesView.swift"; sourceTree = "<group>"; };\n' +
+    '482691581DF9ACF9C64C4E97 = { isa = PBXBuildFile; fileRef = 8C8CB47DB240ABB97A1D1C91; };\n' +
+    '23EA1C1047270EA90549029B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/LocalImageAssistant.swift"; sourceTree = "<group>"; };\n' +
+    '0A6BB6B3A0D620F73C1BAC12 = { isa = PBXBuildFile; fileRef = 23EA1C1047270EA90549029B; };\n' +
+    '8E79CAFB76D50E58349A8BF6 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/MeshCandidateDiagnostics.swift"; sourceTree = "<group>"; };\n' +
+    'DD48E07D75A8487C6C62BC5A = { isa = PBXBuildFile; fileRef = 8E79CAFB76D50E58349A8BF6; };\n' +
+    'EAFF2A3BF0F7D2ED0D486EA2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NarrationHistoryView.swift"; sourceTree = "<group>"; };\n' +
+    '3D99DDEAD4F4BB5A3431411F = { isa = PBXBuildFile; fileRef = EAFF2A3BF0F7D2ED0D486EA2; };\n' +
+    '246776DD4742E59B6417B671 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NarrationJournal.swift"; sourceTree = "<group>"; };\n' +
+    'DAE8D035A0C35EC4C46C3B89 = { isa = PBXBuildFile; fileRef = 246776DD4742E59B6417B671; };\n' +
+    '56A5C2ED60132BD23E9AA7F2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeARObservationAdapter.swift"; sourceTree = "<group>"; };\n' +
+    '7551A8BA7A18642ADB87ECA9 = { isa = PBXBuildFile; fileRef = 56A5C2ED60132BD23E9AA7F2; };\n' +
+    'FF2547F9C811A0D0F1042BFC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeARObservationBridge.swift"; sourceTree = "<group>"; };\n' +
+    '1A9FAAA822EDBA75DAFEA9B6 = { isa = PBXBuildFile; fileRef = FF2547F9C811A0D0F1042BFC; };\n' +
+    '24A9C4CB06BF6BE9D5A6E9BE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeLocalizationIssuer.swift"; sourceTree = "<group>"; };\n' +
+    'CCEEEFF158A8E79A361C80A1 = { isa = PBXBuildFile; fileRef = 24A9C4CB06BF6BE9D5A6E9BE; };\n' +
+    '65A1A8835BFCEC08830B529A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeLocalizationRouter.swift"; sourceTree = "<group>"; };\n' +
+    '350B318E951133B4909A1AAD = { isa = PBXBuildFile; fileRef = 65A1A8835BFCEC08830B529A; };\n' +
+    'D21441D3D26F1448A8D109EC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeMapping.swift"; sourceTree = "<group>"; };\n' +
+    '69DF1C0CD3929FF3E4BD79D7 = { isa = PBXBuildFile; fileRef = D21441D3D26F1448A8D109EC; };\n' +
+    'A4A07649EDA67CCF077B0134 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NavigationModel.swift"; sourceTree = "<group>"; };\n' +
+    '3A28D6BA63537A241629B214 = { isa = PBXBuildFile; fileRef = A4A07649EDA67CCF077B0134; };\n' +
+    'A031A5B384F40C5D6BA7208F = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NavigationTestRecordingView.swift"; sourceTree = "<group>"; };\n' +
+    '79C3B33E606118B689608D5F = { isa = PBXBuildFile; fileRef = A031A5B384F40C5D6BA7208F; };\n' +
+    '40B15E15D7D6053FDB85793E = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ObservedSceneRuntime.swift"; sourceTree = "<group>"; };\n' +
+    'E43B2918F9EA7A32FCD46837 = { isa = PBXBuildFile; fileRef = 40B15E15D7D6053FDB85793E; };\n' +
+    '5787009721FE984E0A19D32'... 24113 more characters
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/90f3f6703064/blind/tools/test/mesh-package-project.test.mjs:88:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '// !$*UTF8*$!\n{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {\n69C898D09A7F861EA925F30A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/AlwaysOnShortcuts.swift"; sourceTree = "<group>"; };\n19DB20F9567465164DE16C18 = { isa = PBXBuildFile; fileRef = 69C898D09A7F861EA925F30A; };\n24339E80C725EA11FF0FFE35 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/AssistantPreferencesView.swift"; sourceTree = "<group>"; };\n9E05114B26F4DD93E32BC105 = { isa = PBXBuildFile; fileRef = 24339E80C725EA11FF0FFE35; };\nCD0A25335058811CAE708448 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/AssistantSituation.swift"; sourceTree = "<group>"; };\n9B3ED182B72B2E0155CDE497 = { isa = PBXBuildFile; fileRef = CD0A25335058811CAE708448; };\nB7FFB89D9E08BAF2F8C0268E = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BeltLink.swift"; sourceTree = "<group>"; };\nA2996D0CBCDC778FBBB785DB = { isa = PBXBuildFile; fileRef = B7FFB89D9E08BAF2F8C0268E; };\nB232FC2966139EE3C55C4D4D = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BlindAssistApp.swift"; sourceTree = "<group>"; };\nFB858898A7E6074A9D1EBEF4 = { isa = PBXBuildFile; fileRef = B232FC2966139EE3C55C4D4D; };\n124AAA588045F837E5EF6788 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BodyProfileSettingsView.swift"; sourceTree = "<group>"; };\n29A823B0C5DEED39594A3FE1 = { isa = PBXBuildFile; fileRef = 124AAA588045F837E5EF6788; };\n7F8803F436A7F267127BA22C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/BodyProfileStore.swift"; sourceTree = "<group>"; };\n6AD9045FC5D6C7DF98996D56 = { isa = PBXBuildFile; fileRef = 7F8803F436A7F267127BA22C; };\n8C85FCBC8A470DFD2AAE529C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ClothingColorReader.swift"; sourceTree = "<group>"; };\nCBA596EA4A7A13AA95B95279 = { isa = PBXBuildFile; fileRef = 8C85FCBC8A470DFD2AAE529C; };\nBC0E96261A4076C507B45DB1 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/CommunityLibrary.swift"; sourceTree = "<group>"; };\n48D1279A90A628052EF7B40C = { isa = PBXBuildFile; fileRef = BC0E96261A4076C507B45DB1; };\n33D66E24128C6DEC3F289907 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/CommunityMapsView.swift"; sourceTree = "<group>"; };\nA1D1E39462A588D90936A04E = { isa = PBXBuildFile; fileRef = 33D66E24128C6DEC3F289907; };\n5C43A161E958D62F7CEC9DC2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/CompanionLiveActivity.swift"; sourceTree = "<group>"; };\n14564B17B20C5BC8F7EC180F = { isa = PBXBuildFile; fileRef = 5C43A161E958D62F7CEC9DC2; };\n4FC74F738368F9307F39B6BD = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ConnectedJourneyPersistenceView.swift"; sourceTree = "<group>"; };\n47EE78C15292A8891863E45A = { isa = PBXBuildFile; fileRef = 4FC74F738368F9307F39B6BD; };\nAB060E3FDCFFBB65E752235B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ConnectedJourneyRuntime.swift"; sourceTree = "<group>"; };\n7D8FC210A679C8A3361B53EE = { isa = PBXBuildFile; fileRef = AB060E3FDCFFBB65E752235B; };\nAF14A90136D3CFE820EA5186 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/DashboardView.swift"; sourceTree = "<group>"; };\nFB2B8724D1E0A5635BA3344B = { isa = PBXBuildFile; fileRef = AF14A90136D3CFE820EA5186; };\nC70285F1D4498792A9AF9D66 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/DepthSampler.swift"; sourceTree = "<group>"; };\n26A4C9C80D8F3A62699E2A22 = { isa = PBXBuildFile; fileRef = C70285F1D4498792A9AF9D66; };\nF12F029C41AA982ECF348295 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ExplorePictureView.swift"; sourceTree = "<group>"; };\n0E9441DB7BB3C7D7EAD93A66 = { isa = PBXBuildFile; fileRef = F12F029C41AA982ECF348295; };\nBF18057EA19E83F38F859141 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarFaceExperiment.swift"; sourceTree = "<group>"; };\nD822758E908F216659DA2F17 = { isa = PBXBuildFile; fileRef = BF18057EA19E83F38F859141; };\n346C41A7A7A145D0AB1B3C70 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarFaceStore.swift"; sourceTree = "<group>"; };\n8C02AE920004CB8CD37165B3 = { isa = PBXBuildFile; fileRef = 346C41A7A7A145D0AB1B3C70; };\n1189D588EED234E0E160BB06 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarModelConfiguration.swift"; sourceTree = "<group>"; };\n1FFEBC234CFF07784E267C76 = { isa = PBXBuildFile; fileRef = 1189D588EED234E0E160BB06; };\n5BDD5968420E59A479817710 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarPeopleView.swift"; sourceTree = "<group>"; };\nA9F37C679F54A4255BFB5CC2 = { isa = PBXBuildFile; fileRef = 5BDD5968420E59A479817710; };\nAB6A7AAB6C172EAC90E2D8D3 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/FamiliarVisionComparison.swift"; sourceTree = "<group>"; };\n8241F45DB510A83BB094D568 = { isa = PBXBuildFile; fileRef = AB6A7AAB6C172EAC90E2D8D3; };\n78D07123A4223F136312E43C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/Feedback.swift"; sourceTree = "<group>"; };\nA591337BD3B64FBD42E4C4CD = { isa = PBXBuildFile; fileRef = 78D07123A4223F136312E43C; };\nA07D1E96B7E3265664B7A4E5 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/IndoorNavigator.swift"; sourceTree = "<group>"; };\n39BEE9AEB83D5740A91E1BF8 = { isa = PBXBuildFile; fileRef = A07D1E96B7E3265664B7A4E5; };\n24A390B7D2A626AE4FC832EF = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/IndoorSituation.swift"; sourceTree = "<group>"; };\nC6237D187D961C7EE24427ED = { isa = PBXBuildFile; fileRef = 24A390B7D2A626AE4FC832EF; };\nB0F68D2FB969FF7C3D05DA1A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ItemAppearance.swift"; sourceTree = "<group>"; };\n1908108107C61AA0EF6F5D30 = { isa = PBXBuildFile; fileRef = B0F68D2FB969FF7C3D05DA1A; };\n1CD58883DE4B6F1298D58564 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/JourneyStore.swift"; sourceTree = "<group>"; };\n4536FB52ADEC02E7D7A9C24E = { isa = PBXBuildFile; fileRef = 1CD58883DE4B6F1298D58564; };\n8C8CB47DB240ABB97A1D1C91 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/KeepOutZonesView.swift"; sourceTree = "<group>"; };\n482691581DF9ACF9C64C4E97 = { isa = PBXBuildFile; fileRef = 8C8CB47DB240ABB97A1D1C91; };\n23EA1C1047270EA90549029B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/LocalImageAssistant.swift"; sourceTree = "<group>"; };\n0A6BB6B3A0D620F73C1BAC12 = { isa = PBXBuildFile; fileRef = 23EA1C1047270EA90549029B; };\n8E79CAFB76D50E58349A8BF6 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/MeshCandidateDiagnostics.swift"; sourceTree = "<group>"; };\nDD48E07D75A8487C6C62BC5A = { isa = PBXBuildFile; fileRef = 8E79CAFB76D50E58349A8BF6; };\nEAFF2A3BF0F7D2ED0D486EA2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NarrationHistoryView.swift"; sourceTree = "<group>"; };\n3D99DDEAD4F4BB5A3431411F = { isa = PBXBuildFile; fileRef = EAFF2A3BF0F7D2ED0D486EA2; };\n246776DD4742E59B6417B671 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NarrationJournal.swift"; sourceTree = "<group>"; };\nDAE8D035A0C35EC4C46C3B89 = { isa = PBXBuildFile; fileRef = 246776DD4742E59B6417B671; };\n56A5C2ED60132BD23E9AA7F2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeARObservationAdapter.swift"; sourceTree = "<group>"; };\n7551A8BA7A18642ADB87ECA9 = { isa = PBXBuildFile; fileRef = 56A5C2ED60132BD23E9AA7F2; };\nFF2547F9C811A0D0F1042BFC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeARObservationBridge.swift"; sourceTree = "<group>"; };\n1A9FAAA822EDBA75DAFEA9B6 = { isa = PBXBuildFile; fileRef = FF2547F9C811A0D0F1042BFC; };\n24A9C4CB06BF6BE9D5A6E9BE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeLocalizationIssuer.swift"; sourceTree = "<group>"; };\nCCEEEFF158A8E79A361C80A1 = { isa = PBXBuildFile; fileRef = 24A9C4CB06BF6BE9D5A6E9BE; };\n65A1A8835BFCEC08830B529A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeLocalizationRouter.swift"; sourceTree = "<group>"; };\n350B318E951133B4909A1AAD = { isa = PBXBuildFile; fileRef = 65A1A8835BFCEC08830B529A; };\nD21441D3D26F1448A8D109EC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NativeMapping.swift"; sourceTree = "<group>"; };\n69DF1C0CD3929FF3E4BD79D7 = { isa = PBXBuildFile; fileRef = D21441D3D26F1448A8D109EC; };\nA4A07649EDA67CCF077B0134 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NavigationModel.swift"; sourceTree = "<group>"; };\n3A28D6BA63537A241629B214 = { isa = PBXBuildFile; fileRef = A4A07649EDA67CCF077B0134; };\nA031A5B384F40C5D6BA7208F = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/NavigationTestRecordingView.swift"; sourceTree = "<group>"; };\n79C3B33E606118B689608D5F = { isa = PBXBuildFile; fileRef = A031A5B384F40C5D6BA7208F; };\n40B15E15D7D6053FDB85793E = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssist/ObservedSceneRuntime.swift"; sourceTree = "<group>"; };\nE43B2918F9EA7A32FCD46837 = { isa = PBXBuildFile; fileRef = 40B15E15D7D6053FDB85793E; };\n5787009721FE984E0A19D32'... 24113 more characters,
+    expected: /XCRemoteSwiftPackageReference|PBXShellScriptBuildPhase|https?:\/\//,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }

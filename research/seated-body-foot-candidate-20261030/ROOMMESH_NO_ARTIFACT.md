@@ -1,0 +1,3 @@
+# Room-mesh artifact storage gate
+
+The existing room-mesh workflow uploaded an artifact in run41003352926. No artifact was deleted. This layer makes subsequent room-mesh artifact upload default-off via a source opt-in environment flag `BLIND_UPLOAD_ARTIFACTS: false`, while preserving native commands, runner, assertions and deadlines. Metadata-only fixed-path log receipts are emitted on success/failure; no route geometry is included. The exact workflow mirror and current75/83/bench pins are updated; historical source and receipts remain reversible. CI author ran16 logger +38 timing +19 device-evidence controls successfully; these are lightweight parser/shell checks, not native execution.

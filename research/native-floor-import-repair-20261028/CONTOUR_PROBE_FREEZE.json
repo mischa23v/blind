@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "scope": "fixed isolated .5 versus0 contour contrast, no production planner/source/oracle change",
+  "status": "authored-and-independently-reviewed-native-probe-pending",
+  "nativeCaptureSourceCommit": "b1f3a9ae2dca8b9a45ece285174253de5f172255",
+  "nativeCaptureRun": 40780118332,
+  "physicalAuthority": false,
+  "reviewer": "stage_binary_batch_three",
+  "localChecks": [
+    "All51sourcepins verified",
+    "All3 outcome attachment SHA256s equal49a",
+    "Captured parsed geometry equals verified native producer report",
+    "Python AST parse only; runner not executed",
+    "Earlier two tinyC++wrapper object syntax compiles; not full link or native execution"
+  ],
+  "files": {
+    "research/native-floor-import-repair-20261028/contour-probe/CPP_WRAPPER_SYNTAX_RESULT.json": "4964877bc9cc768e5d142831075411ff8e492c2165add07aa4a43eb35c3fe3de",
+    "research/native-floor-import-repair-20261028/contour-probe/INPUT_PINS.json": "cdfdbb5fae08cce4aaf2531e9eb2def679b37acebc09b8e29d3cbb75849aba82",
+    "research/native-floor-import-repair-20261028/contour-probe/PACKED_ROUTING_GEOMETRY.json": "0731735bf24f198288efea26d79c8a29929d49b10d3be0637e9e15fb983c63b7",
+    "research/native-floor-import-repair-20261028/contour-probe/README.md": "ed7073577f06946422f82ca0c63c34a31f4faf1174fb3c55c5848357893679c2",
+    "research/native-floor-import-repair-20261028/contour-probe/REQUESTS_49A.json": "e5d2e07c7564869d2abde1d4a947e022d1a166c64641a81f2b92fcdbab73ac51",
+    "research/native-floor-import-repair-20261028/contour-probe/SOURCE_PINS.json": "70b393e498943b7f0d94897745e22f9e09636307493dd2f6668e5a7a212b65e9",
+    "research/native-floor-import-repair-20261028/contour-probe/association_appendix.cpp": "7eb52fb231d5f8bc473386ae18817209d11e16e64c63523e256179ac2518103a",
+    "research/native-floor-import-repair-20261028/contour-probe/contour_probe.h": "e4f7df6d3c58f6440df10db378397c77fd58eb667b588d187889afa026165380",
+    "research/native-floor-import-repair-20261028/contour-probe/main.swift": "db1ba92105445d6e30e2ff2be5e283de36586330c7f459241f6383e2c15fe688",
+    "research/native-floor-import-repair-20261028/contour-probe/native-contour-probe.yml": "9657e44bac2b59d7e2b57a1beab7378986c7edbb679c24c0d0390e43104e6dac",
+    "research/native-floor-import-repair-20261028/contour-probe/run.py": "547047aa588dda8eb32537188bb2afbf7f9177540acde8fd4739cd1f493eeda9"
+  },
+  "workflowPublication": "Root copies contour-probe/native-contour-probe.yml to .github/workflows/native-contour-probe.yml after review; no remote write by sub-agent"
+}

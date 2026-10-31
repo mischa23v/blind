@@ -1,0 +1,23 @@
+2026-10-28T10:45:22.2977000Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4182e99544003abcc4778cf4b15801c4ca93084b:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T10:45:32.1307040Z  * [new ref]         4182e99544003abcc4778cf4b15801c4ca93084b -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T10:45:32.1626510Z 4182e99544003abcc4778cf4b15801c4ca93084b
+2026-10-28T10:45:34.7709030Z 4182e99544003abcc4778cf4b15801c4ca93084b
+2026-10-28T10:45:35.5784420Z 4182e99544003abcc4778cf4b15801c4ca93084b
+2026-10-28T10:47:54.1857580Z core exit status: 0
+2026-10-28T10:47:54.2431040Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 12.076 (12.353) seconds
+2026-10-28T10:47:54.2433000Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 12.076 (12.360) seconds
+2026-10-28T10:49:23.1231710Z memory exit status: 0
+2026-10-28T10:49:23.1607620Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 13.996 (14.008) seconds
+2026-10-28T10:49:23.1708710Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 13.996 (14.010) seconds
+2026-10-28T10:53:50.2990000Z build exit status: 0
+2026-10-28T10:53:50.3672750Z ** BUILD SUCCEEDED **
+2026-10-28T10:54:32.0344810Z unit exit status: 65
+2026-10-28T10:54:32.1174210Z 2026-10-28 10:54:20.006 appintentsnltrainingprocessor[32398:86725] error: Could not archive SSU artifacts. Check build log.
+2026-10-28T10:54:32.1179900Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:209:17: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+2026-10-28T10:54:32.1183270Z     |                 `- error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+2026-10-28T10:54:51.8909150Z ui exit status: 65
+2026-10-28T10:54:51.9255200Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:209:17: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+2026-10-28T10:54:51.9257590Z     |                 `- error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+2026-10-28T10:54:56.6207370Z unit xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793184845.696, "finishTime": 1793184871.811}
+2026-10-28T10:54:56.7447250Z ui xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793184879.313, "finishTime": 1793184891.778}
+2026-10-28T10:54:56.9442930Z NATIVE_UNIT_CASE_STATUSES={"schema":1,"target":"IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame","complete":false,"target_pass_verified":false,"source_verified":false,"expected_commit":"4182e99544003abcc4778cf4b15801c4ca93084b","limits":{"query_bytes":4194304,"query_seconds":30,"tree_nodes":10000},"provenance":{"actual_head":"4182e99544003abcc4778cf4b15801c4ca93084b","tracked_source_clean":true,"untracked_scopes":["ios","BlindCore","BlindMemory","tools/ci",".github/workflows"],"generated_metadata":[{"path":"BlindMemory/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]},{"path":"ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"d11cb7a41a81538c6dac3ffac3b8187ff08abdec9bdae64e6f53c51cf5c8ad69","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]}]},"source_commit":"4182e99544003abcc4778cf4b15801c4ca93084b","routeDiagnosticEvidence":{"schema":1,"status":"source_or_cases_unverified","physicalAuthority":false},"error_type":"ValueError","error":"No test case statuses found"}

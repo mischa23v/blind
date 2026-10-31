@@ -1,0 +1,204 @@
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 124]
+[Planning 28 / 124]
+[Planning deferred tasks]
+[42 / 88]
+[43 / 89] BlindCore
+[46 / 127]
+[50 / 127]
+[53 / 127]
+[55 / 127]
+[58 / 127]
+[60 / 127]
+[62 / 127]
+[65 / 127]
+[67 / 127]
+[69 / 127]
+[71 / 127]
+[74 / 127]
+[75 / 127]
+[76 / 127]
+[77 / 127]
+[80 / 127] BlindCore
+[81 / 127] BlindCore
+[83 / 127] BlindCore
+[90 / 128]
+[92 / 131] NativeBodyProfile
+[93 / 131] NativeBodyProfile
+[95 / 131] NativeBodyProfile
+[102 / 131] BlindCore
+[104 / 131] BlindCore
+[111 / 133] NativeBodyProfileTests-product
+[114 / 174]
+[115 / 174]
+[117 / 174]
+[118 / 174]
+[119 / 174]
+[121 / 174]
+[123 / 174]
+[125 / 174]
+[128 / 174]
+[131 / 174]
+[132 / 174]
+[134 / 174]
+[135 / 174]
+[137 / 174]
+[139 / 174]
+[141 / 174]
+[142 / 174]
+[144 / 174]
+[145 / 174]
+[148 / 174] NativeBodyProfileTests-product
+[151 / 174] NativeBodyProfileTests-product
+[160 / 174] BlindCoreTests-product
+[162 / 174] BlindCoreTests-product
+[163 / 174] NativeBodyProfileTests-product
+[164 / 174] AllIncludingTests
+[166 / 174] NativeBodyProfileTests-product
+[168 / 174]
+[173 / 174] NativeBodyProfileTests-product
+Build complete! (48.02 sec)
+Test Suite 'All tests' started at 2026-10-27 19:42:41.753.
+Test Suite 'NativeBodyProfileTests.xctest' started at 2026-10-27 19:42:41.757.
+Test Suite 'BodyProfileStoreTests' started at 2026-10-27 19:42:41.758.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testBlockedWriteDoesNotBlockMainAndCannotResurrectAfterDelete]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testBlockedWriteDoesNotBlockMainAndCannotResurrectAfterDelete]' passed (0.133 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testFailedDeleteDoesNotPermitNewSaveUntilDeletionRetry]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testFailedDeleteDoesNotPermitNewSaveUntilDeletionRetry]' passed (0.001 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testLocalStoreRoundTripScopedDeletionAndCorruptFile]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testLocalStoreRoundTripScopedDeletionAndCorruptFile]' passed (0.034 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testRejectedStaleWriterDoesNotCancelAdmittedCurrentWriter]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testRejectedStaleWriterDoesNotCancelAdmittedCurrentWriter]' passed (0.002 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testReopeningReadWaitsForBlockedSaveWithoutRollingItBack]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testReopeningReadWaitsForBlockedSaveWithoutRollingItBack]' passed (0.002 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testRuntimeSubscriptionStartupSaveAndDeletionAreRevisionOwned]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testRuntimeSubscriptionStartupSaveAndDeletionAreRevisionOwned]' passed (0.003 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testSourceGeometryHookRetiresBothOwnersWithoutChangingTrustedIdentity]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testSourceGeometryHookRetiresBothOwnersWithoutChangingTrustedIdentity]' passed (0.004 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testSupersededWriteCannotRepublishDeletedRuntimeGeometry]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testSupersededWriteCannotRepublishDeletedRuntimeGeometry]' passed (0.002 seconds).
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testWaitingReadsCoalesceAndCannotCrossDeletionBarrier]' started.
+Test Case '-[NativeBodyProfileTests.BodyProfileStoreTests testWaitingReadsCoalesceAndCannotCrossDeletionBarrier]' passed (0.001 seconds).
+Test Suite 'BodyProfileStoreTests' passed at 2026-10-27 19:42:41.943.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.182 (0.185) seconds
+Test Suite 'NativeBodyProfileTests.xctest' passed at 2026-10-27 19:42:41.943.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.182 (0.186) seconds
+Test Suite 'All tests' passed at 2026-10-27 19:42:41.943.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.182 (0.190) seconds
+Test Suite 'All tests' started at 2026-10-27 19:42:42.088.
+Test Suite 'BlindCoreTests.xctest' started at 2026-10-27 19:42:42.090.
+Test Suite 'BodyCollisionWarningTests' started at 2026-10-27 19:42:42.090.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testActualLegacyDetectorMissWitnessTallBodyIsSupplementedWithoutReplacingHazards]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testActualLegacyDetectorMissWitnessTallBodyIsSupplementedWithoutReplacingHazards]' passed (0.008 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testAllLegacyUrgentWarningsSurviveAndNoSupplementMakesSafe]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testAllLegacyUrgentWarningsSurviveAndNoSupplementMakesSafe]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testArbitrationStillUsesSeverityAndPreservesAllExistingSourceTies]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testArbitrationStillUsesSeverityAndPreservesAllExistingSourceTies]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testDoesNotTreatThreeDuplicatePixelsAsIndependentReturnsOrFloorAsObstacle]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testDoesNotTreatThreeDuplicatePixelsAsIndependentReturnsOrFloorAsObstacle]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testFullCameraPitchRollYawProjectionMatchesUnchangedWorldGeometry]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testFullCameraPitchRollYawProjectionMatchesUnchangedWorldGeometry]' passed (0.002 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testMountSlipDeletionChangedProfileAndBadOrExpiredPoseCannotWarn]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testMountSlipDeletionChangedProfileAndBadOrExpiredPoseCannotWarn]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testRealProfileBoundsNotAgeWeightDefaultsDriveWarnings]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testRealProfileBoundsNotAgeWeightDefaultsDriveWarnings]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testShortTallAndOverheadEquipment]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testShortTallAndOverheadEquipment]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testSupplementalCannotMaskIndependentSameSeverityAlertInEitherOrder]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testSupplementalCannotMaskIndependentSameSeverityAlertInEitherOrder]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testUnknownErrorsEquipmentAndReportedFloorNeverBecomeZeroOrClearance]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testUnknownErrorsEquipmentAndReportedFloorNeverBecomeZeroOrClearance]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testWideBodyBackpackOffsetAndRecordedErrorExpand]' started.
+Test Case '-[BlindCoreTests.BodyCollisionWarningTests testWideBodyBackpackOffsetAndRecordedErrorExpand]' passed (0.000 seconds).
+Test Suite 'BodyCollisionWarningTests' passed at 2026-10-27 19:42:42.110.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.015 (0.019) seconds
+Test Suite 'BodyProfileTests' started at 2026-10-27 19:42:42.110.
+Test Case '-[BlindCoreTests.BodyProfileTests testBoundedPrivateRoundTripAndNoIdentityFields]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testBoundedPrivateRoundTripAndNoIdentityFields]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testCylinderCoversCornersAndSidewaysNotNarrowed]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testCylinderCoversCornersAndSidewaysNotNarrowed]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testDemographicsDoNotInventWidthOrGuardianAuthority]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testDemographicsDoNotInventWidthOrGuardianAuthority]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testGenderOnlyEditPreservesGeometryButUpdatesProfile]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testGenderOnlyEditPreservesGeometryButUpdatesProfile]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testGeometryEditInvalidatesExistingRouteTicketSessionAndOldCallbacks]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testGeometryEditInvalidatesExistingRouteTicketSessionAndOldCallbacks]' passed (0.004 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testGrowthAndMountChangesInvalidateEvenSamePreviewSize]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testGrowthAndMountChangesInvalidateEvenSamePreviewSize]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testInvalidFiniteAndRangeValuesReject]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testInvalidFiniteAndRangeValuesReject]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testLateDimensionCallbackAndIndependentContradictoryAxes]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testLateDimensionCallbackAndIndependentContradictoryAxes]' passed (0.008 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testMeasuredThenReportedThenEstimatedPrecedence]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testMeasuredThenReportedThenEstimatedPrecedence]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testMountOffsetAndEquipmentExpandNotShrink]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testMountOffsetAndEquipmentExpandNotShrink]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testNewWiderReportDoesNotRefreshOrShrinkOlderMeasurement]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testNewWiderReportDoesNotRefreshOrShrinkOlderMeasurement]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testOldTimestampCannotReplaceNewerMeasurementEvenWithCurrentRevision]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testOldTimestampCannotReplaceNewerMeasurementEvenWithCurrentRevision]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testOptionalInputsAndUnits]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testOptionalInputsAndUnits]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testPreviewCannotGrantClearanceAndRejectsNarrowDoorAndOverhead]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testPreviewCannotGrantClearanceAndRejectsNarrowDoorAndOverhead]' passed (0.012 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsAcceptReportsAndMeasurementsWithoutHidingMissingEvidence]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsAcceptReportsAndMeasurementsWithoutHidingMissingEvidence]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsRejectInvalidStaleAndUnsupportedWithoutSmallerFallback]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsRejectInvalidStaleAndUnsupportedWithoutSmallerFallback]' passed (0.004 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsRejectLoadedEmptyAndEstimatedOnlyProfiles]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsRejectLoadedEmptyAndEstimatedOnlyProfiles]' passed (0.002 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsRetainConservativeUnionAndRetireAfterGeometryChanges]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testRecordedBoundsRetainConservativeUnionAndRetireAfterGeometryChanges]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.BodyProfileTests testStaleMeasurementCannotRestoreOldGeometry]' started.
+Test Case '-[BlindCoreTests.BodyProfileTests testStaleMeasurementCannotRestoreOldGeometry]' passed (0.001 seconds).
+Test Suite 'BodyProfileTests' passed at 2026-10-27 19:42:42.152.
+	 Executed 19 tests, with 0 failures (0 unexpected) in 0.037 (0.042) seconds
+Test Suite 'DetectorTests' started at 2026-10-27 19:42:42.152.
+Test Case '-[BlindCoreTests.DetectorTests testCalibrationNeedsStableConsecutiveFrames]' started.
+Test Case '-[BlindCoreTests.DetectorTests testCalibrationNeedsStableConsecutiveFrames]' passed (0.003 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testDropWarnsOnFirstCredibleFrame]' started.
+Test Case '-[BlindCoreTests.DetectorTests testDropWarnsOnFirstCredibleFrame]' passed (0.006 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testDuplicateTimestampIsUnknown]' started.
+Test Case '-[BlindCoreTests.DetectorTests testDuplicateTimestampIsUnknown]' passed (0.004 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testEmptyDepthIsUnknown]' started.
+Test Case '-[BlindCoreTests.DetectorTests testEmptyDepthIsUnknown]' passed (0.003 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testFlatFloorIsObservingNeverSafe]' started.
+Test Case '-[BlindCoreTests.DetectorTests testFlatFloorIsObservingNeverSafe]' passed (0.009 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testLowConfidenceCannotBecomeFloorOrDrop]' started.
+Test Case '-[BlindCoreTests.DetectorTests testLowConfidenceCannotBecomeFloorOrDrop]' passed (0.006 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testNearOnlyFloorIsUnknown]' started.
+Test Case '-[BlindCoreTests.DetectorTests testNearOnlyFloorIsUnknown]' passed (0.007 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testObstacleAndOverhead]' started.
+Test Case '-[BlindCoreTests.DetectorTests testObstacleAndOverhead]' passed (0.015 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testOutOfCorridorObstacleDoesNotTrigger]' started.
+Test Case '-[BlindCoreTests.DetectorTests testOutOfCorridorObstacleDoesNotTrigger]' passed (0.005 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testProjectionConventionsAndScaling]' started.
+Test Case '-[BlindCoreTests.DetectorTests testProjectionConventionsAndScaling]' passed (0.001 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testRejectsNonLevelFloorCalibration]' started.
+Test Case '-[BlindCoreTests.DetectorTests testRejectsNonLevelFloorCalibration]' passed (0.007 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testRequiresExplicitCalibration]' started.
+Test Case '-[BlindCoreTests.DetectorTests testRequiresExplicitCalibration]' passed (0.000 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testResetRemovesWorldCoordinateCalibration]' started.
+Test Case '-[BlindCoreTests.DetectorTests testResetRemovesWorldCoordinateCalibration]' passed (0.004 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testSingleBadPixelCannotTriggerDrop]' started.
+Test Case '-[BlindCoreTests.DetectorTests testSingleBadPixelCannotTriggerDrop]' passed (0.005 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testTimestampGapCannotDelayFreshDanger]' started.
+Test Case '-[BlindCoreTests.DetectorTests testTimestampGapCannotDelayFreshDanger]' passed (0.005 seconds).
+Test Case '-[BlindCoreTests.DetectorTests testTrackingLossStopsMonitoringAndFreshDangerStillWarnsImmediately]' started.
+Test Case '-[BlindCoreTests.DetectorTests testTrackingLossStopsMonitoringAndFreshDangerStillWarnsImmediately]' passed (0.004 seconds).
+Test Suite 'DetectorTests' passed at 2026-10-27 19:42:42.241.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.085 (0.089) seconds
+Test Suite 'BlindCoreTests.xctest' passed at 2026-10-27 19:42:42.241.
+	 Executed 46 tests, with 0 failures (0 unexpected) in 0.136 (0.151) seconds
+Test Suite 'All tests' passed at 2026-10-27 19:42:42.241.
+	 Executed 46 tests, with 0 failures (0 unexpected) in 0.136 (0.153) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

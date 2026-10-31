@@ -1,0 +1,68 @@
+--- a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
++++ b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+@@ -15,6 +15,7 @@
+     private let lock = NSLock()
+     private let worker: DispatchQueue
+     private let runtime: RoomMeshCandidateRuntime
++    private let supportPolicy: MeshSupportPolicy
+     private let maxAnchors: Int, maxCopies: Int
+     private var epoch: UUID
+     private var token: UInt64 = 0
+@@ -30,12 +31,17 @@
+     private var receipt: Double = -1
+     // Tombstones remain until reset; no eviction that could permit anchor ABA.
+     private var revisions: [UUID: UInt64] = [:]
++    /// Opt-in source classification only, NOT measured physical support. Legacy
++    /// callers retain slope-based diagnostic behavior; policy is fixed across reset.
+     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
++                supportPolicy: MeshSupportPolicy = .legacySlope,
+                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
++        self.supportPolicy = supportPolicy
+         let initialEpoch = UUID(); epoch = initialEpoch
+-        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1)
++        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
++                                               supportPolicy: supportPolicy)
+     }
+     private func locked<T>(_ body: () throws -> T) rethrows -> T {
+         lock.lock(); defer { lock.unlock() }; return try body()
+@@ -94,11 +100,26 @@
+                           c.receiptUptime == context.receiptUptime,
+                           mesh.revision == context.revision,
+                           mesh.triangleIndices.allSatisfy({ $0 <= UInt32(Int32.max) }) else { gap(); return }
++                    var triangleSupport: [MeshTriangleSupport]?
++                    if supportPolicy == .classifiedFloorOnly {
++                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { gap(); return }
++                        // ARMeshClassification.floor raw value is 2. Only that label
++                        // is eligible floor; all other faces still rasterize as obstacles.
++                        // No slope/height fallback and no discarded obstacle geometry.
++                        triangleSupport = mesh.classifications.map { $0 == 2 ? .floor : .obstacle }
++                        // Missing, malformed, unsupported and explicit .none labels
++                        // remain unknown even when another classified floor can route.
++                        // Install the replacement below: never retain its prior floor
++                        // merely because current classifications are absent.
++                        if !mesh.classificationDiagnostics.isEmpty ||
++                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) { gap() }
++                    }
+                     // Local vertices and unmodified column-major transform: package applies ONCE.
+                     let event = MeshAnchorEvent(sessionID: epoch.uuidString, generation: 1,
+                         anchorID: id.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
+                         vertices: mesh.localVertices.map(Double.init), triangles: mesh.triangleIndices.map(Int32.init),
+-                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: true)
++                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: true,
++                        triangleSupport: triangleSupport)
+                     // Runtime itself marks a rejected offer as sticky unknown coverage.
+                     _ = runtime.offer(event)
+                 }
+--- a/research/mesh-candidate-ingress-83/SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/SOURCE_PINS.json
+@@ -5,7 +5,7 @@
+   "research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift": "73c26289773688db28c6caaeb0d84430dd81c78df5a4fa8718b50f332da4687f",
+   "research/room-mesh-package-75/apple/ci.py": "29bac96c47f2352f1b7af52dd6b0217c3238ab5707fa8ac9e7a38f4d8caa7bde",
+   "research/room-mesh-package-75/APPLE_SOURCE_PINS.json": "38df5c81bc4b6c1ebebedbbed9091d63be0de27934d9648ef65a1adb7e435ada",
+-  "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "1d1a57cc7fcb2d0f48220aa94eb06dbba7e1039d98f353003556c8533c6dd894",
++  "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "733a7bdcc4a8da7ff4fc95c087b690e369ca03c79adcc729e277934d708b53b1",
+   "research/mesh-candidate-ingress-83/Sources/ARKitIngress.swift": "b67267f1079a6f14e289ad8b795ead282973e662a7a18774bc2c842211225b2e",
+   "research/mesh-candidate-ingress-83/tests/main.swift": "b4d00b36d9dc58a7160817510f0e29d5f56dfd40358faec810db6b743ffd8123",
+   "research/mesh-candidate-ingress-83/apple/ci.py": "03fff8f2bf62e1cf2ea2ac5a0a0d2b11c78a17225a5a6314b0a68ff8b6ed92b3",

@@ -1,0 +1,104 @@
+--- six-pose/run_aggregate.py
++++ height-follow/run_aggregate.py
+@@ -1,13 +1,13 @@
+ #!/usr/bin/env python3
+-"""Prepared real-room diagnostic aggregate launcher. No execution until published/reviewed/admitted.
+-Reuses conference guard helpers and process-group accounting. No RLIMIT_AS for V8.
++"""Prepared released-height diagnostic aggregate launcher. No execution until published/reviewed/admitted.
++Reuses conference guard helpers and process-group accounting. No new security/namespace changes.
+ """
+ import hashlib, json, math, os, pathlib, resource, signal, stat, subprocess, sys, time
+ from guard_helpers import sha, inventory, stable_inventory, usage, group_sample, kill_group
+ H=pathlib.Path(__file__).resolve().parent
+ ROOT=H.parents[1]  # Publication contract: <repo>/research/<this packet>.
+-CPU,WALL,RSS,OUTPUT=120,180,1024**3,16*1024**2
+-NODE_HEAP_MIB=256
++CPU,WALL,RSS,OUTPUT=120,180,1024**3,64*1024**2
++
+ 
+ def main():
+     if len(sys.argv)!=3 or sys.argv[1]!='--admitted-source-commit':
+@@ -18,9 +18,9 @@
+         signal.signal(sig,lambda s,_f: (_ for _ in ()).throw(SystemExit('Supervisor interrupted: '+str(s))))
+     manifestBytes=(H/'RUN_PINS.json').read_bytes();manifestSHA=hashlib.sha256(manifestBytes).hexdigest()
+     pins=json.loads(manifestBytes)
+-    if pins['protocol']!='rapier-six-pose-support-datum-v1-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
++    if pins['protocol']!='detour-height-follow-v1-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
+     if pins['limits']!={'cpuSeconds':CPU,'wallSeconds':WALL,'observedRSSBytes':RSS,
+-                       'outputBytes':OUTPUT,'nodeOldSpaceMiB':NODE_HEAP_MIB,'controllerCalls':48,'vtkEnvelopeBandQueries':96}:
++                       'outputBytes':OUTPUT,'maximumVTKQueries':29568,'triangleCandidates':30000000,'nativeBuilds':2,'nativeBeginCalls':4,'nativeStepCalls':3696}:
+         raise RuntimeError('Frozen limits changed')
+     def expand(s):
+         return s.replace('@WORKSPACE@',str(ROOT.parent)).replace('@SOURCE@',str(H)).replace('@REPO@',str(ROOT))
+@@ -53,17 +53,15 @@
+     work=pathlib.Path(expand(pins['workRoot']));work.mkdir(exist_ok=False)
+     out=work/'GUARD_RUN';out.mkdir(exist_ok=False)
+     cpu=min(os.sched_getaffinity(0));os.sched_setaffinity(0,{cpu})
+-    receipt={'schema':1,'scope':'six_pose_estimated_datum_diagnostic','status':'started','sourceCommit':head,
++    receipt={'schema':1,'scope':'two_route_released_detail_height_diagnostic','status':'started','sourceCommit':head,
+              'manifestSHA256':manifestSHA,'inputHashesBefore':before,'commands':[],
+              'limits':pins['limits'],'cpuAffinity':[cpu],'peakObservedAggregateRSS':0,'peakFastExitChildRSS':0,
+-             'physicalAuthority':False,'realRoomQueries':0,'rlimitASApplied':False,
++             'physicalAuthority':False,'nativeMovementApplied':False,'rlimitASApplied':False,
+              'runtimeContract':'managed_sandbox_trusted_official_source',
+              'independentlyAirGapped':False,'namespaceSetupRequested':False,'hostSecuritySettingsChanged':False,
+              'limitations':['Observed RSS polling is not a hard cgroup memory bound',
+-               'Node old-space heap cap does not include WASM/native/external memory',
+-               'Uses existing managed sandbox and trusted official source; not independently air-gapped',
+-               'Node permissions prevent unintended operations; not a hostile-code security boundary',
+-               'Same-mesh fixed probes do not establish source-room support, hazards, arrival or physical clearance']}
++                              'Uses existing managed sandbox and trusted official source; not independently air-gapped',
++                              'Same-mesh authored route proposals do not establish physical support, hazards or arrival']}
+     def save():
+         receipt['wallSeconds']=time.monotonic()-started;receipt['aggregateCPUSeconds']=usage()-initial
+         b=(json.dumps(receipt,indent=2)+'\n').encode()
+@@ -84,18 +82,13 @@
+     env={'PATH':'/usr/bin:/bin','LC_ALL':'C','HOME':str(out),'TMPDIR':str(out),
+          'UV_THREADPOOL_SIZE':'1','OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1',
+          'PYTHONDONTWRITEBYTECODE':'1','PYTHONPYCACHEPREFIX':str(out/'fresh-pycache')}
+-    packageRoot=expand(pins['packageRoot']);dataRoot=expand(pins['dataRoot']);datums=expand(pins['datums'])
+-    commands=[('kcc',[pins['nodeExecutable'],
+-          '--permission','--allow-fs-read='+str(H),'--allow-fs-read='+packageRoot,'--allow-fs-read='+dataRoot,
+-          '--allow-fs-write='+str(work),
+-          '--max-old-space-size=256','--max-semi-space-size=8','--v8-pool-size=1',
+-          str(H/'room_worker.mjs'),'--package-root',packageRoot,'--data-root',dataRoot,'--output',str(work/'probes'),
+-          '--runtime-contract','managed_sandbox_trusted_official_source','--pins-sha256',manifestSHA]),
+-          ('vtk',[pins['pythonExecutable'],'-I','-B',str(H/'vtk_worker.py'),
+-          '--mesh-root',dataRoot,'--datums',datums,'--probes',str(H/'PROBES.json'),'--output',str(work/'vtk')])]
++    def expand_command(command):
++        return [expand(x).replace('@WORK@',str(work)).replace('@LIBRARY_SHA256@',sha(work/'libheight_follow.so') if '@LIBRARY_SHA256@' in x else '') for x in command]
++    commands=[(k,pins[k+'Command']) for k in ['compile','height','vtk']]
+     p=None;row=None;failure=None
+     try:
+-        for label,args in commands:
++        for label,template in commands:
++            args=expand_command(template)
+             row={'label':label,'argv':args,'childEnvironmentKeys':sorted(env),
+                  'runtimeContract':'managed_sandbox_trusted_official_source',
+                  'networkAccessRequestedByProtocol':False,'independentlyAirGapped':False}
+@@ -133,7 +126,7 @@
+             p=None
+         from validate_results import validate_results
+         receipt['validatedResults']=validate_results(work,H,manifestSHA)
+-        receipt['status']='completed-six-pose-diagnostic-only';receipt['realRoomQueries']=48;receipt['vtkEnvelopeBandQueries']=96
++        receipt['status']='completed-two-route-height-diagnostic-only'
+     except BaseException as error:
+         failure=error;receipt['status']='failed';receipt['error']=type(error).__name__+': '+str(error)
+     finally:
+--- six-pose/guard_helpers.py
++++ height-follow/guard_helpers.py
+@@ -1,12 +1,12 @@
+ #!/usr/bin/env python3
+ """SOURCE ONLY: root review/admission required. Never invokes installs or retries.
+-Exact helper reuse from passed conference aggregate supervisor; output cap changed to16MiB.
++Helper reuse from passed conference aggregate supervisor; output cap64MiB for this reviewed protocol.
+ Historical estimated registration is diagnostic only, not camera-mesh calibration.
+ """
+ import hashlib, json, math, os, pathlib, re, resource, signal, stat, subprocess, sys, time
+ H = pathlib.Path(__file__).resolve().parent
+ ROOT = H.parents[1]
+-CPU, WALL, RSS, OUTPUT = 120, 180, 1024**3, 16*1024**2
++CPU, WALL, RSS, OUTPUT = 120, 180, 1024**3, 64*1024**2
+ 
+ def file_record(fd, hashed):
+     before=os.fstat(fd)

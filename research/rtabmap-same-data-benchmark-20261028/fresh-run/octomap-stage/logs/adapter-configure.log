@@ -1,0 +1,169 @@
+-- Could NOT find OpenNI (missing: OPENNI_LIBRARIES OPENNI_INCLUDE_DIRS) 
+** WARNING ** io features related to openni will be disabled
+-- OpenNI2 found (version: 2.2.0.33, include: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include/openni2, lib: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Could NOT find Pcap (missing: PCAP_LIBRARIES PCAP_INCLUDE_DIRS) 
+** WARNING ** io features related to pcap will be disabled
+-- The imported target "VTK::ParseJava" references the file
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/vtkParseJava-9.3"
+but this file does not exist.  Possible reasons include:
+* The file was deleted, renamed, or moved to another location.
+* An install or uninstall procedure did not complete successfully.
+* The installation package was faulty and contained
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/VTK-targets.cmake"
+but not all the files it references.
+
+-- The imported target "VTK::WrapJava" references the file
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/vtkWrapJava-9.3"
+but this file does not exist.  Possible reasons include:
+* The file was deleted, renamed, or moved to another location.
+* An install or uninstall procedure did not complete successfully.
+* The installation package was faulty and contained
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/VTK-targets.cmake"
+but not all the files it references.
+
+CMake Warning at /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/VTK-vtk-module-find-packages.cmake:1055 (find_package):
+  By not providing "FindQt5.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "Qt5", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "Qt5" (requested
+  version 5.15) with any of the following names:
+
+    Qt5Config.cmake
+    qt5-config.cmake
+
+  Add the installation prefix of "Qt5" to CMAKE_PREFIX_PATH or set "Qt5_DIR"
+  to a directory containing one of the above files.  If "Qt5" provides a
+  separate development package or SDK, be sure it has been installed.
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/vtk-config.cmake:159 (include)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:259 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:308 (find_VTK)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:561 (find_external_library)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build/RTABMapConfig.cmake:18 (find_dependency)
+  CMakeLists.txt:4 (find_package)
+
+
+-- Could not find the VTK package due to a missing dependency: Qt5
+-- Could NOT find X11 (missing: X11_X11_INCLUDE_PATH) 
+-- Could not find the VTK package due to a missing dependency: X11
+-- Could NOT find X11 (missing: X11_X11_INCLUDE_PATH) 
+-- Could NOT find TIFF (missing: TIFF_LIBRARY TIFF_INCLUDE_DIR) 
+-- Could NOT find freetype (missing: freetype_DIR)
+-- Could NOT find Freetype (missing: FREETYPE_LIBRARY FREETYPE_INCLUDE_DIRS) 
+-- Could NOT find utf8cpp (missing: utf8cpp_INCLUDE_DIR) 
+CMake Warning at /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:259 (find_package):
+  Found package configuration file:
+
+    /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/vtk-config.cmake
+
+  but it set VTK_FOUND to FALSE so package "VTK" is considered to be NOT
+  FOUND.  Reason given by package:
+
+  Could not find the VTK package with the following required components:
+  GUISupportQt, InteractionWidgets, RenderingContextOpenGL2,
+  RenderingOpenGL2, ViewsContext2D, ViewsCore.
+
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:308 (find_VTK)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:561 (find_external_library)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build/RTABMapConfig.cmake:18 (find_dependency)
+  CMakeLists.txt:4 (find_package)
+
+
+** WARNING ** io features related to vtk will be disabled
+CMake Warning (dev) at /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/Modules/FindFLANN.cmake:45 (find_package):
+  Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT
+  variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  CMake variable FLANN_ROOT is set to:
+
+    /usr
+
+  For compatibility, find_package is ignoring the variable, but code in a
+  .cmake module might still use it.
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:245 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:290 (find_flann)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:564 (find_external_library)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build/RTABMapConfig.cmake:18 (find_dependency)
+  CMakeLists.txt:4 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found flann version 1.9.2
+-- Found Qhull version 8.0.2
+CMake Warning at /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/VTK-vtk-module-find-packages.cmake:1055 (find_package):
+  By not providing "FindQt5.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "Qt5", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "Qt5" (requested
+  version 5.15) with any of the following names:
+
+    Qt5Config.cmake
+    qt5-config.cmake
+
+  Add the installation prefix of "Qt5" to CMAKE_PREFIX_PATH or set "Qt5_DIR"
+  to a directory containing one of the above files.  If "Qt5" provides a
+  separate development package or SDK, be sure it has been installed.
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/vtk-config.cmake:159 (include)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:259 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:308 (find_VTK)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:561 (find_external_library)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build/RTABMapConfig.cmake:18 (find_dependency)
+  CMakeLists.txt:4 (find_package)
+
+
+-- Could not find the VTK package due to a missing dependency: Qt5
+-- Could NOT find X11 (missing: X11_X11_INCLUDE_PATH) 
+-- Could not find the VTK package due to a missing dependency: X11
+-- Could NOT find X11 (missing: X11_X11_INCLUDE_PATH) 
+-- Could NOT find TIFF (missing: TIFF_LIBRARY TIFF_INCLUDE_DIR) 
+-- Could NOT find freetype (missing: freetype_DIR)
+-- Could NOT find Freetype (missing: FREETYPE_LIBRARY FREETYPE_INCLUDE_DIRS) 
+-- Could NOT find utf8cpp (missing: utf8cpp_INCLUDE_DIR) 
+CMake Warning at /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:259 (find_package):
+  Found package configuration file:
+
+    /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/vtk-config.cmake
+
+  but it set VTK_FOUND to FALSE so package "VTK" is considered to be NOT
+  FOUND.  Reason given by package:
+
+  Could not find the VTK package with the following required components:
+  GUISupportQt, InteractionWidgets, RenderingContextOpenGL2,
+  RenderingOpenGL2, ViewsContext2D, ViewsCore.
+
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:308 (find_VTK)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:561 (find_external_library)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build/RTABMapConfig.cmake:18 (find_dependency)
+  CMakeLists.txt:4 (find_package)
+
+
+** WARNING ** surface features related to vtk will be disabled
+-- looking for PCL_COMMON
+-- looking for PCL_OCTREE
+-- looking for PCL_IO_PLY
+-- looking for PCL_IO
+-- looking for PCL_KDTREE
+-- looking for PCL_SEARCH
+-- looking for PCL_SURFACE
+-- looking for PCL_FILTERS
+-- looking for PCL_2D
+-- looking for PCL_FEATURES
+-- looking for PCL_REGISTRATION
+-- looking for PCL_SAMPLE_CONSENSUS
+-- looking for PCL_GEOMETRY
+-- looking for PCL_ML
+-- looking for PCL_SEGMENTATION
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter-build

@@ -1,0 +1,207 @@
+{
+  "status": "metadata inventory complete",
+  "archiveBytes": 183080957,
+  "archiveSHA256": "591672a1c4afa50e5109fc78ff08d8f608d05756a9181cfdd7cef38a57a1623d",
+  "archiveMD5": "cb467b3ad18d8f2c83dbf97a486d378b",
+  "totalMembers": 1066,
+  "metadata": [
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/transformations.json",
+      "bytes": 317438,
+      "sha256": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+      "topKeys": [
+        "camera_model",
+        "orientation_override",
+        "frames"
+      ],
+      "frameCount": 388,
+      "frameKeyCounts": {
+        "fl_x": 388,
+        "fl_y": 388,
+        "cx": 388,
+        "cy": 388,
+        "h": 388,
+        "w": 388,
+        "file_path": 388,
+        "depth_file_path": 388,
+        "transform_matrix": 388
+      },
+      "nonFrameMetadata": {
+        "camera_model": "OPENCV",
+        "orientation_override": "none"
+      },
+      "alignmentLikeKeys": []
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/transformations_colmap.json",
+      "bytes": 232553,
+      "sha256": "8beeec9f9399a7a46306c2a138e0f57d478494156235c9822788e1bebab0f8ee",
+      "topKeys": [
+        "w",
+        "h",
+        "fl_x",
+        "fl_y",
+        "cx",
+        "cy",
+        "camera_model",
+        "orientation_model",
+        "frames"
+      ],
+      "frameCount": 353,
+      "frameKeyCounts": {
+        "file_path": 353,
+        "depth_file_path": 353,
+        "transform_matrix": 353
+      },
+      "nonFrameMetadata": {
+        "w": 738,
+        "h": 994,
+        "fl_x": 808.3267179924594,
+        "fl_y": 806.7632636144037,
+        "cx": 368.7493327511935,
+        "cy": 503.7194704960317,
+        "camera_model": "OPENCV",
+        "orientation_model": "none"
+      },
+      "alignmentLikeKeys": []
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/short_capture/transformations_colmap.json",
+      "bytes": 122433,
+      "sha256": "23e015817d0e96460abdc5bbd108c660bf9d84281dd7742de706e25eb5dddc7e",
+      "topKeys": [
+        "w",
+        "h",
+        "fl_x",
+        "fl_y",
+        "cx",
+        "cy",
+        "camera_model",
+        "orientation_model",
+        "frames"
+      ],
+      "frameCount": 134,
+      "frameKeyCounts": {
+        "file_path": 134,
+        "depth_file_path": 134,
+        "transform_matrix": 134
+      },
+      "nonFrameMetadata": {
+        "w": 738,
+        "h": 994,
+        "fl_x": 808.3267179924594,
+        "fl_y": 806.7632636144037,
+        "cx": 368.7493327511935,
+        "cy": 503.7194704960317,
+        "camera_model": "OPENCV",
+        "orientation_model": "none"
+      },
+      "alignmentLikeKeys": []
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/short_capture/transformations.json",
+      "bytes": 109406,
+      "sha256": "e343a4826c7725f5ac139263d849388f7bf089c2b819a9ac40b1a31188771238",
+      "topKeys": [
+        "camera_model",
+        "orientation_override",
+        "frames"
+      ],
+      "frameCount": 134,
+      "frameKeyCounts": {
+        "fl_x": 134,
+        "fl_y": 134,
+        "cx": 134,
+        "cy": 134,
+        "h": 134,
+        "w": 134,
+        "file_path": 134,
+        "depth_file_path": 134,
+        "transform_matrix": 134
+      },
+      "nonFrameMetadata": {
+        "camera_model": "OPENCV",
+        "orientation_override": "none"
+      },
+      "alignmentLikeKeys": []
+    }
+  ],
+  "geometryHeaders": [
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.obj",
+      "header": [
+        "# Created by Polycam with FMT",
+        "# object name: textured",
+        "# number of vertices: 51965",
+        "# number of triangles: 87370",
+        "mtllib textured.mtl"
+      ]
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/polycam_pointcloud.ply",
+      "header": [
+        "ply",
+        "format binary_little_endian 1.0",
+        "comment Created by Polycam",
+        "element vertex 1039300",
+        "property double x",
+        "property double y",
+        "property double z",
+        "property uchar red",
+        "property uchar green",
+        "property uchar blue",
+        "end_header"
+      ]
+    }
+  ],
+  "matchingMetadataNames": [],
+  "allNonRasterMembers": [
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/test.txt",
+      "size": 456,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/transformations.json",
+      "size": 317438,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/transformations_colmap.json",
+      "size": 232553,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.obj",
+      "size": 10497144,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.mtl",
+      "size": 189,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/long_capture/polycam_pointcloud.ply",
+      "size": 28061311,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/short_capture/transformations_colmap.json",
+      "size": 122433,
+      "regular": true
+    },
+    {
+      "name": "room_datasets/coffee_room/iphone/short_capture/transformations.json",
+      "size": 109406,
+      "regular": true
+    }
+  ],
+  "meshInfoPresent": false,
+  "exactOriginalMeshRegistrationEstablished": false,
+  "nativeCalls": 0,
+  "sourceMutations": 0,
+  "rawPhotoPublication": false,
+  "wallSeconds": 1.5438509589985188,
+  "peakRSSKiB": 14760
+}

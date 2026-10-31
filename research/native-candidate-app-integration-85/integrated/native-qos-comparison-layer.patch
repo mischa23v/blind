@@ -1,0 +1,1619 @@
+--- /dev/null
++++ b/.github/workflows/native-qos-comparison.yml
+@@ -0,0 +1,51 @@
++name: Isolated hosted native QoS comparison
++on:
++  push:
++    branches: [codex/recovery-hazard-order-20261027]
++    paths:
++      - '.github/workflows/native-qos-comparison.yml'
++      - 'research/native-qos-comparison-20261030/**'
++      - 'ios/BlindAssistTests/NativeQoSComparisonTests.swift'
++      - 'tools/ci/native-qos-comparison.py'
++      - 'tools/ci/test_native_qos_comparison.py'
++permissions:
++  contents: read
++# Source publication after root review is the explicit execution point.
++# No artifact upload action, cache, service, runner installation or runtime download.
++env:
++  BLIND_UPLOAD_ARTIFACTS: 'false'
++concurrency:
++  group: isolated-native-qos-comparison-${{ github.ref }}
++  cancel-in-progress: false
++jobs:
++  comparison:
++    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
++    runs-on: xcode-27
++    timeout-minutes: 30
++    env:
++      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
++        with:
++          persist-credentials: false
++          fetch-depth: 1
++          lfs: false
++          submodules: false
++      - name: Verify unchanged default project and installed Apple simulator
++        id: preflight
++        timeout-minutes: 3
++        run: |
++          python3 -B research/native-candidate-app-integration-85/integrated/check.py
++          bash tools/ci/native-apple.sh preflight
++      - name: Build isolated flagged hosted test only
++        id: build
++        timeout-minutes: 17
++        run: python3 -B tools/ci/native-qos-comparison.py build
++      - name: Execute one fixed ABBA diagnostic without rebuilding
++        id: test
++        timeout-minutes: 9
++        run: python3 -B tools/ci/native-qos-comparison.py test
++      - name: Preserve bounded failures and exact test identity in normal logs
++        if: always()
++        timeout-minutes: 1
++        run: python3 -B tools/ci/native-qos-comparison.py collect
+--- /dev/null
++++ b/tools/ci/native-qos-comparison.py
+@@ -0,0 +1,331 @@
++#!/usr/bin/env python3
++"""Isolated hosted-Simulator diagnostic proposal. No default scheduling change.
++
++Only explicit reviewed publication enables its dedicated workflow. Imported by
++portable parser/command controls without invoking Xcode or any native process.
++"""
++import argparse
++import hashlib
++import importlib.util
++import json
++import os
++from pathlib import Path
++import re
++import signal
++import stat
++import subprocess
++import sys
++import time
++
++HERE = Path(__file__).resolve().parent
++ROOT = HERE.parents[1]
++CASE = 'NativeQoSComparisonTests/testIsolatedUtilityUserInitiatedABBA'
++SELECTION = 'BlindAssistTests/' + CASE
++FLAG = 'BLIND_QOS_COMPARISON'
++LOG_LIMIT = 64 * 1024 * 1024
++LINE_LIMIT = 4096
++RECORD_LIMIT = 64
++BUILD_SECONDS = 900
++LAUNCH_SECONDS = 120
++CASE_SECONDS = 360
++TEST_SECONDS = LAUNCH_SECONDS + CASE_SECONDS
++NUMBER = r'(?:-1|[0-9]{1,15})'
++POSITIVE = r'[0-9]{1,15}'
++PAIR = lambda name: (rf'{name}=\[wall_ms=(?P<{name}_wall>{NUMBER}),'
++                     rf'cpu_us=(?P<{name}_cpu>{NUMBER}),pair_valid=(?P<{name}_valid>true|false)\]')
++STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired|sourceSnapshotEnqueued|sourceSnapshotWorkerStarted|sourceSnapshotWorkerFinished|sourceSnapshotDeliveryStarted|sourceSnapshotDeliveryFinished)'
++PATTERNS = {
++    'deadline': re.compile(r'NATIVE_QOS_DEADLINE arm=(?P<arm>[0-3]) phase=(?P<phase>source|query|normal_drain) budget_s=10(?:\.0)? met=(?P<met>true|false) physical_authority=false'),
++    'late': re.compile(r'NATIVE_QOS_LATE_DRAIN arm=(?P<arm>[0-3]) observation_s=45 acknowledged=(?P<ack>true|false) original_failure_preserved=true'),
++    'source': re.compile(rf'NATIVE_QOS_SOURCE arm=(?P<arm>[0-3]) callback_ms=(?P<callback>{NUMBER}) process_offset_ms={POSITIVE}'),
++    'arm': re.compile(rf'NATIVE_QOS_ARM arm=(?P<arm>[0-3]) requested=(?P<requested>utility|userInitiated) effective_raw=(?P<effective>unavailable|[0-9]{{1,10}}) elapsed_ms={POSITIVE} normal_drain=(?P<normal>true|false) late_ack=(?P<late>true|false) '
++                      + ' '.join(PAIR(name) for name in ['worker', 'build', 'route'])
++                      + rf' stages=(?:{STAGE}:[0-9]{{1,15}}(?:;{STAGE}:[0-9]{{1,15}}){{0,63}})? physical_authority=false'),
++}
++
++
++def require(ok, message):
++    if not ok:
++        raise ValueError(message)
++
++
++def module(name, file):
++    spec = importlib.util.spec_from_file_location(name, HERE / file)
++    result = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(result)
++    return result
++
++
++def read_bounded(path, limit):
++    require(path.is_file() and not path.is_symlink(), 'regular-file-required')
++    with path.open('rb') as stream:
++        require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode), 'regular-file-required')
++        data = stream.read(limit + 1)
++    require(len(data) <= limit, 'file-budget')
++    return data
++
++
++def exact_case(identifier):
++    return identifier in {CASE, CASE + '()', 'BlindAssistTests/' + CASE,
++                          'BlindAssistTests/' + CASE + '()'}
++
++
++def clean_commands(commands, expected):
++    if set(commands) != {'build', 'test'}:
++        return False
++    return all(c.get('mode') == mode and type(c.get('command_exit')) is int
++               and type(c.get('wrapper_exit')) is int
++               and c['command_exit'] == c['wrapper_exit'] == 0
++               and c.get('watchdog') is None and c.get('source_verified') is True
++               and c.get('source_commit') == expected['source_commit']
++               and c.get('source_hashes') == expected['source_hashes']
++               for mode, c in commands.items())
++
++
++def parse_records(raw):
++    require(len(raw) <= LOG_LIMIT, 'log-budget')
++    records, parsed = [], []
++    rejected = dropped = 0
++    for line in raw.splitlines():
++        if not line.startswith(b'NATIVE_QOS_'):
++            continue
++        if len(line) > LINE_LIMIT:
++            rejected += 1
++            continue
++        try:
++            text = line.decode('ascii')
++        except UnicodeDecodeError:
++            rejected += 1
++            continue
++        match = next(((kind, pattern.fullmatch(text)) for kind, pattern in PATTERNS.items()
++                      if pattern.fullmatch(text)), None)
++        if match is None:
++            rejected += 1
++            continue
++        kind, value = match
++        row = value.groupdict()
++        valid = True
++        if kind == 'arm':
++            for prefix in ['worker', 'build', 'route']:
++                wall, cpu = int(row[prefix + '_wall']), int(row[prefix + '_cpu'])
++                paired = row[prefix + '_valid'] == 'true'
++                valid &= (wall >= 0 and cpu >= 0) if paired else cpu == -1
++            valid &= not (row['normal'] == row['late'] == 'true')
++            valid &= row['effective'] == 'unavailable' or int(row['effective']) <= 4294967295
++        if not valid:
++            rejected += 1
++        elif len(records) < RECORD_LIMIT:
++            records.append(text)
++            parsed.append((kind, row))
++        else:
++            dropped += 1
++    arm_rows = [row for kind, row in parsed if kind == 'arm']
++    expected = [('0', 'utility'), ('1', 'userInitiated'), ('2', 'userInitiated'), ('3', 'utility')]
++    arms_complete = [(r['arm'], r['requested']) for r in arm_rows] == expected
++    deadlines = [(r['arm'], r['phase'], r['met']) for kind, r in parsed if kind == 'deadline']
++    normal_deadlines_met = sorted(deadlines) == sorted((str(a), phase, 'true') for a in range(4) for phase in ['source', 'query', 'normal_drain'])
++    sources = [r for kind, r in parsed if kind == 'source']
++    sources_complete = [r['arm'] for r in sources] == ['0', '1', '2', '3'] and all(int(r['callback']) >= 0 for r in sources)
++    late = any(kind == 'late' for kind, _ in parsed)
++    clean_protocol = (arms_complete and sources_complete and normal_deadlines_met and not late
++                      and all(r['normal'] == 'true' and r['late'] == 'false' for r in arm_rows)
++                      and rejected == dropped == 0)
++    effective = [r['effective'] for r in arm_rows]
++    separation = (arms_complete and 'unavailable' not in effective and
++                  len({effective[0], effective[3]}) == len({effective[1], effective[2]}) == 1 and
++                  effective[0] != effective[1])
++    return {'records': records, 'rejected_prefix_records': rejected, 'dropped_records': dropped,
++            'four_arms_recorded': arms_complete, 'all_normal_deadlines_met': normal_deadlines_met,
++            'late_observation_present': late, 'clean_protocol_records': clean_protocol,
++            'effective_qos_separation_observed': separation,
++            'qos_causality_or_fix_established': False, 'physical_authority': False}
++
++
++def command(mode, device, out):
++    require(mode in {'build', 'test'}, 'command-mode')
++    require(re.fullmatch(r'[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}', device) is not None, 'simulator-id')
++    args = ['xcodebuild', '-project', 'ios/BlindAssist.xcodeproj', '-scheme', 'BlindAssist',
++            '-configuration', 'Debug', '-jobs', '2', '-derivedDataPath', str(out / 'DerivedData'),
++            '-destination', 'platform=iOS Simulator,id=' + device, '-destination-timeout', '120',
++            '-parallel-testing-enabled', 'NO', '-maximum-concurrent-test-simulator-destinations', '1',
++            '-only-testing:' + SELECTION, 'CODE_SIGNING_ALLOWED=NO',
++            'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG ' + FLAG,
++            '-resultBundlePath', str(out / (mode + '.xcresult')),
++            'build-for-testing' if mode == 'build' else 'test-without-building']
++    return args
++
++
++def source_receipt():
++    expected = os.environ.get('GITHUB_SHA', '')
++    require(re.fullmatch('[0-9a-f]{40}', expected) is not None, 'workflow-sha')
++    native = module('native_qos_status_reader', 'export-native-unit-statuses.py')
++    provenance = native.provenance(ROOT, expected)
++    paths = ['ios/BlindAssist.xcodeproj/project.pbxproj',
++             'ios/BlindAssistTests/NativeQoSComparisonTests.swift',
++             'research/room-mesh-package-75/BlindRoomMesh/Package.swift',
++             'research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift']
++    contents = [read_bounded(ROOT / p, 2 * 1024 * 1024) for p in paths]
++    project, test, package, runtime = [x.decode() for x in contents]
++    require(FLAG not in project and FLAG not in package, 'default-project-or-package-experiment-flag')
++    require(test.startswith('#if DEBUG && BLIND_QOS_COMPARISON && canImport(Darwin)\n'), 'test-flag-guard')
++    require(re.findall(r'^\s*func\s+(test\w+)\s*\(', test, re.M) == [CASE.split('/')[1]], 'exact-one-test-source')
++    require(test.count('.configureSyntheticComparisonQoS(') == 1, 'explicit-test-opt-in')
++    require('private var comparisonQoS: DispatchQoS?' in runtime and
++            'guard let qos=locked({comparisonQoS}) else { Self.worker.async(execute:work); return }' in runtime,
++            'inactive-default-runtime-hook')
++    require(FLAG not in runtime, 'package-must-not-depend-on-test-flag-propagation')
++    for folder in ['ios/BlindAssist', 'ios/BlindAssistTests']:
++        for index, path in enumerate((ROOT / folder).glob('*.swift')):
++            require(index < 2048, 'caller-scan-file-budget')
++            if path.name != 'NativeQoSComparisonTests.swift':
++                require('.configureSyntheticComparisonQoS(' not in read_bounded(path, 2 * 1024 * 1024).decode(), 'unexpected-override-caller')
++    return {'source_commit': provenance['actual_head'], 'source_verified': True,
++            'source_hashes': {p: hashlib.sha256(b).hexdigest() for p, b in zip(paths, contents)},
++            'default_project_experiment_flag': False, 'package_experiment_flag_required': False,
++            'package_hook': 'DEBUG-only-explicit-opt-in-inactive-by-default'}
++
++
++def watchdog_reason(mode, elapsed, case_elapsed, size):
++    if size > LOG_LIMIT: return 'log-budget'
++    if mode == 'build' and elapsed > BUILD_SECONDS: return 'build-process-deadline'
++    if mode == 'test' and elapsed > TEST_SECONDS: return 'test-process-deadline'
++    if mode == 'test' and case_elapsed is None and elapsed > LAUNCH_SECONDS: return 'test-launch-deadline'
++    if case_elapsed is not None and case_elapsed > CASE_SECONDS: return 'test-case-observation-deadline'
++    return None
++
++
++def terminate(process):
++    try:
++        os.killpg(process.pid, signal.SIGTERM)
++    except ProcessLookupError:
++        return
++    try:
++        process.wait(timeout=2)
++    except subprocess.TimeoutExpired:
++        os.killpg(process.pid, signal.SIGKILL)
++        process.wait(timeout=5)
++
++
++def run(mode, out):
++    require(sys.platform == 'darwin', 'Apple-host-required')
++    require(os.environ.get('GITHUB_REPOSITORY') == 'mischa23v/blind' and
++            os.environ.get('GITHUB_REF') == 'refs/heads/codex/recovery-hazard-order-20261027', 'approved-repository-branch')
++    before = source_receipt()
++    device = read_bounded(Path(os.environ['RUNNER_TEMP']) / 'blind-native-ci/simulator-id', 64).decode('ascii').strip()
++    args = command(mode, device, out)
++    receipt = {'schema': 1, 'mode': mode, 'command_exit': None, 'wrapper_exit': None,
++               'watchdog': None, 'test_started_observed': False, 'physical_authority': False, **before}
++    path = out / (mode + '.log')
++    started = time.monotonic()
++    case_started = None
++    position, tail = 0, b''
++    marker = b"Test Case '-[BlindAssistTests.NativeQoSComparisonTests testIsolatedUtilityUserInitiatedABBA]' started."
++    process = None
++    try:
++        with path.open('xb') as output:
++            process = subprocess.Popen(args, cwd=ROOT, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
++            while process.poll() is None:
++                now = time.monotonic()
++                size = path.stat().st_size
++                with path.open('rb') as source:
++                    source.seek(position);chunk = source.read(min(65536, max(0, size-position)));position += len(chunk)
++                if mode == 'test' and case_started is None and marker in tail + chunk:
++                    case_started = now;receipt['test_started_observed'] = True
++                tail = (tail + chunk)[-len(marker):]
++                reason = watchdog_reason(mode, now-started,
++                                         None if case_started is None else now-case_started, size)
++                if reason:
++                    receipt['watchdog'] = reason;terminate(process);break
++                time.sleep(0.1)
++            receipt['command_exit'] = process.wait(timeout=5)
++        receipt['wrapper_exit'] = 124 if receipt['watchdog'] else receipt['command_exit']
++        after = source_receipt()
++        require(before == after, 'source-changed-during-diagnostic')
++        receipt['source_verified'] = True
++    except Exception as error:
++        if process is not None and process.poll() is None:terminate(process)
++        receipt.update(wrapper_exit=1, source_verified=False, error_type=type(error).__name__)
++    finally:
++        (out / (mode + '-command.json')).write_text(json.dumps(receipt, sort_keys=True) + '\n')
++        print('NATIVE_QOS_COMMAND=' + json.dumps(receipt, sort_keys=True))
++    return receipt['wrapper_exit'] if type(receipt['wrapper_exit']) is int and receipt['wrapper_exit'] >= 0 else 1
++
++
++def collect(out):
++    receipt = {'schema': 1, 'status': 'unavailable', 'physical_authority': False,
++               'scope': 'isolated hosted simulator scheduling diagnostic; not normal acceptance',
++               'qos_causality_or_fix_established': False, 'errors': []}
++    native = module('native_qos_status_collector', 'export-native-unit-statuses.py')
++    # Independent projections retain failed/incomplete records even if another
++    # input is absent. Errors are fixed labels, never arbitrary source/model text.
++    exceptions = (OSError, ValueError, TypeError, KeyError, RecursionError, subprocess.SubprocessError)
++    verified = None
++    try:
++        verified = source_receipt();receipt.update(verified)
++    except exceptions:
++        receipt['errors'].append('source-provenance-unavailable')
++    commands = {}
++    for mode in ['build', 'test']:
++        try:
++            value = json.loads(read_bounded(out / (mode + '-command.json'), 16384))
++            require(isinstance(value, dict), 'command-shape')
++            # These are our own bounded scalar command receipts; never copy
++            # arbitrary keys/values into public evidence if a file is replaced.
++            require(set(value) <= {'schema', 'mode', 'command_exit', 'wrapper_exit', 'watchdog',
++                    'test_started_observed', 'physical_authority', 'source_commit', 'source_verified',
++                    'source_hashes', 'default_project_experiment_flag', 'package_experiment_flag_required',
++                    'package_hook', 'error_type'}, 'command-keys')
++            require(value.get('mode') == mode, 'command-mode')
++            require(value.get('watchdog') in {None, 'log-budget', 'build-process-deadline',
++                    'test-process-deadline', 'test-launch-deadline', 'test-case-observation-deadline'}, 'watchdog')
++            commands[mode] = value
++            receipt.setdefault('commands', {})[mode] = {
++                'command_exit': value.get('command_exit') if type(value.get('command_exit')) is int else None,
++                'wrapper_exit': value.get('wrapper_exit') if type(value.get('wrapper_exit')) is int else None,
++                'watchdog': value.get('watchdog'), 'source_verified': value.get('source_verified') is True,
++                'test_started_observed': value.get('test_started_observed') is True}
++        except exceptions:
++            receipt['errors'].append(mode + '-command-unavailable')
++    try:
++        receipt.update(parse_records(read_bounded(out / 'test.log', LOG_LIMIT)))
++    except exceptions:
++        receipt['errors'].append('timing-records-unavailable')
++    cases, exact = [], False
++    try:
++        bundle = out / 'test.xcresult'
++        cases = native.cases_from(json.loads(native.query(['xcrun', 'xcresulttool', 'get', 'test-results', 'tests', '--path', str(bundle), '--compact'])))
++        selected = [c for c in cases if exact_case(c['identifier'])]
++        receipt.update(cases=selected[:16], case_rows_omitted=max(0, len(selected)-16),
++                       unexpected_case_count=len(cases)-len(selected))
++        summary = json.loads(native.query(['xcrun', 'xcresulttool', 'get', 'test-results', 'summary', '--path', str(bundle), '--compact']))
++        receipt['counts'] = native.reconcile(cases, summary)
++        exact = len(cases) == len(selected) == 1
++    except exceptions:
++        receipt['errors'].append('xcresult-evidence-incomplete')
++    receipt['exact_test_identity_verified'] = exact
++    clean = (verified is not None and clean_commands(commands, verified) and exact
++             and cases[0]['result'] == 'Passed' and receipt.get('clean_protocol_records') is True
++             and not receipt['errors'])
++    receipt['status'] = 'passed-isolated-diagnostic' if clean else 'failed-or-incomplete-diagnostic'
++    encoded = json.dumps(receipt, sort_keys=True, separators=(',', ':'))
++    require(len(encoded.encode()) <= 384 * 1024, 'receipt-output-budget')
++    line = 'NATIVE_QOS_RECEIPT=' + encoded
++    print(line)
++    (out / 'result.json').write_text(encoded + '\n')
++    if os.environ.get('GITHUB_STEP_SUMMARY'):
++        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
++            stream.write('\n### Isolated QoS diagnostic, not app acceptance\n```text\n' + line + '\n```\n')
++    return 0 if clean else 1
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('mode', choices=['build', 'test', 'collect'])
++    args = parser.parse_args()
++    out = Path(os.environ['RUNNER_TEMP']) / 'blind-native-qos-comparison'
++    out.mkdir(exist_ok=True)
++    return collect(out) if args.mode == 'collect' else run(args.mode, out)
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
+--- /dev/null
++++ b/tools/ci/test_native_qos_comparison.py
+@@ -0,0 +1,360 @@
++#!/usr/bin/env python3
++"""Portable synthetic controls only; never runs Xcode, Swift, git or a workflow."""
++import contextlib
++import copy
++import importlib.util
++import io
++import json
++from pathlib import Path
++import tempfile
++import unittest
++from unittest import mock
++
++HERE = Path(__file__).resolve().parent
++spec = importlib.util.spec_from_file_location('qos_comparison', HERE / 'native-qos-comparison.py')
++qos = importlib.util.module_from_spec(spec); spec.loader.exec_module(qos)
++
++
++def arm(n, effective=None):
++    requested = ['utility', 'userInitiated', 'userInitiated', 'utility'][n]
++    if effective is None: effective = [17, 25, 25, 17][n]
++    return (f'NATIVE_QOS_ARM arm={n} requested={requested} effective_raw={effective} elapsed_ms=300 '
++            'normal_drain=true late_ack=false worker=[wall_ms=100,cpu_us=90,pair_valid=true] '
++            'build=[wall_ms=90,cpu_us=80,pair_valid=true] route=[wall_ms=-1,cpu_us=-1,pair_valid=false] '
++            'stages=requestEnqueued:10;workerStarted:20;workerFinished:120 physical_authority=false')
++
++
++def valid_lines():
++    lines = []
++    for n in range(4):
++        lines += [f'NATIVE_QOS_DEADLINE arm={n} phase={phase} budget_s=10.0 met=true physical_authority=false'
++                  for phase in ['source', 'query', 'normal_drain']]
++        lines += [f'NATIVE_QOS_SOURCE arm={n} callback_ms=10 process_offset_ms={n*300}', arm(n)]
++    return lines
++
++
++def raw(lines=None):
++    return ('\n'.join(valid_lines() if lines is None else lines) + '\n').encode()
++
++
++class GrammarTests(unittest.TestCase):
++    def test_clean_abba_is_complete_not_causality(self):
++        result = qos.parse_records(raw())
++        self.assertTrue(result['clean_protocol_records']); self.assertTrue(result['effective_qos_separation_observed'])
++        self.assertFalse(result['qos_causality_or_fix_established']); self.assertFalse(result['physical_authority'])
++        self.assertEqual(len(result['records']), 20)
++
++    def test_equal_effective_qos_inconclusive_not_failed_protocol(self):
++        lines = [line if not line.startswith('NATIVE_QOS_ARM') else arm(int(line.split('arm=')[1][0]), 17) for line in valid_lines()]
++        result = qos.parse_records(raw(lines))
++        self.assertTrue(result['clean_protocol_records']); self.assertFalse(result['effective_qos_separation_observed'])
++
++    def test_unavailable_effective_qos_not_separation(self):
++        result = qos.parse_records(raw().replace(b'effective_raw=25', b'effective_raw=unavailable'))
++        self.assertTrue(result['clean_protocol_records']); self.assertFalse(result['effective_qos_separation_observed'])
++
++    def test_four_arms_alone_not_clean(self):
++        result = qos.parse_records(raw([arm(n) for n in range(4)]))
++        self.assertTrue(result['four_arms_recorded']); self.assertFalse(result['clean_protocol_records'])
++
++    def test_each_original_deadline_failure_preserved(self):
++        for index, line in enumerate(valid_lines()):
++            if line.startswith('NATIVE_QOS_DEADLINE'):
++                with self.subTest(index=index):
++                    lines = valid_lines(); lines[index] = line.replace('met=true', 'met=false')
++                    result = qos.parse_records(raw(lines))
++                    self.assertFalse(result['clean_protocol_records']); self.assertIn(lines[index], result['records'])
++
++    def test_late_ack_does_not_erase_original_failure(self):
++        lines = valid_lines()
++        lines[2] = lines[2].replace('met=true', 'met=false')
++        lines[4] = lines[4].replace('normal_drain=true late_ack=false', 'normal_drain=false late_ack=true')
++        lines.insert(3, 'NATIVE_QOS_LATE_DRAIN arm=0 observation_s=45 acknowledged=true original_failure_preserved=true')
++        result = qos.parse_records(raw(lines))
++        self.assertTrue(result['late_observation_present']); self.assertFalse(result['clean_protocol_records'])
++
++    def test_aborted_source_failure_retained_without_required_query(self):
++        lines = [valid_lines()[0].replace('met=true', 'met=false'), valid_lines()[2],
++                 'NATIVE_QOS_SOURCE arm=0 callback_ms=-1 process_offset_ms=0', arm(0, 'unavailable')]
++        result = qos.parse_records(raw(lines))
++        self.assertEqual(len(result['records']), 4); self.assertEqual(result['rejected_prefix_records'], 0)
++        self.assertFalse(result['clean_protocol_records'])
++
++    def test_out_of_order_arms_not_clean(self):
++        lines = valid_lines(); lines[4], lines[9] = lines[9], lines[4]
++        self.assertFalse(qos.parse_records(raw(lines))['four_arms_recorded'])
++
++    def test_duplicate_deadline_not_clean(self):
++        self.assertFalse(qos.parse_records(raw(valid_lines() + [valid_lines()[0]]))['clean_protocol_records'])
++
++    def test_missing_source_row_not_clean(self):
++        self.assertFalse(qos.parse_records(raw([x for x in valid_lines() if not x.startswith('NATIVE_QOS_SOURCE arm=2')]))['clean_protocol_records'])
++
++    def test_missing_cpu_is_minus_one_false(self):
++        result = qos.parse_records(raw([arm(0).replace('wall_ms=100,cpu_us=90,pair_valid=true', 'wall_ms=100,cpu_us=-1,pair_valid=false')]))
++        self.assertEqual(result['rejected_prefix_records'], 0)
++
++    def test_reject_bad_cpu_pairs(self):
++        for pair in ['wall_ms=-1,cpu_us=90,pair_valid=true', 'wall_ms=100,cpu_us=-1,pair_valid=true',
++                     'wall_ms=100,cpu_us=0,pair_valid=false', 'wall_ms=-2,cpu_us=-1,pair_valid=false']:
++            with self.subTest(pair=pair):
++                self.assertEqual(qos.parse_records(raw([arm(0).replace('wall_ms=100,cpu_us=90,pair_valid=true', pair)]))['rejected_prefix_records'], 1)
++
++    def test_reject_geometry_errors_and_unknown_fields(self):
++        for suffix in [' vertices=[1,2,3]', ' error=anything', ' model_text=hello', ' extra=true']:
++            with self.subTest(suffix=suffix):
++                self.assertEqual(qos.parse_records(raw([arm(0) + suffix]))['records'], [])
++
++    def test_reject_bad_fixed_grammar(self):
++        for before, after in [('arm=0', 'arm=4'), ('utility', 'background'), ('effective_raw=17', 'effective_raw=4294967296'),
++                              ('elapsed_ms=300', 'elapsed_ms=-1'), ('physical_authority=false', 'physical_authority=true'),
++                              ('requestEnqueued', 'secretStage'), ('normal_drain=true late_ack=false', 'normal_drain=true late_ack=true')]:
++            with self.subTest(after=after):
++                self.assertEqual(qos.parse_records(raw([arm(0).replace(before, after)]))['rejected_prefix_records'], 1)
++
++    def test_reject_changed_budget(self):
++        for before, after in [('budget_s=10.0', 'budget_s=11'), ('phase=source', 'phase=any'), ('met=true', 'met=True')]:
++            self.assertEqual(qos.parse_records(raw([valid_lines()[0].replace(before, after)]))['records'], [])
++
++    def test_reject_unknown_prefix(self):
++        self.assertEqual(qos.parse_records(b'NATIVE_QOS_SECRET private\n')['rejected_prefix_records'], 1)
++
++    def test_non_metadata_noise_ignored(self):
++        result = qos.parse_records(b'private irrelevant text\n' + raw())
++        self.assertTrue(result['clean_protocol_records']); self.assertNotIn('private', str(result))
++
++    def test_non_ascii_rejected(self):
++        self.assertEqual(qos.parse_records(b'NATIVE_QOS_\xff\n')['rejected_prefix_records'], 1)
++
++    def test_line_cap_rejected(self):
++        self.assertEqual(qos.parse_records(b'NATIVE_QOS_' + b'x'*qos.LINE_LIMIT)['rejected_prefix_records'], 1)
++
++    def test_record_cap_fail_closed(self):
++        result = qos.parse_records(raw([valid_lines()[0]] * 65))
++        self.assertEqual(len(result['records']), 64); self.assertEqual(result['dropped_records'], 1)
++        self.assertFalse(result['clean_protocol_records'])
++
++    def test_byte_cap(self):
++        with mock.patch.object(qos, 'LOG_LIMIT', 10), self.assertRaises(ValueError): qos.parse_records(b'x'*11)
++
++    def test_empty_is_not_clean(self):
++        self.assertFalse(qos.parse_records(b'')['clean_protocol_records'])
++
++
++class CommandTests(unittest.TestCase):
++    def test_exact_one_hosted_test_no_package_manifest_override(self):
++        command = qos.command('build', '12345678-1234-1234-1234-123456789abc', Path('/tmp/out'))
++        self.assertEqual([x for x in command if x.startswith('-only-testing:')], ['-only-testing:' + qos.SELECTION])
++        self.assertIn('SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_QOS_COMPARISON', command)
++        self.assertIn('build-for-testing', command); self.assertNotIn('test', command)
++        self.assertNotIn('-enableCodeCoverage', command)
++
++    def test_test_without_rebuild(self):
++        command = qos.command('test', '12345678-1234-1234-1234-123456789abc', Path('/tmp/out'))
++        self.assertEqual(command[-1], 'test-without-building')
++
++    def test_bad_device_or_mode_rejected(self):
++        for mode, device in [('run', '12345678-1234-1234-1234-123456789abc'), ('test', '-'*36), ('test', '123;echo hello')]:
++            with self.subTest(mode=mode, device=device), self.assertRaises(ValueError): qos.command(mode, device, Path('/tmp'))
++
++    def test_bounded_file_and_symlink(self):
++        with tempfile.TemporaryDirectory() as temp:
++            path = Path(temp)/'file'; path.write_bytes(b'abc')
++            self.assertEqual(qos.read_bounded(path, 3), b'abc')
++            with self.assertRaises(ValueError): qos.read_bounded(path, 2)
++            link=Path(temp)/'link'; link.symlink_to(path)
++            with self.assertRaises(ValueError): qos.read_bounded(link, 3)
++
++    def test_non_apple_run_refused_without_process(self):
++        with mock.patch.object(qos.sys, 'platform', 'linux'), mock.patch.object(qos.subprocess, 'Popen') as popen:
++            with self.assertRaises(ValueError): qos.run('test', Path('/tmp'))
++            popen.assert_not_called()
++
++    def test_exact_identifier_normalizations_only(self):
++        for identifier in [qos.CASE, qos.CASE+'()', 'BlindAssistTests/'+qos.CASE]: self.assertTrue(qos.exact_case(identifier))
++        for identifier in ['Other/'+qos.CASE, qos.CASE+'Other', '']: self.assertFalse(qos.exact_case(identifier))
++
++    def test_deadlines_are_separate_not_relaxed_acceptance(self):
++        self.assertEqual((qos.BUILD_SECONDS,qos.LAUNCH_SECONDS,qos.CASE_SECONDS,qos.TEST_SECONDS), (900,120,360,480))
++
++
++class CollectorTests(unittest.TestCase):
++    def setUp(self):
++        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
++        self.out=Path(self.temp.name)
++        self.provenance={'source_commit':'a'*40,'source_hashes':{'synthetic.swift':'b'*64},'source_verified':True}
++        self.cases=[{'identifier':qos.CASE,'result':'Passed'}]
++        self.native=mock.Mock()
++        self.native.query.return_value=b'{}'
++        self.native.cases_from.side_effect=lambda _: copy.deepcopy(self.cases)
++        self.native.reconcile.side_effect=lambda cases, _: {status:sum(c['result']==status for c in cases) for status in ['Passed','Failed','Skipped','Expected Failure']}
++        for mode in ['build','test']:
++            self.write_command(mode)
++        (self.out/'test.log').write_bytes(raw())
++
++    def write_command(self, mode, **changes):
++        value={'mode':mode,'command_exit':0,'wrapper_exit':0,'watchdog':None, **self.provenance, **changes}
++        (self.out/(mode+'-command.json')).write_text(json.dumps(value))
++
++    def collect(self, source_error=False):
++        with mock.patch.object(qos,'module',return_value=self.native), mock.patch.object(qos,'source_receipt',side_effect=ValueError() if source_error else None, return_value=self.provenance), mock.patch.dict(qos.os.environ,{},clear=True), contextlib.redirect_stdout(io.StringIO()) as output:
++            code=qos.collect(self.out)
++        result=json.loads((self.out/'result.json').read_text())
++        self.assertIn('NATIVE_QOS_RECEIPT=',output.getvalue())
++        return code,result
++
++    def test_one_pass_and_full_protocol_required(self):
++        code,result=self.collect(); self.assertEqual(code,0); self.assertTrue(result['exact_test_identity_verified'])
++        self.assertEqual(result['status'],'passed-isolated-diagnostic')
++
++    def test_failed_case_still_exported(self):
++        self.cases[0]['result']='Failed'; code,result=self.collect()
++        self.assertEqual(code,1); self.assertEqual(result['cases'],self.cases); self.assertEqual(result['counts']['Failed'],1)
++
++    def test_skipped_is_not_pass(self):
++        self.cases[0]['result']='Skipped'; self.assertEqual(self.collect()[0],1)
++
++    def test_zero_cases_fail(self):
++        self.cases=[]; self.assertEqual(self.collect()[0],1)
++
++    def test_duplicate_case_fails(self):
++        self.cases*=2; self.assertEqual(self.collect()[0],1)
++
++    def test_unexpected_case_not_leaked(self):
++        self.cases.append({'identifier':'private arbitrary text','result':'Passed'})
++        code,result=self.collect(); self.assertEqual(code,1); self.assertEqual(result['unexpected_case_count'],1)
++        self.assertNotIn('private arbitrary text',json.dumps(result))
++
++    def test_four_rows_and_xctest_pass_not_enough(self):
++        (self.out/'test.log').write_bytes(raw([arm(n) for n in range(4)])); self.assertEqual(self.collect()[0],1)
++
++    def test_failed_command_not_hidden_by_passed_xctest(self):
++        self.write_command('test',command_exit=65,wrapper_exit=65)
++        code,result=self.collect(); self.assertEqual(code,1); self.assertEqual(result['commands']['test']['command_exit'],65)
++
++    def test_boolean_false_not_integer_success(self):
++        self.write_command('test',command_exit=False,wrapper_exit=False); self.assertEqual(self.collect()[0],1)
++
++    def test_watchdog_never_passes(self):
++        self.write_command('test',watchdog='test-case-observation-deadline'); self.assertEqual(self.collect()[0],1)
++
++    def test_source_mismatch_not_pass(self):
++        self.write_command('test',source_commit='c'*40); self.assertEqual(self.collect()[0],1)
++
++    def test_missing_command_retains_case_and_records(self):
++        (self.out/'build-command.json').unlink(); code,result=self.collect()
++        self.assertEqual(code,1); self.assertEqual(len(result['records']),20); self.assertEqual(result['cases'],self.cases)
++
++    def test_no_test_log_retains_case(self):
++        (self.out/'test.log').unlink(); code,result=self.collect()
++        self.assertEqual(code,1); self.assertEqual(result['cases'],self.cases)
++
++    def test_missing_result_preserves_timing(self):
++        self.native.query.side_effect=ValueError(); code,result=self.collect()
++        self.assertEqual(code,1); self.assertEqual(len(result['records']),20)
++
++    def test_aggregate_mismatch_retains_cases(self):
++        self.native.reconcile.side_effect=ValueError(); code,result=self.collect()
++        self.assertEqual(code,1); self.assertEqual(result['cases'],self.cases)
++
++    def test_missing_provenance_retains_failed_evidence(self):
++        self.cases[0]['result']='Failed'; code,result=self.collect(source_error=True)
++        self.assertEqual(code,1); self.assertEqual(result['cases'],self.cases); self.assertEqual(len(result['records']),20)
++
++    def test_unknown_command_key_not_copied(self):
++        self.write_command('test',secret='private text'); code,result=self.collect()
++        self.assertEqual(code,1); self.assertNotIn('private text',json.dumps(result))
++
++    def test_unknown_watchdog_not_copied(self):
++        self.write_command('test',watchdog='private text'); code,result=self.collect()
++        self.assertEqual(code,1); self.assertNotIn('private text',json.dumps(result))
++
++    def test_summary_log_available_on_failure(self):
++        self.cases[0]['result']='Failed'; summary=self.out/'summary'
++        with mock.patch.object(qos,'module',return_value=self.native), mock.patch.object(qos,'source_receipt',return_value=self.provenance), mock.patch.dict(qos.os.environ,{'GITHUB_STEP_SUMMARY':str(summary)},clear=True), contextlib.redirect_stdout(io.StringIO()):
++            self.assertEqual(qos.collect(self.out),1)
++        self.assertIn('NATIVE_QOS_RECEIPT=', summary.read_text())
++        self.assertIn('Failed', summary.read_text())
++
++
++class WatchdogTests(unittest.TestCase):
++    def test_build_budget(self):
++        self.assertIsNone(qos.watchdog_reason('build', 900, None, 0))
++        self.assertEqual(qos.watchdog_reason('build', 900.1, None, 0), 'build-process-deadline')
++
++    def test_launch_budget_separate_from_case(self):
++        self.assertEqual(qos.watchdog_reason('test', 120.1, None, 0), 'test-launch-deadline')
++        self.assertIsNone(qos.watchdog_reason('test', 120.1, 1, 0))
++
++    def test_case_observation_budget(self):
++        self.assertEqual(qos.watchdog_reason('test', 400, 360.1, 0), 'test-case-observation-deadline')
++        self.assertIsNone(qos.watchdog_reason('test', 400, 360, 0))
++
++    def test_overall_test_budget(self):
++        self.assertEqual(qos.watchdog_reason('test', 480.1, 1, 0), 'test-process-deadline')
++
++    def test_log_budget(self):
++        self.assertEqual(qos.watchdog_reason('test', 1, 1, qos.LOG_LIMIT+1), 'log-budget')
++
++
++class SourceControls(unittest.TestCase):
++    def setUp(self):
++        self.temp=tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
++        self.root=Path(self.temp.name)
++        self.paths={
++            'ios/BlindAssist.xcodeproj/project.pbxproj': 'default project without experiment flag',
++            'ios/BlindAssistTests/NativeQoSComparisonTests.swift':
++                '#if DEBUG && BLIND_QOS_COMPARISON && canImport(Darwin)\nfunc testIsolatedUtilityUserInitiatedABBA() {}\nowner.configureSyntheticComparisonQoS(userInitiated:true)\n#endif',
++            'research/room-mesh-package-75/BlindRoomMesh/Package.swift': 'default package',
++            'research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift':
++                'private var comparisonQoS: DispatchQoS?\nguard let qos=locked({comparisonQoS}) else { Self.worker.async(execute:work); return }',
++            'ios/BlindAssist/App.swift':'default app'}
++        for name, value in self.paths.items():
++            path=self.root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(value)
++        self.native=mock.Mock();self.native.provenance.return_value={'actual_head':'a'*40}
++
++    def source(self):
++        with mock.patch.object(qos, 'ROOT', self.root), mock.patch.object(qos, 'module', return_value=self.native), mock.patch.dict(qos.os.environ, {'GITHUB_SHA':'a'*40}, clear=True):
++            return qos.source_receipt()
++
++    def change(self, path, value):
++        (self.root/path).write_text(value)
++
++    def test_default_hook_and_test_flag_split(self):
++        result=self.source();self.assertFalse(result['package_experiment_flag_required'])
++        self.assertFalse(result['default_project_experiment_flag']);self.assertEqual(len(result['source_hashes']),4)
++
++    def test_default_project_flag_rejected(self):
++        self.change('ios/BlindAssist.xcodeproj/project.pbxproj',qos.FLAG)
++        with self.assertRaises(ValueError):self.source()
++
++    def test_package_flag_rejected(self):
++        self.change('research/room-mesh-package-75/BlindRoomMesh/Package.swift',qos.FLAG)
++        with self.assertRaises(ValueError):self.source()
++
++    def test_missing_test_flag_rejected(self):
++        path='ios/BlindAssistTests/NativeQoSComparisonTests.swift'
++        self.change(path,self.paths[path].replace(' && BLIND_QOS_COMPARISON',''))
++        with self.assertRaises(ValueError):self.source()
++
++    def test_extra_test_declaration_rejected(self):
++        path='ios/BlindAssistTests/NativeQoSComparisonTests.swift'
++        self.change(path,self.paths[path]+'\nfunc testOther() {}')
++        with self.assertRaises(ValueError):self.source()
++
++    def test_unexpected_app_caller_rejected(self):
++        self.change('ios/BlindAssist/App.swift','owner.configureSyntheticComparisonQoS(userInitiated:true)')
++        with self.assertRaises(ValueError):self.source()
++
++    def test_package_flag_propagation_assumption_rejected(self):
++        path='research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift'
++        self.change(path,self.paths[path]+'\n#if BLIND_QOS_COMPARISON')
++        with self.assertRaises(ValueError):self.source()
++
++    def test_default_fallback_removed_rejected(self):
++        path='research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift'
++        self.change(path,self.paths[path].replace('Self.worker.async(execute:work); return','work(); return'))
++        with self.assertRaises(ValueError):self.source()
++
++
++if __name__ == '__main__': unittest.main()
+--- a/tools/generate-xcode-project.mjs
++++ b/tools/generate-xcode-project.mjs
+@@ -19,7 +19,7 @@
+     if (!isAbsolute(objectDetector) || /[\p{Cc}$]/u.test(objectDetector) || !['Detector.mlmodel', 'Detector.mlmodelc'].includes(basename(objectDetector))) throw new Error('Use an absolute Detector.mlmodel or Detector.mlmodelc path.');
+     if (![objectDetectorSHA256, objectDetectorManifestSHA256].every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value))) throw new Error('Object detector requires verified artifact and manifest hashes.');
+   } else if (objectDetectorSHA256 !== undefined || objectDetectorManifestSHA256 !== undefined) throw new Error('Detector hashes require --object-detector.');
+-  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift', 'SeatedMeshProjectionTests.swift', 'SeatedCollisionBridgeTests.swift'];
++  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift', 'SpatialMapIOTests.swift', 'IndoorNavigatorAsyncTests.swift', 'ConnectedJourneyFixture.swift', 'ConnectedJourneyRuntimeTests.swift', 'ObservedSceneRuntimeTests.swift', 'SelectedDocumentPDFTests.swift', 'KoivuSourceAnchorBenchFixture.swift', 'ConnectedNavigationBenchIntegrationTests.swift', 'RecordedRouteStoreTests.swift', 'SavedRoomDiagnosticGeometryProviderTests.swift', 'SavedRoomDiagnosticGeometryAppleFixtureTests.swift', 'ClassifiedRoomMeshTests.swift', 'ClassificationIngressTests.swift', 'SavedRoomRouteMeshAppleFixtureTests.swift', 'SavedRoomRouteCollisionOracle.swift', 'SavedRoomRouteCollisionOracleTests.swift', 'SavedRoomRouteDiagnosticAppleTests.swift', 'SavedRoomRouteJourneyAppleTests.swift', 'SavedRoomStrictEndpointTests.swift', 'ConversationRuntimeFailureTests.swift', 'SeatedMeshProjectionTests.swift', 'SeatedCollisionBridgeTests.swift', 'NativeQoSComparisonTests.swift'];
+   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
+   const refs = [], sources = [];
+   for (const file of files) {
+--- a/ios/BlindAssist.xcodeproj/project.pbxproj
++++ b/ios/BlindAssist.xcodeproj/project.pbxproj
+@@ -159,7 +159,7 @@
+ 2D4BF1A62DE05C1A5E20C50F = { isa = PBXBuildFile; productRef = A984EBE9F2B24B22CDF5E8BE; };
+ 878A52FC5FF6A57D50B7B870 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (19DB20F9567465164DE16C18,9E05114B26F4DD93E32BC105,9B3ED182B72B2E0155CDE497,A2996D0CBCDC778FBBB785DB,FB858898A7E6074A9D1EBEF4,29A823B0C5DEED39594A3FE1,6AD9045FC5D6C7DF98996D56,CBA596EA4A7A13AA95B95279,48D1279A90A628052EF7B40C,A1D1E39462A588D90936A04E,14564B17B20C5BC8F7EC180F,47EE78C15292A8891863E45A,7D8FC210A679C8A3361B53EE,FB2B8724D1E0A5635BA3344B,26A4C9C80D8F3A62699E2A22,0E9441DB7BB3C7D7EAD93A66,D822758E908F216659DA2F17,8C02AE920004CB8CD37165B3,1FFEBC234CFF07784E267C76,A9F37C679F54A4255BFB5CC2,8241F45DB510A83BB094D568,A591337BD3B64FBD42E4C4CD,39BEE9AEB83D5740A91E1BF8,C6237D187D961C7EE24427ED,1908108107C61AA0EF6F5D30,4536FB52ADEC02E7D7A9C24E,482691581DF9ACF9C64C4E97,0A6BB6B3A0D620F73C1BAC12,DD48E07D75A8487C6C62BC5A,3D99DDEAD4F4BB5A3431411F,DAE8D035A0C35EC4C46C3B89,7551A8BA7A18642ADB87ECA9,1A9FAAA822EDBA75DAFEA9B6,CCEEEFF158A8E79A361C80A1,350B318E951133B4909A1AAD,69DF1C0CD3929FF3E4BD79D7,3A28D6BA63537A241629B214,79C3B33E606118B689608D5F,E43B2918F9EA7A32FCD46837,759D1E04B629D786EEC87DB1,4E57F7E9CDBBB764A31E2CFE,D163C42526DC07B4493BDEFD,53014FAFD75F1846065CB283,245E4B99838F5706FF48CB41,D2D30AAA82DA833516178FDA,96DB4A3C98E11E23ECD764F2,5A285D28C31EE2EAAF94EEF7,C47CDACCE27EDA3A55BFC5C3,7C6C2304BED789960BFA559F,230259FBECDF7FDBC8EA6AFC,7AF177A8B4E05DBE92695BFB,46AD348392D96487DDC83065,AF02C17A8A6C8DE17160B044,68593AA83B5D31D157605154,184712533CCF4279E6DA6ACC,D6BA00EEA40EAAAEDD51BC1A,4A7F9681538A8D084DE7E368,C4433267EDAA7C5729830FE3,E30B99E135B3869C0048A32E,6CC224535A6824B0DDF7E1E1,3804800F60445D71B93FE8D0,AD3D80452CF358ADE4E8BDF9,AF386C20A0E0B4D55EE258A0,2BAB11BA60C7D00D5283DEC7,1013EBFD575D9EDE249A55E5,CEFB75E1A96E0B5A92EE9897,6EDB24B203C34F64A2C811CA,437A9D43102104190EB8DE7B,514AD2AFD048657CC4A50371,BA2A830D95494AA34DB18040,); runOnlyForDeploymentPostprocessing = 0; };
+ E2AA269EB967A8853A258BFA = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (2D4BF1A62DE05C1A5E20C50F,969CE00EF21E6E841975C27C,36D42A3EAFA3FE6E679AA81D,76B5A357391276B282A516F5,36EEDDBBE7685BF40FADE9D8,); runOnlyForDeploymentPostprocessing = 0; };
+-AD936FCBED631FA67E05C3EA = { isa = PBXGroup; children = (69C898D09A7F861EA925F30A,24339E80C725EA11FF0FFE35,CD0A25335058811CAE708448,B7FFB89D9E08BAF2F8C0268E,B232FC2966139EE3C55C4D4D,124AAA588045F837E5EF6788,7F8803F436A7F267127BA22C,8C85FCBC8A470DFD2AAE529C,BC0E96261A4076C507B45DB1,33D66E24128C6DEC3F289907,5C43A161E958D62F7CEC9DC2,4FC74F738368F9307F39B6BD,AB060E3FDCFFBB65E752235B,AF14A90136D3CFE820EA5186,C70285F1D4498792A9AF9D66,F12F029C41AA982ECF348295,BF18057EA19E83F38F859141,346C41A7A7A145D0AB1B3C70,1189D588EED234E0E160BB06,5BDD5968420E59A479817710,AB6A7AAB6C172EAC90E2D8D3,78D07123A4223F136312E43C,A07D1E96B7E3265664B7A4E5,24A390B7D2A626AE4FC832EF,B0F68D2FB969FF7C3D05DA1A,1CD58883DE4B6F1298D58564,8C8CB47DB240ABB97A1D1C91,23EA1C1047270EA90549029B,8E79CAFB76D50E58349A8BF6,EAFF2A3BF0F7D2ED0D486EA2,246776DD4742E59B6417B671,56A5C2ED60132BD23E9AA7F2,FF2547F9C811A0D0F1042BFC,24A9C4CB06BF6BE9D5A6E9BE,65A1A8835BFCEC08830B529A,D21441D3D26F1448A8D109EC,A4A07649EDA67CCF077B0134,A031A5B384F40C5D6BA7208F,40B15E15D7D6053FDB85793E,5787009721FE984E0A19D327,E632116FE62E468CB908F76D,603F47660E4D05F3C9E4D9D9,D182671AB2392B9E5BD54548,1F25E556BA33C5640CB419E9,48CE426066AC3035B91623D5,0838405F62849A5D937F8A5C,DB306741963309D06BEE7E71,D5EBA71AE0402045C2C0B113,B39AF66C2018453939F1A411,81F7791DBDC71ADB029E129D,0353C594483187A3B5DD67E4,136CB1C019B68533DEA2944A,717804A30A35BFAC9DC86BC0,E1659748D85C38B519D5B0A8,2A2F11DB7B9CA9EF3F1C9073,F5240C02A03B4EC2EA1B654C,977B4DD3672D76BC554C3D57,7A19EC2439B28686AA0AC0D5,81C2564CD034D8CA0BAB0ED0,682B7A5E22AFEE40D8D79775,B23DE30F76259B5216AF561D,122846F316B00EEC0E91EE43,99F40E5BF30029B198746FDA,E0F592FDA3346ACDA82866F5,C246B7BBE16827DDF8C59432,67FB565C5A9E1C3CEB5868F6,7D26DC968DFB9C1D555B210C,91674B58518C71267BD6C42F,765822F71FDA15F7D07F9DFC,C6CA6D29FD3615BB36D4FF98,A8792157CB4F27FB949C035F,7A665CDC8B6BB82F90923CBD,93E46A602338E07A8524AEF6,1DD61F7A3D64032769FF5256,15A8F135B2B9737A64A5D4CE,70CC1009810A9504E187105D,D23EDB8D1F5309D831F4699C,DB138DDC1A3D5AA3A4E70363,325DC6F5822A0A8EFD22F1D6,D5FFBC6AA835540CED653861,70BCE2D5CDF45BDFCF98320D,564D93319FDAD293EBD5FF11,AFFAAC461E02C02BC068B7C1,74D262B78AE96A1A0C23841F,516E1467199CDC26B604DFF6,A0E39C1F6C2AD80E58659576,2B77036D81F218A6039F5CCA,64CE9143E7F8AA10C9B5975F,E06372C27855BEC98128EDC2,C305E8B79202562F67A6826F,56081BBD764F8170A284D27C,63CCC70318D8587ADF6D9842,6B6B738303C81AD3447CA1C3,B99D98437B6D872F7C7AEE92,90E289442538BAED6C51B8F3,D135F6EBDCB9D40FD2F83CD9,438DA66704A1D1C2A3599F62,4632F1795253A162B33ED234,DBD55641C66B9617921783A3,5BF9881392F9676F89211B1A,263AA7604F720BBE5B796EE5,F36D673F4CD647DFA13F38A5,F45BC9D0EFD219E8D933B4BE,); sourceTree = "<group>"; };
++AD936FCBED631FA67E05C3EA = { isa = PBXGroup; children = (69C898D09A7F861EA925F30A,24339E80C725EA11FF0FFE35,CD0A25335058811CAE708448,B7FFB89D9E08BAF2F8C0268E,B232FC2966139EE3C55C4D4D,124AAA588045F837E5EF6788,7F8803F436A7F267127BA22C,8C85FCBC8A470DFD2AAE529C,BC0E96261A4076C507B45DB1,33D66E24128C6DEC3F289907,5C43A161E958D62F7CEC9DC2,4FC74F738368F9307F39B6BD,AB060E3FDCFFBB65E752235B,AF14A90136D3CFE820EA5186,C70285F1D4498792A9AF9D66,F12F029C41AA982ECF348295,BF18057EA19E83F38F859141,346C41A7A7A145D0AB1B3C70,1189D588EED234E0E160BB06,5BDD5968420E59A479817710,AB6A7AAB6C172EAC90E2D8D3,78D07123A4223F136312E43C,A07D1E96B7E3265664B7A4E5,24A390B7D2A626AE4FC832EF,B0F68D2FB969FF7C3D05DA1A,1CD58883DE4B6F1298D58564,8C8CB47DB240ABB97A1D1C91,23EA1C1047270EA90549029B,8E79CAFB76D50E58349A8BF6,EAFF2A3BF0F7D2ED0D486EA2,246776DD4742E59B6417B671,56A5C2ED60132BD23E9AA7F2,FF2547F9C811A0D0F1042BFC,24A9C4CB06BF6BE9D5A6E9BE,65A1A8835BFCEC08830B529A,D21441D3D26F1448A8D109EC,A4A07649EDA67CCF077B0134,A031A5B384F40C5D6BA7208F,40B15E15D7D6053FDB85793E,5787009721FE984E0A19D327,E632116FE62E468CB908F76D,603F47660E4D05F3C9E4D9D9,D182671AB2392B9E5BD54548,1F25E556BA33C5640CB419E9,48CE426066AC3035B91623D5,0838405F62849A5D937F8A5C,DB306741963309D06BEE7E71,D5EBA71AE0402045C2C0B113,B39AF66C2018453939F1A411,81F7791DBDC71ADB029E129D,0353C594483187A3B5DD67E4,136CB1C019B68533DEA2944A,717804A30A35BFAC9DC86BC0,E1659748D85C38B519D5B0A8,2A2F11DB7B9CA9EF3F1C9073,F5240C02A03B4EC2EA1B654C,977B4DD3672D76BC554C3D57,7A19EC2439B28686AA0AC0D5,81C2564CD034D8CA0BAB0ED0,682B7A5E22AFEE40D8D79775,B23DE30F76259B5216AF561D,122846F316B00EEC0E91EE43,99F40E5BF30029B198746FDA,E0F592FDA3346ACDA82866F5,C246B7BBE16827DDF8C59432,67FB565C5A9E1C3CEB5868F6,7D26DC968DFB9C1D555B210C,91674B58518C71267BD6C42F,765822F71FDA15F7D07F9DFC,C6CA6D29FD3615BB36D4FF98,A8792157CB4F27FB949C035F,7A665CDC8B6BB82F90923CBD,93E46A602338E07A8524AEF6,1DD61F7A3D64032769FF5256,15A8F135B2B9737A64A5D4CE,70CC1009810A9504E187105D,D23EDB8D1F5309D831F4699C,DB138DDC1A3D5AA3A4E70363,325DC6F5822A0A8EFD22F1D6,D5FFBC6AA835540CED653861,70BCE2D5CDF45BDFCF98320D,564D93319FDAD293EBD5FF11,AFFAAC461E02C02BC068B7C1,74D262B78AE96A1A0C23841F,516E1467199CDC26B604DFF6,A0E39C1F6C2AD80E58659576,2B77036D81F218A6039F5CCA,64CE9143E7F8AA10C9B5975F,E06372C27855BEC98128EDC2,C305E8B79202562F67A6826F,56081BBD764F8170A284D27C,63CCC70318D8587ADF6D9842,6B6B738303C81AD3447CA1C3,B99D98437B6D872F7C7AEE92,90E289442538BAED6C51B8F3,D135F6EBDCB9D40FD2F83CD9,438DA66704A1D1C2A3599F62,4632F1795253A162B33ED234,DBD55641C66B9617921783A3,5BF9881392F9676F89211B1A,75DFB43EFEEBDC0F96EE7628,263AA7604F720BBE5B796EE5,F36D673F4CD647DFA13F38A5,F45BC9D0EFD219E8D933B4BE,); sourceTree = "<group>"; };
+ 1A03BD2FD107C453F3183E30 = { isa = XCBuildConfiguration; name = Debug; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";   TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = YES; ONLY_ACTIVE_ARCH = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; }; };
+ E020E3C67BD0C31227720BD8 = { isa = XCBuildConfiguration; name = Release; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";   TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = NO; ONLY_ACTIVE_ARCH = NO; SWIFT_OPTIMIZATION_LEVEL = "-O"; }; };
+ 175AB01246347EE3CB3AD67C = { isa = XCConfigurationList; buildConfigurations = (1A03BD2FD107C453F3183E30,E020E3C67BD0C31227720BD8,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+@@ -230,7 +230,9 @@
+ C488F4D5FCECDE6F7518FD76 = { isa = PBXBuildFile; fileRef = DBD55641C66B9617921783A3; };
+ 5BF9881392F9676F89211B1A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssistTests/SeatedCollisionBridgeTests.swift"; sourceTree = SOURCE_ROOT; };
+ B2B0F49328CD5A15D1654C48 = { isa = PBXBuildFile; fileRef = 5BF9881392F9676F89211B1A; };
+-C344CB08D39518A3E73D4CE5 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AA3B683DF3D8B936F0C9084F,F0E896A8F2D71CEDB3B1AA15,F0FA6B214A1407A0F28D47F5,DAC82341266B0A05A8C47ECA,0C3587F4A680CE202378055D,BA5487892346B0EE999026AD,B6BDAD7F1862A8E80A2DFC17,4ED9028F380CFC927E089C74,50425C0DD217AA312B3E6002,15A8C8FE4DA2456B23572359,27EC64314FC3DB79190D4040,7758B92CFABAB3961B603750,272176ECF052F670C7C724BD,8E6DD480A582FF69BA846959,3F77D1DAABB54EA81B91BB66,1CCB56FB2518966128661891,41339309AAA8FCAA4CC31C34,8511C8EBEA0591F17949BB0E,826EEA7468E8933F52181EE6,A3CF07834E40E7707FEE9E80,709C773F547F5E4E79157AAF,5E1E70FD42F78FC44ABF3424,47605B358A9F704D684EF795,7D71A1952C27BFA0E83E5C6E,C7658616AECE6868292D7104,C488F4D5FCECDE6F7518FD76,B2B0F49328CD5A15D1654C48,); runOnlyForDeploymentPostprocessing = 0; };
++75DFB43EFEEBDC0F96EE7628 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssistTests/NativeQoSComparisonTests.swift"; sourceTree = SOURCE_ROOT; };
++1AB55D7C3635EB8FB4C37DA6 = { isa = PBXBuildFile; fileRef = 75DFB43EFEEBDC0F96EE7628; };
++C344CB08D39518A3E73D4CE5 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AA3B683DF3D8B936F0C9084F,F0E896A8F2D71CEDB3B1AA15,F0FA6B214A1407A0F28D47F5,DAC82341266B0A05A8C47ECA,0C3587F4A680CE202378055D,BA5487892346B0EE999026AD,B6BDAD7F1862A8E80A2DFC17,4ED9028F380CFC927E089C74,50425C0DD217AA312B3E6002,15A8C8FE4DA2456B23572359,27EC64314FC3DB79190D4040,7758B92CFABAB3961B603750,272176ECF052F670C7C724BD,8E6DD480A582FF69BA846959,3F77D1DAABB54EA81B91BB66,1CCB56FB2518966128661891,41339309AAA8FCAA4CC31C34,8511C8EBEA0591F17949BB0E,826EEA7468E8933F52181EE6,A3CF07834E40E7707FEE9E80,709C773F547F5E4E79157AAF,5E1E70FD42F78FC44ABF3424,47605B358A9F704D684EF795,7D71A1952C27BFA0E83E5C6E,C7658616AECE6868292D7104,C488F4D5FCECDE6F7518FD76,B2B0F49328CD5A15D1654C48,1AB55D7C3635EB8FB4C37DA6,); runOnlyForDeploymentPostprocessing = 0; };
+ F36D673F4CD647DFA13F38A5 = { isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomPlanApple"; sourceTree = SOURCE_ROOT; };
+ 73D86D1818DA7238876B5901 = { isa = PBXBuildFile; fileRef = F36D673F4CD647DFA13F38A5; };
+ F45BC9D0EFD219E8D933B4BE = { isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomRouteDiagnostic"; sourceTree = SOURCE_ROOT; };
+--- /dev/null
++++ b/ios/BlindAssistTests/NativeQoSComparisonTests.swift
+@@ -0,0 +1,98 @@
++#if DEBUG && BLIND_QOS_COMPARISON && canImport(Darwin)
++import Foundation
++import XCTest
++import BlindRoomMesh
++
++/// Explicit diagnostic lane. Not app acceptance, a benchmark guarantee, or physical guidance.
++final class NativeQoSComparisonTests: XCTestCase {
++    private final class Box<T>: @unchecked Sendable {
++        private let lock=NSLock(); private var value:T?
++        func put(_ v:T) { lock.lock(); value=v; lock.unlock() }
++        func get()->T? { lock.lock(); defer {lock.unlock()}; return value }
++    }
++    private func completion(_ description:String)->XCTestExpectation {
++        let value=XCTestExpectation(description:description)
++        value.assertForOverFulfill=true
++        return value
++    }
++    private func wait(_ done:XCTestExpectation, seconds:Double, phase:String, arm:Int) async -> Bool {
++        let result=await XCTWaiter().fulfillment(of:[done],timeout:seconds)
++        let passed=result == .completed
++        print("NATIVE_QOS_DEADLINE arm=\(arm) phase=\(phase) budget_s=\(seconds) met=\(passed) physical_authority=false")
++        if !passed { XCTFail("QoS diagnostic arm \(arm) \(phase) missed original \(seconds)s deadline") }
++        return passed
++    }
++    private func report(_ owner:RoomMeshCandidateRuntime,arm:Int,label:String,elapsed:Double,normalDrain:Bool,lateAck:Bool) {
++        let rows=owner.diagnosticStageReceipts
++        func pair(_ a:RoomMeshCandidateRuntime.DiagnosticStage,_ b:RoomMeshCandidateRuntime.DiagnosticStage)->String {
++            guard let x=rows.first(where:{$0.stage == a}),let y=rows.first(where:{$0.stage == b}),y.elapsedMilliseconds>=x.elapsedMilliseconds else{return "wall_ms=-1,cpu_us=-1,pair_valid=false"}
++            let wall=y.elapsedMilliseconds-x.elapsedMilliseconds
++            guard let xt=x.workerThreadID,let yt=y.workerThreadID,xt==yt,let xc=x.workerCPUTimeMicroseconds,let yc=y.workerCPUTimeMicroseconds,yc>=xc else{return "wall_ms=\(wall),cpu_us=-1,pair_valid=false"}
++            return "wall_ms=\(wall),cpu_us=\(yc-xc),pair_valid=true"
++        }
++        let stages=rows.map{"\($0.stage.rawValue):\($0.elapsedMilliseconds)"}.joined(separator:";")
++        print("NATIVE_QOS_ARM arm=\(arm) requested=\(label) effective_raw=\(owner.syntheticComparisonEffectiveQoS.map(String.init) ?? "unavailable") elapsed_ms=\(Int(elapsed*1000)) normal_drain=\(normalDrain) late_ack=\(lateAck) worker=[\(pair(.workerStarted,.workerFinished))] build=[\(pair(.nativeBuildBegin,.nativeBuildEnd))] route=[\(pair(.routeBegin,.routeEnd))] stages=\(stages) physical_authority=false")
++    }
++    func testIsolatedUtilityUserInitiatedABBA() async throws {
++        // No warmup. Identical fresh-owner geometry for every arm; first sample stays in results.
++        let body=try MeshCandidateBody(radius:0.3,height:1.7)
++        let order=[false,true,true,false]
++        let processStart=ProcessInfo.processInfo.systemUptime
++        for (arm,high) in order.enumerated() {
++            let began=ProcessInfo.processInfo.systemUptime
++            let owner=try RoomMeshCandidateRuntime(sessionID:"qos-synthetic",supportPolicy:.classifiedFloorOnly,
++                endpointPolicy:.requireSuppliedXZOverPolygon,captureSyntheticTestTiming:true)
++            try owner.configureSyntheticComparisonQoS(userInitiated:high)
++            let offered=owner.offer(.init(sessionID:"qos-synthetic",generation:0,anchorID:"floor",revision:1,timestamp:0,
++                vertices:[-3,0,-3,-3,0,3,3,0,3,3,0,-3],triangles:[0,1,2,0,2,3],
++                columnMajorTransform:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],complete:true,triangleSupport:[.floor,.floor]))
++            XCTAssertTrue(offered)
++            let sourceDone=completion("source \(arm)")
++            let source=Box<Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>>()
++            let sourceAt=ProcessInfo.processInfo.systemUptime
++            let sourceCallback=Box<Double>()
++            owner.requestSourceSnapshot { value in
++                sourceCallback.put(ProcessInfo.processInfo.systemUptime-sourceAt);source.put(value);sourceDone.fulfill()
++            }
++            let sourceTimely=await wait(sourceDone,seconds:10,phase:"source",arm:arm)
++            var sourceOK=false
++            if sourceTimely,case .success(let snapshot)?=source.get() {sourceOK=owner.isCurrent(snapshot)}
++            if sourceTimely {XCTAssertTrue(sourceOK,"Source failed or became stale")}
++            if sourceOK {
++                let queryDone=completion("query \(arm)")
++                let query=Box<Result<MeshCandidateRoute,MeshCandidateError>>()
++                owner.request(start:[-1,0,0],goal:[1,0,0],body:body) {value in query.put(value);queryDone.fulfill()}
++                let queryTimely=await wait(queryDone,seconds:10,phase:"query",arm:arm)
++                if queryTimely {
++                    switch query.get() {
++                    case .success(let route):
++                        XCTAssertTrue(route.complete);XCTAssertTrue(owner.isCurrent(route))
++                        XCTAssertFalse(route.authorizesPhysicalGuidance);XCTAssertFalse(route.actualWorldCoverageKnown)
++                        XCTAssertNotNil(route.endpointAdmission)
++                        XCTAssertEqual(route.endpointPolicy,.requireSuppliedXZOverPolygon)
++                    default:XCTFail("Native refusal/missing result is not a successful diagnostic arm")
++                    }
++                }
++            }
++            // Separate expectations avoid re-waiting on an XCTest expectation that timed out.
++            // All are standalone, not registered-but-unwaited XCTestCase expectations.
++            let drain=completion("normal drain \(arm)")
++            let late=completion("late drain observation \(arm)")
++            owner.stopAndDiscard {drain.fulfill();late.fulfill()}
++            let drained=await wait(drain,seconds:10,phase:"normal_drain",arm:arm)
++            var acknowledged=drained
++            if !drained {
++                acknowledged=await XCTWaiter().fulfillment(of:[late],timeout:45) == .completed
++                // Original failure remains. This is observation only, never recovery-to-pass.
++                print("NATIVE_QOS_LATE_DRAIN arm=\(arm) observation_s=45 acknowledged=\(acknowledged) original_failure_preserved=true")
++            }
++            print("NATIVE_QOS_SOURCE arm=\(arm) callback_ms=\(sourceCallback.get().map{Int($0*1000)} ?? -1) process_offset_ms=\(Int((began-processStart)*1000))")
++            report(owner,arm:arm,label:high ? "userInitiated":"utility",elapsed:ProcessInfo.processInfo.systemUptime-began,normalDrain:drained,lateAck:!drained && acknowledged)
++            guard acknowledged else {
++                XCTFail("No acknowledged native drain; remaining comparison arms ABORTED")
++                return
++            }
++        }
++    }
++}
++#endif
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -190,6 +190,33 @@
+  private let lock=NSLock()
+  // Native adapter has process-global error text: serialize all package native calls.
+  static let worker=DispatchQueue(label:"blind.room-mesh.native",qos:.utility)
++#if DEBUG
++ // Isolated experiment only. Explicit opt-in from the separately flagged test. Never a production scheduling setting.
++ private var comparisonQoS: DispatchQoS?
++ private var comparisonEffectiveQoS: UInt32?
++ public func configureSyntheticComparisonQoS(userInitiated: Bool) throws {
++  try locked {
++   guard pending == 0, owner == nil, !stopped, comparisonQoS == nil else { throw MeshCandidateError.invalidInput }
++   comparisonQoS = userInitiated ? .userInitiated : .utility
++  }
++ }
++ public var syntheticComparisonEffectiveQoS: UInt32? { locked { comparisonEffectiveQoS } }
++ private func enqueueNativeRequest(_ work: @escaping () -> Void) {
++  guard let qos=locked({comparisonQoS}) else { Self.worker.async(execute:work); return }
++  // Same serial worker, not a parallel native lane. Both arms use identical flags.
++  let item=DispatchWorkItem(qos:qos,flags:[.enforceQoS]) { [self] in
++#if canImport(Darwin)
++   let effective=qos_class_self().rawValue
++   locked { comparisonEffectiveQoS=effective }
++#endif
++   work()
++  }
++  Self.worker.async(execute:item)
++ }
++#else
++ private func enqueueNativeRequest(_ work: @escaping () -> Void) { Self.worker.async(execute:work) }
++#endif
++
+  private var session: String, generation: Int, revision: UInt64=0
+  private var lifecycle:UInt64=0, ownerLifecycle:UInt64?
+  private var pending=0, pendingScalars=0, gap=false, stopped=false
+@@ -641,7 +668,7 @@
+ #if DEBUG
+   recordDiagnosticStage(.requestEnqueued)
+ #endif
+-  Self.worker.async { [self] in
++  enqueueNativeRequest { [self] in
+ #if DEBUG
+    let diagnosticOffset=diagnosticWorkerOffset()
+    recordDiagnosticStage(.workerStarted,workerCPU:true)
+--- a/.github/workflows/native-apple.yml
++++ b/.github/workflows/native-apple.yml
+@@ -225,6 +225,10 @@
+         id: unit
+         timeout-minutes: 10
+         run: bash tools/ci/native-apple.sh diagnostics-unit
++      - name: Export bounded seated case statuses and assertion categories
++        if: always()
++        timeout-minutes: 3
++        run: python3 -B tools/ci/export-seated-case-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
+       - name: Verify exact eighteen synthetic hosted cases and source identity
+         id: collect
+         if: always()
+--- /dev/null
++++ b/tools/ci/export-seated-case-diagnostics.py
+@@ -0,0 +1,204 @@
++#!/usr/bin/env python3
++"""Failure-preserving seated case metadata; never changes strict acceptance.
++
++Reuse installed xcresult tests/summary queries and the reviewed exact fixture
++allowlist. Raw assertion text, attachments, captured geometry and model text
++are never exported. Unknown schemas remain explicitly unknown.
++"""
++import hashlib
++import importlib.util
++import json
++import os
++from pathlib import Path
++import re
++import subprocess
++import sys
++
++sys.dont_write_bytecode = True
++HERE = Path(__file__).resolve().parent
++ROOT = HERE.parents[1]
++SPEC = importlib.util.spec_from_file_location('seated_strict_collector', HERE / 'collect-seated-projection.py')
++strict = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(strict)
++native = strict.native
++EXPECTED = tuple(strict.EXPECTED)
++CASE_LIMIT = 128
++FAILURE_LIMIT = 128
++LOG_LIMIT = 64 * 1024 * 1024
++LINE_LIMIT = 4096
++OUTPUT_LIMIT = 128 * 1024
++EXCEPTIONS = (OSError, ValueError, TypeError, KeyError, RecursionError, subprocess.SubprocessError)
++FIXTURES = ('ios/BlindAssistTests/SeatedMeshProjectionTests.swift',
++            'ios/BlindAssistTests/SeatedCollisionBridgeTests.swift')
++ASSERTIONS = {
++    'XCTAssertTrue': 'assert_true', 'XCTAssertFalse': 'assert_false',
++    'XCTAssertEqual': 'assert_equal', 'XCTAssertNotEqual': 'assert_not_equal',
++    'XCTAssertNil': 'assert_nil', 'XCTAssertNotNil': 'assert_not_nil',
++    'XCTAssertGreaterThan': 'assert_greater', 'XCTAssertGreaterThanOrEqual': 'assert_greater_equal',
++    'XCTAssertLessThan': 'assert_less', 'XCTAssertLessThanOrEqual': 'assert_less_equal',
++    'XCTAssertThrowsError': 'assert_throws', 'XCTAssertNoThrow': 'assert_no_throw',
++    'XCTUnwrap': 'unwrap', 'XCTFail': 'explicit_failure', 'XCTAssert': 'assert_generic',
++}
++
++
++def require(ok):
++    if not ok: raise ValueError('unsupported or excessive metadata')
++
++
++def bounded(path, limit):
++    require(path.is_file() and not path.is_symlink())
++    with path.open('rb') as stream: data = stream.read(limit + 1)
++    require(len(data) <= limit)
++    return data
++
++
++def identity(value):
++    if type(value) is not str or len(value) > 512: return None
++    candidate = value.removesuffix('()').removeprefix('BlindAssistTests/')
++    if candidate in EXPECTED: return candidate
++    match = re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SeatedMeshProjectionTests|SeatedCollisionBridgeTests) (test\w+)\]', value)
++    candidate = '/'.join(match.groups()) if match else None
++    return candidate if candidate in EXPECTED else None
++
++
++def category(value):
++    # Classification only, not cause attribution; never echo or hash messages.
++    if type(value) is not str: return 'unavailable'
++    if len(value) > LINE_LIMIT: return 'oversize_message'
++    match = re.match(r'^(XCT[A-Za-z]+)(?:\s|:|$)', value)
++    if match and match.group(1) in ASSERTIONS: return ASSERTIONS[match.group(1)]
++    if value.startswith('Asynchronous wait failed:'): return 'async_wait_failure'
++    if value.startswith('Failed due to unwaited expectation'): return 'unwaited_expectation'
++    if value.startswith('failed: caught error') or value.startswith('threw error'): return 'thrown_error'
++    if value.startswith('failed -') or value == 'failed': return 'explicit_failure'
++    return 'other_failure'
++
++
++def project_cases(cases):
++    result = {'cases': [], 'caseCountObserved': len(cases), 'unexpectedCaseCount': 0,
++              'caseRowsOmitted': 0, 'duplicateExpectedCaseRows': 0}
++    seen = set()
++    for row in cases:
++        name = identity(row['identifier'])
++        if name is None:
++            result['unexpectedCaseCount'] += 1; continue
++        if name in seen: result['duplicateExpectedCaseRows'] += 1
++        seen.add(name)
++        if len(result['cases']) < CASE_LIMIT:
++            result['cases'].append({'identifier': name, 'result': row['result']})
++        else: result['caseRowsOmitted'] += 1
++    result['missingExpectedIdentities'] = [name for name in EXPECTED if name not in seen]
++    result['exactCaseSetObserved'] = len(cases) == len(EXPECTED) and seen == set(EXPECTED)
++    return result
++
++
++def summary_failures(summary):
++    result = {'records': [], 'unrecognizedRecords': 0, 'recordsOmitted': 0,
++              'schemaAvailable': False, 'origin': 'xcresult-summary',
++              'countMeaning': 'failure_records_not_failed_test_cases'}
++    if type(summary) is not dict or type(summary.get('testFailures')) is not list: return result
++    failures = summary['testFailures']; result['schemaAvailable'] = True
++    for row in failures[:FAILURE_LIMIT]:
++        if type(row) is not dict:
++            result['unrecognizedRecords'] += 1; continue
++        a, b = identity(row.get('testIdentifier')), identity(row.get('testName'))
++        # Conflicting known identifiers never bind an assertion to a guessed case.
++        if (a and b and a != b) or not (a or b):
++            result['unrecognizedRecords'] += 1; continue
++        result['records'].append({'identifier': a or b,
++                                  'category': category(row.get('failureText', row.get('message')))})
++    result['recordsOmitted'] = max(0, len(failures) - FAILURE_LIMIT)
++    return result
++
++
++def log_failures(path):
++    result = {'records': [], 'recordsOmitted': 0, 'oversizeLinesSkipped': 0,
++              'origin': 'fixed-fixture-log', 'countMeaning': 'matching_log_records_not_unique_assertions'}
++    require(path.is_file() and not path.is_symlink())
++    pattern = re.compile(r'^(?:[^\r\n]{0,2048}/)?(SeatedMeshProjectionTests|SeatedCollisionBridgeTests)\.swift:'
++                         r'([0-9]{1,7})(?::[0-9]{1,7})?: error: '
++                         r'(-\[(?:BlindAssistTests\.)?(?:SeatedMeshProjectionTests|SeatedCollisionBridgeTests) test\w+\]) : (.*)$')
++    total = 0; skipping = False
++    with path.open('rb') as stream:
++        while True:
++            line = stream.readline(LINE_LIMIT + 1)
++            if not line: break
++            total += len(line); require(total <= LOG_LIMIT)
++            if len(line) > LINE_LIMIT:
++                if not skipping: result['oversizeLinesSkipped'] += 1
++                skipping = not line.endswith(b'\n'); continue
++            if skipping:
++                skipping = not line.endswith(b'\n'); continue
++            try: text = line.decode('utf-8').rstrip('\r\n')
++            except UnicodeError: continue
++            match = pattern.fullmatch(text)
++            if not match: continue
++            filename, line_number, raw_name, message = match.groups(); name = identity(raw_name)
++            if not name or name.split('/')[0] != filename: continue
++            if len(result['records']) >= FAILURE_LIMIT:
++                result['recordsOmitted'] += 1; continue
++            result['records'].append({'identifier': name, 'line': int(line_number), 'category': category(message)})
++    return result
++
++
++def fixture_source():
++    data = [bounded(ROOT / p, 2 * 1024 * 1024) for p in FIXTURES]
++    strict.verify_fixture_source(data[0].decode(), strict.PROJECTION_EXPECTED, 'SeatedMeshProjectionTests')
++    strict.verify_fixture_source(data[1].decode(), strict.COLLISION_EXPECTED, 'SeatedCollisionBridgeTests')
++    return {p: hashlib.sha256(b).hexdigest() for p, b in zip(FIXTURES, data)}
++
++
++def collect(out):
++    result = {'schema': 1, 'status': 'unavailable', 'sourceVerified': False,
++              'scope': '18 fixed synthetic hosted cases; diagnostic metadata only',
++              'acceptance': 'not_inferred_strict_collector_unchanged', 'physicalAuthority': False,
++              'assertionOriginsCombined': False, 'commandExit': None, 'errors': []}
++    expected = os.environ.get('GITHUB_SHA')
++    if type(expected) is str and re.fullmatch('[0-9a-f]{40}', expected): result['expectedCommit'] = expected
++    try:
++        command = json.loads(bounded(out / 'diagnostics-unit-exit.json', 4096))
++        require(type(command) is dict)
++        if type(command.get('exit_code')) is int: result['commandExit'] = command['exit_code']
++        else: result['errors'].append('command-exit-unavailable')
++    except EXCEPTIONS: result['errors'].append('command-receipt-unavailable')
++    try:
++        before = native.provenance(ROOT, expected); hashes = fixture_source()
++        bundle = out / 'diagnostics-unit.xcresult'
++        cases = summary = None; pending = {}
++        for kind in ['tests', 'summary']:
++            try:
++                raw = native.query(['xcrun', 'xcresulttool', 'get', 'test-results', kind,
++                                    '--path', str(bundle), '--compact'], seconds=20)
++                payload = json.loads(raw)
++                pending.setdefault('querySHA256', {})[kind] = hashlib.sha256(raw).hexdigest()
++                if kind == 'tests':
++                    cases = native.cases_from(payload); pending.update(project_cases(cases))
++                else:
++                    summary = payload; pending['summaryFailureCategories'] = summary_failures(summary)
++            except EXCEPTIONS: result['errors'].append(kind + '-metadata-unavailable')
++        if cases is not None and summary is not None:
++            try:
++                pending['counts'] = native.reconcile(cases, summary); pending['aggregateCountsMatch'] = True
++            except EXCEPTIONS:
++                pending['aggregateCountsMatch'] = False; result['errors'].append('aggregate-counts-mismatch')
++        try: pending['logFailureCategories'] = log_failures(out / 'diagnostics-unit.log')
++        except EXCEPTIONS: result['errors'].append('fixed-fixture-log-unavailable')
++        after = native.provenance(ROOT, expected)
++        require(before == after and hashes == fixture_source())
++        # No case/assertion metadata is released on dirty/changed source identity.
++        result.update(pending, status='diagnostic-only', sourceVerified=True,
++                      sourceCommit=before['actual_head'], fixtureSHA256=hashes)
++    except EXCEPTIONS: result['errors'].append('source-identity-unverified')
++    encoded = json.dumps(result, sort_keys=True, separators=(',', ':'))
++    require(len(encoded.encode()) <= OUTPUT_LIMIT)
++    line = 'SEATED_CASE_DIAGNOSTICS=' + encoded
++    print(line)
++    out.mkdir(parents=True, exist_ok=True)
++    (out / 'seated-case-diagnostics.json').write_text(encoded + '\n')
++    if os.environ.get('GITHUB_STEP_SUMMARY'):
++        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
++            stream.write('\n### Seated case diagnostics, not acceptance\n```text\n' + line + '\n```\n')
++    return 0  # Observation cannot erase the original native/strict collector failures.
++
++
++if __name__ == '__main__':
++    raise SystemExit(collect(Path(sys.argv[1])))
+--- /dev/null
++++ b/tools/ci/test_export_seated_case_diagnostics.py
+@@ -0,0 +1,202 @@
++#!/usr/bin/env python3
++"""Bounded synthetic parser/provenance controls; no Apple processes or workflows."""
++import contextlib
++import importlib.util
++import io
++import json
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++HERE=Path(__file__).resolve().parent
++spec=importlib.util.spec_from_file_location('seated_diagnostic', HERE/'export-seated-case-diagnostics.py')
++m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++NAME=m.EXPECTED[0]
++CASES=[{'identifier':name+'()', 'result':'Passed'} for name in m.EXPECTED]
++
++def summary(cases):
++    result={'totalTestCount':len(cases),'testFailures':[]}
++    for key,status in [('passedTests','Passed'),('failedTests','Failed'),('skippedTests','Skipped'),('expectedFailures','Expected Failure')]:
++        result[key]=sum(c['result']==status for c in cases)
++    return result
++
++def assertion(name=NAME,message='XCTAssertTrue failed',filename=None):
++    cls,method=name.split('/')
++    return f'/private/not-exported/{filename or cls}.swift:123: error: -[BlindAssistTests.{cls} {method}] : {message}\n'
++
++class ProjectionTests(unittest.TestCase):
++    def test_all_eighteen_exact_identities(self):
++        result=m.project_cases(CASES);self.assertEqual(len(result['cases']),18);self.assertTrue(result['exactCaseSetObserved'])
++    def test_failed_skipped_and_expected_failures_preserved(self):
++        for status in ['Failed','Skipped','Expected Failure']:
++            rows=[{'identifier':NAME,'result':status}]
++            self.assertEqual(m.project_cases(rows)['cases'],rows)
++    def test_duplicates_preserved_not_clean(self):
++        result=m.project_cases(CASES+[CASES[0]])
++        self.assertEqual(len(result['cases']),19);self.assertEqual(result['duplicateExpectedCaseRows'],1);self.assertFalse(result['exactCaseSetObserved'])
++    def test_unknown_identity_withheld(self):
++        result=m.project_cases([{'identifier':'PrivateTests/testPersonal','result':'Failed'}])
++        self.assertEqual(result['unexpectedCaseCount'],1);self.assertNotIn('Personal',str(result))
++    def test_missing_cases_explicit(self):
++        result=m.project_cases(CASES[:-1]);self.assertEqual(result['missingExpectedIdentities'],[m.EXPECTED[-1]])
++    def test_case_cap_counts_omitted(self):
++        result=m.project_cases([CASES[0]]*129)
++        self.assertEqual(len(result['cases']),128);self.assertEqual(result['caseRowsOmitted'],1)
++    def test_exact_identity_forms(self):
++        for raw in [NAME,NAME+'()','BlindAssistTests/'+NAME+'()', '-[BlindAssistTests.'+NAME.replace('/',' ')+']']:
++            self.assertEqual(m.identity(raw),NAME)
++    def test_identity_rejects_foreign_prefix_or_substring(self):
++        for raw in ['Other/'+NAME,NAME+'Extra',None,[], 'x'*513]:self.assertIsNone(m.identity(raw))
++    def test_known_assertion_categories(self):
++        for token,expected in m.ASSERTIONS.items():self.assertEqual(m.category(token+' failed PRIVATE [1,2,3]'),expected)
++    def test_async_and_unwaited_categories(self):
++        self.assertEqual(m.category('Asynchronous wait failed: PRIVATE'),'async_wait_failure')
++        self.assertEqual(m.category('Failed due to unwaited expectation PRIVATE'),'unwaited_expectation')
++    def test_unknown_text_is_category_only(self):
++        self.assertEqual(m.category('PRIVATE [1,2,3] secret'),'other_failure')
++    def test_message_bound_and_missing(self):
++        self.assertEqual(m.category('x'*4097),'oversize_message');self.assertEqual(m.category(None),'unavailable')
++    def test_summary_failure_records_not_case_count(self):
++        rows=[{'testIdentifier':NAME,'failureText':'XCTAssertEqual failed PRIVATE'}]*2
++        result=m.summary_failures({'testFailures':rows})
++        self.assertEqual(len(result['records']),2);self.assertNotIn('PRIVATE',str(result))
++        self.assertEqual(result['countMeaning'],'failure_records_not_failed_test_cases')
++    def test_summary_message_and_objc_testname(self):
++        result=m.summary_failures({'testFailures':[{'testName':'-['+NAME.replace('/',' ')+']','message':'XCTUnwrap failed'}]})
++        self.assertEqual(result['records'][0],{'identifier':NAME,'category':'unwrap'})
++    def test_unknown_summary_is_not_zero_assertions(self):
++        for value in [None,[],{}, {'testFailures':None}]:self.assertFalse(m.summary_failures(value)['schemaAvailable'])
++    def test_explicit_empty_summary_known_zero_records(self):
++        self.assertTrue(m.summary_failures({'testFailures':[]})['schemaAvailable'])
++    def test_unknown_failure_identity_counted_not_exported(self):
++        result=m.summary_failures({'testFailures':[{'testIdentifier':'Private/test','message':'PRIVATE'},'PRIVATE']})
++        self.assertEqual(result['unrecognizedRecords'],2);self.assertNotIn('PRIVATE',str(result))
++    def test_conflicting_known_failure_identity_rejected(self):
++        result=m.summary_failures({'testFailures':[{'testIdentifier':NAME,'testName':m.EXPECTED[1],'message':'XCTAssertTrue failed'}]})
++        self.assertEqual(result['unrecognizedRecords'],1);self.assertEqual(result['records'],[])
++    def test_summary_failure_cap(self):
++        result=m.summary_failures({'testFailures':[{'testIdentifier':NAME,'message':'failed'}]*129})
++        self.assertEqual(len(result['records']),128);self.assertEqual(result['recordsOmitted'],1)
++
++class LogTests(unittest.TestCase):
++    def project(self,text):
++        with tempfile.TemporaryDirectory() as d:
++            p=Path(d)/'log';p.write_bytes(text if isinstance(text,bytes) else text.encode());return m.log_failures(p)
++    def test_exact_case_category_line_only(self):
++        result=self.project(assertion())
++        self.assertEqual(result['records'],[{'identifier':NAME,'line':123,'category':'assert_true'}])
++        self.assertNotIn('/private',str(result))
++    def test_collision_class_supported(self):
++        name=m.EXPECTED[-1];self.assertEqual(self.project(assertion(name))['records'][0]['identifier'],name)
++    def test_wrong_filename_rejected(self):
++        self.assertEqual(self.project(assertion(filename='Other'))['records'],[])
++    def test_wrong_class_to_filename_rejected(self):
++        self.assertEqual(self.project(assertion(filename='SeatedCollisionBridgeTests'))['records'],[])
++    def test_unknown_test_rejected(self):
++        self.assertEqual(self.project(assertion('SeatedMeshProjectionTests/testPrivate'))['records'],[])
++    def test_long_line_tail_not_reinterpreted(self):
++        result=self.project('x'*4097+assertion()+assertion())
++        self.assertEqual(result['oversizeLinesSkipped'],1);self.assertEqual(len(result['records']),1)
++    def test_binary_text_not_exported(self):
++        self.assertEqual(self.project(b'\xff\xfe PRIVATE\n')['records'],[])
++    def test_record_cap(self):
++        result=self.project(assertion()*129);self.assertEqual(len(result['records']),128);self.assertEqual(result['recordsOmitted'],1)
++    def test_total_log_budget(self):
++        with patch.object(m,'LOG_LIMIT',20),self.assertRaises(ValueError):self.project(assertion())
++    def test_other_app_output_not_exported(self):
++        result=self.project('APP PRIVATE geometry [1,2,3]\n');self.assertNotIn('PRIVATE',str(result));self.assertEqual(result['records'],[])
++    def test_symlink_rejected(self):
++        with tempfile.TemporaryDirectory() as d:
++            p=Path(d)/'file';p.write_text(assertion());link=Path(d)/'link';link.symlink_to(p)
++            with self.assertRaises(ValueError):m.log_failures(link)
++
++class CollectTests(unittest.TestCase):
++    def setUp(self):
++        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
++        self.out=Path(self.temp.name);self.cases=[dict(row) for row in CASES]
++        self.cases[0]['result']='Failed';self.summary=summary(self.cases)
++        self.summary['testFailures']=[{'testIdentifier':NAME,'failureText':'XCTAssertTrue failed PRIVATE'}]
++        (self.out/'diagnostics-unit.log').write_text(assertion())
++        (self.out/'diagnostics-unit-exit.json').write_text('{"exit_code":65}')
++        self.before={'actual_head':'a'*40};self.after=self.before
++        self.hashes={p:'b'*64 for p in m.FIXTURES}
++    def run_export(self,source_error=False,case_error=False,summary_error=False):
++        def query(args,seconds):
++            self.assertEqual(seconds,20)
++            kind=args[4]
++            if kind=='tests':
++                if case_error:raise ValueError('PRIVATE')
++                return json.dumps({'testNodes':[{'nodeType':'Test Case','nodeIdentifier':r['identifier'],'result':r['result']} for r in self.cases]}).encode()
++            if summary_error:raise ValueError('PRIVATE')
++            return json.dumps(self.summary).encode()
++        with patch.object(m.native,'provenance',side_effect=ValueError('PRIVATE') if source_error else [self.before,self.after]),patch.object(m,'fixture_source',return_value=self.hashes),patch.object(m.native,'query',side_effect=query),patch.dict(m.os.environ,{'GITHUB_SHA':'a'*40,'GITHUB_STEP_SUMMARY':str(self.out/'summary')},clear=True),contextlib.redirect_stdout(io.StringIO()) as stream:
++            self.assertEqual(m.collect(self.out),0)
++        result=json.loads((self.out/'seated-case-diagnostics.json').read_text())
++        self.assertIn('SEATED_CASE_DIAGNOSTICS=',stream.getvalue());self.assertNotIn('PRIVATE',stream.getvalue())
++        return result
++    def test_failed_case_and_original_exit_retained(self):
++        result=self.run_export();self.assertEqual(result['commandExit'],65);self.assertEqual(result['cases'][0]['result'],'Failed');self.assertEqual(result['counts']['Failed'],1)
++    def test_assertions_not_combined_across_origins(self):
++        result=self.run_export();self.assertFalse(result['assertionOriginsCombined'])
++        self.assertEqual(len(result['summaryFailureCategories']['records']),1);self.assertEqual(len(result['logFailureCategories']['records']),1)
++    def test_summary_written_on_failed_test(self):
++        self.run_export();self.assertIn('SEATED_CASE_DIAGNOSTICS=',(self.out/'summary').read_text())
++    def test_strict_failure_not_reclassified_pass(self):
++        result=self.run_export();self.assertEqual(result['status'],'diagnostic-only');self.assertEqual(result['acceptance'],'not_inferred_strict_collector_unchanged')
++    def test_summary_count_mismatch_keeps_case_rows(self):
++        self.summary['totalTestCount']=999;result=self.run_export()
++        self.assertFalse(result['aggregateCountsMatch']);self.assertEqual(len(result['cases']),18)
++    def test_missing_summary_keeps_cases_and_log_categories(self):
++        result=self.run_export(summary_error=True);self.assertEqual(len(result['cases']),18);self.assertIn('logFailureCategories',result)
++    def test_missing_cases_keeps_summary_categories(self):
++        result=self.run_export(case_error=True);self.assertNotIn('cases',result);self.assertIn('summaryFailureCategories',result)
++    def test_unknown_summary_schema_explicit(self):
++        self.summary={};result=self.run_export();self.assertFalse(result['summaryFailureCategories']['schemaAvailable'])
++    def test_empty_result_never_becomes_zero_pass(self):
++        self.cases=[];self.summary=summary([]);result=self.run_export()
++        self.assertNotIn('cases',result);self.assertIn('tests-metadata-unavailable',result['errors'])
++    def test_source_error_withholds_all_case_assertion_metadata(self):
++        result=self.run_export(source_error=True);self.assertFalse(result['sourceVerified']);self.assertNotIn('cases',result);self.assertNotIn('logFailureCategories',result);self.assertEqual(result['commandExit'],65)
++    def test_source_change_withholds_metadata(self):
++        self.after={'actual_head':'c'*40};result=self.run_export();self.assertNotIn('cases',result);self.assertFalse(result['sourceVerified'])
++    def test_missing_command_does_not_lose_failed_cases(self):
++        (self.out/'diagnostics-unit-exit.json').unlink();result=self.run_export();self.assertIsNone(result['commandExit']);self.assertEqual(result['cases'][0]['result'],'Failed')
++    def test_boolean_exit_not_integer(self):
++        (self.out/'diagnostics-unit-exit.json').write_text('{"exit_code":false}');self.assertIsNone(self.run_export()['commandExit'])
++    def test_large_command_rejected(self):
++        (self.out/'diagnostics-unit-exit.json').write_text(' '*4097);result=self.run_export();self.assertIsNone(result['commandExit']);self.assertIn('cases',result)
++    def test_output_budget_is_enforced(self):
++        with patch.object(m,'OUTPUT_LIMIT',10),self.assertRaises(ValueError):self.run_export()
++
++class SourceTests(unittest.TestCase):
++    def setUp(self):
++        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
++        self.root=Path(self.temp.name)
++        for path,names,cls in [(m.FIXTURES[0],m.strict.PROJECTION_EXPECTED,'SeatedMeshProjectionTests'),
++                               (m.FIXTURES[1],m.strict.COLLISION_EXPECTED,'SeatedCollisionBridgeTests')]:
++            file=self.root/path;file.parent.mkdir(parents=True,exist_ok=True)
++            file.write_text('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\nfinal class '+cls+': XCTestCase {\n'+
++                            ''.join('func '+name.split('/')[1]+'() {}\n' for name in names)+'}\n#endif\n')
++    def inspect(self):
++        with patch.object(m,'ROOT',self.root):return m.fixture_source()
++    def test_exact_fixture_hashes_recorded(self):
++        hashes=self.inspect();self.assertEqual(set(hashes),set(m.FIXTURES));self.assertTrue(all(len(x)==64 for x in hashes.values()))
++    def test_missing_flag_fails_closed(self):
++        file=self.root/m.FIXTURES[0];file.write_text(file.read_text().replace('DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS','DEBUG'))
++        with self.assertRaises(ValueError):self.inspect()
++    def test_missing_original_case_fails_closed(self):
++        file=self.root/m.FIXTURES[0];file.write_text(file.read_text().replace(NAME.split('/')[1],'otherMethod'))
++        with self.assertRaises(ValueError):self.inspect()
++    def test_unexpected_extra_case_fails_closed(self):
++        file=self.root/m.FIXTURES[1];file.write_text(file.read_text()+'\nfunc testExtra() {}\n')
++        with self.assertRaises(ValueError):self.inspect()
++    def test_fixture_read_is_bounded(self):
++        file=self.root/m.FIXTURES[0];file.write_bytes(b'x'*(2*1024*1024+1))
++        with self.assertRaises(ValueError):self.inspect()
++    def test_strict_collector_still_rejects_original_failed_command(self):
++        source=(self.root/m.FIXTURES[0]).read_text();collision=(self.root/m.FIXTURES[1]).read_text()
++        with self.assertRaises(ValueError):m.strict.collect(CASES,summary(CASES),'',{'exit_code':65},source,collision)
++
++
++if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/research/native-qos-comparison-20261030/README.md
+@@ -0,0 +1,40 @@
++# Isolated native request QoS diagnostic — draft, not executed
++
++Parent review required before publication or execution. No shared application files changed.
++Base 08ebe14065cfb286c7a6d99fd53b7b377c2ad287. Source-only patch and copies; not compiled.
++
++## Hypothesis and limits
++
++Hosted e418 held-render native build: 38,217 ms wall / 68,678 µs thread CPU, valid pair; later same fixture family builds 147 ms /70,594 µs CPU. These do not prove throttling or QoS causality. Source queue/delivery delays also occur and are deliberately NOT changed here. No images, models, devices, motion authority or paid resources.
++
++## Design
++
++One isolated XCTest method; direct existing RoomMeshCandidateRuntime with classified 6×6m two-triangle synthetic floor, strict endpoint policy, fresh owner each arm; radius0.3m/height1.7m fixed. This is a small runtime scheduling comparator, not full ingress83/controller acceptance. Order fixed utility/userInitiated/userInitiated/utility; first cold arm retained. No retry, warmup or geometry change. Test source is absent unless both DEBUG and BLIND_QOS_COMPARISON compile flags apply.
++
++Runtime override is DEBUG-only, inactive by default, configured explicitly before any offer/pending work. The isolated test additionally requires BLIND_QOS_COMPARISON. This avoids assuming app flags propagate into SwiftPM dependencies; normal Debug scheduling stays at the existing default unless this explicit diagnostic API is called. Release contains no override API. Request closure stays on the EXISTING single static serial native worker. Both arms use DispatchWorkItem flags .enforceQoS. The utility arm is an explicitly enforced experimental work item, not a byte-identical untreated measurement of the normal nil-override async call; do not treat it as a measured normal-app baseline. Queue serialization remains required by process-global native error text. Source acquisition, anchor application, result delivery and discard QoS are unchanged. Effective Darwin qos_class_self is sampled inside the native work item, not inferred from requested flags. Apple permits queues to affect work-item QoS; effective values and carry-over/order effects must be reported. The experiment cannot establish scheduling causality alone, especially if the actual QoS does not differ or source admission prevents query submission.
++
++## Budget and failures
++
++Each arm has original 10s source,10s query,10s normal drain deadlines. Every violation explicitly XCTFails and remains failed. Source failure skips query (does not manufacture a query success). Query refusal, missing/stale route or incomplete route fails. Next arm starts only after actual stopAndDiscard acknowledgment.
++
++If normal drain times out, observe a DIFFERENT standalone expectation for at most45s. Eventual acknowledgment allows next arm but never removes original failure; lack of acknowledgment aborts the remaining arms. All expectations are standalone XCTestExpectation with explicit over-fulfillment checks, avoiding registered-but-unwaited testcase expectations.
++
++Maximum sum of waits:4×(10+10+10+45)=300s. Propose additional60s synchronous/setup/reporting allowance, with lane process watchdog360s after the exact XCTest-start log marker is observed; watchdog expiry is an explicit incomplete failure, never a timing sample/pass. Build/setup outside this budget requires separately bounded free CI job allowance. No execution approved yet. The start marker is stdout-observed, not an exact execution clock: buffering/backlog can cause a launch-observation timeout. That is an incomplete diagnostic, not proof XCTest itself started late.
++
++## Receipts
++
++NATIVE_QOS_DEADLINE records each normal deadline verdict; NATIVE_QOS_LATE_DRAIN only eventual acknowledgment. NATIVE_QOS_ARM records requested/effective QoS, source/query/discard stages, worker/build/route wall+thread CPU pairs, original-vs-late drain result. Missing or mismatched CPU pairs are -1,false. NATIVE_QOS_SOURCE records source callback and process-relative arm offset. Logs have only fixed labels/synthetic timing, no captured geometry/identities.
++
++Keep source and delivery delay in results. Do not pool invalid/missing/cold/retired samples into successful latency averages. A run missing an arm is incomplete, not a faster implementation. An isolated QoS result does not fix or pass existing seated/native fixtures.
++
++## CI isolation proposal
++
++Dedicated narrowly push-triggered diagnostic-only lane; compile the test with BLIND_QOS_COMPARISON in Debug, select only NativeQoSComparisonTests/testIsolatedUtilityUserInitiatedABBA, disable distributed/parallel tests. Do not put flag in default app project or normal acceptance lane. Root reviews test flag propagation and test discovery before running. Assert exactly one selected test and expected four arms or explicit abort. Preserve .xcresult/raw logs and all failures; diagnostic artifacts are NOT ordinary acceptance receipts.
++
++Official API: https://developer.apple.com/documentation/dispatch/dispatchworkitem/init%28qos%3Aflags%3Ablock%3A%29
++
++## Combined seated failure evidence export
++
++This checkpoint also includes the independently reviewed three-file seated diagnostic exporter. It adds an always-run, bounded metadata export before the unchanged strict seated collector. Exact 18-case identities, source checks, original assertions, and acceptance rules are unchanged. Failure categories from separate origins are not summed; raw assertion text, photos, and geometry are not exported. These diagnostics cannot turn a failed test into a pass. The exporter has 51 portable controls; the unchanged strict collector has 53. Together with the 61 QoS controls, the combined packet has 165 portable controls, not Apple execution evidence.
++
++All combined current inputs are restored through the same outer reversible layer before prior historical checks. The mapped-destination 21-case proposal is not included. Normal app behavior remains unchanged; the scheduling override requires explicit diagnostic opt-in.
+--- /dev/null
++++ b/research/native-qos-comparison-20261030/CI_PLAN.md
+@@ -0,0 +1,37 @@
++# Isolated hosted QoS comparison: CI proposal, not executed
++
++These additions exist only in `coordination/native-qos-comparison-20261030/after`. Root review and a later explicit source publication are required before any hosted execution. No shared app source, workflow, permission, billing, runner setting, deadline or acceptance criterion was changed by this preparation.
++
++## Lane and compiler isolation
++
++- New branch-only push workflow: `.github/workflows/native-qos-comparison.yml`.
++- Exact experiment triggers: the workflow, `research/native-qos-comparison-20261030/**`, the one new Swift test, and the two new CI Python files. A shared runtime-only edit does not independently trigger this diagnostic lane.
++- Public `mischa23v/blind` repository and exact branch checked before allocating the standard `xcode-27` runner. Fork/private guards, read-only token, pinned checkout, no persisted credentials.
++- Uses the existing installed iOS 27.0 / iPhone 18 Pro Max Simulator and ordinary hosted `BlindAssistTests` context. No new runtime or dependency install instruction, runner download, service or cache. Existing project dependency resolution is unchanged.
++- Generator/project add source membership for `NativeQoSComparisonTests.swift` only. The generated default project remains byte-exact to its generator and contains **no** `BLIND_QOS_COMPARISON` setting. Ordinary acceptance compiles the empty guarded source, discovers none of its test methods, and keeps existing scheduling.
++- Dedicated command passes `SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_QOS_COMPARISON`, selects exactly `BlindAssistTests/NativeQoSComparisonTests/testIsolatedUtilityUserInitiatedABBA`, and disables parallel testing. This command-line flag is not persisted into the app project or package manifest. The package hook is independently `DEBUG`-only and inactive unless explicitly called; the lane does **not** assume the custom test flag propagates into SwiftPM. Actual successful compilation is still unobserved.
++- Build and test are separate `build-for-testing` / `test-without-building` steps with an isolated DerivedData directory. No build/retry during ABBA measurement. Same ordinary host startup context, but the test deliberately bypasses ingress83/controller and thus cannot replace seated acceptance.
++
++## Bounded execution and failure evidence
++
++Original four arms and each 10-second source/query/normal-drain deadline remain unchanged. A late 45-second drain observation never erases an original failure. Source failure may skip query, and missing native acknowledgement aborts remaining arms.
++
++Dedicated wrapper bounds: build 900 seconds; test-launch observation 120 seconds; after observing the exact XCTest-start stdout marker, case observation 360 seconds; whole test process 480 seconds; command log 64 MiB. Watchdog expiry records the original process exit and wrapper failure 124. These are diagnostic process ceilings, **not** extended acceptance deadlines. Workflow job ceiling 30 minutes. Root must review these bounds before execution. The marker is observation-based; stdout buffering/backlog can cause a launch-observation timeout/incomplete result, not proof that XCTest itself started late.
++
++`NATIVE_QOS_COMMAND` and `NATIVE_QOS_RECEIPT` are emitted in ordinary job logs. Final receipt also goes to the normal job summary on success or failure. It independently preserves failed case identity/counts, command outcomes, and accepted timing records when another input is missing. Arbitrary geometry, error/model text and unrelated case identifiers are not exported. Native timing grammar is closed: four fixed prefixes, fixed arm/request/stage vocabularies, 4 KiB line cap, 64 metadata records, bounded numeric fields. Missing CPU stays `-1,false`.
++
++A clean diagnostic requires all of: both command exits zero, same clean source commit/hashes, exactly one passed selected XCTest reconciled with xcresult counts, four exact ABBA arm rows, four source rows, all 12 original deadlines met, no late observation, no malformed/overflow metadata. Four arm records alone cannot pass. Identical or unavailable effective QoS is explicitly inconclusive separation. Both arms enforce work-item QoS, so the utility arm is not an untreated timing baseline of the ordinary nil-override dispatch path. No result establishes QoS causality, fixes normal acceptance or authorizes physical guidance.
++
++No `upload-artifact` action exists in the new workflow. `.xcresult` and raw logs remain only in the ephemeral runner workspace; they are **not** uploaded. Built-in logs/summary carry the bounded receipt. No artifact allowance or payment setting is assumed.
++
++## Source-only verification and remaining adoption work
++
++61 portable stdlib controls pass: clean/failed/skipped/missing/duplicate cases, late drain, skipped query, command/status/source mismatches, unknown fields, CPU pairs, byte/line/record bounds, exact test/flag selection, source hook default, and independent watchdog bounds. Before/after project generation is byte-exact. No Apple compilation, Simulator run, timing measurement or CI dispatch occurred.
++
++Current seven-file proposal audited against all 43 workflows (42 existing plus new): native Apple, owned ingress, room-mesh package and the new diagnostic would trigger; all relevant existing uploads are default-disabled, and the new lane has none. Master-only familiar workflow does not trigger. See `CI_TRIGGER_AUDIT.json`. The runtime change therefore also reruns ordinary acceptance with its existing defaults; it is not a substitute for those jobs.
++
++Before adoption, source/provenance author must add current hashes and a reversible historical layer for generator/project/runtime/CI files, preserve old baseline validators, and include the published proposal packet. Final combined publication paths require another trigger audit. Existing frozen failure receipts are not modified. Root publishes only after independent review.
++
++## Primary references
++
++Apple documents test automation and `-only-testing` in [Testing with Xcode](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/08-automation.html), and conditional compilation in its [build settings reference](https://developer.apple.com/documentation/xcode/build-settings-reference). SwiftPM's [target Swift settings](https://docs.swift.org/latest/documentation/packagedescription/target/swiftsettings/) are separate package settings, not a reason to assume app flags reach dependencies. GitHub's [standard hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) and [Actions billing rules](https://docs.github.com/en/billing/concepts/product-billing/github-actions) support the reviewed public-standard-runner / built-in-log choice; no paid storage feature is enabled by this lane.
+--- a/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
++++ b/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
+@@ -52,7 +52,7 @@
+     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
+-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90",
++    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5",
+     "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
+     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+     "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
+@@ -211,5 +211,19 @@
+       }
+     },
+     "runtimeAuthorityChanged": false
++  },
++  "synthetic_qos_comparison_layer": {
++    "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
++    "status": "source_only_unexecuted",
++    "beforeManifestSHA256": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657",
++    "changes": {
++      "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
++        "before": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90",
++        "after": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5"
++      }
++    },
++    "defaultCallerActivation": false,
++    "defaultSchedulingChanged": false,
++    "scope": "DEBUG-only explicitly opted-in request work-item QoS on same serial worker; normal nil default and Release behavior preserved"
+   }
+ }
+--- a/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
+@@ -43,7 +43,7 @@
+     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
+     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
+     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
+-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657"
++    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
+   },
+   "immutable_snapshot_layer": {
+     "scope": "current source only; new native tests authored, not executed",
+@@ -141,5 +141,17 @@
+       }
+     },
+     "runtimeAuthorityChanged": false
++  },
++  "synthetic_qos_comparison_layer": {
++    "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
++    "status": "source_only_unexecuted",
++    "beforeManifestSHA256": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d",
++    "changes": {
++      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
++        "before": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657",
++        "after": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
++      }
++    },
++    "runtimeAuthorityChanged": false
+   }
+ }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -155,8 +155,8 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+-      "bytes": 40699,
+-      "sha256": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90"
++      "bytes": 41875,
++      "sha256": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+@@ -480,8 +480,8 @@
+     },
+     {
+       "path": ".github/workflows/native-apple.yml",
+-      "bytes": 15962,
+-      "sha256": "5a624086db1b72cb04912b334e0c6a5d856498dbcd897fa659b2cbc9f955b960"
++      "bytes": 16183,
++      "sha256": "3937a1fbdaf870e51ad89b9270a47cc97517d548b8e79fd5b0c948ef7f0ab26e"
+     },
+     {
+       "path": ".github/workflows/body-profile-current.yml",
+@@ -525,8 +525,8 @@
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+-      "bytes": 8155,
+-      "sha256": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d"
++      "bytes": 8707,
++      "sha256": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76"
+     },
+     {
+       "path": ".github/workflows/mesh-candidate-ingress.yml",
+@@ -560,8 +560,8 @@
+     },
+     {
+       "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+-      "bytes": 43995,
+-      "sha256": "8e3790105c8bae534682d6ea5b434390e8a25680f4ee84eea3cefcb12643224b"
++      "bytes": 44311,
++      "sha256": "d5b6849e8ed532f02b3fbebea75349b1f333ba923e053abdf44a215ba5a95cc7"
+     },
+     {
+       "path": "ios/BlindAssist/SeatedMeshRouteAudit.swift",
+@@ -635,8 +635,8 @@
+     },
+     {
+       "path": "tools/generate-xcode-project.mjs",
+-      "bytes": 51483,
+-      "sha256": "edd50e8c8fb05415c2c47c6c872a621ede2fdd2be664c52f50e4ac8ade32a73d"
++      "bytes": 51517,
++      "sha256": "4d19234f27551c3bfb204f7ebdbad01807af5da3bdf44059931eb59e094c23b9"
+     },
+     {
+       "path": "tools/ci/verify-default-project.py",
+@@ -727,6 +727,51 @@
+       "path": "tools/ci/test_extract_seated_candidate_timing.py",
+       "bytes": 17921,
+       "sha256": "3cdc44c19bccf756c3025ffcfee74a902fc0e3006a9b77d5a9c2af4794a62e30"
++    },
++    {
++      "path": ".github/workflows/native-qos-comparison.yml",
++      "bytes": 2026,
++      "sha256": "0532d0bffbc1ddd87de435172e64f59b279bf88a7ffab2140b968cbf87a89973"
++    },
++    {
++      "path": "tools/ci/native-qos-comparison.py",
++      "bytes": 18084,
++      "sha256": "42be731425576c22a166a5fa44a399b8ac3c5a5bb6d75794138d1360aad5c8e4"
++    },
++    {
++      "path": "tools/ci/test_native_qos_comparison.py",
++      "bytes": 20473,
++      "sha256": "2a575392e632e33b94565c68c2c9d80c04bfa68ec7d090ae9c2fdd0237c226a3"
++    },
++    {
++      "path": "ios/BlindAssistTests/NativeQoSComparisonTests.swift",
++      "bytes": 6758,
++      "sha256": "84248e3bc80f8b48cb6b4a6cfca890cd34da45b02a52e294324965aa2fc67965"
++    },
++    {
++      "path": "tools/ci/export-seated-case-diagnostics.py",
++      "bytes": 10518,
++      "sha256": "c6d4e61d8175096faace4bee2f11732dddc80abf3447c4246d6f557e2fded571"
++    },
++    {
++      "path": "tools/ci/test_export_seated_case_diagnostics.py",
++      "bytes": 14622,
++      "sha256": "0b39d597ae4f93bac4f01ac03ff7e5309a986cea029cc68459e29161409d68f8"
++    },
++    {
++      "path": "research/native-qos-comparison-20261030/README.md",
++      "bytes": 6010,
++      "sha256": "8c591113fb202b1a0416f0903085d85b5ebe432c888ae7d095d1134aa9c7a256"
++    },
++    {
++      "path": "research/native-qos-comparison-20261030/CI_PLAN.md",
++      "bytes": 6861,
++      "sha256": "be831bfcfd91c907c9bcdc7a046da53a0520ad891500d2f432d60bed7c470ad4"
++    },
++    {
++      "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
++      "bytes": 17840,
++      "sha256": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
+     }
+   ],
+   "changes": [
+@@ -943,5 +988,11 @@
+     "baseCommit": "e418290ac2a70f93c4250bb094091082408f7093",
+     "status": "source_only_native_unexecuted",
+     "scope": "standalone cleanup expectation ownership and admitted audit stages; preserve e418 real runtime failures"
++  },
++  "synthetic_qos_comparison": {
++    "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
++    "status": "source_only_unexecuted",
++    "defaultSchedulingChanged": false,
++    "scope": "fixed four-arm ABBA diagnostic;10s deadlines preserved;45s late-drain observation is not recovery to pass"
+   }
+ }

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "baseCommit": "79951a34966f0881cd942fc27c833e020aacde2b",
+  "sourceOnly": true,
+  "nativeExecuted": false,
+  "sourceCheckpointSHA256": "2c72d734fcfc862e718ecd3784e25bea20e66e5e05c6869b0e60ef849904cce2",
+  "integratedSourceChecks": 675,
+  "integratedCurrentPins": 332,
+  "exactReverseLayerPaths": 53,
+  "newLayerFilesRemovedOnReverse": 18,
+  "benchCurrentInputPins": 325,
+  "portableTestMethods": {
+    "classified71Collector": 62,
+    "seated21StructuredCollector": 80,
+    "seatedIndependentDiagnostics": 57,
+    "defaultProjectGuard": 60,
+    "boundedLogEmitter": 26,
+    "voiceContinuityContractsAndMutations": 2,
+    "photoFrameAndAbsenceNodeControls": 12
+  },
+  "additionalSourceControls": {
+    "currentNavigationContracts": 70,
+    "navigationNegativeMutations": 8,
+    "photoFullIntegrationControlsReportedAndIndependentlyRerunByAuthor": 47
+  },
+  "canonicalProject": {
+    "appSwiftFiles": 71,
+    "newFiles": [
+      "LocalEmailDraftView.swift",
+      "LocalRecipeView.swift"
+    ],
+    "schemeChanged": false,
+    "optionalBackendEnabled": false
+  },
+  "historical799": {
+    "nativeStatus": "failure",
+    "hostedCases": {
+      "total": 297,
+      "passed": 280,
+      "failed": 15,
+      "skipped": 2
+    },
+    "uiCases": {
+      "total": 18,
+      "passed": 14,
+      "failed": 1,
+      "skipped": 3
+    },
+    "seatedThenCurrentCollector": "failure despite structured18/18Passed",
+    "qos": "incomplete; stdout launch witness not observed"
+  },
+  "limitations": [
+    "No Apple compilation or native test run for this batch",
+    "No microphone, VoiceOver or Dynamic Type device acceptance",
+    "No physical guidance or localization acceptance",
+    "Historical failures remain unchanged"
+  ],
+  "triggerAuditSHA256": "fe202a8186145f8a87bf53d26c389180a04cb3265a0ec76fa28460775a2d08f9"
+}

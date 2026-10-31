@@ -1,0 +1,32 @@
+{
+  "status": "READY_source_review_under_root_conditional_authority",
+  "sourceFreezeSHA256": "f0c575341117f220c94da85d08f941efcd4ecda76113757b043f920a26c26f8f",
+  "verifiedSourcePins": 7,
+  "verifiedSmallInputPins": 10,
+  "verifiedInstalledModulePins": 5,
+  "reviewScope": "Static source and hash checks only; no archive read, imports, native tests, PNG decode or reconstruction by reviewer.",
+  "contracts": [
+    "Selected identity C and .001 source units explicitly checked against development lock/result, not stale F metadata",
+    "Exact K scaled1/7.5, raw supplied poses with fixed quaternion normalization and inverse rigid extrinsics",
+    "Software native units/masks/nonidentity extrinsic positive and negative controls precede extraction",
+    "One bounded gzip/tar stream, inventory/type/path/size/CRC/full compressed SHA check before writing120 sanitized selections",
+    "All60 raster/pose/native depth preflights precede actual TSDF creation",
+    "Released Open3D0.19 .04/.2/4m with declared NoColor and confidence2 input changes",
+    "Endpoint-pixel/frame-count cell ledger distinct from TSDF weights or observed free space; missing mesh unknown",
+    "Single fresh private output and sequential guarded stages; no retry/network/install/publication"
+  ],
+  "limits": {
+    "CPUSeconds": 60,
+    "wallSeconds": 90,
+    "CPUCount": 1,
+    "sampledRSSBytes": 1073741824,
+    "outputBytes": 268435456
+  },
+  "caveats": [
+    "Sampled RSS with early stop and conservative peak postcheck, not hard cgroup guarantee",
+    "Guard CPU counter subtracts its initial startup sample; final review should retain this small accounting caveat rather than imply interpreter-start CPU measurement",
+    "Units/axes/K association and pose direction remain conditional inferred export convention, not independent calibration",
+    "Fixed first60 may be approach/landing; no detector, metric accuracy, floor/free-space, or physical guidance evidence"
+  ],
+  "nextGate": "Producer may execute one root-authorized attempt at this exact freeze while CPU slot clear; terminal receipt, geometry/ledger and controls require independent recount."
+}

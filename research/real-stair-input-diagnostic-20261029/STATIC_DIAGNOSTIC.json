@@ -1,0 +1,225 @@
+{
+  "scope": "Executed four-frame static adapter diagnostic; not independent calibration, true geometry, pose accuracy, or stair detection accuracy",
+  "source": "https://www.microsoft.com/en-us/research/project/rgb-d-dataset-7-scenes/",
+  "licence": {
+    "file": "7scenes-license.rtf",
+    "sha256": "497415ee4e6243dc09ccb5ebf510771e965e4a7f93dc1de4485f290e12919f8a",
+    "restriction": "Noncommercial research/personal experimentation; production reuse not authorized"
+  },
+  "configuration": {
+    "depth_metres_per_raw_unit": 0.001,
+    "default_uncalibrated_K": {
+      "fx": 585,
+      "fy": 585,
+      "cx": 320,
+      "cy": 240
+    },
+    "invalid_depth_raw": [
+      0,
+      65535
+    ],
+    "adapter_tolerances_not_author_parameters": {
+      "homogeneous_row_max_abs": 1e-08,
+      "rotation_orthogonality_max_abs": 1e-05,
+      "rotation_determinant_abs_error": 1e-05,
+      "roundtrip_max_abs_metres": 1e-10,
+      "pixel_roundtrip_max_abs": 1e-09
+    },
+    "preview": "Point-only camera-coordinate projections, every 16th valid point; no surfaces or hole filling. RGB not used as aligned labels."
+  },
+  "unknown_prerequisites": [
+    "capture timestamps/cadence",
+    "measured gravity",
+    "mesh floor classification",
+    "device/ray calibration including FloorDetector angle",
+    "independent hazard/feet/warning labels",
+    "measured intrinsics and RGB-depth alignment"
+  ],
+  "frames": [
+    {
+      "frame_index": 0,
+      "input_sha256": {
+        "7scenes-frame-000000.color.png": "467edf9f5d76da72063e7a1dfda144342fa58dcaf38555f88de7b15b10dde344",
+        "7scenes-frame-000000.depth.png": "2e2bd9caef4cbfbcfaf5cfadb6fe582cbb39dc7779ab1c910e785b0218616e14",
+        "7scenes-frame-000000.pose.txt": "c68b04a20263771805861001f85dfe6dfebb8ca482bab90ebfa84162fdcaedc3"
+      },
+      "depth_encoding": "uint16,640x480",
+      "valid_points": 280944,
+      "zero_unknown": 26256,
+      "sentinel_unknown": 0,
+      "invalid_points_admitted": 0,
+      "valid_depth_range_m": [
+        0.801,
+        2.722
+      ],
+      "camera_xyz_min": [
+        -0.9616564102564104,
+        -0.9805128205128205,
+        0.801
+      ],
+      "camera_xyz_max": [
+        1.1413965811965812,
+        0.6328393162393162,
+        2.722
+      ],
+      "pose": {
+        "homogeneous_row_max_abs": 0.0,
+        "orthogonality_max_abs": 0.00014559298930394426,
+        "determinant": 0.9998076063807771,
+        "inverse_roundtrip_max_abs_m": 6.661338147750939e-16
+      },
+      "pixel_algebraic_roundtrip_max_abs": 1.1368683772161603e-13,
+      "preview_sha256": "dc7536cd6467d55943f65ca7302cf423eb9fe500c4e738cbbee2ab8634689bf4",
+      "checks": {
+        "homogeneous_row": true,
+        "rotation_orthogonality": false,
+        "rotation_determinant": false,
+        "inverse_roundtrip": true,
+        "pixel_roundtrip": true
+      },
+      "checks_passed": false
+    },
+    {
+      "frame_index": 1,
+      "input_sha256": {
+        "7scenes-frame-000001.color.png": "4745c9476ac4e80820dcb53c8140471450b342dda7c551a1d18e9485727c42c2",
+        "7scenes-frame-000001.depth.png": "393c11031457939fd9401f90115a17cf4804f935f0186abb19fa28dc7a40006d",
+        "7scenes-frame-000001.pose.txt": "bea870ffadef9ece3a9e011083bfc3cfcaa477d95365e8ad7ac5c1b272d6731b"
+      },
+      "depth_encoding": "uint16,640x480",
+      "valid_points": 282570,
+      "zero_unknown": 24630,
+      "sentinel_unknown": 0,
+      "invalid_points_admitted": 0,
+      "valid_depth_range_m": [
+        0.801,
+        2.743
+      ],
+      "camera_xyz_min": [
+        -0.9625846153846154,
+        -0.9902427350427351,
+        0.801
+      ],
+      "camera_xyz_max": [
+        1.1413965811965812,
+        0.6328393162393162,
+        2.743
+      ],
+      "pose": {
+        "homogeneous_row_max_abs": 0.0,
+        "orthogonality_max_abs": 0.0001460457056422504,
+        "determinant": 0.9998071393047733,
+        "inverse_roundtrip_max_abs_m": 7.771561172376096e-16
+      },
+      "pixel_algebraic_roundtrip_max_abs": 1.1368683772161603e-13,
+      "preview_sha256": "3ba4dd8579fc67fc625f579c1e02c0694eb0db5381e11654ae66b18ab5f83384",
+      "checks": {
+        "homogeneous_row": true,
+        "rotation_orthogonality": false,
+        "rotation_determinant": false,
+        "inverse_roundtrip": true,
+        "pixel_roundtrip": true
+      },
+      "checks_passed": false
+    },
+    {
+      "frame_index": 2,
+      "input_sha256": {
+        "7scenes-frame-000002.color.png": "4e880e7a53581603b9f80d324f206c8cded5611aea2fbe8eaabfc971069362de",
+        "7scenes-frame-000002.depth.png": "8808220fff24a896b48527f40d6f6cc0766e9fc276c189d5e863f8967e132023",
+        "7scenes-frame-000002.pose.txt": "517e9276ac6d3f91ab264441124e22d5eb64c2533b8f3b6930fa6f2bf3703e2a"
+      },
+      "depth_encoding": "uint16,640x480",
+      "valid_points": 281649,
+      "zero_unknown": 25551,
+      "sentinel_unknown": 0,
+      "invalid_points_admitted": 0,
+      "valid_depth_range_m": [
+        0.801,
+        2.765
+      ],
+      "camera_xyz_min": [
+        -0.968859829059829,
+        -0.9846153846153847,
+        0.801
+      ],
+      "camera_xyz_max": [
+        1.1413965811965812,
+        0.6328393162393162,
+        2.765
+      ],
+      "pose": {
+        "homogeneous_row_max_abs": 0.0,
+        "orthogonality_max_abs": 0.00014634048459460924,
+        "determinant": 0.9998069153534367,
+        "inverse_roundtrip_max_abs_m": 7.771561172376096e-16
+      },
+      "pixel_algebraic_roundtrip_max_abs": 1.1368683772161603e-13,
+      "preview_sha256": "3d855bccb8cd97a3851b6e854fe0b9c0d7e6ab534a9375f0e2ade3fb8ab6bc88",
+      "checks": {
+        "homogeneous_row": true,
+        "rotation_orthogonality": false,
+        "rotation_determinant": false,
+        "inverse_roundtrip": true,
+        "pixel_roundtrip": true
+      },
+      "checks_passed": false
+    },
+    {
+      "frame_index": 3,
+      "input_sha256": {
+        "7scenes-frame-000003.color.png": "f01d7bd6938c33d591ab973cd421ed8511d02b1c9109715cc962f6aa25a89718",
+        "7scenes-frame-000003.depth.png": "e04131f0ab1f36e2fb19eda7242253b5119191c5dff6799279a6826cd35249a2",
+        "7scenes-frame-000003.pose.txt": "2474d02b0d7b40ac1db851fa3f3b922af3f0eb40e276004d51a4cc7a9d5800dd"
+      },
+      "depth_encoding": "uint16,640x480",
+      "valid_points": 281585,
+      "zero_unknown": 25615,
+      "sentinel_unknown": 0,
+      "invalid_points_admitted": 0,
+      "valid_depth_range_m": [
+        0.801,
+        2.743
+      ],
+      "camera_xyz_min": [
+        -0.9633418803418804,
+        -0.9805128205128205,
+        0.801
+      ],
+      "camera_xyz_max": [
+        1.1413965811965812,
+        0.6328393162393162,
+        2.743
+      ],
+      "pose": {
+        "homogeneous_row_max_abs": 0.0,
+        "orthogonality_max_abs": 0.00014639964348939216,
+        "determinant": 0.999806550726669,
+        "inverse_roundtrip_max_abs_m": 8.881784197001252e-16
+      },
+      "pixel_algebraic_roundtrip_max_abs": 1.1368683772161603e-13,
+      "preview_sha256": "b54dc2105536a646b42d61c7574731f35d9476c0d1cc90fdafd6fd4cfa41cfe2",
+      "checks": {
+        "homogeneous_row": true,
+        "rotation_orthogonality": false,
+        "rotation_determinant": false,
+        "inverse_roundtrip": true,
+        "pixel_roundtrip": true
+      },
+      "checks_passed": false
+    }
+  ],
+  "execution": {
+    "cpu_affinity": [
+      0
+    ],
+    "max_address_space_bytes": 268435456,
+    "cpu_limit_seconds": 30,
+    "external_wall_limit_seconds": 30,
+    "elapsed_seconds": 23.228790973000287,
+    "peak_rss_kib": 79576,
+    "numpy": "2.3.5"
+  },
+  "result": "Static diagnostic completed. Check failures retained without pose correction or tolerance tuning. No detector executed.",
+  "initial_attempt": "First execution stopped at predeclared numerical checks; second execution retains per-check failures for all frames instead of aborting. No tolerances changed."
+}

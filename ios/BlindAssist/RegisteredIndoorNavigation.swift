@@ -60,6 +60,7 @@ final class RegisteredIndoorNavigation {
         ioPending = true; ioBlocked = true
     }
     private static func prepared(_ installation: SpatialMapInstallation, configuration: Configuration?) throws -> Loaded {
+        guard installation.map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
         var owner: SpatialRouteOwner?
         if let configuration {
             var next = try SpatialRouteOwner(body: configuration.body, limits: configuration.limits)
@@ -138,7 +139,7 @@ final class RegisteredIndoorNavigation {
     func installCommunity(_ package: PlacePackage, completion: @escaping Completion) {
         submit(prepare: { _ in
             try package.validate()
-            guard package.localization == "manual-landmarks", var map = package.routeMap else { throw MapError.invalid }
+            guard package.localization == "manual-landmarks", var map = package.routeMap, map.permitsRoutePlanning else { throw MapError.invalid }
             map.packageID = package.id; map.packageRevision = package.revision
             let bytes = try SpatialMapInstallation.canonicalMapBytes(map)
             return SpatialMapPrepared(value: Loaded(installation: nil, map: map, package: package, owner: nil), bytesToPersist: bytes)
@@ -146,6 +147,7 @@ final class RegisteredIndoorNavigation {
     }
     func installPreviewEdit(_ map: IndoorMap, package: PlacePackage?, completion: @escaping Completion) {
         submit(prepare: { _ in
+            guard map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
             let bytes = try SpatialMapInstallation.canonicalMapBytes(map)
             return SpatialMapPrepared(value: Loaded(installation: nil, map: map, package: package, owner: nil), bytesToPersist: bytes)
         }, completion: completion)
@@ -177,6 +179,7 @@ final class RegisteredIndoorNavigation {
         }
         guard data.count <= SpatialMapInstallation.maximumMapBytes else { throw SpatialMapIOError.oversized }
         let map = try JSONDecoder().decode(IndoorMap.self, from: data); try map.validate()
+        guard map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
         return SpatialMapPrepared(value: Loaded(installation: nil, map: map, package: nil, owner: nil), bytesToPersist: persist ? data : nil)
     }
     private static func priorFromDisk(_ storage: any SpatialMapStorageIO, sha256: SpatialMapSHA256) throws -> SpatialMapInstallation? {

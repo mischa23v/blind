@@ -1,0 +1,229 @@
+"""Released stock-map frozen-route diagnostic. No movement or strict-route admission.
+
+Only reader/recording glue is new. Native TriangleEngine, Recast/Detour, VTK
+intersection/nearest queries and reference reporting categories are reused.
+"""
+from pathlib import Path
+import collections,ctypes as C,gc,hashlib,json,math,os,sys,time
+H=Path(__file__).resolve().parent
+ROOT=H.parents[2]
+OLD=ROOT/'research/corrected-map-route-preflight-20261028'
+BASE=ROOT/'research/open3d-same-data-benchmark-20261028/fresh-run'
+OUT=H/'run'
+
+def digest(p):
+    h=hashlib.sha256()
+    with p.open('rb') as f:
+        for b in iter(lambda:f.read(1048576),b''):h.update(b)
+    return h.hexdigest()
+
+def dump(name,value):
+    with (OUT/name).open('x') as f:json.dump(value,f,indent=2,allow_nan=False);f.write('\n')
+
+def guarded():
+    if not __debug__:
+        raise RuntimeError('optimized Python is forbidden; all controls must execute')
+    assert os.environ.get('BLIND_STOCK_ROUTE_GUARDED')=='1','use admitted guard only'
+    sha=digest(H/'PRE_RUN_FREEZE.json')
+    assert os.environ.get('BLIND_STOCK_ROUTE_FREEZE_SHA256')==sha
+    admission=json.loads((H/'ADMISSION.json').read_text())
+    assert admission['admitted'] is True and admission['freezeSHA256']==sha
+    launch=json.loads((OUT/'LAUNCH.json').read_text())
+    assert launch['freezeSHA256']==sha and launch['admissionSHA256']==digest(H/'ADMISSION.json')
+    return json.loads((H/'PRE_RUN_FREEZE.json').read_text())
+
+# The following VTK queries retain the existing six-witness implementation's
+# tolerance, body-height categories, original IDs and double-precision points.
+def line_hits(surface,x,y,lo,hi):
+    points=vtk.vtkPoints();points.SetDataTypeToDouble();ids=vtk.vtkIdList();cell=vtk.vtkGenericCell()
+    status=surface.locator.IntersectWithLine([x,y,lo],[x,y,hi],1e-7,points,ids,cell)
+    assert status in (0,1) and points.GetNumberOfPoints()==ids.GetNumberOfIds()
+    rows=[]
+    for k in range(points.GetNumberOfPoints()):
+        tid=int(ids.GetId(k));tri=surface.mesh.GetCell(tid)
+        assert tri.GetNumberOfPoints()==3 and 0<=tid<surface.mesh.GetNumberOfCells()
+        v=np.asarray([surface.mesh.GetPoint(tri.GetPointId(j))for j in range(3)])
+        n=np.cross(v[1]-v[0],v[2]-v[0]);length=np.linalg.norm(n)
+        rows.append({'worldZ':float(points.GetPoint(k)[2]),'absNormalWorldZ':float(abs(n[2])/length)if length else 0.,'originalTriangleID':tid})
+    assert not surface.errors
+    return rows
+
+def closest(surface,xyz):
+    cp=[0.,0.,0.];cid=vtk.reference(0);sub=vtk.reference(0);d2=vtk.reference(0.)
+    surface.locator.FindClosestPoint(xyz,cp,cid,sub,d2)
+    assert 0<=int(cid)<surface.mesh.GetNumberOfCells() and math.isfinite(float(d2)) and float(d2)>=0 and not surface.errors
+    return {'datasetXYZ':cp,'originalTSDFTriangleID':int(cid),'distanceMetres':math.sqrt(float(d2)),'deltaDatasetXYZ':(np.asarray(cp)-xyz).tolist()}
+
+def read_mesh(path,vertices,faces):
+    errors=[];reader=vtk.vtkPLYReader();reader.AddObserver('ErrorEvent',lambda *args:errors.append('PLY ErrorEvent'))
+    reader.SetFileName(str(path));reader.Update();assert not errors,errors
+    mesh=reader.GetOutput()
+    assert mesh.GetNumberOfPoints()==vertices and mesh.GetNumberOfCells()==faces
+    assert mesh.GetNumberOfPolys()==faces and mesh.GetNumberOfVerts()==0 and mesh.GetNumberOfLines()==0 and mesh.GetNumberOfStrips()==0
+    xyz=vtk_to_numpy(mesh.GetPoints().GetData());polys=mesh.GetPolys()
+    offsets=vtk_to_numpy(polys.GetOffsetsArray());ids=vtk_to_numpy(polys.GetConnectivityArray())
+    assert xyz.shape==(vertices,3) and np.isfinite(xyz).all()
+    assert len(offsets)==faces+1 and offsets[0]==0 and offsets[-1]==3*faces and np.all(np.diff(offsets)==3),'triangles required; no triangulation/cleanup'
+    assert len(ids)==3*faces and np.all(ids>=0) and np.all(ids<vertices)
+    return mesh,xyz,ids.reshape(-1,3)
+
+def triangle_chunks(vertices,faces):
+    for start in range(0,len(faces),200000):
+        p=vertices[faces[start:start+200000]]
+        yield np.ascontiguousarray(p[:,:,[0,2,1]]*np.array([1,1,-1]),np.float32)
+
+def query_all(engine,registry):
+    qpoint=lambda p:[p[0],p[2],-p[1]]
+    ppoint=lambda q:[q[0],-q[2],q[1]]
+    out=[]
+    for pair in registry['orderedPairs']:
+        r=engine.diagnostic(qpoint(pair['startDatasetXYZ']),qpoint(pair['goalDatasetXYZ']),query_half_extents=(.08,.08,.08),max_points=256)
+        assert not any(r[k]for k in ['requestedRouteComplete','requestedEndpointConnectionsVerified','evidenceQualifiedTraversable','physicalAuthority'])
+        status='completeProjectedCorridor'if r['projectedCorridorComplete']else('endpointAssociationFailed'if r['error']and'no start or goal polygon'in r['error']else'partialProjectedCorridor'if r['path']else'queryErrorOrNoCorridor')
+        path=np.asarray(r['path']);length=float(np.linalg.norm(np.diff(path,axis=0),axis=1).sum())if len(path)>1 else 0.
+        out.append({'orderedPairID':pair['orderedPairID'],'referencePlannerQualified':True,'requestedStartDatasetXYZ':pair['startDatasetXYZ'],'requestedGoalDatasetXYZ':pair['goalDatasetXYZ'],'status':status,'projectedCandidateLengthMetres':length,'pathDatasetXYZ':[ppoint(q)for q in r['path']],'projectedStartDatasetXYZ':None if r['projectedStart']is None else ppoint(r['projectedStart']),'projectedGoalDatasetXYZ':None if r['projectedGoal']is None else ppoint(r['projectedGoal']),'diagnosticWorldQ':r,'footHeightTranslatedToReference':False})
+    # Tuples from the binding become JSON lists in the original receipt.
+    return json.loads(json.dumps(out,allow_nan=False))
+
+def native_stages(engine):
+    class Stages(C.Structure):
+        _fields_=[(k,C.c_int)for k in ['beforeFilters','afterLedge','afterHead','compact','eroded','distance','regions','polygons','vertices']]+[(k,C.c_float)for k in ['ox','oy','oz','cs','ch']]
+    lib=engine.lib;lib.bn_stage_stats.argtypes=[C.POINTER(Stages)];lib.bn_stage_stats.restype=None
+    lib.bn_debug_span_count.restype=C.c_int;lib.bn_debug_spans.argtypes=[C.c_void_p,C.c_int];lib.bn_debug_spans.restype=C.c_int
+    ss=Stages();lib.bn_stage_stats(C.byref(ss));n=lib.bn_debug_span_count();assert 0<=n<=2000000
+    spans=np.empty((n,9),np.int32);assert lib.bn_debug_spans(spans.ctypes.data,n)==n
+    return {k:getattr(ss,k)for k,_ in ss._fields_},spans
+
+class SavedColumns:
+    """Reporting only, never feeds classification or planner."""
+    def __init__(self,stats,spans,bounds):
+        self.st=stats;self.spans=spans
+        self.width=int((bounds[1][0]-bounds[0][0])/stats['cs']+.5)
+        self.keys=spans[:,0].astype(np.int64)+self.width*spans[:,1]
+        assert np.all(np.diff(self.keys)>=0)
+        self.cache={}
+    def at(self,p):
+        s=self.st;x=math.floor((p[0]-s['ox'])/s['cs']);z=math.floor((-p[1]-s['oz'])/s['cs']);key=x+self.width*z
+        if (x,z) in self.cache:return self.cache[(x,z)]
+        a,b=np.searchsorted(self.keys,[key,key],side='left')[0],np.searchsorted(self.keys,key,side='right')
+        rows=[]
+        for i in range(int(a),int(b)):
+            row=self.spans[i]
+            if int(row[0])!=x or int(row[1])!=z:continue
+            rows.append({'row':i,'bottomDatasetZ':s['oy']+int(row[2])*s['ch'],'topDatasetZ':s['oy']+int(row[3])*s['ch'],'initialArea':int(row[4]),'afterLedgeArea':int(row[5]),'afterHeadArea':int(row[6]),'afterErosionArea':int(row[7]),'regionID':int(row[8])})
+        # Original Koivu reference reporting band and predeclared seed, not
+        # semantic floor classification. Preserve every raw layer as evidence.
+        choices=[r for r in rows if -1.5<=r['topDatasetZ']<=-1.1]
+        chosen=min(choices,key=lambda r:(abs(r['topDatasetZ']+1.3),r['topDatasetZ'],r['row'])) if choices else None
+        stage='noFloorBandSpan'
+        if chosen:
+            stage='survives'
+            for field,name in [('initialArea','initial'),('afterLedgeArea','ledge'),('afterHeadArea','headroom'),('afterErosionArea','erosion'),('regionID','unassignedRegion')]:
+                if chosen[field]==0:stage=name;break
+        value={'cellXZ':[x,z],'rawSpans':rows,'chosenReportingSpanRow':None if chosen is None else chosen['row'],'firstRejectedStage':stage,'cellTagDoesNotProvePolygonMembershipOrSupport':True}
+        self.cache[(x,z)]=value;return value
+
+def spatial_report(columns,queries,reference_samples):
+    output=[]
+    for q in queries:
+        samples=[{'referenceSampleID':s['sampleID'],'referencePathSampleIndex':s['pathSampleIndex'],'pointDatasetXYZ':s['predictedFootDatasetXYZ'],'sourceColumn':columns.at(s['predictedFootDatasetXYZ'])}for s in reference_samples if s['orderedPairID']==q['orderedPairID']]
+        assert samples
+        ends={k:None if q[k] is None else {'pointDatasetXYZ':q[k],'sourceColumn':columns.at(q[k])} for k in ['requestedStartDatasetXYZ','requestedGoalDatasetXYZ','projectedStartDatasetXYZ','projectedGoalDatasetXYZ']}
+        output.append({'pairID':q['orderedPairID'],'status':q['status'],'referenceSamples':samples,'stageCounts':dict(collections.Counter(s['sourceColumn']['firstRejectedStage']for s in samples)),'endpoints':ends,'actualSourceTerminal':None if not q['pathDatasetXYZ']else {'pointDatasetXYZ':q['pathDatasetXYZ'][-1],'sourceColumn':columns.at(q['pathDatasetXYZ'][-1])}})
+    return output
+
+def score_witnesses(mesh,columns,old_witnesses,categorize):
+    surface=ReferenceSurface(mesh);output=[]
+    offsets=[(.04*i,.04*j)for i in range(-6,7)for j in range(-6,7)if i*i+j*j<=36]
+    assert len(old_witnesses)==6 and len(offsets)==113
+    for old in old_witnesses:
+        p=old['unchangedPredictedFootDatasetXYZ'];x,y,z=p;rays=[]
+        assert len(old['rays'])==113
+        for rid,(dx,dy)in enumerate(offsets):
+            previous=old['rays'][rid];assert previous['rayIndex']==rid and previous['offsetXY']==[dx,dy]
+            floor=previous['referenceFloorCandidateWorldZ'];refhits=previous['savedReferenceHits']
+            refcat=categorize(refhits,z)
+            assert refcat['referenceFloorCandidateWorldZ']==floor and refcat['footMinusReferenceFloorMetres']==previous['predictedFootMinusReferenceFloorMetres']
+            sourcehits=line_hits(surface,x+dx,y+dy,min(-1.5,z-.2),max(-.1,z+1.3))
+            cat=categorize(sourcehits,z)
+            positive=[h for h in refhits if floor is not None and h['worldZ']-floor>.04 and z<=h['worldZ']<=z+1.2]
+            comparisons=[]
+            for hit in positive:
+                xyz=[x+dx,y+dy,hit['worldZ']]
+                comparisons.append({'referenceHit':hit,'sameRaySourceHitsWithin4cmHeight':[s for s in sourcehits if abs(s['worldZ']-hit['worldZ'])<=.04],'closestSourceSurface':closest(surface,xyz),'referencePointDatasetXYZ':xyz,'referenceHitInsideBodyAtReferenceFloorFoot':floor<=hit['worldZ']<=floor+1.2})
+            floors=[h for h in sourcehits if -1.5<=h['worldZ']<=-1.1 and h['absNormalWorldZ']>=.9]
+            sf=min((h['worldZ']for h in floors),default=None)
+            raised=[h for h in sourcehits if floor is not None and h['worldZ']-floor>.04 and z<=h['worldZ']<=z+1.2]
+            rays.append({'rayIndex':rid,'offsetXY':[dx,dy],'radialDistanceMetres':math.hypot(dx,dy),'referenceFloorCandidateWorldZ':floor,'predictedFootMinusReferenceFloorMetres':previous['predictedFootMinusReferenceFloorMetres'],'sourceFloorCandidateWorldZ':sf,'sourceMinusReferenceFloorMetres':None if floor is None or sf is None else sf-floor,'savedReferenceHits':refhits,'sourceHits':sourcehits,'sourceCategoriesRelativeSourceFloor':cat['counts'],'sourceRaisedBodyBandHitsRelativeReferenceFloor':raised,'positiveReferenceComparisons':comparisons,'nativeColumn':columns.at([x+dx,y+dy,z])if positive or raised else None})
+        comps=[c for r in rays for c in r['positiveReferenceComparisons']]
+        output.append({'selectedSavedReferenceSampleID':old['selectedSavedReferenceSampleID'],'unchangedPredictedFootDatasetXYZ':p,'centerNativeColumn':columns.at(p),'rays':rays,'summary':{'rayCount':113,'positiveReferenceRays':sum(bool(r['positiveReferenceComparisons'])for r in rays),'positiveReferenceSurfaceHits':len(comps),'positiveReferenceHitsWithSameRaySourceHeightMatchWithin4cm':sum(bool(c['sameRaySourceHitsWithin4cmHeight'])for c in comps),'sourceRaisedBodyBandRays':sum(bool(r['sourceRaisedBodyBandHitsRelativeReferenceFloor'])for r in rays),'sourceFloorMissingRays':sum(r['sourceFloorCandidateWorldZ']is None for r in rays),'positiveReferenceHitsStillInsideBodyAtReferenceFloorFoot':sum(c['referenceHitInsideBodyAtReferenceFloorFoot']for c in comps),'nearestSourceDistanceRangeMetres':None if not comps else[min(c['closestSourceSurface']['distanceMetres']for c in comps),max(c['closestSourceSurface']['distanceMetres']for c in comps)]}})
+    surface.locator.RemoveAllObservers();surface.locator.SetDataSet(None);surface.mesh=None
+    del surface
+    return output
+
+def main():
+    frozen=guarded();t=time.monotonic()
+    global np,vtk,vtk_to_numpy,ReferenceSurface
+    import numpy as np
+    import vtk
+    from vtk.util.numpy_support import vtk_to_numpy
+    sys.path.insert(0,str(OLD/'tsdf-endpoint-stage-diagnostic-v1'));from stream_engine import TriangleEngine,Config
+    sys.path.insert(0,str(BASE/'source'));from reference_geometry import ReferenceSurface,serial_vtk
+    sys.path.insert(0,str(OLD/'reference-route-evaluator-v1'));from evidence_categories import categorize
+    from reader_fixtures import run_fixtures
+    runtime=serial_vtk();assert runtime['version']==frozen['expectedVTKVersion']
+    dump('FIXTURE_RESULT.json',run_fixtures(OUT,read_mesh,triangle_chunks,line_hits,closest,ReferenceSurface,categorize))
+    registry=json.loads((OLD/'reference-qualified-benchmark-v1/REFERENCE_REGISTRY.json').read_text())
+    baseline=json.loads((OLD/'qualified-app-slope15-comparison-v1/PHONE_GEOMETRY_RESULT.json').read_text())['models'][0]
+    assert baseline['model']=='existingOpen3DTSDF' and len(registry['orderedPairs'])==20 and registry['phonePlannerQueriesExecuted']==0
+    protocol=json.loads((H.parent/'NEXT_TEST_FROZEN_INPUTS.json').read_text())
+    assert baseline['profile']==protocol['profile'] and registry['rasterBoundsQ']==protocol['rasterBoundsQ']
+    assert [{'orderedPairID':p['orderedPairID'],'startDatasetXYZ':p['startDatasetXYZ'],'goalDatasetXYZ':p['goalDatasetXYZ']}for p in registry['orderedPairs']]==protocol['pairs']
+    config=Config(**baseline['profile']);summaries=[]
+    for name,source,nv,nt in [('Open3D',BASE/'fusion/unfiltered-tsdf-mesh.ply',242293,461256),('Voxblox',ROOT/'coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-d1-n2/run/B_native_mesh.ply',1304868,434956)]:
+        begun=time.monotonic();mesh,vertices,faces=read_mesh(source,nv,nt)
+        if name=='Open3D':
+            # The original native query used memmapped doubles. Require the
+            # released reader to preserve the exact native Float32 ingress.
+            with source.open('rb')as f:
+                header=b''
+                while not header.endswith(b'end_header\n'):header+=f.readline()
+            vv=np.memmap(source,mode='r',offset=len(header),dtype=np.dtype([('xyz','<f8',(3,)),('rgb','u1',(3,))]),shape=(nv,))
+            ff=np.memmap(source,mode='r',offset=len(header)+nv*27,dtype=np.dtype([('n','u1'),('ids','<u4',(3,))]),shape=(nt,))
+            assert np.array_equal(vertices.astype(np.float32),vv['xyz'].astype(np.float32)) and np.array_equal(faces,ff['ids']) and np.all(ff['n']==3)
+            del vv,ff
+        with TriangleEngine(registry['rasterBoundsQ'],triangle_chunks(vertices,faces),config)as engine:
+            queries=query_all(engine,registry);stats,spans=native_stages(engine);native_stats=engine.stats
+        if name=='Open3D':
+            assert queries==baseline['queries'],'exact existing Open3D query control mismatch'
+            assert json.dumps(queries,sort_keys=True,allow_nan=False)==json.dumps(baseline['queries'],sort_keys=True,allow_nan=False),'canonical float/control representation mismatch'
+            assert stats==baseline['stageCounts'] and native_stats==baseline['nativeStats']
+            assert np.array_equal(spans,np.load(OLD/'qualified-app-slope15-comparison-v1/TSDF_SLOPE15_SPANS.npy',mmap_mode='r'))
+            dump('CONTROL_MATCH.json',{'all20QueriesExact':True,'allStageCountsExact':True,'allSavedSpansExact':True,'readerFloat32IngressExact':True,'physicalAuthority':False})
+        # Reference observations are loaded only after the source planner is
+        # destroyed, and never enter its geometry/configuration.
+        refscore=json.loads((OLD/'reference-route-evaluator-tiled-v2/PATH_EVIDENCE_SCORE.json').read_text())
+        reference_samples=[s for s in refscore['sampleSummaries']if s['model']=='referenceControl5deg']
+        assert len(reference_samples)==1156
+        oldw=json.loads((OLD/'fixed-six-witness-source-diagnostic-v1/SIX_POSITION_SOURCE_DIAGNOSIS.json').read_text())['positions']
+        columns=SavedColumns(stats,spans,registry['rasterBoundsQ'])
+        routes={'model':name,'queries':queries,'stageCounts':stats,'nativeStats':native_stats,'spatialEvidence':spatial_report(columns,queries,reference_samples),'profile':config.__dict__,'strictRouteAdmission':False,'requestedEndpointConnectionsVerified':False,'physicalAuthority':False}
+        dump(name+'_ROUTES.json',routes);np.save(OUT/(name+'_SPANS.npy'),spans)
+        witnesses=score_witnesses(mesh,columns,oldw,categorize)
+        if name=='Open3D':
+            for old,new in zip(oldw,witnesses):
+                assert old['summary']==new['summary'],'existing source witness summary mismatch'
+                for a,b in zip(old['rays'],new['rays']):
+                    for key in a:
+                        if key!='nativeColumn':assert a[key]==b[key],f'existing source witness mismatch: {key}'
+            dump('WITNESS_CONTROL_MATCH.json',{'all678ExistingSourceRayFieldsExact':True,'allSixSummariesExact':True,'nativeColumnsDifferOnlyByReportingSchema':True,'physicalAuthority':False})
+        dump(name+'_WITNESSES.json',{'model':name,'positions':witnesses,'sourceRays':678,'newReferenceQueries':0,'fullFootprintSupport':False,'physicalAuthority':False})
+        summary={'model':name,'outcomes':dict(collections.Counter(q['status']for q in queries)),'stageCounts':stats,'fixedWitnesses':[{'point':p['unchangedPredictedFootDatasetXYZ'],**p['summary']}for p in witnesses],'elapsedSeconds':time.monotonic()-begun}
+        summaries.append(summary);print(json.dumps(summary),flush=True)
+        del mesh,vertices,faces,spans,columns,routes,witnesses,refscore,reference_samples,oldw;gc.collect()
+    dump('SUMMARY.json',{'status':'completed','success':True,'models':summaries,'runtime':runtime,'elapsedSeconds':time.monotonic()-t,'newReferenceQueries':0,'parametersChanged':False,'referenceGeometryInPlanner':False,'newCandidatePathsReferenceScored':False,'strictRouteAdmission':False,'requestedEndpointConnectionsVerified':False,'continuousBodyClearanceVerified':False,'fullFootprintSupportVerified':False,'physicalAuthority':False})
+    return 0
+
+if __name__=='__main__':
+    assert sys.argv[1:]==['--worker'],'Use admitted guard.py only'
+    sys.exit(main())

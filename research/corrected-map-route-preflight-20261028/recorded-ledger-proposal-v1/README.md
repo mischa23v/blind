@@ -1,0 +1,13 @@
+# Frozen recorded-ledger connectivity diagnostic: completed, no complete corridor
+
+The one predeclared20-pair diagnostic completed without parameter changes or endpoint replacement. **0 complete projected corridors;18 endpoint-association failures;2 partial corridors. No movement, requested-route completion, verified connector/support or physical admission.**
+
+Inputs/anchors/configuration were frozen in `FROZEN_INPUTS_AND_ANCHORS.json` (SHA2569600a91793b48e6b1d8423c229a9136be17ba3b1c3337ef09b4d134b0807eb40); the executable was separately pinned in `LAUNCH_FREEZE.json`. The five anchors are fixed quantiles of native-ground leaf-index order, not camera/body positions, table/door identities or verified floor. This is not the historical20×5 movement suite.
+
+Actual command: `python3 research/corrected-map-route-preflight-20261028/recorded-ledger-proposal-v1/run_recorded.py`. The runner is one-shot and refuses result overwrite. It verifies exact input/source/library hashes, binds1CPU and enforces60CPU/90wall seconds,1GiB sampled aggregate RSS,128MiB new output and1GiB experiment disk. Result:0.315s wall,0.309CPU s,179,970,048B peak sampled aggregate RSS. `RESOURCE.json` retains all samples.
+
+The build consumed2,268,956 native leaf records,325,714occupied and1,943,242observed-free. It produced286×278=79,508columns,1,303,551span insertions,26,748 provisional-ground spans and98,515 obstacle-priority spans. Only A0/A1 associated; their two directed results were partial, with candidate lengths0.268680m and0.680837m. These are not distances walked. A0 projection shifted6cm horizontally and2cm vertically; A1 shifted10cm horizontally and2cm vertically. The explicit8cm nearest-poly query AABB is not an8cm endpoint-displacement guarantee. Both requested-to-projected connectors remain unchecked.
+
+`OCCUPANCY_AND_PARTIAL_CORRIDORS.png` shows exact original occupied XY box extents with all heights projected; ceiling projection can obscure floor structure. `BODY_HEIGHT_SLICE_AND_PARTIAL_CORRIDORS.png` separately limits nonground occupancy to a declared1.2m vertical slice at the frozen A0 support hypothesis, and each zoom to its own anchor height. This is descriptive rendering only, not altered mapper/routing policy. Ground labels are unverified, white is not clearance, circles show the fixed synthetic24cm planner radius, and purple links are unchecked projection offsets. Rendering used saved results only; no native query rerun. Sources and hashes are retained beside both figures.
+
+Further stage attribution is separate: [span-stage diagnosis](../span-diagnostic-v1/STAGE_DIAGNOSIS.json), [post-erosion native state](../span-diagnostic-v2/STAGE_DIAGNOSIS.json). The negative route result does not establish that the physical room is impassable.

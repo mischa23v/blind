@@ -1,0 +1,119 @@
+{
+  "inputs": [
+    {
+      "basename": "diagnostic-result.json",
+      "bytes": 272611,
+      "included": "aggregate_fields_only",
+      "run": "scale-diagnostic-run-001",
+      "sha256": "945cfd9c7ec7a3e22e6fd97b03c14c8ee61d53e494557293c873382f1c7c945c"
+    },
+    {
+      "basename": "execution-receipt.json",
+      "bytes": 4189,
+      "included": "aggregate_fields_only",
+      "run": "scale-diagnostic-run-001",
+      "sha256": "770d182bf1a96ae1b16c9f82535680169543ab80f54f882519c4ae604e444404"
+    },
+    {
+      "basename": "interpretation.json",
+      "bytes": 5073,
+      "included": "aggregate_fields_only",
+      "run": "scale-diagnostic-run-001",
+      "sha256": "c59a6c3cf35ba9f551b2bd3938306fe832cd663e0cdce8542a8ec51e70ea17c9"
+    },
+    {
+      "basename": "synthetic-checks.json",
+      "bytes": 511,
+      "included": "aggregate_fields_only",
+      "run": "scale-diagnostic-run-001",
+      "sha256": "b7423582b88178741ad96e496cc07ab7da713fba1538cc0ae721d9745f51899f"
+    },
+    {
+      "basename": "diagnostic-result.json",
+      "bytes": 3740250,
+      "included": "aggregate_fields_only",
+      "run": "axis-diagnostic-run-001",
+      "sha256": "9840945112cead2da8790c9d25578bc6495f86e53f4bc2a885527385616358dd"
+    },
+    {
+      "basename": "execution-receipt.json",
+      "bytes": 1158,
+      "included": "aggregate_fields_only",
+      "run": "axis-diagnostic-run-001",
+      "sha256": "035312dd23926775606e214a0f3741a265e6a67cce6d2890021642114f7117c3"
+    },
+    {
+      "basename": "interpretation.json",
+      "bytes": 6671,
+      "included": "aggregate_fields_only",
+      "run": "axis-diagnostic-run-001",
+      "sha256": "9724918433539c10aec52e2284e95199aab6a5d66b9d52502dd048be0c4bb62a"
+    },
+    {
+      "basename": "synthetic-checks.json",
+      "bytes": 8944163,
+      "included": "aggregate_fields_only",
+      "run": "axis-diagnostic-run-001",
+      "sha256": "a7e0cdd17822320285f1cb9bf3c68306814bde4c66af0c610355e6ad1ab10406"
+    }
+  ],
+  "no_raw_inputs_copied": true,
+  "source_copies": [
+    {
+      "bytes": 5009,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-scale-diagnostic/freeze_pairs.py",
+      "sha256": "ff91a20b1ba629258973fc6ff1678cb66ebbfaac9cbf54f757c1207221c5ab08"
+    },
+    {
+      "bytes": 3541,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-scale-diagnostic/extract_selected.py",
+      "sha256": "f1777e4156fe4aeb1e71e67414b59f9c8ebad782a802c77f94c7ee4d15ee2b3a"
+    },
+    {
+      "bytes": 14193,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-scale-diagnostic/diagnostic.py",
+      "sha256": "9f774ff9d152f0485fc1fd762d8068ee9abe561cf1898f080f11989fb77432ee"
+    },
+    {
+      "bytes": 4580,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-scale-diagnostic/run_bounded.py",
+      "sha256": "eec80ce45992016f8cde80ec17f8d12fcbe3c23a5f61556364fc79bbd17b4003"
+    },
+    {
+      "bytes": 5602,
+      "copy": "byte_exact",
+      "freeze_identity_verified": false,
+      "path": "sources/scalemaster-scale-diagnostic/REVIEW_NOTES.txt",
+      "sha256": "64f925fdb886c691a64c4e2970172fc44debef5092eb05f07aee75b221bd8e93"
+    },
+    {
+      "bytes": 19911,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-axis-diagnostic/axis_diagnostic.py",
+      "sha256": "23502f094323be831385dc958d815955bb3b575eb62348b8bb53e9f9c5ace3a9"
+    },
+    {
+      "bytes": 6011,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-axis-diagnostic/run_bounded.py",
+      "sha256": "e66b2cb5ec291fc8929f88efb4f3fae77b8fa95372cab78b9f60eb51937db6ff"
+    },
+    {
+      "bytes": 7143,
+      "copy": "byte_exact",
+      "freeze_identity_verified": true,
+      "path": "sources/scalemaster-axis-diagnostic/PREREGISTRATION.txt",
+      "sha256": "90eebc01ac943c1f7fd4f6750c2c7413655024c79a901e80f0bf19a77651e9e3"
+    }
+  ]
+}

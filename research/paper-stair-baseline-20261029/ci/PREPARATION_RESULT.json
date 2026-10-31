@@ -1,0 +1,28 @@
+{
+  "scope": "source-only CI preparation",
+  "collector_mutation_tests": {
+    "normal": 16,
+    "optimized": 16
+  },
+  "python_ast": "passed",
+  "yaml_parse": "passed",
+  "public_exact_repository_ref_guard": "byte-identical native-apple guard",
+  "actions": "same pinned checkout/upload SHAs",
+  "native17_tests": "not executed",
+  "runner_limits": {
+    "job_minutes": 8,
+    "step_minutes": 6,
+    "subprocess_seconds": 240,
+    "log_bytes": 4194304,
+    "cleanup_reap_seconds": 10,
+    "note": "240 seconds execution deadline plus up to10 seconds forced cleanup/reap; outer6min step and8min job"
+  },
+  "artifacts": "three bounded synthetic metadata JSON files only",
+  "app_activation": false,
+  "runner_cleanup_tests": {
+    "normal": 2,
+    "optimized": 2,
+    "parent_exited_descendant_holds_pipe": "passed"
+  },
+  "independent_ci_review": "stage_binary_batch_two: approved exact17 collector and unconditional group cleanup;18 Python tests independently pass normal/-O"
+}

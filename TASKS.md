@@ -1,3 +1,272 @@
+## Combined source checkpoint — publication annotation, 2026-10-30 17:41 UTC
+
+**This checkpoint includes the reviewed continuation labelled “unpublished” in the unchanged 17:30 snapshot below.** That label is now historical. The published Boolean repair is retained; native validation of this **combined source** has not run at preparation time. Source inclusion is not native/device acceptance.
+
+At 17:41 UTC, the **previous ff0 source's** full hosted-unit step had failed; the overall job was running UI work, with aggregate counts/causes not yet collected. Its seated result remains **13 pass / eight fail / zero skip**. [Previous-source run](https://github.com/mischa23v/blind/actions/runs/41096090593); it does not validate this combined checkpoint.
+
+**Zero accepted workstreams; zero accepted whole journeys of 400; F01/Jev remains deferred.** Prior snapshot/history is unchanged. Only the continuation's publication label is superseded; record new terminal outcomes separately against their exact source.
+
+---
+
+## Existing tracker checkpoint — 2026-10-30 17:30 UTC
+
+[Current 16-workstream status and exact runs](research/tracker-reconciliation-20261028/CURRENT_STATUS.md). No task ID is added or closed. **Zero workstreams and zero of 400 whole journeys are accepted complete.** Source completion, portable checks, native outcomes and device acceptance are separate.
+
+- [x] Publish the implementation checkpoint `119752b` and narrow Boolean compile repair `ff0f50d`; both repaired app builds now compile. This checks off that source/build repair only.
+- [ ] N00/A01/E01/E02: finish the exact ff0 native run and full accessibility audit. Preserve the seated **13 pass / eight fail / zero skip** result and the failed full hosted-unit step (exact counts/causes pending); repair actual runtime failures without weakening original assertions.
+- [ ] N00/N02/N04: finish exact venue → versioned package A/B ownership/loading, actual normal-camera map/frame receipt binding and portal recovery after evidence loss. These are active source tasks, not solely device blockers.
+- [ ] N03/P01/E03/J01/J02: integrate the reviewed but unpublished continuation while preserving the actual ff0 repair and provenance; then compile and execute its real consumers/fixtures. Typed recipe/email adapters are not verified spoken completion, and a harness is not a completed journey.
+- [ ] N05/E04/D01: independently measured holdouts, exact asset/data redistribution/offline evidence and supervised physical acceptance remain separate requirements. No child or physical guidance release follows from source checks.
+- F01: remain **deferred by user**, not an active implementation assignment.
+
+Earlier dated sections and original requirement checklists remain history. Detailed current evidence/gates are in the existing tracker, not an invented completion percentage.
+
+---
+
+## Existing N00 checkpoint — 2026-10-30 06:18 UTC
+
+N00 remains **partial diagnostic source / Apple acceptance pending**, not complete. Published `e418290ac2a70f93c4250bb094091082408f7093` contains source-readiness and source-bound independent collision integration; evidence is in [PROGRESS](PROGRESS.md) and the existing [N00 row](research/tracker-reconciliation-20261028/TRACKER.json). The exact e418 selection ran all 18 hosted cases (14 passed, four controller methods failed with 12 issues), retaining the preceding 13; all four authored collider cases passed but controller/runtime acceptance remains open. The cleanup-expectation/timing-label repair is source-only; failed `7bb0532` preflight and actual SceneKit delay remain preserved. Physical authority is false. Continue existing R09/R15 association work after integration evidence; hierarchy/journeys, localization, current hazards, transitions/recovery and device gates remain open. No task ID or milestone is added or closed.
+
+---
+
+## Height-following terminal audit — 2026-10-30 02:39 UTC
+
+- [x] Complete and independently audit compact attempt 002 (`0a1a59cd580239a52939f5cdc9642cc608ece425`): all 3,696 native events, 29,568 collision records, unchanged 101 inputs, three zero exits and retired process groups.
+- [x] Verify exact old native event bytes and all 29,069 decoded attempt-001 prefix records; preserve attempt 001's recording failure. [Completed report](research/detour-height-follow-compact-result-20261030/README.md).
+- [x] Separate endpoint-Y-reset improvement from unresolved low-geometry coverage: every lost contact triangle is below native foot; do not mark it harmless noise. Desired XZ/headings and goal identities are unchanged, not measured physical motion.
+- [ ] Integrate map-destination versus proposed foot-datum separation only under a reviewed offline change; do not activate native Y as wearer-foot authority.
+- [ ] Resolve remaining full-height contacts, margin contacts, physical support, toys/stairs and live localization before any safety or arrival claim. Other routes, actual 100 movement episodes / 400 journeys, and iPhone validation remain open.
+
+App `c210ca8`, main and physical guidance unchanged. Dated pending checkpoints below remain historical; this entry supersedes only the compact-run pending status.
+
+---
+
+## Recorder retry and evaluation-scope checkpoint — 2026-10-30 02:29 UTC
+
+- [x] Add [evaluation-use clarification](research/coffee-fine-fused-heldout-result-20261030/EVALUATION_SCOPE.md) without changing published README, numerical results or source pins: 232/370 are construction-withheld development views, not untouched final validation.
+- [ ] Await and audit compact-recorder attempt 002 terminal evidence (`0a1a59cd580239a52939f5cdc9642cc608ece425`); current guard says `started`, compile/height 0, VTK pending. Do not mark the collision comparison complete yet.
+- [x] Keep attempt 001's recorder failure, original receipts and partial stream intact. App defaults, physical support/arrival acceptance and all actual movement authority remain unchanged.
+
+---
+
+## Current height-follow outcome: recorder failed — 2026-10-30 02:23 UTC
+
+- [x] Preserve actual attempt 001 terminal evidence: compile/height exits 0; 3,696/3,696 native-height events valid; aggregate **failed** at VTK uncompressed evidence cap. [Packet](research/detour-height-follow-failed-result-20261030/README.md).
+- [x] Audit partial gzip with streaming stdlib: 29,069/29,568 complete rows, 499 absent; stream readable to EOF. Preserve raw checksum, original receipts and both failure exceptions; do not rewrite the earlier attempt as passed.
+- [ ] Independently review/publish a separate recorder repair before execution; preserve contact IDs, geometry and limits, with explicit terminal failure reporting.
+- [ ] Complete and audit the original-versus-native-height collision comparison. No physical movement, full-route acceptance, support or app-default activation is established by the successful height stage.
+
+Earlier 02:18 entries remain unchanged as dated history; their pending-height status is superseded by this failed recording outcome. Other measured representation findings and outstanding multi-system/device work are unchanged.
+
+---
+
+## Current representation and movement-association checkpoint — 2026-10-30 02:18 UTC
+
+Research evidence published through `930dffd`; height-following source `1521e1af` is running, with **no result claimed at this checkpoint**. Earlier dated checklists remain intact as historical evidence.
+
+- [x] Complete singleton-versus-fused self-reprojection and saved-pixel/analytical-box audits. Internal projection association and voxel intersection arithmetic match; substantial same-view residuals expose a representation contribution, not established hardware failure. [Report](research/coffee-self-reprojection-result-20261030/README.md).
+- [x] Complete the fixed 5 cm/2.5 cm singleton comparison and paired-pixel audit. Preserve the original enumeration-bound failure and separately declared successful protocol. Better observed residuals coexist with more conservative unknown gaps. [Report](research/coffee-resolution-ablation-v2-result-20261030/README.md).
+- [x] Complete fine fused held-out comparison, exact coarse reproduction and common/lost/new-hit audit. Same-pixel medians improve, but large tails and primary 18,904 unknown-origin rays remain; no production resolution or physical accuracy claim. [Report](research/coffee-fine-fused-heldout-result-20261030/README.md).
+- [x] Complete six-pose support-datum diagnosis and source trace of the offline endpoint-Y resets. Retain higher contacts and distinguish authored replay from untested live app behavior. [Pose result](research/rapier-support-datum-results-20261030/README.md), [trace](research/recast-foot-datum-source-trace-20261030/REVIEW.md).
+- [x] Prepare, review and publish the two-route released Detour per-tick height diagnostic at `1521e1af`, preserving raw geometry, profiles, all original contacts and uncovered low-object bands. [Source](research/detour-height-follow-source-20261030/README.md).
+- [ ] Finish and independently audit its actual native result; preserve partial/refused/failed outcomes. Native height is only a proposal, not physical support or exact-original-XYZ arrival.
+- [ ] Resolve remaining representation tails/coverage and selected VTK/controller disagreements without deleting hazards, filling unknowns, shrinking margins or silently moving the body.
+- [ ] Implement and validate the complementary surface/occupancy/semantic [multi-system proposal](research/multi-representation-map-plan-20261030/README.md); it is not completed or activated.
+- [ ] Demonstrate useful complete routes with full-body collision, full-footprint support, calibrated current location/heading and fresh hazards; then phone integration, supervised adult acceptance, 400 end-to-end journeys and final reproducible review package.
+
+App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main/defaults/live guidance unchanged. No device/child readiness, safety percentage or generalized obstacle-avoidance acceptance follows from these research results.
+
+---
+
+## Room and observation acceptance checkpoint — 2026-10-30 01:35 UTC
+
+- [x] Complete the frozen Coffee/Conference Rapier diagnostic: 49 original probes plus two saved-state probes, 16 groups / 408 rows / 328 calls / 80 unsupported turns. Raw/internal-edge motion is identical across 164 called pairs. Original VTK evidence and higher margin overlaps remain retained; no proposal was applied. This closes an experiment, not navigation acceptance. [Report](research/rapier-real-room-results-20261030/README.md).
+- [x] Complete Coffee observation-only held-out agreement: 2,654 / 7,404 occupied hits, conditional median absolute entry residuals 10.84 / 9.34 cm and p95 92.35 / 99.25 cm. Preserve all primary 18,904 origin-unknown rays as unscored. Unknown skipping is diagnostic only, never free-space permission. [Report](research/coffee-heldout-observation-result-20261030/README.md).
+- [ ] Prepare, review and execute the isolated single-view self-reprojection versus original fused-map diagnostic. Proposed, not executed; no revised accuracy claim yet.
+- [ ] Prepare, review and execute six frozen pose/support-datum diagnostics without deleting geometry or higher furniture contacts. Proposed, not executed; semantic floor and full-footprint support remain unknown.
+- [ ] Resolve selected low and high VTK/controller disagreements before any correction is adopted. Preserve both failed analytic down-step checks, all unsupported turns, original poses and full body/margin profiles.
+- [ ] Demonstrate useful complete routes with independently checked full-body collision and full-footprint support, current localization/heading and live hazards; then device integration, supervised adult acceptance, 400 complete journeys and final reproducible review package.
+
+Evidence published through `4e0fd5ecbb2aebd4cafb1a5883f1fabd8df21ca3`. App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main/live guidance unchanged. Older dated task sections below remain intact as history, not current pending/result claims. No physical or child readiness is established.
+
+---
+
+## Navigation acceptance checkpoint — 2026-10-30 01:16 UTC
+
+- [x] Complete the seven-objective conference GEOS simplification/body diagnostic, preserving every objective, source geometry and profile. Published result `8cd2459`: nominal contacts on five of seven routes; margin contacts on all seven. This closes the experiment, not navigation acceptance.
+- [x] Build and verify the released OctoMap read-only ray adapter: 16 original plus 22 added controls passed. Preserve the preceding failed compile. The subsequent frozen held-out run completed but produced no depth residuals: both camera origins were unknown and all 18,904 valid rays were unscored. Depth accuracy remains unestablished.
+- [x] Run the released Rapier analytic comparison to completion without tuning expectations: all 72 wrappers / 108 rows / 104 calls recorded; two margin down-step failures retained; aggregate failed. Neither flag arm demonstrated better movement/grounding on these fixtures.
+- [ ] Source-bound Coffee/conference real-room controller comparison, with exact mesh/probe/frame bindings and independent VTK hazard evidence. No applied corrections, supported-turn claim or physical clearance inference.
+- [ ] Diagnose held-out Coffee origin/coverage gaps and pre-register a meaningful comparison. The frozen 232/370 run produced zero scored depth residuals; retain unknown origins and every unscored ray rather than fabricate coverage. Do not conflate supplied-pose mapping with Polycam mesh registration.
+- [ ] Review and implement only evidence-supported parts of the [proposed multi-representation map plan](research/multi-representation-map-plan-20261030/README.md). The plan is proposed, not an implemented geometry correction.
+- [ ] Reliable full-body collision, full-footprint support, live localization/heading and hazards, room/door/floor transitions, post-rise route connection, deviation/return/restart, phone performance, supervised adult acceptance, 400 complete journeys and final reproducible review package.
+
+App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`. Apple hosted: 283 passed / 12 failed / 2 skipped; UI: 14 passed / 1 failed / 3 skipped. Main and live guidance unchanged. No child trial or physical navigation release is validated. Earlier dated sections are preserved historical checkpoints.
+
+---
+
+## Navigation acceptance checkpoint — 2026-10-29 22:42 UTC
+
+- [x] Bounded Coffee 2D manual-exclusion comparator: new centered chain increases minimum extra manual-window residual 3.85→129.58mm for 0.264 m extra native-grid length; endpoints/profile/cap unchanged. All 143 complete-chain segments have two saved window checks. Manual rectangles are not measured table outlines; 3D/body/support acceptance remains open.
+- [x] Three frozen recorded Coffee frames: released OctoMap adapter retains all measured endpoint keys and tabletop inset keys 37/37/20 in independent camera-local trees. Untouched volume stays unknown. This is a regression, not held-out accuracy or cross-view registration.
+- [ ] Full-body validation of new joint-centered route and repeat conference/other-room tests. Original 20-path new floor-policy run hit fixed CPU budget; preserve partial outcomes.
+- [ ] Establish documented frames and independently validate any depth→room alignment. No inferred alignment from plausible pictures.
+- [ ] Live closed-loop localization/heading, current obstacle/support coverage, room transitions, chair/bed rise, exits, return/deviation/restart, phone performance and supervised adult acceptance remain open. No child trial/release readiness.
+
+Apple actual c210ca8 hosted result: 283 passed / 12 failed / 2 skipped; UI: 14 passed / 1 failed / 3 skipped. Focused checks do not turn that full suite green. See [native diagnostics](research/native-diagnostics-c210ca8-20261029/). Earlier dated checkpoints below are historical, not current pending/result claims.
+
+---
+
+## Navigation acceptance checkpoint — 2026-10-29 15:23 UTC
+
+- [x] **Actual Stage C003 fixed-fixture correction:** 8 completed candidate requests without modeled body/margin contacts (6 retained + 2 corrected corners); 17 remain refused/unsuccessful. All 50 original controls reproduced and all 25 declared criteria met, with unchanged bodies/margins. This closes the tested flat-single-layer discrete-mask correction only, not live navigation.
+- [ ] **Stage B:** published `4b51e4273817bd7fa1d8830041bafdf302c11aee`; exact 8 Apple hosted methods (3 existing strict-endpoint + 5 seed-radius-veto) await native results. Publication is not a pass; stock remains default and no app caller is activated.
+- [ ] After those gates pass, review qualified caller wiring with strict endpoint/support admission and current scene/pose/body identity. Do not silently fall back outside the supported topology/work envelope.
+- [ ] Validate connected navigation with real temporal sensor replay, full-body/full-footprint support and current hazards, including drift, stale geometry, obstacle changes, doors, return/deviation and recovery. Supplied-pose/fixture success cannot close these requirements.
+
+Priority is usable, verified navigation—not further inspection UI as a substitute. No full bed/table loop, 100 movement trials, live-phone clearance or physical authority is established by Stage C003. Earlier dated entries below are preserved as historical evidence; the old “corners remain” statement is superseded only for this exact fixed-fixture candidate.
+
+---
+
+## Current navigation and testing — 2026-10-29 00:38 UTC
+
+See the [current source-bound status and next tests](research/navigation-testing-status-20261029/STATUS.md). Apple floor import is native-verified; strict endpoint admission preserves 8 of 11 diagnostic corridors and rejects 3 specified projected starts, with all 3 hosted strict fixtures passing. Both corner margin contacts remain; EDT diagnosis has not yet produced corrected routes. Coffee completes only one corridor in both directions among 20 fixed queries. The current hosted suite has 241 passes, 8 failures and 2 skips; UI is 14 passed, 1 failed and 3 skipped; Ask Dynamic Type remains open. CPU/identity diagnostics are published at b398c26 and awaiting native measurements. Live navigation, full support, the 400 journeys and physical readiness remain open. All earlier dated entries and task definitions below are preserved.
+
+---
+
+## Active geometry-first acceptance — 2026-10-28 17:40 UTC
+
+The [current dependency-ordered checklist](research/geometry-tracker-checkpoint-20261028/STATUS.md) records completed evidence separately from open geometry correction, route/full-body validation and live localization work. All navigation readiness and complete-journey tasks remain open. Existing task definitions and historical evidence below are preserved.
+
+---
+
+## Navigation checkpoint and open acceptance — 2026-10-28 13:26 UTC
+
+- [ ] Repair Apple mesh metadata adapter using actual export/node evidence. Run 40677832625: all 18 route outcomes and 16 supplied-pose journey stages blocked by missingMetadata; zero admitted paths.
+- [ ] Pass every independent collision-backend control, then score complete original route chains. Six control failures currently prevent a no-contact verdict.
+- [ ] Complete unfamiliar-place live geometry → current room/pose/heading → current obstacles/support → route → guidance integration. A saved map is not evidence of current clearance.
+- [ ] Demonstrate chair/bed post-rise localization, connection to a route, travel across a room, doorway transition, exit/return, deviation and tracking-loss recovery. Supplied-pose fixtures do not establish physical localization.
+- [ ] Publish and verify each tested checkpoint, including failures. Follow [current next actions](TODO.md) and [latest evidence](research/native-path-recovery-20261028/native-run-40677832625-evidence.json). No child/independent mobility readiness claim.
+
+---
+
+## Native recorder checkpoint result — 2026-10-28 08:37 UTC
+
+Native run 40653113122 at `26bfa69` is terminal: both builds passed; Core 1,411 executed, zero failures, one skip; Memory 51 passed. Hosted 175: 168 passed, one failed, six skipped. All fifteen RecordedRouteStore tests and all three connected-navigation bench fixtures passed; all ConnectedJourney tests passed. The remaining hosted failure is ObservedScene actual-accumulator/abandoned-completion on the source before the later `adb8fd8` completion-fence changes.
+
+UI 18: thirteen passed, two failed, three skipped. Practice explicit End upper bound 8.086 seconds passed. The Camera audit now completes and reaches Ask; Ask then fails contrast without an identified element. A separate DescribeFocusAndStopControl test times out on an element snapshot before Stop interaction. Do not call all accessibility green or attribute the timeout to Stop. [Exact native evidence](research/native-candidate-app-integration-85/integrated/evidence/run40653113122/).
+
+This validates the volatile recorder checkpoint, not the later private-durability or saved-frame association increments. Latest published `adb8fd8` includes those later increments and is running in existing native CI. A further reviewed DEBUG timing receipt distinguishes queue admission, worker wall time and main handoff while retaining the original 1.2-second latency assertion; it does not improve speed or change release policy. Original whole-room geometry plus same-frame historical camera overlay is still being implemented and reviewed.
+
+---
+
+## Published recording and camera-frame checkpoints — 2026-10-28 08:31 UTC
+
+Verified remote head `adb8fd8f4fa16f0563bdd708635a12ba7888bcf3` on `codex/recovery-hazard-order-20261027`; draft PR remains unmerged. Checkpoints:
+
+- `26bfa69`: reachable explicit path recorder, existing camera feed, code-owned route snapshot, canonical test membership. No snapping or fabricated map registration.
+- `4cd2540`: exact-capture same-saved-frame CAMERA association receipt and loss/session fencing; Rooms entry does not require a previously saved room. This receipt is not body/support guidance authority; no geometry overlay consumer was included.
+- `efdc2c1`: private incremental GRDB diagnostic persistence, bounded retention, explicit save/retry/delete and stopped/interrupted reopen. Nine SQLite checks actually passed; twelve Core, ten hosted diagnostic and seven repository tests were authored, not yet natively executed on this revision. No automatic sharing or quiet eviction.
+- `adb8fd8`: actual DEBUG scene-job completion fences for functional tests, one post-release journey waiter correction, and helper-aware hazard source contracts. Original 1.2-second latency assertion remains. No speed improvement claimed.
+
+Completed native result at `3aef695`: both builds passed; Core 1,402 executed, zero failures, one skipped; Memory 51 passed. Hosted 160: 149 passed, five failed, six skipped. All three connected-navigation bench fixtures passed. One delayed restore case and four scene tests failed. UI 18: 14 passed, one Dynamic Type failure, three skipped; practice explicit End upper bound 5.316 seconds. That revision did not contain the eager Camera layout or recorder. [Exact evidence](research/native-candidate-app-integration-85/integrated/evidence/run40652145912/).
+
+At this checkpoint `26bfa69` native run 40653113122 has passed both build modes and Core/Memory steps; hosted step failed and UI remains running. Individual recorder results await terminal export. Intermediate queued `64709e5`, `4cd2540` and `efdc2c1` runs were replaced by GitHub concurrency before validation; this is not a passing result. `adb8fd8` run 40657202187 is pending. Do not transfer results across revisions.
+
+Current work: original whole-document CapturedRoom geometry and exact saved-frame camera-track overlay, without the registration matcher's feature cap or rendering-inflated wall thickness; bounded archive compatibility; native remaining failures and phase timing evidence. Geometry is historical RoomPlan measurement, camera path is not feet/body ground truth, and missing objects remain unknown. The full live localization/obstacle/routing loop, doorway return/deviation/recovery device validation, 400 complete user journeys and final reproducible package remain open. No child trial or live physical release is established.
+
+---
+
+## Preview compiler repair — 2026-10-28 07:47 UTC
+
+Checkpoint `3aef69509a2d287204f16f52e9c5e819e63046ad` was pushed and remote-verified. It fixes the preview reload handler's caught `error` shadowing the Boolean property by explicitly assigning `self.error`. Native run `40651360959` at the earlier preview source failed both app builds on that line; Core passed 1,402 executed with zero failures and one skip, and Memory 51 passed. Hosted/UI did not execute. This repair is not yet native-verified. The intervening fence source still contains that compile error; do not conflate source revisions.
+
+The next recorder checkpoint has a reachable local screen and read-only actual code-owned plan feed, independently source-reviewed. Raw camera positions remain unchanged and registration is nil until a measured producer exists. This is a temporary in-memory diagnostic, not saved/exportable evidence or a collision guarantee. Canonical membership and existing package linkage for its hosted storage tests are being completed before publication.
+
+---
+
+## Published navigation checkpoints — 2026-10-28 07:42 UTC
+
+Remote branch `codex/recovery-hazard-order-20261027` verified at `8767fa0e4696ce8b7d5562fe623783cd137c55ee`. Prior checkpoint `0e7fc50992bd538864365782242e65b2718b3e4e` publishes the bounded recorded-route preview, canonical native membership, actual-owner hosted bench fixtures and both native evidence packages. The preview is diagnostic archived geometry, not current-room localization or physical guidance.
+
+Latest completed native validation at `2636519`: both builds passed; Core 1,395 executed, zero failures, one skip; Memory 51 passed. Hosted 157: 145 passed, six failed, six skipped. UI 18: 14 passed, one Dynamic Type failure, three skipped. Practice explicit End passed with 5.534 seconds elapsed upper bound. Five journey publication waits and the queued-scene-fence regression remain pre-fix failures. [Exact source-bound evidence](research/native-candidate-app-integration-85/integrated/evidence/run40645432883/).
+
+Checkpoint `8767fa0` adds a DEBUG actual-task completion fence for functional test setup, retaining original responsiveness limits and release behavior. Nineteen source/provenance checks and twelve Node checks passed; native validation has not yet accepted this fix. Preview run `40651360959` is active; fence run `40651563267` is pending behind it at this checkpoint. These are separate source revisions, not interchangeable results.
+
+Next: finish reachable opt-in trajectory recording controls and a read-only code-owned plan feed, preserving raw phone samples without snapping or fabricated registration; finish native failure diagnosis and validate exact source. The source-level recorder remains local and uncompiled until its separate checkpoint. No automatic private upload, workflow activation, merge, deployment or child trial is authorized by these changes.
+
+---
+
+## Native evidence and preview integration — 2026-10-28 07:04 UTC
+
+Exactfee8c7d native validation is terminal: both builds passed;157 hosted cases comprise149 passed,2 failed,6 skipped. Both new publisher-semantics fixtures passed. The practice Stop UI test now passes with explicit End and41.978s elapsed upper bound below90s. UI14 passed/1 Dynamic Type failure/3 skipped. The two hosted failures are separate map-recovery publication waits, under investigation; full-app acceptance remains open. [Exact evidence](research/native-candidate-app-integration-85/integrated/evidence/run40644081432/).
+
+The next reviewed source connects a local recorded-route preview to the app and registers actual-owner integration fixtures. It displays archived Recast coordinates/hierarchy in a bounded ephemeral2D X/Z viewer, not a3D obstacle model or current-room route. No pose, floor, physical authority or LLM directions are fabricated. Portable source/artifact checks passed; new Swift tests, file-picker lifecycle and preview UI require native validation. N00 connected live navigation is still unfinished. Current263 native run40645432883 is testing the prior photo/localization/project stage.
+
+The user's local visual-claim checker and complete world→building→floor/room→pose/body→route→goal flow are recorded below. Editable labelled body estimates are allowed for setup/replay; mapping/pathing defects in wide areas must be diagnosed separately. Local planned-vs-phone-trajectory test recording with problem markers is requested and under implementation, with no automatic private upload. A usable connected navigation build precedes a walking handoff.
+
+---
+
+## Connected navigation handoff priority — 2026-10-28 06:34 UTC
+
+The user requires a connected usable build before walking-test handoff: place/building map → floor/room → established pose/direction → code planner → current support/hazard validation → code-owned output. Do not substitute an LLM path or ask the user to discover missing basic integration during a walk. **N00 connected recorded replay is the next integration slice**, using existing owners and a nonphysical replay sink; supplied replay poses/support are not live calibration. See the [dependency-linked reconciliation](research/tracker-reconciliation-20261028/README.md).
+
+The final100-schedule package is published at4eb51bd. Historical separately assisted one-/three-lap records do exist; the final100 matrix is not a lap test and neither establishes live phone-only navigation. The practice-presentation fix is published atfee8c7d; existing native run40644081432 is in progress, not a passing UI result. New photo-retention and localization-test checkpoints are locally reviewed but await publication/native validation. New workflow activation and raw archive approval remain separate. Jev/similar verifier implementation stays deferred; the user requested deeper decision-model research only, preserved in the [review](research/JEV_IMAGE_VERIFICATION_REVIEW.md).
+
+---
+
+## Status update — 2026-10-28 06:24 UTC
+
+The complete frozen schedule accounting is published at `4eb51bd`: [final audited report](research/journey-benchmark-readiness-84/final-20261028-0325/README.md). **100 attempts accounted, 94 completed movement episodes: 90 arrivals, three support stops, one predicted-underbody rejection, five interrupted unknowns and one CPU-limited partial.** None of the six incomplete attempts was rerun or counted as success. Completed distance551.244139m;14/20 directed pairs arrived under all five conditions. Supplied poses, reference support/collision veto, zero-margin body, assisted source exclusions and unmeasured ground contacts prevent treating this as phone-only accuracy, safe guidance or a table-lap test.
+
+The reviewed simulation-presentation/cancellation candidate below remains native-verification pending. The last tested003 revision retained two UI failures. Jev and similar visual-verifier work are **deferred** by the user, research retained only. Navigation, localization, image-retention and native accessibility work continue in separated workstreams; no full tracker,400-journey or device acceptance claim. New workflow activations and source84 raw archive remain separately unapproved; ordinary source/evidence publication to the named review branch was explicitly approved.
+
+---
+
+## Status update — 2026-10-27 23:37 UTC
+
+Native `003788a` is terminal: both builds passed; hosted units149 passed/6 skipped/0 failed; UI13 passed/3 skipped/2 failed. The practice split still failed before End with no sub-90-second witness; Dynamic Type remains open. [Verified evidence](research/native-candidate-app-integration-85/integrated/evidence/run40598054378/).
+
+A separately reviewed candidate now avoids identical **simulation-only** detection/progress publications while retaining every detector, continuity, hazard, expiry and feedback tick; live publication is unchanged. A practice-only status is adjacent to End, retaining the top banner, explicit tap, camera-off postcondition, both90s guards and120s expiry. Portable contracts and mutations pass; native compile/UI and two authored publisher-semantics fixtures remain pending. No root-cause or actual-model notification-count proof is claimed. [Candidate, exact reversible source layers and limits](research/practice-cancellation-test-review-20261027/production-diagnosis/FINDINGS.md).
+
+The [first50 frozen outcomes](research/journey-benchmark-readiness-84/checkpoint-20261027-2335/README.md) independently recount43 simulated arrivals,3 support stops and4 interrupted/unknowns. Remaining schedules continue without retuning or rerunning unknowns. Supplied-pose/reference-assisted/zero-margin and unmeasured-ground-contact limitations remain unchanged. The full tracker, live localization/sensing, physical acceptance and400 journeys remain unfinished; pending new-workflow/archive approvals remain separate.
+
+---
+
+## Status update — 2026-10-27 23:19 UTC
+
+Navigation remains the engineering priority. Earlier dated sections below retain historical results, not current completion claims.
+
+- Exact `38ac458` native evidence is now verified: both app compilation modes passed; hosted units **149 passed, zero failed, six skipped**; UI **12 passed, two failed, three skipped**. The scene-fence repair passed. Dynamic Type and the practice test's active-state precondition failed. [Source-bound evidence](research/native-candidate-app-integration-85/integrated/evidence/run40583132225/).
+- `003788a` separates practice reachability from explicit cancellation, retaining the production 120-second expiry and two sub-90-second cancellation guards. Existing [run40598054378](https://github.com/mischa23v/blind/actions/runs/40598054378) has passed both compilation modes and its hosted-unit step; UI checks remain in progress. No terminal UI verdict or exact new case count is credited yet. [Repair and coverage trade-off](research/practice-cancellation-test-review-20261027/).
+- [Frozen recovery04 checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2318/README.md): first **46 scheduled outcomes = 39 arrivals, three support stops and four interrupted/unknowns** (8,15,31,45). Episode46 resumed after the prior deadline plus grace and unchanged-evidence checks. No unknown was rerun, no frozen rule changed. Supplied poses, reference support/collision veto, zero margin, assisted source exclusions and unmeasured ground contacts remain explicit limitations; this is not live phone avoidance or a completed table lap.
+- [Offline route-deviation diagnostic](research/path-deviation-diagnostic-20261027/README.md), published `25244fb`: unchanged pinned Detour geometry, **62 synthetic fixtures passed**, zero failures/skips. Measures supplied-pose cross-track, along-path and camera-heading error; ambiguous association remains unavailable. No localization, body-heading, physical accuracy or runtime guidance claim.
+- The actual mesh bridge remains diagnostic-flag fenced, default-off and no-copy/no-ingest. Origin-lease and new endpoint workflow proposals remain inactive pending their specifically requested activation approval. The source84 archive has a separate pending upload approval. Ordinary code publication does not resolve either gate; no master merge or deployment.
+
+Next: complete the unchanged matrix and current native review; establish independently estimated map-relative pose, measured body/mount calibration, live support/hazard coverage, checked path entry/deviation and recovery before physical guidance. The 400 actual-stack journeys and staged supervised acceptance remain open.
+
+---
+
+## Status update — 2026-10-27 21:19 UTC
+
+Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
+
+---
+
+## Current navigation-first work — 2026-10-27 21:01 UTC
+
+Current pointers: [published stage85 integration](https://github.com/mischa23v/blind/blob/1658cf/research/native-candidate-app-integration-85/integrated/README.md), [current critical-order receipt](research/native-candidate-app-integration-85/integrated/README.md), and [20:59 frozen-matrix checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2059/README.md). Earlier checkpoints remain historical. No master merge, live guidance activation or physical-readiness claim.
+
+- [ ] Complete exact-source native regression review. Stage85 integration is pushed at `1658cf`; both normal and diagnostic-enabled app compilation passed [run40580300632](https://github.com/mischa23v/blind/actions/runs/40580300632). Its hosted-unit step passed, but exact count verification and terminal UI outcome remain pending at this snapshot. This is not full-app green or live capture validation.
+- [ ] Verify the later critical-retirement ordering layer and deterministic scene fixture published at `38ac458`. Portable results are 35 integrated source checks, 43 targeted contracts and 14 additional privacy/recovery/handoff checks passed. Native [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225) remains pending; earlier-source compile success does not validate this later revision. The mesh bridge remains diagnostic-flag fenced, process-default-off and no-copy/no-ingest, without guidance authority.
+- [ ] Complete the frozen 20×5 movement matrix and independent recount. Through 30 scheduled outcomes at 20:59 UTC: 25 simulated arrivals, three support-uncertainty stops and two interrupted/unknown outcomes (8 and 15). Later outcomes are not claimed. The reference-ray diagnostic at `74edb75` changed no frozen outcome, geometry, support rule or threshold. Supplied poses, evaluator support/veto, zero margin and unmeasured ground contacts remain explicit limits.
+- [x] Preserve the exact original indoor-import test's positive-witness pass on the `8c` evidence revision, published in [checkpoint8a657fc](https://github.com/mischa23v/blind/commit/8a657fc), alongside earlier failures. The separate current-source body-profile result remains 55 unique XCTest passes with zero failures/skips and 27 matching compiled-input hashes; neither focused result closes full-app acceptance.
+- [ ] Establish live hazard coverage/lead time, body-camera calibration, metric localization/heading/deviation, checked path entry, changing obstacles and recovery/return. Complete 400 actual-stack journeys and staged device/participant acceptance. No completion percentage or independent-use readiness follows from component counts.
+
+Historical entries below preserve their original dates, failures and unrun stages.
+
+---
+
 ## Current checkpoint: one controlled arrival; phone-map floor barriers still open
 
 **2026-10-26 — navigation remains the first priority. Live sensor clearance and physical navigation remain UNPROVEN.**
@@ -653,3 +922,17 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 - Imported preserved scenario inputs, hidden rubrics, raw results and native checklist under tests/scenarios/companion. Integrity validation is not behavioral/model success; first-pass usefulness misses remain visible.
 - Pending: actual Apple SDK build, native model selection/latency, VoiceOver/device sensor behavior and open-ended held-out adaptation. Do not describe this source checkpoint as all features validated.
 
+
+
+## Deferred Jev / visual-verifier research — 2026-10-28
+
+- [ ] **Deferred at the user’s request on 2026-10-28; not an active workstream.** Evaluate later whether a second image-grounded checker reduces unsupported **ordinary conversational** claims, using the [Jev review and proposed held-out paired controls](research/JEV_IMAGE_VERIFICATION_REVIEW.md). Primary-source research is complete; fixtures, implementation, model evaluation, correction-latency measurements and device acceptance are **not done**. Jev image/Box support is experimental hosted inference, not a verified free on-device component. No API calls, installs, image uploads or new native workflow are authorized by this entry. If explicitly resumed: establish an existing local checking path and freeze scene-separated labels, image-swap/blank/absent controls, false-acceptance/coverage metrics and latency criteria before any execution. Any Jev comparison requires separate developer-test data/budget approval; private app images stay on-device. Sensor/code navigation, hazard and physical-guidance authority is unchanged.
+
+## Narrow local visual-claim checker — latest user request, 2026-10-28
+
+- [ ] **Pending backlog, behind navigation; not implemented or evaluated.** The user explicitly requested tracking a small, silent **on-device single check of the same picture plus an ordinary visual claim**, returning supported/contradicted/uncertain and only an empirically calibrated score if validated. This newer local-checker request does not resume hosted Jev adoption: hosted Jev and the broader verifier workstream above remain deferred. See [current pipeline audit and future acceptance contract](research/LOCAL_VISUAL_CLAIM_CHECKER.md). The default committed project does not enable the optional image-LLM adapter: Vision consumes pixels, while the default local LLM selects text observation IDs. First establish actual backend capability and frame/request provenance; neither category agreement nor successful image delivery proves an open/closed-state answer correct. Future checks must measure held-out false acceptance, abstention, calibration, image-swap/blank controls and real-phone end-to-end latency with navigation running. No new model, API call, image upload or implementation is performed/authorized by this tracker entry. Navigation and physical-guidance authority remain code-owned.
+
+## Connected world → room → body → route flow — user requirements, 2026-10-28
+
+- [ ] **Navigation-first connected acceptance requirement; not completed by N00 preview.** Implement and verify the [connected navigation flow](research/CONNECTED_NAVIGATION_USER_FLOW.md): world-map candidate building → correct building/floor/room package → live room/floor association → measured map-relative position and body heading → relevant nearby geometry/current obstacles → declared body envelope with labelled estimates/measurements and chest-phone calibration → checked current-pose-to-route connector → continuous progress, deviation/recovery, goal changes and companion support. GPS/building identity is only a candidate; room identity is not pose; old maps are not live clearance. The user requires an assembled connected build before a navigation-walking handoff, not LLM-generated movement or disconnected previews. Track recorded-input, native-build and device validation separately.
+- [ ] **Optional consented body-profile input, pending design/implementation.** Consider read-only on-device HealthKit height/body mass/waist circumference when available, plus biological sex/date of birth only for a justified necessary purpose; biological sex is not gender. Preserve units/date/source and support prefilled explicitly labelled starting estimates/defaults for shoulder/hip/body dimensions, show them for user/helper editing now or later, and retain per-field estimated versus manual/measured status. Exact centimetre measurements must not block implementation or declared-profile replay. Do not present collision width/depth inferred from age, gender/sex or weight as measured, and do not infer chest-phone transform from height/strap alone. Diagnose map/pathing failures in known-wide passages independently rather than blaming profile uncertainty. No automatic collection, HealthKit permission request, data read, upload or implementation is authorized/performed by this tracker entry. Details and primary Apple documentation are in the connected-flow document; navigation/body/mount calibration and existing child-trial safety gates remain required.

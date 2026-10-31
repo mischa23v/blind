@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "scope": "explicit isolated third implementation union; reviewed J0117 parent required; not applied/published",
+  "requiresJ01ManifestSHA256": "1420d5d48a073bf4af84a2687a06a8ad93a512bb89883386744189bf3b98cd63",
+  "requiresFirst74ManifestSHA256": "a70c408e6a846e59da7ce7cb54fbc737321708954223d516236e74a59745101d",
+  "publishedAncestor": "79951a34966f0881cd942fc27c833e020aacde2b",
+  "files": [
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "beforeSHA256": "8f0166e5430092e1ca7464b0fe79a876d83e338ab21d3f7221455667ad67df91",
+      "sha256": "90b59756e593ce76bbcbf299799224f68286b10ab88b2fa9f202e49f7bdffbee",
+      "bytes": 16188
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AssistantControl.swift",
+      "beforeSHA256": "05e83b84a9a4c936dcb3010590bc7ec79892a4921dc4673ff2c6c118efd55bbe",
+      "sha256": "3f7e26055b95c959b173d72afdb026c14c7236ebd51e3309d678f3ad0138719d",
+      "bytes": 4679
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalEmailDraft.swift",
+      "beforeSHA256": null,
+      "sha256": "01f9f9d614d7275309317fb0e79d313b2501f78978593ed46134a107640a136f",
+      "bytes": 12259
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/AssistantControlTests.swift",
+      "beforeSHA256": "39172d6cc8abd7e396ff5179450c66f9a0a2affab69d133a433208b625bc558b",
+      "sha256": "932d91745559ae7862a80096af8c2ca9fc622bbccc8971ab3a84e1bd4073fa48",
+      "bytes": 4315
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/FamiliarPhotoImportOwnershipTests.swift",
+      "beforeSHA256": null,
+      "sha256": "d8c4ba2b23342defdd9cb9a97eb02d967399d0c5b3e8c708fa7151646f38dda6",
+      "bytes": 12989
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalEmailDraftTests.swift",
+      "beforeSHA256": null,
+      "sha256": "4be674d0c2dbb8637870b930ee62e854fe5fa8c6aecfc0319e40eff5e3a9d3b5",
+      "bytes": 11472
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "beforeSHA256": "ddf9d5f557e4c9dfbff2daba944c3a29c2f42c423c754802527d53d563fe4329",
+      "sha256": "f6c5b86e2fdb5ae9a6ef10283c218cd4ac7fe9fe2b928178224dae0e4b872f1c",
+      "bytes": 46117
+    },
+    {
+      "path": "ios/BlindAssist/DashboardView.swift",
+      "beforeSHA256": "6f86fc25f58e5e7d912c79d211ba9212f7d4b08e651f381a473a6192dff724d1",
+      "sha256": "14f497dcc055ef07cec421320f77429df3cfdc1b193f9ea8954f1a4208937615",
+      "bytes": 90205
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
+      "beforeSHA256": "6ce2ff18e86233694a49fb42066624b94c90d5478bd64e916d0e90f5c9dd13dc",
+      "sha256": "2be6627cce59271cc3ca15ee5ecb44880e19f1ecfce232b823042efea788c9b3",
+      "bytes": 56312
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarPeopleView.swift",
+      "beforeSHA256": "3a1dee9a77fe6058e19032101601e5b32598f380964c255090d585b1fff995d8",
+      "sha256": "e519cb942998113af2f5fc4ee2923ce3df2d414366101379dd872c404185df4a",
+      "bytes": 19869
+    },
+    {
+      "path": "ios/BlindAssist/LocalEmailDraftView.swift",
+      "beforeSHA256": "6cb63545feb877240c60c58a7668f7e966cc6c6a402f1b1e7fa5bbb0c8b2a512",
+      "sha256": "4c551fa73eed42a780999a4525f2a7dbdff271ec5319d503c9c0dd56e6381382",
+      "bytes": 8613
+    },
+    {
+      "path": "ios/BlindAssist/MeshCandidateDiagnostics.swift",
+      "beforeSHA256": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
+      "sha256": "5e87906063684f90e1e52c2f339dd4d0898fed7f2648d56d9d098e93df734e01",
+      "bytes": 20256
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "beforeSHA256": "8c2726855a1034348fa7934bda0b795efbc1032f8d3e6e0ccd2a574eaaf89769",
+      "sha256": "75403f4b029fbc3ef417e7b65725af9e77e8a1e682cca921cca24104deae6fb0",
+      "bytes": 566218
+    },
+    {
+      "path": "ios/BlindAssist/ObservedSceneRuntime.swift",
+      "beforeSHA256": "76eef4574db7d3ef311b600af91129a476671c1defa113cfd58642aaac382e7f",
+      "sha256": "b074bd8cfb19d3727c52bfed7707d01f1480a15e8e9fd4c2f026066df5f33f31",
+      "bytes": 13027
+    },
+    {
+      "path": "ios/BlindAssist/VoiceInput.swift",
+      "beforeSHA256": "d45140ec88d34bb9d14ab77da9682f299abdc2286e2c358fa9249befc832ae54",
+      "sha256": "7b1f5b96f45470748fce3326d985ebcc455353cc28b7cde1936b36dde8c34c96",
+      "bytes": 26488
+    },
+    {
+      "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
+      "beforeSHA256": "2abba9cfd5d92e01ba360290da18abf969933d2d84f9106ec2b5bd43fe88853c",
+      "sha256": "cba80b2e7b6e435203ca53514fbd3153eee7657562d5d65c42fa202426f82e73",
+      "bytes": 45251
+    },
+    {
+      "path": "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
+      "beforeSHA256": "768fafb690c437d79fe4e6cb89282b50e1b2758633dacb05af01ad408eaa2040",
+      "sha256": "414ebb6c8345cd1ed097307b3e41c2832ad94676206566068d3c000a5ae08d6f",
+      "bytes": 18228
+    },
+    {
+      "path": "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift",
+      "beforeSHA256": null,
+      "sha256": "1e466c2caf1119a91ecdb34bbaf123e2d533e37194952ebbf2b9d39ed06ffb1c",
+      "bytes": 15038
+    },
+    {
+      "path": "research/j01-hosted-app-adapter-20261030/SUPPORTED.json",
+      "beforeSHA256": "cabde6937a4c7c6a3e589cc6c6cf6717fcd7fce7b94160362e4cfc63fc43705d",
+      "sha256": "1995f554988570d61ee4a768226a6d631e30dc534a51341d93ba02a83145f655",
+      "bytes": 3861
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "beforeSHA256": "795c72f7270a17b112998c29758c9f4cbbc49e64c4c0381bca129d5a1eadf10e",
+      "sha256": "f1d84399ff4f71e36c755b0876cd7cd3d05fd85f9af05e6ce799c3fc9ca60b28",
+      "bytes": 87524
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "beforeSHA256": "a646315e4c4e705a813649a8add263ccb0b750eedece33194d4ef20eec0d62c4",
+      "sha256": "a5b7d45ccfb38f56367d8a3c5e2860cc92578ba4c0f798964bc874ecbb36da0f",
+      "bytes": 98370
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "beforeSHA256": "60d8f7bd0f277b35db19a35ee750ad33a364f2ed32d544c292cc7dd2b853e687",
+      "sha256": "3b55f1dae489b143b1380a6762b2840c669dc3ee02a8ed6d5ac4c83b299cd1f0",
+      "bytes": 54191
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/tracker-third-implementation-batch.patch",
+      "beforeSHA256": null,
+      "sha256": "22bb6e807150cccfc3bd4515bd3cd9d7cc8fc967e0b03abc76a8fade86a35f16",
+      "bytes": 307055
+    },
+    {
+      "path": "research/normal-owner-full-mesh-connection-20261030/CORE_CHECKPOINT.json",
+      "beforeSHA256": null,
+      "sha256": "47a113fbb5d15ddf4d4239479bfe27e400f40c9d628b508a3efa2ccec71406eb",
+      "bytes": 1576
+    },
+    {
+      "path": "research/normal-owner-full-mesh-connection-20261030/README.md",
+      "beforeSHA256": null,
+      "sha256": "e03785e97737132e309efdccb90a3763f1241181ea963c3787e79e484870d6ed",
+      "bytes": 7702
+    },
+    {
+      "path": "research/third-implementation-batch-20261030/CI_VALIDATION.json",
+      "beforeSHA256": null,
+      "sha256": "ac872eb876f19b891ef9f3c2847f05c923dfc09716f743be0242bcb63f06ad87",
+      "bytes": 1737
+    },
+    {
+      "path": "research/third-implementation-batch-20261030/README.md",
+      "beforeSHA256": null,
+      "sha256": "8b189f5869fc7ab8a8205cfbef7bb1ad81ba258a21c8d6adb5a45f859a751265",
+      "bytes": 3858
+    },
+    {
+      "path": "research/third-implementation-batch-20261030/TRIGGER_AUDIT.json",
+      "beforeSHA256": null,
+      "sha256": "5ed953ad07e929dda7150ade25523620bea28216f2e6ce2758cdc8c023cfbe2c",
+      "bytes": 19331
+    },
+    {
+      "path": "tools/ci/collect-seated-projection.py",
+      "beforeSHA256": "a1bff7b54627e6ed44a45128503e8817f5f5353dba44131b4b005d8dbc70a621",
+      "sha256": "3c3a523c7e7ab35f96a0c53ab0d37ec84024b03213c2133223b8db48dfaf9960",
+      "bytes": 9605
+    },
+    {
+      "path": "tools/ci/export-seated-case-diagnostics.py",
+      "beforeSHA256": "9921aaedcf524067ac43a737c9773a8abe35bd932e94b8bb318c0961ab4f9ebd",
+      "sha256": "4c21ec29cf7792a49e121182a77129072245bed57ffdf4c189fb65feb6ea3fce",
+      "bytes": 10799
+    },
+    {
+      "path": "tools/ci/j01-actual-model.py",
+      "beforeSHA256": "a727735827b6d5935baafa9e1c2d9ebc6206d5d2818d568ccbc885f70c7d9264",
+      "sha256": "c595872182c53fc7ce27de4bc6e77d15228148300120913c3ad4cd4b390ff11f",
+      "bytes": 13960
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "beforeSHA256": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a",
+      "sha256": "49e233866efa0cce408f9a779dbe0ff42c1a27939cc9d1698296ec5fa9a2b03f",
+      "bytes": 13012
+    },
+    {
+      "path": "tools/ci/test-collect-seated-projection.py",
+      "beforeSHA256": "e361d7ce41f4d4600d5b3fbe47ce95a04adfeddb41748bde5e8c7536847aebc6",
+      "sha256": "0440a2b890b18433503ddee0ea930dae96326e88e45df9295f1aabc3446feba3",
+      "bytes": 22756
+    },
+    {
+      "path": "tools/ci/test_export_seated_case_diagnostics.py",
+      "beforeSHA256": "4ecb3b818d2717f69c86836ac92154d10d0a02d3d23dd7ea9c2594558a38be42",
+      "sha256": "a15590ad89e8bbfa834fac9fae8b7aca1c4a5b6fc3526226342e3f9e59ae33a1",
+      "bytes": 19233
+    },
+    {
+      "path": "tools/ci/test_j01_actual_model.py",
+      "beforeSHA256": "680ddb47d5db846f5f1216670856e7a18b6bc1a6f8a012d4dfeb3727fc93a584",
+      "sha256": "164ac5735170c953fc9c2b52b1a744b8592062150ce9b1d7d938cb8627916f89",
+      "bytes": 19502
+    },
+    {
+      "path": "tools/ci/test_j01_project_membership.py",
+      "beforeSHA256": "72551d104aaa67da7b0a4ea95ff9f6b5b9666d0a3d759e8eeb83aa87099202c0",
+      "sha256": "1775b33db1f224e7601771e3bd3ac897d507baa43e8045fba0bdec49c1947026",
+      "bytes": 6564
+    },
+    {
+      "path": "tools/ci/test_normal_owner_project.py",
+      "beforeSHA256": null,
+      "sha256": "e1f8bc2cd7b6d07954fef556743b44fcc93aaffda49a96d95973e8a9a01b182e",
+      "bytes": 6348
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "beforeSHA256": "ab34ae1dbd14ef5a7c460af252d4a76708df36f63209983a15b9b8521372c6dc",
+      "sha256": "489008e0aa9183da04b7770b90a147ae1bc5b84edd1b2543f19fd16b265be976",
+      "bytes": 52418
+    },
+    {
+      "path": "tools/test/familiar-people.test.mjs",
+      "beforeSHA256": "472ed333ac3cf7edc73ac11da9f0f9e80f3f80c628f5a8e559366ce6219f568f",
+      "sha256": "fa26c9c0fce5fb00ed74aa8c2ec557c2938412d84d1595f26224865a811bf352",
+      "bytes": 21298
+    },
+    {
+      "path": "tools/test/familiar-photo-import-bounds.test.mjs",
+      "beforeSHA256": null,
+      "sha256": "c3d916dfb590c3da170008e582d5f6b1c5eaba28056d639a35e291f47863c2ba",
+      "bytes": 5628
+    },
+    {
+      "path": "tools/test/local-email-draft-companion.test.py",
+      "beforeSHA256": null,
+      "sha256": "fb59a9a0afa8df7d0bdf98473bda941853dd1b640c0dd7b8fc5885d99cc2e22b",
+      "bytes": 10989
+    },
+    {
+      "path": "tools/test/local-recipe-companion.test.py",
+      "beforeSHA256": "6b0c6c01573e3909ce7f69ede3bdda7963fad743d5dd945d59a37ab602138382",
+      "sha256": "c494130e36f0a71127a1a6c83b31a2c6fa8c34eb7b1a1282d9940e9f32488b8c",
+      "bytes": 6621
+    },
+    {
+      "path": "tools/test/normal-owner-mesh-current.test.py",
+      "beforeSHA256": null,
+      "sha256": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110",
+      "bytes": 7271
+    },
+    {
+      "path": "tools/test/sc53-current-source.py",
+      "beforeSHA256": null,
+      "sha256": "df2957ef0fbbac7f19870eda42d5d5e348ebc7242479d3718a2fbe4776b6b856",
+      "bytes": 6860
+    }
+  ],
+  "nativeExecuted": false
+}

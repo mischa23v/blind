@@ -1,0 +1,19 @@
+{
+  "command": [
+    "c++",
+    "-std=c++14",
+    "-O0",
+    "-ffp-contract=off",
+    "-fPIC",
+    "-shared",
+    "-Iresearch/room-mesh-package-75/BlindRoomMesh/Sources/CEarcut/include",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/CEarcut/earcut_adapter.cpp",
+    "-o",
+    "research/native-floor-import-repair-20261028/libearcut-probe.so"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.6131676459990558,
+  "maximum_child_rss_kib": 85204,
+  "stdout": "",
+  "stderr": ""
+}

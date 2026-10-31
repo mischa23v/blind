@@ -1,0 +1,40 @@
+{
+  "status": "verifiedOriginalEvaluatorMembers",
+  "evaluatorOnly": true,
+  "sourceRoutesUnchanged": true,
+  "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+  "selectedMembers": [
+    {
+      "member": "room_datasets/koivu/gt_mesh.ply",
+      "bytes": 660550085,
+      "sha256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e"
+    },
+    {
+      "member": "room_datasets/koivu/icp_iphone.json",
+      "bytes": 449,
+      "sha256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4"
+    }
+  ],
+  "meshHeader": [
+    "ply",
+    "format binary_little_endian 1.0",
+    "comment Created by Open3D",
+    "element vertex 8940320",
+    "property double x",
+    "property double y",
+    "property double z",
+    "property double nx",
+    "property double ny",
+    "property double nz",
+    "element face 17801112",
+    "property list uchar uint vertex_indices",
+    "end_header"
+  ],
+  "nativeMeshLoaded": false,
+  "movementEpisodes": 0,
+  "physicalAuthority": false,
+  "wallSeconds": 25.87441458300009,
+  "CPUSeconds": 25.899576,
+  "peakRSSKiB": 15868,
+  "inputsBytes": 660550534
+}

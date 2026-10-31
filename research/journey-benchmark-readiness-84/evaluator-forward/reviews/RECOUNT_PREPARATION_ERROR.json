@@ -1,0 +1,7 @@
+{
+  "failure": "Initial readback script incorrectly treated underbodyGuard dictionary as a list; assertion stopped before receipt creation",
+  "correction": "Read checkedHalfSegments, actualMidpointCovered, contact and halfSegments fields from preserved schema",
+  "runtimeOrEvidenceChanged": false,
+  "movementRerun": false,
+  "safetyThresholdChanged": false
+}

@@ -1,0 +1,53 @@
+#ifndef BLIND_DETOUR_H
+#define BLIND_DETOUR_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+/* Local, simulation-stage adapter. +Y up; metres; no physical clearance claim. */
+typedef struct BNConfig {
+    float radius, height, cell_size, cell_height, max_climb, max_slope;
+    int max_cells, max_nodes;
+} BNConfig;
+void* bn_build(const float* vertices, int vertex_count, const int* triangles,
+               int triangle_count, const BNConfig* config);
+/* Explicit source classification per triangle: 0=obstacle, 1=original floor.
+   All triangles obstruct; only original-floor triangles may become walkable.
+   Null/malformed classification is rejected, never slope-only fallback. */
+void* bn_build_classified(const float* vertices, int vertex_count, const int* triangles,
+                         int triangle_count, const BNConfig* config,
+                         const unsigned char* triangle_support);
+void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
+int bn_excluded_span_count(void* handle);
+void bn_destroy(void* handle);
+const char* bn_last_error(void);
+/* Returns point count, or -1 on error. complete=0 includes partial/truncated paths.
+   Query projections are outputs ONLY: caller must not teleport physical state. */
+int bn_path(void* handle, const float* start, const float* goal,
+            const float* query_half_extents, float* points, int max_points,
+            float* projected_start, float* projected_goal,
+            unsigned int* status, int* complete);
+/* Opt-in requested-XZ admission, NOT physical clearance/support. Legacy bn_path
+   is unchanged. Receipts are initialized on every call; an argument/admission
+   refusal returns -1, emits no route points and leaves route status/complete at
+   zero. After admission, downstream path failures retain bn_path status. */
+typedef struct BNEndpointAssociation {
+    int found, is_over_polygon;
+    float projected[3];
+    unsigned int status;
+} BNEndpointAssociation;
+int bn_path_strict(void* handle, const float* start, const float* goal,
+                   const float* query_half_extents, float* points, int max_points,
+                   float* projected_start, float* projected_goal,
+                   unsigned int* status, int* complete,
+                   BNEndpointAssociation* start_association,
+                   BNEndpointAssociation* goal_association);
+/* Upstream velocity sampler; candidate ONLY, not delayed-body clearance.
+   circles: x,y,z,r,vx,vy,vz; segments: ax,ay,az,bx,by,bz. */
+int bn_velocity(const float* pos, float radius, float vmax,
+                const float* velocity, const float* desired, float horizon,
+                const float* circles, int circle_count,
+                const float* segments, int segment_count, float* output);
+#ifdef __cplusplus
+}
+#endif
+#endif

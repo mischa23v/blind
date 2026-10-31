@@ -1,0 +1,39 @@
+{
+  "review_utc": "2026-10-29T05:32:00Z",
+  "original_packet_and_independent_receipt_hashes_verified": true,
+  "independent_review_sha256": "e915ca10bc3af15d97c2ae6d2794249e708046da90da4279464a11c0b892729e",
+  "saved_record_checks": {
+    "provider_assertions": 1382,
+    "coarse_gates": 18,
+    "unique_voxels_per_gate": [
+      4,
+      9
+    ],
+    "four_cm_tight_bin": [
+      0,
+      0,
+      0
+    ],
+    "twelve_cm_tight_bin": [
+      9,
+      5,
+      9
+    ],
+    "paired_close_plane_coverage_equal": true
+  },
+  "native_rerun": false,
+  "recorded_prefix_included": false,
+  "redactions": [
+    {
+      "file": "ELF.json",
+      "original_sha256": "6d09bd8b0e60ebf17ee15aa08d63bb8f29a26da8d92e3ca1bfa0f191a77d8c16",
+      "published_sha256": "2d5d41081f1960029caf64c001d64402543a680a9e5ff725597a884386cf5fd2"
+    },
+    {
+      "file": "execute.py",
+      "original_sha256": "50ad2e7bf2163cf3d4a809d0666b444598736e261e56b3932a6757ef54d60c58",
+      "published_sha256": "71ae475fc064c085443933ea5af267a12338e017f43d9339f01a37440bbda2b2"
+    }
+  ],
+  "remote_writes": false
+}

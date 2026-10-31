@@ -7,6 +7,115 @@ final class RecordedRouteRepositoryTests: XCTestCase {
     private func row(_ time: Double, bytes: Int = 1024) -> RecordedRouteRow {
         .init(id: UUID().uuidString, sessionID: session, sourceFrameID: "observed-source-frame", capturedAt: time, payload: Data(repeating: 42, count: bytes))
     }
+    func testNavigationDiagnosticPersistsExactEventsAndTerminalRetryDoesNotResume() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path), trip = try store.state()
+        let session = try store.createNavigationTest(id: UUID().uuidString, startedAt: 12, createdAt: 1000, trip: trip)
+        let rows = [NavigationTestEventRow(sequence: 0, payload: Data("synthetic-one".utf8)),
+                    NavigationTestEventRow(sequence: 1, payload: Data("synthetic-two".utf8))]
+        let saved = try store.appendNavigationTest(rows: rows, session: session, status: "stopped")
+        XCTAssertEqual(saved.nextSequence, 2); XCTAssertEqual(saved.retainedBytes, 512)
+        let retried = try store.appendNavigationTest(rows: rows, session: session, status: "recording")
+        XCTAssertEqual(retried, saved)
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 2, payload: Data([3]))], session: saved, status: "stopped"))
+        let reopened = try RecordedRouteRepository(path: path)
+        XCTAssertEqual(try reopened.listNavigationTests(), [saved])
+        XCTAssertEqual(try reopened.navigationTestEvents(session: saved, limit: 1), [rows[0]])
+        XCTAssertEqual(try reopened.navigationTestEvents(session: saved, after: 0, limit: 1), [rows[1]])
+        XCTAssertEqual(try reopened.navigationTestEvents(session: saved, after: 1), [])
+    }
+    func testNavigationDiagnosticRejectsConflictsInvalidBoundsAndPreservesCommittedPrefix() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path)
+        let initial = try store.createNavigationTest(id: UUID().uuidString, startedAt: 0, createdAt: 0, trip: store.state())
+        let row = NavigationTestEventRow(sequence: 0, payload: Data([1,2,3]))
+        let saved = try store.appendNavigationTest(rows: [row], session: initial, status: "recording")
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 0, payload: Data([9]))], session: initial, status: "recording"))
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 2, payload: Data([9]))], session: saved, status: "recording"))
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 1, payload: Data())], session: saved, status: "recording"))
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 1, payload: Data(repeating: 0, count: 262_145))], session: saved, status: "recording"))
+        XCTAssertThrowsError(try store.navigationTestEvents(session: saved, limit: 65))
+        XCTAssertEqual(try store.listNavigationTests(), [saved])
+        XCTAssertEqual(try store.navigationTestEvents(session: saved), [row])
+    }
+    func testNavigationDiagnosticSessionCapDeleteAndFullClearFence() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path), trip = try store.state()
+        var sessions: [NavigationTestSessionState] = []
+        for i in 0..<3 { sessions.append(try store.createNavigationTest(id: UUID().uuidString, startedAt: Double(i), createdAt: Double(i), trip: trip)) }
+        XCTAssertThrowsError(try store.createNavigationTest(id: UUID().uuidString, startedAt: 3, createdAt: 3, trip: trip))
+        try store.deleteNavigationTest(session: sessions[0])
+        XCTAssertEqual(try store.listNavigationTests().count, 2)
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 0, payload: Data([1]))], session: sessions[0], status: "recording"))
+        _ = try store.createNavigationTest(id: UUID().uuidString, startedAt: 4, createdAt: 4, trip: trip)
+        try store.clear(trip: trip)
+        XCTAssertEqual(try store.listNavigationTests(), [])
+        XCTAssertThrowsError(try store.createNavigationTest(id: UUID().uuidString, startedAt: 5, createdAt: 5, trip: trip))
+        XCTAssertThrowsError(try store.navigationTestEvents(session: sessions[1]))
+    }
+    func testOrdinaryRouteQuotaRetirementDoesNotRemoveDiagnosticEvidence() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path, payloadQuota: 8192)
+        let initial = try store.state()
+        let session = try store.createNavigationTest(id: UUID().uuidString, startedAt: 0, createdAt: 0, trip: initial)
+        let event = NavigationTestEventRow(sequence: 0, payload: Data("exact independent synthetic pose".utf8))
+        let saved = try store.appendNavigationTest(rows: [event], session: session, status: "stopped")
+        var trip = initial
+        for i in 0..<20 { trip = try store.append([row(Double(i), bytes: 2048)], trip: trip).state }
+        XCTAssertGreaterThan(trip.evictedCount, 0)
+        XCTAssertEqual(try store.navigationTestEvents(session: saved), [event])
+    }
+    func testNavigationDiagnosticByteQuotaRollsBackWholeRejectedBatch() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path)
+        let session = try store.createNavigationTest(id: UUID().uuidString, startedAt: 0, createdAt: 0, trip: store.state())
+        let payload = Data(repeating: 17, count: 262_144)
+        let rows = (0..<63).map { NavigationTestEventRow(sequence: Int64($0), payload: payload) }
+        let saved = try store.appendNavigationTest(rows: rows, session: session, status: "recording")
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 63, payload: payload), .init(sequence: 64, payload: Data([1]))], session: saved, status: "stopped"))
+        XCTAssertEqual(try store.listNavigationTests(), [saved])
+        XCTAssertEqual(try store.navigationTestEvents(session: saved, after: 62), [])
+    }
+    func testNavigationDiagnosticTotalQuotaAcrossSessionsDoesNotEvictAnySession() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path), trip = try store.state()
+        let payload = Data(repeating: 7, count: 262_144)
+        let full = (0..<64).map { NavigationTestEventRow(sequence: Int64($0), payload: payload) }
+        for i in 0..<2 {
+            let session = try store.createNavigationTest(id: UUID().uuidString, startedAt: Double(i), createdAt: Double(i), trip: trip)
+            _ = try store.appendNavigationTest(rows: full, session: session, status: "stopped")
+        }
+        let third = try store.createNavigationTest(id: UUID().uuidString, startedAt: 3, createdAt: 3, trip: trip)
+        XCTAssertThrowsError(try store.appendNavigationTest(rows: [.init(sequence: 0, payload: Data([1]))], session: third, status: "recording"))
+        let sessions = try store.listNavigationTests()
+        XCTAssertEqual(sessions.count, 3)
+        XCTAssertEqual(sessions.reduce(Int64(0)) { $0 + $1.retainedBytes }, 32 * 1024 * 1024)
+        XCTAssertEqual(try store.navigationTestEvents(session: third), [])
+    }
+    func testNavigationDiagnosticRejectsTamperedAccountingAndOversizedStoredBlob() throws {
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        defer { try? FileManager.default.removeItem(atPath: path) }
+        let store = try RecordedRouteRepository(path: path)
+        let initial = try store.createNavigationTest(id: UUID().uuidString, startedAt: 0, createdAt: 0, trip: store.state())
+        let saved = try store.appendNavigationTest(rows: [.init(sequence: 0, payload: Data([1]))], session: initial, status: "stopped")
+        let raw = try DatabaseQueue(path: path)
+        try raw.write { database in
+            try database.execute(sql: "UPDATE navigationTestSession SET nextSequence=2 WHERE id=?", arguments: [saved.id])
+        }
+        XCTAssertThrowsError(try store.listNavigationTests())
+        try raw.write { database in
+            try database.execute(sql: "UPDATE navigationTestSession SET nextSequence=1 WHERE id=?", arguments: [saved.id])
+            try database.execute(sql: "PRAGMA ignore_check_constraints=ON")
+            try database.execute(sql: "UPDATE navigationTestEvent SET payload=zeroblob(262145) WHERE sessionID=?", arguments: [saved.id])
+        }
+        XCTAssertThrowsError(try store.navigationTestEvents(session: saved))
+    }
     func testBlankTripStartNamedAnchorsPaginationAndReopen() throws {
         let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
         defer { try? FileManager.default.removeItem(atPath: path) }

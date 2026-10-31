@@ -1,0 +1,26 @@
+{
+  "command": "node --test --test-reporter=tap tools/test/room-route-project.test.mjs",
+  "exitCode": 1,
+  "passed": 1,
+  "failed": 1,
+  "results": [
+    {
+      "name": "canonical project binds existing local room mesh to app/tests and protocols only to hosted tests",
+      "result": "failed",
+      "reason": "resumed partial checkout contains 2 of 65 exact remote app Swift filenames; local generated project differs"
+    },
+    {
+      "name": "missing linkage, test source, resource and app embedding mutations are rejected",
+      "result": "passed"
+    }
+  ],
+  "canonicalTestModified": false,
+  "separateRemoteTreeCheck": "verified-tree-project-contract.json",
+  "nativeBuildExecuted": false,
+  "fullLocalLog": {
+    "path": "partial-checkout-project-contract.tap",
+    "bytes": 82918,
+    "sha256": "4adfa730b0051ddb5e1cea3c96ba606a802411dc40e08d6101774e302e8c1002",
+    "publication": "excluded; retained locally only"
+  }
+}

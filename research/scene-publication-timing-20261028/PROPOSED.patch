@@ -1,0 +1,113 @@
+--- a/ios/BlindAssist/ObservedSceneRuntime.swift
++++ b/ios/BlindAssist/ObservedSceneRuntime.swift
+@@ -15,10 +15,39 @@
+     private var epoch = UUID()
+     private var workID: UUID?
+ #if DEBUG
++    struct DiagnosticWorkTimingSnapshot: Sendable {
++        fileprivate let id: UUID
++        fileprivate let values: [TimeInterval?]
++        func report() -> String {
++            func time(_ index: Int) -> String { values[index].map { String($0) } ?? "missing" }
++            func delta(_ from: Int, _ to: Int) -> String {
++                guard let first = values[from], let last = values[to] else { return "missing" }
++                return String(last - first)
++            }
++            return "OBSERVED_SCENE_WORK_TIMING id=\(id) admitted=\(time(0)) workerStarted=\(time(1)) workerFinished=\(time(2)) mainDelivered=\(time(3)) queueAdmission=\(delta(0,1)) workerWall=\(delta(1,2)) mainHandoff=\(delta(2,3))"
++        }
++    }
++    // Fixed four-slot metadata only. Worker writes are lock-protected; no printing,
++    // asynchronous actor hop, image, position, map or body data enters this buffer.
++    private final class DiagnosticWorkTiming: @unchecked Sendable {
++        enum Phase: Int { case admitted, workerStarted, workerFinished, mainDelivered }
++        private let lock = NSLock()
++        private var times: [TimeInterval?] = [nil, nil, nil, nil]
++        func mark(_ phase: Phase) {
++            let now = ProcessInfo.processInfo.systemUptime
++            lock.lock(); defer { lock.unlock() }
++            if times[phase.rawValue] == nil { times[phase.rawValue] = now }
++        }
++        func snapshot(id: UUID) -> DiagnosticWorkTimingSnapshot {
++            lock.lock(); let values = times; lock.unlock()
++            return .init(id: id, values: values)
++        }
++    }
+     // Exact completion of one accepted job, including its main-owner callback.
+     // One waiter per job keeps test-only storage bounded; rejected frames have no job.
+     @MainActor private final class DiagnosticWorkCompletion {
+         enum WaitError: Error { case alreadyWaiting, missingOperation }
++        let timing = DiagnosticWorkTiming()
+         private var finished = false
+         private var waiter: CheckedContinuation<Void, Never>?
+         func wait() async throws {
+@@ -34,6 +63,10 @@
+         }
+     }
+     private var diagnosticWorkCompletion: (UUID, DiagnosticWorkCompletion)?
++    func diagnosticLastWorkTimingForTesting() -> DiagnosticWorkTimingSnapshot? {
++        guard let completion = diagnosticWorkCompletion else { return nil }
++        return completion.1.timing.snapshot(id: completion.0)
++    }
+     func waitForCurrentWorkForTesting() async throws {
+         guard let id = workID else { return }
+         guard let completion = diagnosticWorkCompletion, completion.0 == id else {
+@@ -116,14 +149,23 @@
+         workID = id
+ #if DEBUG
+         let completion = DiagnosticWorkCompletion()
++        let timing = completion.timing
++        timing.mark(.admitted)
+         diagnosticWorkCompletion = (id, completion)
+ #endif
+         queue.async { [weak self] in
++#if DEBUG
++            timing.mark(.workerStarted)
++#endif
+             worker.scene.setIntent(intent, revision: goal)
+             let snapshot = worker.scene.observe(observation, sessionID: session, now: now, hazard: hazard)
+             let plan = body.flatMap { worker.scene.planCurrent(floor: floor, body: $0, now: now) }
++#if DEBUG
++            timing.mark(.workerFinished)
++#endif
+             DispatchQueue.main.async { [weak self] in
+ #if DEBUG
++                timing.mark(.mainDelivered)
+                 // Captured independently of weak self: stale/rejected/deallocated
+                 // owner exits still complete the exact admitted operation.
+                 defer { completion.finish() }
+--- a/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift
++++ b/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift
+@@ -87,6 +87,7 @@
+         queue.resume()
+         XCTAssertTrue(firstAccepted); XCTAssertFalse(busyGoalAccepted)
+         try await runtime.waitForCurrentWorkForTesting()
++        let goalTiming = runtime.diagnosticLastWorkTimingForTesting()
+         XCTAssertFalse(forbiddenPublication)
+         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
+ 
+@@ -97,6 +98,7 @@
+         queue.resume()
+         XCTAssertTrue(bodyAccepted); XCTAssertFalse(busyBodyAccepted)
+         try await runtime.waitForCurrentWorkForTesting()
++        let bodyTiming = runtime.diagnosticLastWorkTimingForTesting()
+         XCTAssertFalse(forbiddenPublication)
+         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
+         // Observe every subsequent delivery too: neither stale generation may surface.
+@@ -106,11 +108,17 @@
+         }
+         XCTAssertTrue(runtime.offer(frame(2), session: session, floor: 0, body: nil, now: 2))
+         try await runtime.waitForCurrentWorkForTesting()
++        let freshTiming = runtime.diagnosticLastWorkTimingForTesting()
+         XCTAssertFalse(forbiddenPublication)
+         XCTAssertNotNil(runtime.snapshot); XCTAssertNil(runtime.plan)
+         XCTAssertEqual(runtime.snapshot?.capturedAt, 2)
+         XCTAssertEqual(runtime.liveStatus, "bodyEnvelopeUnavailable")
+         let elapsed = ProcessInfo.processInfo.systemUptime - started
++        if elapsed > 1.2 {
++            for (phase, timing) in [("goal", goalTiming), ("body", bodyTiming), ("fresh", freshTiming)] {
++                print("OBSERVED_SCENE_FENCE_PHASE phase=\(phase) \(timing?.report() ?? "timingMissing")")
++            }
++        }
+         print("OBSERVED_SCENE_FENCE_LATENCY elapsed=\(elapsed) originalBudget=1.2 functionalCompletion=true")
+         XCTAssertLessThanOrEqual(elapsed, 1.2, "Original latency budget exceeded; functional completion is not a speed claim")
+     }

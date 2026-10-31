@@ -1,0 +1,40 @@
+{
+  "command": [
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/cmake",
+    "--build",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter-build",
+    "--target",
+    "koivu_rtab_component",
+    "--parallel",
+    "1"
+  ],
+  "cpuAffinity": [
+    0
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "peakSampledTreeRSS": 908967936,
+  "elapsedSeconds": 8.54439902305603,
+  "samples": [
+    {
+      "elapsed": 0.14799046516418457,
+      "rss": 0,
+      "disk": 1410180202
+    },
+    {
+      "elapsed": 2.2691853046417236,
+      "rss": 474767360,
+      "disk": 1410180281
+    },
+    {
+      "elapsed": 4.407902956008911,
+      "rss": 659668992,
+      "disk": 1410180281
+    },
+    {
+      "elapsed": 6.544183731079102,
+      "rss": 908967936,
+      "disk": 1410180281
+    }
+  ]
+}

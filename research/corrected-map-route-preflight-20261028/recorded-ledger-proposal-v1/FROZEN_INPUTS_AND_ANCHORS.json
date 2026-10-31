@@ -1,0 +1,293 @@
+{
+  "status": "prepared inputs and source-only anchors; native recorded-map build/query not run; independent review required",
+  "files": [
+    {
+      "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/leaves_dataset_world.bin",
+      "bytes": 72606592,
+      "sha256": "1c1c03f0d9037b137d3bacf8606e64d63b13c02e7291da8199c105d7b0250a9d"
+    },
+    {
+      "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/native_ground_occupied_leaf_indices.u64",
+      "bytes": 509760,
+      "sha256": "d5e9658d4b1e487a1a329739f969e5e277e918c31a68d0144f2216700e5e0fa7"
+    },
+    {
+      "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_LEAF_FORMAT.json",
+      "bytes": 1199,
+      "sha256": "8c5e57a03499bef11b3730ed4dd41ce9cf65bf9bc3d37ef00e3f58912d35831d"
+    },
+    {
+      "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_PRE_RUN_FREEZE.json",
+      "bytes": 2711,
+      "sha256": "d39bf28e7f47d01e3880eb19f89edd7dc3aedf9c4ea79b6d1c351f9a4e4520e9"
+    },
+    {
+      "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_DERIVED_OUTPUT_MANIFEST.json",
+      "bytes": 4336,
+      "sha256": "1de387c33ef840b425415d81fa19d8ac0d190011954fa3056ce4f5147e01c73d"
+    },
+    {
+      "path": "research/corrected-map-route-preflight-20261028/occupancy-prototype-v3/occupancy_adapter.cpp",
+      "bytes": 9160,
+      "sha256": "705b15818aecd5b8d59940b4e380c8f670966a7e42b5694d7805491851fb6f92"
+    },
+    {
+      "path": "research/corrected-map-route-preflight-20261028/occupancy-prototype-v3/occupancy_engine.py",
+      "bytes": 3286,
+      "sha256": "bd1cf2bf4c8a1878c602956e7da0ea6b188a9327f1527860758378a3efef25bd"
+    },
+    {
+      "path": "research/corrected-map-route-preflight-20261028/occupancy-prototype-v3/liboccupancy.so",
+      "bytes": 332560,
+      "sha256": "e5138123cd61aa225c57ea0171d3f05d3fe96bb1f8ef8006c3d85dd420141760"
+    }
+  ],
+  "anchors": [
+    {
+      "anchorIndex": 0,
+      "groundIndexQuantile": 0.1,
+      "groundIndexPosition": 6372,
+      "originalLeafRow": 121368,
+      "leafSizeMetres": 0.03999999910593033,
+      "provisionalTopDatasetWorldXYZ": [
+        -2.5799999237060547,
+        -0.6599999666213989,
+        -1.2399999909102917
+      ],
+      "requestedPlannerXYZ": [
+        -2.5799999237060547,
+        -1.2399999909102917,
+        0.6599999666213989
+      ],
+      "semantics": "native-ground top hypothesis, not body/verified-floor/landmark",
+      "sourceReferenceNodeID": 237
+    },
+    {
+      "anchorIndex": 1,
+      "groundIndexQuantile": 0.3,
+      "groundIndexPosition": 19116,
+      "originalLeafRow": 264041,
+      "leafSizeMetres": 0.03999999910593033,
+      "provisionalTopDatasetWorldXYZ": [
+        0.09999999403953552,
+        -4.779999732971191,
+        -1.2399999909102917
+      ],
+      "requestedPlannerXYZ": [
+        0.09999999403953552,
+        -1.2399999909102917,
+        4.779999732971191
+      ],
+      "semantics": "native-ground top hypothesis, not body/verified-floor/landmark",
+      "sourceReferenceNodeID": 257
+    },
+    {
+      "anchorIndex": 2,
+      "groundIndexQuantile": 0.5,
+      "groundIndexPosition": 31860,
+      "originalLeafRow": 522887,
+      "leafSizeMetres": 0.03999999910593033,
+      "provisionalTopDatasetWorldXYZ": [
+        3.9800000190734863,
+        -0.6200000047683716,
+        -1.279999952763319
+      ],
+      "requestedPlannerXYZ": [
+        3.9800000190734863,
+        -1.279999952763319,
+        0.6200000047683716
+      ],
+      "semantics": "native-ground top hypothesis, not body/verified-floor/landmark",
+      "sourceReferenceNodeID": 128
+    },
+    {
+      "anchorIndex": 3,
+      "groundIndexQuantile": 0.7,
+      "groundIndexPosition": 44603,
+      "originalLeafRow": 760747,
+      "leafSizeMetres": 0.03999999910593033,
+      "provisionalTopDatasetWorldXYZ": [
+        -1.7799999713897705,
+        0.6200000047683716,
+        -1.2399999909102917
+      ],
+      "requestedPlannerXYZ": [
+        -1.7799999713897705,
+        -1.2399999909102917,
+        -0.6200000047683716
+      ],
+      "semantics": "native-ground top hypothesis, not body/verified-floor/landmark",
+      "sourceReferenceNodeID": 77
+    },
+    {
+      "anchorIndex": 4,
+      "groundIndexQuantile": 0.9,
+      "groundIndexPosition": 57347,
+      "originalLeafRow": 968963,
+      "leafSizeMetres": 0.03999999910593033,
+      "provisionalTopDatasetWorldXYZ": [
+        -1.659999966621399,
+        4.5,
+        -1.279999952763319
+      ],
+      "requestedPlannerXYZ": [
+        -1.659999966621399,
+        -1.279999952763319,
+        -4.5
+      ],
+      "semantics": "native-ground top hypothesis, not body/verified-floor/landmark",
+      "sourceReferenceNodeID": 209
+    }
+  ],
+  "pairs": [
+    {
+      "pairIndex": 0,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 1
+    },
+    {
+      "pairIndex": 1,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 2
+    },
+    {
+      "pairIndex": 2,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 3
+    },
+    {
+      "pairIndex": 3,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 4
+    },
+    {
+      "pairIndex": 4,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 0
+    },
+    {
+      "pairIndex": 5,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 2
+    },
+    {
+      "pairIndex": 6,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 3
+    },
+    {
+      "pairIndex": 7,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 4
+    },
+    {
+      "pairIndex": 8,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 0
+    },
+    {
+      "pairIndex": 9,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 1
+    },
+    {
+      "pairIndex": 10,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 3
+    },
+    {
+      "pairIndex": 11,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 4
+    },
+    {
+      "pairIndex": 12,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 0
+    },
+    {
+      "pairIndex": 13,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 1
+    },
+    {
+      "pairIndex": 14,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 2
+    },
+    {
+      "pairIndex": 15,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 4
+    },
+    {
+      "pairIndex": 16,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 0
+    },
+    {
+      "pairIndex": 17,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 1
+    },
+    {
+      "pairIndex": 18,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 2
+    },
+    {
+      "pairIndex": 19,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 3
+    }
+  ],
+  "anchorSelection": "fixed10/30/50/70/90 percentiles of frozen native-ground index order; no route/refinement/reference input",
+  "configuration": {
+    "radius": 0.24,
+    "height": 1.2,
+    "cell_size": 0.04,
+    "cell_height": 0.02,
+    "max_climb": 0,
+    "max_slope": 5,
+    "max_cells": 250000,
+    "max_nodes": 4096
+  },
+  "profile": "synthetic geometry-only fixture profile; not user measurement",
+  "queryHalfExtents": [
+    0.08,
+    0.08,
+    0.08
+  ],
+  "maxPoints": 256,
+  "occupiedPlannerBoxBounds": [
+    [
+      -5.159999866038561,
+      6.2399997897446156
+    ],
+    [
+      -1.4799999184906483,
+      1.679999966174364
+    ],
+    [
+      -5.519999999552965,
+      5.5599999614059925
+    ]
+  ],
+  "expectedNativeHorizontalGrid": [
+    286,
+    278
+  ],
+  "expectedNativeHorizontalCells": 79508,
+  "limits": {
+    "CPUSeconds": 60,
+    "wallSeconds": 90,
+    "RSSBytes": 1073741824,
+    "newOutputBytes": 134217728,
+    "experimentDiskBytes": 1073741824,
+    "oneCPU": true
+  },
+  "recordedRoutesExecuted": 0,
+  "requestedRouteComplete": false,
+  "evidenceQualifiedTraversable": false,
+  "physicalAuthority": false
+}

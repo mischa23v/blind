@@ -7,6 +7,51 @@ Both are OPEN backlog requirements from iPhone testing. No model/provider calls,
 
 ---
 
+## Status update — 2026-10-27 21:19 UTC
+
+Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
+
+---
+
+## Latest checkpoint — 2026-10-27 21:01 UTC
+
+Use the [published stage85 integration receipt](https://github.com/mischa23v/blind/blob/1658cf/research/native-candidate-app-integration-85/integrated/README.md), [current critical-order follow-on](research/native-candidate-app-integration-85/integrated/README.md) and [20:59 matrix checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2059/README.md). Earlier records remain historical. No merge, live activation or physical-readiness claim.
+
+- Integration `1658cf` is pushed. Normal and diagnostic-enabled app compilation passed run40580300632; its hosted-unit step passed, but exact counts and terminal UI results remain pending. The bridge remains process-default-off and no-copy/no-ingest, without physical-output authority. Compilation is not sensor execution.
+- Later `38ac458` publishes critical retirement ordering plus the deterministic scene fixture. Its 35 source checks, 43 targeted contracts and 14 additional privacy/recovery/handoff checks passed. Native run40583132225 remains pending. Do not transfer an earlier-source compile pass to this later revision.
+- The original import test passed with a positive witness on the `8c` evidence revision, with public evidence at `8a657fc`. The separate body-profile evidence verifies 55 unique XCTest passes and 27 matching compiled-input hashes. Full-app green remains unestablished; earlier failures are retained.
+- Through 30 scheduled frozen-matrix outcomes: 25 actual simulated arrivals, three support stops and two interrupted/unknowns (8 and 15). Later outcomes are not claimed. The published reference-ray diagnostic changed no rule or outcome. Supplied poses, evaluator support/veto, zero margin and unmeasured ground contacts prevent interpretation as live obstacle avoidance or completion of 100 trials.
+- Live hazard coverage/lead time, metric localization, body heading/calibration, continuous deviation, checked connectors and return/restart remain OPEN. The 400 actual-stack journeys and device/participant acceptance remain unfinished.
+
+Earlier records below retain their original failures and checkpoint scope. Do not lower acceptance gates or convert a historical pending state into a claimed pass.
+
+---
+
+## Current reconciliation — 2026-10-27, review branch only
+
+**Navigation remains the first implementation priority. Live ground-hazard/warning acceptance is BLOCKED; localization, body orientation, continuous deviation and useful live A-to-B/return acceptance remain OPEN.** Component counts are not a completion percentage or physical-readiness evidence.
+
+### Published, tested and still unfinished
+
+- Earlier verified review-branch checkpoint: [`e9e18d15fe1fdac1ff1487b3c2a8a2e731607427`](https://github.com/mischa23v/blind/commit/e9e18d15fe1fdac1ff1487b3c2a8a2e731607427), `codex/recovery-hazard-order-20261027`, [draft PR #2](https://github.com/mischa23v/blind/pull/2). Master remains separately pinned at `8471d58476d591fe7b04bf7f1154a4b56fc6a36b`. Publication is not merge, deployment or app activation; none is claimed here.
+- Recovery warning ordering is implemented on that review branch: otherwise-admissible depth warnings are processed/published before saved-map recovery can return early; journey authority is withdrawn at recovery entry rather than repeatedly on normal recovery frames. [Portable projection and real-owner regression evidence](research/recovery-hazard-order/README.md) does not establish real detector/callback behavior, audible warning latency or recovery sensor coverage. Existing tracking, calibration and mount gates remain required.
+- Candidate room-mesh package: [Apple run 40470002271](https://github.com/mischa23v/blind/actions/runs/40470002271) passed macOS native-backend SwiftPM/public-client checks, **55 legacy + 32 lifecycle = 87 checks**. iOS Simulator package/client **compiled and linked only; the client was not executed**. Preserve the earlier default-SwiftBuild failures. This package is not connected to live ARKit capture, saved-map registration or physical guidance; public tabletop-exclusion updates remain unimplemented. The older stage75 cancellation/unrun note below describes its earlier checkpoint, not this later review-branch publication.
+- Full app acceptance is **not green**: [run 40463262075](https://github.com/mischa23v/blind/actions/runs/40463262075) passed Core, Memory and unsigned Simulator build, but the hosted indoor-import fixture timed out before its tracking-loss assertion and Dynamic Type accessibility failed. [Focused IO comparison 40470002343](https://github.com/mischa23v/blind/actions/runs/40470002343) reproduced the original 10-second fixture timeout on the first invocation of **both baseline and review versions**; later invocations passed. This is not a clean regression pass or proof of the cause. Both versions reported `source_clean_after: false`; changed paths and cause remain unestablished, not asserted to be harmless generated files. Diagnose and preserve the first failures rather than increasing the fixture timeout or counting retries alone as acceptance.
+- The earlier local mesh-decoder candidate had **49 authored, uncompiled fixtures**, not 49 passes. Its local source was unavailable after the workspace reset; the initial reconciliation therefore recorded fresh implementation as underway, not validated. That history is unchanged. **New verified result:** fresh decoder81 was published at [`a2423071aa8804e31b881585d28dca04dc319d1b`](https://github.com/mischa23v/blind/commit/a2423071aa8804e31b881585d28dca04dc319d1b). [Apple run 40542574937](https://github.com/mischa23v/blind/actions/runs/40542574937) executed and passed **51 fresh synthetic host checks**, compiled the ordinary imported public module, correctly rejected protected-initializer construction, and passed iOS Simulator compilation only. No Simulator execution or live capture is established. These are new checks, not recovery or execution of the lost 49 fixtures. [Preserved Apple evidence](https://github.com/mischa23v/blind/blob/e4ed07496fed23b99740e06ad371ad57a86113dd/research/apple-mesh-decoder-result-81/README.md) was published at `e4ed07496fed23b99740e06ad371ad57a86113dd`; the decoder remains isolated, unmerged and non-authoritative.
+- **IO diagnosis still pending:** one-shot phase diagnostic [40542575045](https://github.com/mischa23v/blind/actions/runs/40542575045) is running at this update; no terminal result is claimed and the earlier first-invocation failures/source-dirty uncertainty remain open. Stage82 ARKit adapter is being prepared and is **untested**; decoder host success is not live ARKit integration or physical readiness.
+
+### Next ordered gates
+
+1. **Priority 0: independent warnings and live evidence.** Retain the recovery-order correction, finish native callback/owner/alert regression evidence, inventory timestamped raw depth/confidence/tracking/body-calibration inputs, and freeze the small missing-depth/stair-edge bench matrix. Missing evidence is not evaluable, never clearance. Measure actual warning onset/lead time before any movement authority.
+2. **Finish and verify the bounded native mesh/IO foundation.** Preserve decoder81's 51 synthetic host checks; prepare and verify the separate stage82 ARKit adapter without claiming live capture. Establish the one-shot IO diagnostic result, diagnose the first-invocation IO failure and source-dirty reports, and repair/retest Dynamic Type. Keep candidate geometry non-authoritative and package checks distinct from full-app acceptance. Restore/review temporary workflow triggers before any separately authorized merge.
+3. **Establish localization, orientation and safe path entry.** Freeze held-out one-image/two-image/causal-sequence queries with evaluator poses hidden. Test wrong map/floor, body-versus-camera heading, uncertainty, continuous cross-track/progress error, collision/coverage-checked off-path connectors and loss/restart/return. Reuse the existing registry/recovery/planner rather than a parallel architecture.
+4. **Complete useful navigation under the same safety contract.** Extend causal mapping and live-change reconciliation; run independently scored A-to-B and return with dynamic obstacles, body/mount/margin/delay changes and holdout scenes. The frozen 20-route × five-condition benchmark and complete 400 actual-stack scenarios remain unfinished; static assisted laps and supplied-pose pilots do not close them.
+5. **Separate device and participant acceptance.** Full native integration, real sensor/audio/VoiceOver timing, coverage and supervised device validation remain necessary. No physical guidance, real-user trial, independent-use approval or readiness claim follows from this reconciliation.
+
+Earlier records below retain their original failures, counts and checkpoint scope. This current section supersedes stale publication/test-status wording only; it does not erase evidence or lower acceptance gates.
+
+---
+
 ## Latest diagnostic checkpoint — progressive observations and visual localization
 
 [Completed progressive replay and original visual baselines](research/tools/progressive-mapping-and-visual-localization-v1/README.md): all 294 recorded depth observations fused in order at ten checkpoints with supplied poses, without final mesh/FARO/future floor inputs. This is native occupancy growth, NOT walkability or causal live SLAM. Supplied exported poses may use future optimization; original confidence/timing remain missing.

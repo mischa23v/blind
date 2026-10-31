@@ -1,0 +1,46 @@
+{
+  "status": "completed",
+  "stop_reason": null,
+  "stages": [
+    {
+      "stage": 0,
+      "script": "replay.py",
+      "exit_code": 0
+    },
+    {
+      "stage": 1,
+      "script": "extract_prefix.py",
+      "exit_code": 0
+    },
+    {
+      "stage": 2,
+      "script": "replay.py",
+      "exit_code": 0
+    },
+    {
+      "stage": 3,
+      "script": "preview.py",
+      "exit_code": 0
+    }
+  ],
+  "source_freeze_sha256": "f0c575341117f220c94da85d08f941efcd4ecda76113757b043f920a26c26f8f",
+  "interrupted_or_failed_active_stage": null,
+  "wall_seconds": 14.445302716994775,
+  "CPU_seconds": 14.31,
+  "sampled_peak_process_tree_RSS_bytes": 274853888,
+  "output_bytes_before_receipt": 8005336,
+  "conservative_sum_of_process_peak_RSS_bytes": 277848064,
+  "limits": {
+    "CPU_seconds": 60,
+    "wall_seconds": 90,
+    "RSS_bytes": 1073741824,
+    "output_bytes": 268435456,
+    "logical_CPUs": 1,
+    "extracted_bytes": 33554432,
+    "free_reserve_bytes": 5368709120
+  },
+  "sampling_seconds": 0.05,
+  "hard_aggregate_RSS_limit_established": false,
+  "memory_enforcement": "sampled RSS with960MiB early stop, not RLIMIT_AS/cgroup; possible sampling overshoot disclosed",
+  "no_install_network_retry_or_publication": true
+}

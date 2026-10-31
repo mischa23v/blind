@@ -1,0 +1,77 @@
+{
+  "scope": "Original Apple RoomPlan native decoder fixtures; test/public provenance only; canonical membership separately owned",
+  "authorization": "User explicitly approved original public Apple JSON/license publication and testing on 2026-10-28; parent publishes",
+  "newHostedTest": "SavedRoomDiagnosticGeometryAppleFixtureTests.swift",
+  "testOnlyResourceFolder": "ios/BlindAssistTests/Fixtures/RoomPlanApple",
+  "runtimeFilesChanged": false,
+  "verification": {
+    "localSourceProvenance": {
+      "passed": 4,
+      "failed": 0
+    },
+    "localGeometryRegression": {
+      "passed": 10,
+      "failed": 0
+    },
+    "authoredHostedMethods": 4,
+    "nativeExecuted": false,
+    "independentReview": "No source blocker; independent 7/7 fixture+membership Node and 56/56 integrated proof reported; native/bundle execution still pending"
+  },
+  "limits": [
+    "Synthetic saved-frame test descriptor is not a paired ARWorldMap/relocalization receipt",
+    "No live camera path, body/feet pose, clearance or measurement-accuracy evidence",
+    "No app resource membership; test-only bundle folder"
+  ],
+  "files": [
+    {
+      "path": "ios/BlindAssistTests/SavedRoomDiagnosticGeometryAppleFixtureTests.swift",
+      "sha256": "4d98e8518655d4cf918f57b8118a18c88cbba3e264b7af7aa249faebd0b7b02c",
+      "bytes": 10928
+    },
+    {
+      "path": "tools/test/roomplan-apple-decoder-fixtures.test.mjs",
+      "sha256": "75dc80b071d12835775e3e3609e8f663073c2e0887c9c29c3468c8de3121ecef",
+      "bytes": 6274
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/APPLE-LICENSE.txt",
+      "sha256": "ef80d1c2ac05c7040c0ced9d603c2c359712f90fdb3ece8da70b976981a69e89",
+      "bytes": 1054
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/Bedroom3.capturedRoom.json",
+      "sha256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "bytes": 69516
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/Hallway2.capturedRoom.json",
+      "sha256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "bytes": 27575
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/README.md",
+      "sha256": "62ba4725123476478c6cb875a3ebb2a7ecba0dc6015cf9b63221df628865ceb0",
+      "bytes": 3737
+    },
+    {
+      "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/manifest.json",
+      "sha256": "832ebc96fe0708550962a54f725369fd99c7cd07b8db89a8e07f537e6ee2c38e",
+      "bytes": 2508
+    },
+    {
+      "path": "research/roomplan-apple-decoder-fixtures-20261028/README.md",
+      "sha256": "aafe36510815222b76c9ae079ee03d63f905d8ead349cc25e2268c3a158712f4",
+      "bytes": 5560
+    },
+    {
+      "path": "research/roomplan-apple-decoder-fixtures-20261028/node-fixture-checks.tap",
+      "sha256": "11fb9db2640d04868bc79cb3e84e7c85d2b7f45c698b9b272c8f6aecb2a1e281",
+      "bytes": 558
+    },
+    {
+      "path": "research/roomplan-apple-decoder-fixtures-20261028/node-geometry-regression.tap",
+      "sha256": "2d02df2b4453fc7cb78d19d53de4f2be7d8ed262326cb85707ed33b4ed98477d",
+      "bytes": 1181
+    }
+  ]
+}

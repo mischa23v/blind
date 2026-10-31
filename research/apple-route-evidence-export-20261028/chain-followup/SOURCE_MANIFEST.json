@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "scope": "Strict exact scored-chain validator; original schema1/protocol/source schedules unchanged",
+  "physicalAuthority": false,
+  "nativeResultsClaimed": false,
+  "legacyCompatibility": "Default and live collector strict; optional offline gap-only mode explicitly excluded from this batch",
+  "review": {
+    "status": "independently reviewed and producer-schema aligned",
+    "reviewer": "review_recorded_route_preview",
+    "producerAlignmentReviewer": "connect_roomplan_route_diagnostics",
+    "blockers": []
+  },
+  "tests": {
+    "statusExporter": 31,
+    "routeEvidenceExporter": 35,
+    "rendererIntegration": 28,
+    "totalPassing": 94,
+    "nativeAppleExecution": false
+  },
+  "unchanged": [
+    "tools/ci/export-native-unit-statuses.py",
+    "native workflow and shell runner",
+    "original source protocols",
+    "existing case statuses and exit semantics",
+    "hard1MiB artifact limit",
+    "historical initial exporter manifest/logs"
+  ],
+  "files": [
+    {
+      "path": "tools/ci/native-route-diagnostic-evidence.py",
+      "bytes": 28219,
+      "sha256": "386362632a315f3d9746c3c4f5b934644c8bea0a59997b98f39715824d950cb1"
+    },
+    {
+      "path": "tools/ci/test-native-route-diagnostic-evidence.py",
+      "bytes": 24622,
+      "sha256": "b1bea6ff21723165c7f3b307c4b124c44448a1889318d612cf3abe61956989a7"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/chain-followup/README.md",
+      "bytes": 3757,
+      "sha256": "02d6972726b09aadbe48f1b39aeb3646ec70d53078b1f1c3cfc680be2cf8b638"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/chain-followup/status-tests.txt",
+      "bytes": 130,
+      "sha256": "ca95748a4b56aba86e2c61e2a735b4b53d81483def441b985482ea547ffe1957"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/chain-followup/exporter-tests.txt",
+      "bytes": 134,
+      "sha256": "cd9d21a959d6fd7ad8b96c949ee9306d368979ab85e4882264fc27b9065f17ab"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/chain-followup/renderer-tests.txt",
+      "bytes": 3667,
+      "sha256": "362985166a721c85e0b4a6c3992884bcc272f5bc372439300c4682cd4111a827"
+    }
+  ]
+}

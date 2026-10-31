@@ -1,0 +1,23 @@
+{
+  "checks_passed": 15,
+  "checks": [
+    "release scene runtime byte-identical",
+    "completion created only after accepted workID",
+    "actual main callback defers completion before rejection",
+    "single bounded continuation",
+    "idempotent complete and waiter release",
+    "no-work/completed waits return",
+    "waiter matches exact work ID",
+    "no completion API in release",
+    "all scene test names retained",
+    "all original scene assertions retained",
+    "no sleep or assumed queue marker remains",
+    "original1.2s actual latency assertion retained",
+    "expiry1.6s remains",
+    "journey changes exactly one postrelease waiter",
+    "journey release precedes fence"
+  ],
+  "swift_executed": false,
+  "native_executed": false,
+  "latency_improvement_claimed": false
+}

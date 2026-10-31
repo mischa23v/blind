@@ -1,0 +1,84 @@
+--- blind/research/conference-body-source-20261029/run_aggregate.py	2026-10-30 03:02:17.901430383 +0300
++++ blind/research/conference-body-postrun-source-20261030/run_aggregate_isolated.py	2026-10-30 03:12:21.418034644 +0300
+@@ -1,9 +1,10 @@
+ #!/usr/bin/env python3
+ """SOURCE ONLY: root review/admission required. Never invokes installs or retries.
+-Same passed conference aggregate supervisor, with seven-route raw-body terminal checks.
++Isolated-mode successor only. Original attempt001 source/manifest remain unchanged.
++Same aggregate accounting, with an explicit source-bound terminal contract loader.
+ Historical estimated registration is diagnostic only, not camera-mesh calibration.
+ """
+-import hashlib, json, math, os, pathlib, re, resource, signal, stat, subprocess, sys, time
++import hashlib, json, math, os, pathlib, re, resource, signal, stat, subprocess, sys, time, types
+ H = pathlib.Path(__file__).resolve().parent
+ ROOT = H.parents[1]
+ CPU, WALL, RSS, OUTPUT = 120, 180, 1024**3, 64*1024**2
+@@ -103,6 +104,40 @@
+     try: os.killpg(pid,signal.SIGKILL)
+     except ProcessLookupError: pass
+ 
++def load_frozen_contracts(directory, contract_sha256, schedule_sha256):
++    """Load only the two explicitly admitted source files, even under Python -I.
++
++    Never trust cwd, PYTHONPATH or an already imported bare schedule_source.
++    The temporary canonical import slot is restored after contracts imports it.
++    """
++    directory=pathlib.Path(directory).resolve()
++    def read_pinned(name,digest):
++        fd=os.open(directory/name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++        try:
++            before=os.fstat(fd)
++            if not stat.S_ISREG(before.st_mode) or before.st_size>32768:
++                raise RuntimeError('Contract source must be small regular pinned file')
++            with os.fdopen(os.dup(fd),'rb') as f:data=f.read(32769)
++            after=os.fstat(fd)
++            if (before.st_size,before.st_mtime_ns,before.st_ctime_ns)!=(after.st_size,after.st_mtime_ns,after.st_ctime_ns):
++                raise RuntimeError('Contract source changed while loading')
++            if hashlib.sha256(data).hexdigest()!=digest:raise RuntimeError('Contract source pin mismatch: '+name)
++            return data
++        finally:os.close(fd)
++    scheduler=read_pinned('schedule_source.py',schedule_sha256)
++    contract=read_pinned('contracts.py',contract_sha256)
++    schedule_module=types.ModuleType('schedule_source');schedule_module.__file__=str(directory/'schedule_source.py')
++    exec(compile(scheduler,schedule_module.__file__,'exec'),schedule_module.__dict__)
++    sentinel=object();previous=sys.modules.get('schedule_source',sentinel)
++    try:
++        sys.modules['schedule_source']=schedule_module
++        module=types.ModuleType('conference_frozen_contracts');module.__file__=str(directory/'contracts.py')
++        exec(compile(contract,module.__file__,'exec'),module.__dict__)
++        return module
++    finally:
++        if previous is sentinel:sys.modules.pop('schedule_source',None)
++        else:sys.modules['schedule_source']=previous
++
+ def main():
+     if len(sys.argv)!=3 or sys.argv[1]!='--admitted-source-commit':
+         raise SystemExit('Requires root admission: --admitted-source-commit <exact git HEAD>')
+@@ -231,6 +266,11 @@
+                 finally: save()
+             else: save()
+     try:
++        command([expand(arg) for arg in pins['isolationControlsCommand']],'isolation-controls')
++        isolation_text=(out/'isolation-controls.stderr').read_text()
++        if not re.search(r'\nRan 3 tests in [^\n]+\n\nOK\n\Z',isolation_text):
++            raise RuntimeError('Expected three isolated-mode source controls')
++        receipt['isolationControlsExecuted']=3
+         command([expand(arg) for arg in pins['sourceControlsCommand']],'source-controls')
+         source_text=(out/'source-controls.stderr').read_text()
+         if not re.search(r'\nRan 6 tests in [^\n]+\n\nOK\n\Z',source_text):
+@@ -243,9 +283,12 @@
+         receipt['controlsExecuted']=32
+         command([expand(arg) for arg in pins['comparisonCommand']],'comparison')
+         actual=json.loads((work/'comparison/RECEIPT.json').read_text())
+-        frozen=json.loads((H/'ROUTES.json').read_text())
+-        from contracts import validate_receipt
+-        validate_receipt(actual,frozen)
++        frozen_directory=ROOT/'research/conference-body-source-20261029'
++        frozen=json.loads((frozen_directory/'ROUTES.json').read_text())
++        prefix='research/conference-body-source-20261029/'
++        contracts=load_frozen_contracts(frozen_directory,pins['inputs'][prefix+'contracts.py'],
++                                      pins['inputs'][prefix+'schedule_source.py'])
++        contracts.validate_receipt(actual,frozen)
+         receipt['comparison']={key:actual[key] for key in
+             ('status','error','proposalSHA256','sourceMeshSHA256','registeredFloat32VerticesSHA256',
+              'trianglesInt32SHA256','bodyWidthDepthHeightMetres','horizontalMarginMetres',

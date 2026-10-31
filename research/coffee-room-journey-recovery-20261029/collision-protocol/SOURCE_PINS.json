@@ -1,0 +1,39 @@
+{
+  "revision": "c79fbd33171f78608f9eb2a1484fbc9266e3a695",
+  "files": {
+    "upstream/blind-split-candidate-game-03/source/oriented_container.py": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8",
+    "upstream/blind-opus-reference-scoring-audit-02/source/reference_band_box.py": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1",
+    "upstream/blind-koivu-reference-comparison-06/reference_geometry.py": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d",
+    "upstream/blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89",
+    "upstream/blind-split-candidate-game-03/ground-follow-v2/ground_support.py": "095906c4cda9972e46751b511f46d41e2e541e2ebc44ebbb7da6dbe8240acfaf",
+    "upstream/blind-split-candidate-game-03/ground-follow-v2/run_ground_pilot.py": "679851a99466803d8390b38433a165ec409d52a4df266ff7e3651855370793de",
+    "upstream/blind-split-candidate-game-03/source/run_pilot.py": "8dba7dedf09e74dda80a035c3b7d404ebafeea09e953fcb968d75a8a2396ff64",
+    "support_functions.py": "a6f45748921c286b9bf56ec2728b735966da8e3e1f6f29ad6f857551c58ecbd4",
+    "SCHEDULE_20.json": "2b6f6594dfc741a5e28e1332ce02d36b1d46f7abf4e6fc585d6950aea85b507b",
+    "CURRENT_PATHS_20.json": "52d100633b60e1d9063d3e7dcfb27d37473d5953026a89c2c30e53a6adb965a2",
+    "run_comparison.py": "dd4548740f613e0ef899ccb2324e6fb5bb1021829989260db84b7b08fecf40d5",
+    "upstream/blind-split-candidate-game-03/source/test_oriented_container.py": "8db6c95cc7ef08dbe0521c76b39b03596d373329bb99cf4abc5e30a5cd81fb26",
+    "upstream/blind-split-candidate-game-03/ground-follow-v2/test_ground_physics.py": "c61ec01610561e90b42ce7bb5e7e8a490ea1ee2b75005368e19c4139629ae357",
+    "upstream/blind-split-candidate-game-03/ground-follow-v2/test_ground_support.py": "1ed4e4e9c7d2415f741cad376693c0632e469972c4e7526a32014490f0fcd397",
+    "upstream/blind-split-candidate-game-03/ground-follow-v2/test_oriented_ground_container.py": "faf152deff73ecacc1ab03ca042954d9c533f69a9b193654175f4eb96a1d050d",
+    "run_controls.py": "9fc6283e593f2098841e0c0856e3b6c71a3e74bf6bf2caeb5043ac81b38d3a2b",
+    "test_coffee_frame_controls.py": "327e11ef36ba09b13fb5ebcda0d81e92052746c31d0b43bfa8f6919540eda730",
+    "restore_schedule.py": "d1ffeb73c5ac38d3584738673e95d6f6ddbbdc2020b16bfc4ade6b152465b95d",
+    "SCHEDULE_STORAGE.json": "f21f4724df578307351e455a1a80474beee288a5604aa718d636f90e16844f8f",
+    "SCHEDULE_20.json.gz": "78926b2da5fff8efe40b99121006bc70be0c94e1fe54b619a640fe2e893977fa"
+  },
+  "extractedFunctions": {
+    "support_check": {
+      "source": "blind-split-candidate-game-03/source/run_pilot.py",
+      "sha256": "5a9f23d17e5bd038a7d503f9018adcdb823136ce636fc7c114802274f4a2071b"
+    },
+    "connected_support": {
+      "source": "blind-split-candidate-game-03/ground-follow-v2/run_ground_pilot.py",
+      "sha256": "cf925b3b2eb06e753d9c9c8df7696a158178eb1be866f82dd70fd1c64688cce1"
+    },
+    "proposed_ground_motion": {
+      "source": "blind-split-candidate-game-03/ground-follow-v2/run_ground_pilot.py",
+      "sha256": "5aac91ad7cfd18baf077df07a96b3244d9cbfac94b95382289bbf2b2231e9569"
+    }
+  }
+}

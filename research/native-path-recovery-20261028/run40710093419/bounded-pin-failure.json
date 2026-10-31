@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "9284719fe477135d4bcd85b2cbd2a587609ed428",
+  "runID": 40710093419,
+  "jobID": 122892704545,
+  "conclusion": "failure",
+  "cause": "APPLE_SOURCE_PINS.json SHA256 mismatch for BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift; before build/test",
+  "lines": [
+    "2026-10-28T14:51:57.9922400Z Traceback (most recent call last):",
+    "2026-10-28T14:51:57.9930440Z   File \"/Users/runner/work/blind/blind/research/mesh-candidate-ingress-83/apple/ci.py\", line 100, in <module>",
+    "2026-10-28T14:51:57.9932190Z     main()",
+    "2026-10-28T14:51:57.9932550Z     ~~~~^^",
+    "2026-10-28T14:51:57.9932980Z   File \"/Users/runner/work/blind/blind/research/mesh-candidate-ingress-83/apple/ci.py\", line 39, in main",
+    "2026-10-28T14:51:57.9933750Z     verify_pins(PACKAGE_HOME, PACKAGE_HOME / 'APPLE_SOURCE_PINS.json')",
+    "2026-10-28T14:51:57.9935690Z     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "2026-10-28T14:51:57.9936420Z   File \"/Users/runner/work/blind/blind/research/mesh-candidate-ingress-83/apple/ci.py\", line 28, in verify_pins",
+    "2026-10-28T14:51:57.9937020Z     assert hashlib.sha256((base / name).read_bytes()).hexdigest() == digest, name",
+    "2026-10-28T14:51:57.9937490Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "2026-10-28T14:51:57.9938390Z AssertionError: BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+    "2026-10-28T14:51:58.0055930Z ##[error]Process completed with exit code 1.",
+    "2026-10-28T14:51:58.0223490Z with:",
+    "2026-10-28T14:51:58.0223830Z   name: candidate-mesh-candidate-ingress-83-receipts",
+    "2026-10-28T14:51:58.0224570Z   path: /Users/runner/work/_temp/blind-mesh-candidate-ingress-83/*-receipt.json"
+  ]
+}

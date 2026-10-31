@@ -1,0 +1,190 @@
+{
+  "status": "completed-readonly-consistency-diagnostic",
+  "physicalAuthority": false,
+  "routeAcceptance": false,
+  "sameCaptureConsistencyNotSensorAccuracy": true,
+  "alongRayResidualDefinition": "voxel-entry projection minus measured endpoint projection, both using actual Float32 native origin/direction; axial uses original supplied exact inverse",
+  "rayMaxRangeDefinition": "4m axial envelope multiplied by original world-direction norm; native range is voxel-center based",
+  "frames": [
+    {
+      "frame": "frame_00232",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 130288,
+      "acceptedPixels": 603284,
+      "endpointPixelWeighted": {
+        "total": 603284,
+        "knownOccupied": 123827,
+        "knownNotOccupied": 18075,
+        "unknown": 461382,
+        "hitFreeConflict": 0
+      },
+      "endpointDistinctKeyWeighted": {
+        "total": 8018,
+        "knownOccupied": 857,
+        "knownNotOccupied": 353,
+        "unknown": 6808,
+        "hitFreeConflict": 0
+      },
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 2032,
+      "fixedGridValid": 9593,
+      "rayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 9593,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "hitTerminalConflicts": 0,
+      "entryAxialResidualMetres": {
+        "count": 0,
+        "signed": null,
+        "absolute": null
+      },
+      "centerAxialResidualMetres": {
+        "count": 0,
+        "signed": null,
+        "absolute": null
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 0,
+        "signed": null,
+        "absolute": null
+      },
+      "beforeAfterPayloadEqual": true
+    },
+    {
+      "frame": "frame_00370",
+      "rasterPixels": 733572,
+      "zeroDepthPixels": 0,
+      "rangeExcludedPixels": 147368,
+      "acceptedPixels": 586204,
+      "endpointPixelWeighted": {
+        "total": 586204,
+        "knownOccupied": 365844,
+        "knownNotOccupied": 42635,
+        "unknown": 177725,
+        "hitFreeConflict": 18878
+      },
+      "endpointDistinctKeyWeighted": {
+        "total": 9219,
+        "knownOccupied": 4580,
+        "knownNotOccupied": 1130,
+        "unknown": 3509,
+        "hitFreeConflict": 357
+      },
+      "fixedGridCandidates": 11625,
+      "fixedGridZeroDepth": 0,
+      "fixedGridRangeExcluded": 2314,
+      "fixedGridValid": 9311,
+      "rayStatuses": {
+        "unresolved": 0,
+        "hit-known-prefix": 0,
+        "origin-unknown": 9311,
+        "origin-occupied": 0,
+        "unknown-before-hit": 0,
+        "range-exhausted": 0,
+        "invalid-input": 0,
+        "bounds-rejected": 0,
+        "intersection-failed": 0
+      },
+      "hitTerminalConflicts": 0,
+      "entryAxialResidualMetres": {
+        "count": 0,
+        "signed": null,
+        "absolute": null
+      },
+      "centerAxialResidualMetres": {
+        "count": 0,
+        "signed": null,
+        "absolute": null
+      },
+      "entryAlongRayResidualMetres": {
+        "count": 0,
+        "signed": null,
+        "absolute": null
+      },
+      "beforeAfterPayloadEqual": true
+    }
+  ],
+  "buildFrames": [
+    "frame_00290",
+    "frame_00357",
+    "frame_00391"
+  ],
+  "heldoutFrames": [
+    "frame_00232",
+    "frame_00370"
+  ],
+  "quantiles": "linear interpolation at (n-1)*p; all finite residuals, no clipping",
+  "limits": {
+    "CPUSeconds": 120,
+    "outerWallSeconds": 180,
+    "addressSpaceBytes": 536870912,
+    "CPUCount": 1,
+    "fileBytes": 33554432
+  },
+  "exactBaselineRecreated": true,
+  "baseline": {
+    "state": {
+      "scans": 3,
+      "treeNodes": 271082,
+      "leaves": 232014,
+      "evidenceKeys": 232014,
+      "hitVotes": 26608,
+      "freeVotes": 223405
+    },
+    "defaults": {
+      "resolution": 0.05,
+      "hit": 0.69999999724559,
+      "miss": 0.40000000284949333,
+      "occupancy": 0.5,
+      "clampMin": 0.1191999932599187,
+      "clampMax": 0.9710000010045966
+    },
+    "payload": {
+      "xyzSizeProbability.npy": {
+        "sha256": "a1c34832f6d621fccc33fc2f7cc0257d3882612dcea37d54a95cc3f8c511d2da",
+        "bytes": 9280688
+      },
+      "logOdds.npy": {
+        "sha256": "da69eb5df4d22530451a4fab08398bfc03b8871127cfa377440446d2b2dbbcae",
+        "bytes": 928184
+      },
+      "hitScans.npy": {
+        "sha256": "6d98b667508972d328d33d1df21db0ac3b654b066c450e3768285d9200f389ae",
+        "bytes": 928184
+      },
+      "freeScans.npy": {
+        "sha256": "891dc8fcaa40255ef5b649cf46b5e1fd1b116bfb132ffb2f2413b5d57094613c",
+        "bytes": 928184
+      }
+    }
+  },
+  "extraction": [
+    {
+      "frame": "frame_00370",
+      "member": "room_datasets/coffee_room/iphone/long_capture/depth/frame_00370.png",
+      "bytes": 197271,
+      "sha256": "2fed36bcce997ec9dbe0c54c4b656f5af8059ebb9fe84fbb3e85600425038b6d"
+    },
+    {
+      "frame": "frame_00232",
+      "member": "room_datasets/coffee_room/iphone/long_capture/depth/frame_00232.png",
+      "bytes": 230306,
+      "sha256": "545cdab174d5b682adcee4a63339e7c30be5f8079c7752e9d799b508395140c9"
+    }
+  ],
+  "librarySHA256": "fa53b4153a7c1765880eabf5f8029d87173af6ed4ecdb425ea37f5d1d799bd84",
+  "controlsReceiptSHA256": "0e9fc37f627db97423ed1c4c36ef44927bcc9eb0ab104b01a2f60a4b0417a166",
+  "sourceManifestSHA256": "72c455c6f0f5cbd7eb55a9d92d7914663eed3f6445a40fab065d34c369cc5ff1",
+  "wallSeconds": 3.4879434920003405,
+  "cpuSeconds": 3.518006,
+  "peakRSSKiB": 129812
+}

@@ -1,0 +1,159 @@
+{
+  "repo": "mischa23v/blind",
+  "commit": "eb0fc673a72d1c9003cbceb5ef0f68c60e4f5563",
+  "artifacts": [
+    {
+      "artifact_id": 12759301586,
+      "run_id": 40560344601,
+      "bytes": 16263,
+      "sha256": "a2b80c8b09c4431fc9af9ba483b9a01bf8efc0991ce2abfb645fc4adb731548f",
+      "expected_hash_match": true,
+      "all_zip_crc_pass": true,
+      "members": [
+        {
+          "path": "RESULT.json",
+          "bytes": 17851,
+          "crc32": "0481e51a"
+        },
+        {
+          "path": "ROUTE_DIAGNOSTIC.json",
+          "bytes": 28543,
+          "crc32": "64e8535a"
+        },
+        {
+          "path": "RUNTIME_RESULT.json",
+          "bytes": 3031,
+          "crc32": "3599cb88"
+        },
+        {
+          "path": "SUMMARY.json",
+          "bytes": 32806,
+          "crc32": "f19812ac"
+        },
+        {
+          "path": "host-fixtures-link-receipt.json",
+          "bytes": 6064,
+          "crc32": "c8c5d96f"
+        },
+        {
+          "path": "host-fixtures-run-receipt.json",
+          "bytes": 1759,
+          "crc32": "fea84ccb"
+        },
+        {
+          "path": "host-package-receipt.json",
+          "bytes": 3741,
+          "crc32": "cc7fbfda"
+        },
+        {
+          "path": "host-public-client-link-receipt.json",
+          "bytes": 6105,
+          "crc32": "7e3fff9f"
+        },
+        {
+          "path": "host-public-client-run-receipt.json",
+          "bytes": 1725,
+          "crc32": "e6d3689e"
+        },
+        {
+          "path": "simulator-package-receipt.json",
+          "bytes": 3835,
+          "crc32": "129a4d3e"
+        },
+        {
+          "path": "simulator-public-client-link-receipt.json",
+          "bytes": 6522,
+          "crc32": "d8b7cb81"
+        }
+      ]
+    },
+    {
+      "artifact_id": 12757484819,
+      "run_id": 40560344668,
+      "bytes": 11634,
+      "sha256": "3e9de0b28bd7b0f4a1d09a011901b9072206d9bab6667321486966fb4b32fc20",
+      "expected_hash_match": true,
+      "all_zip_crc_pass": true,
+      "members": [
+        {
+          "path": "RESULT.json",
+          "bytes": 496,
+          "crc32": "0d48823e"
+        },
+        {
+          "path": "host-MeshBufferDecoder81-receipt.json",
+          "bytes": 1701,
+          "crc32": "088cffe4"
+        },
+        {
+          "path": "host-MeshCandidateIngress83-receipt.json",
+          "bytes": 1817,
+          "crc32": "2dfdf4c4"
+        },
+        {
+          "path": "host-MeshSnapshot82-receipt.json",
+          "bytes": 1725,
+          "crc32": "5395c87f"
+        },
+        {
+          "path": "host-fixtures-compile-receipt.json",
+          "bytes": 1554,
+          "crc32": "c139ad45"
+        },
+        {
+          "path": "host-fixtures-run-receipt.json",
+          "bytes": 603,
+          "crc32": "108f05ce"
+        },
+        {
+          "path": "host-package-build-receipt.json",
+          "bytes": 3889,
+          "crc32": "9411db32"
+        },
+        {
+          "path": "host-package-dylib-receipt.json",
+          "bytes": 5384,
+          "crc32": "69abc4bb"
+        },
+        {
+          "path": "simulator-MeshBufferDecoder81-receipt.json",
+          "bytes": 1782,
+          "crc32": "eb1374fe"
+        },
+        {
+          "path": "simulator-MeshCandidateIngress83-receipt.json",
+          "bytes": 1976,
+          "crc32": "9e02bbaa"
+        },
+        {
+          "path": "simulator-MeshSnapshot82-receipt.json",
+          "bytes": 1884,
+          "crc32": "36e957e2"
+        },
+        {
+          "path": "simulator-package-build-receipt.json",
+          "bytes": 3956,
+          "crc32": "a5761647"
+        },
+        {
+          "path": "simulator-package-dylib-receipt.json",
+          "bytes": 5769,
+          "crc32": "5c6bf27c"
+        }
+      ]
+    }
+  ],
+  "verified_utc": "2026-10-27T18:42:51Z",
+  "method": "GitHub download_workflow_artifact; downloaded tool URL; local size/SHA-256/ZIP CRC/JSON verification",
+  "package_counts": {
+    "legacy": 55,
+    "runtime": 32,
+    "failureCommitChecks": 5,
+    "discardChecks": 19
+  },
+  "package_total": 111,
+  "package_checks_all_true": true,
+  "ingress_reported_checks": 83,
+  "ingress_count_evidence": "RESULT.json and exit-0 host-run log agree; no individual check records retained",
+  "all_json_parse": true
+}

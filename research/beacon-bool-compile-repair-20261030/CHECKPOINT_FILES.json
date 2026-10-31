@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "baseCommit": "119752b88c529adf90bde1092137a85870740ace",
+  "scope": "minimal Boolean callback compile repair; not executed or published",
+  "files": [
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "beforeSHA256": "62e54655e1133d52d7945f71ba0f38e8920afbc8c5fc363a2ecfeaa1abe40e42",
+      "sha256": "299a5bee4ef8f82debcac9781a0715b9f96367655506fc8262a4eba4b6584645",
+      "bytes": 528156
+    },
+    {
+      "path": "research/beacon-bool-compile-repair-20261030/README.md",
+      "beforeSHA256": null,
+      "sha256": "f13a66626a6e94004033844e3e28099221f7a2b49aee6b8badd38892192da585",
+      "bytes": 2195
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "beforeSHA256": "4ad30a70f930efe52b89fcd1f0e147607ca3e9ca1c5da640cc5448da3ec37545",
+      "sha256": "fea1771271ab32bd368a99fa30342d24687a3a9932783ec3f920b10e33a3c2ac",
+      "bytes": 77606
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "beforeSHA256": "7a50db03b2763deb70ce3ebe295076a832016d3a243b4c30282d0a958e632f5a",
+      "sha256": "b809bedc08506409dce160076575444d22861592013cf1a5d47f8e396388db8c",
+      "bytes": 83270
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/beacon-bool-compile-repair.patch",
+      "beforeSHA256": null,
+      "sha256": "355d94b7a7d3030b653277888e10570b4866f0fa85b23d2b4bc30d5e74896913",
+      "bytes": 5993
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "beforeSHA256": "ed84cde5ee10a06928bf83beeabd4e9e73fdd9647a9aa469eb5e4f40d5ef812d",
+      "sha256": "58a825aacf8e841b107304b7d64e81e2dfed9ae44c6cd8530bb6df9e3b3ccfd9",
+      "bytes": 48367
+    },
+    {
+      "path": "tools/test/connected-beacon-bool.test.py",
+      "beforeSHA256": null,
+      "sha256": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f",
+      "bytes": 3514
+    }
+  ],
+  "portableSourceChecks": 681,
+  "integratedPins": 334,
+  "benchPins": 326,
+  "currentSourceContracts": 9,
+  "pythonMethods": 3,
+  "negativeVariants": 8,
+  "actualFailed119Logs": [
+    {
+      "job": "native",
+      "logSHA256": "f94c80e72da002dfda6b44a2723c0ab760b91e7c5fab72ea63dfc3bb92252091",
+      "logBytes": 63803
+    },
+    {
+      "job": "seated",
+      "logSHA256": "c1a578df5c64d8e00c933c694122336a8a1a95453b7efe44d5ab4d9b132b33c3",
+      "logBytes": 122671
+    },
+    {
+      "job": "classified",
+      "logSHA256": "e682b00f9f3695dc25e942a831470653b0c6fee891dd6f564316dd0aeedcc270",
+      "logBytes": 147195
+    },
+    {
+      "job": "body",
+      "logSHA256": "d1112a40fc596ac113ab27a3582386ed5bfc72818fc5329eb980321ee1830843",
+      "logBytes": 24123
+    }
+  ],
+  "nativeExecuted": false,
+  "controllerOptionalBeaconPolicyChanged": false
+}

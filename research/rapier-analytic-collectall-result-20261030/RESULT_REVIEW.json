@@ -1,0 +1,760 @@
+{
+  "status": "FAILED_FULL_ANALYTIC_COMPARISON_VERIFIED",
+  "sourceCommit": "2bc9cfbfea94423576d0c2cad81d6e67be164e31",
+  "sourceManifestSHA256": "85a8b947529a9aedef834c04b7ef44aa2a42d941b8f0621a51a1244320b3a824",
+  "wrapperCount": 72,
+  "nestedRows": 108,
+  "controllerCalls": 104,
+  "independentGeometricAssertionRechecks": [
+    {
+      "fixtureID": "flat",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "flat",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "exact_uv_and_near_duplicate",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "exact_uv_and_near_duplicate",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "margin_only_same_pose",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "margin_only_same_pose",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_front",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_front",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_back",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_back",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_reversed_winding",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_reversed_winding",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_riser_1cm",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_riser_1cm",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "step_10cm",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "step_10cm",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "down_step_1cm",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "down_step_1cm",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "support_gap",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "support_gap",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "zero_input_overlap",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "zero_input_overlap",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_ceiling",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_ceiling",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "turn_unsupported",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "turn_unsupported",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "yaw_45_diagonal_wall",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "yaw_45_diagonal_wall",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_14.9",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_14.9",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15.1",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15.1",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_16.89",
+      "envelope": "body",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_16.89",
+      "envelope": "body",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "flat",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "flat",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "exact_uv_and_near_duplicate",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "exact_uv_and_near_duplicate",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "margin_only_same_pose",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "margin_only_same_pose",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_front",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_front",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_back",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_back",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_reversed_winding",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "wall_reversed_winding",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_riser_1cm",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_riser_1cm",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "step_10cm",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "step_10cm",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "down_step_1cm",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "failed"
+    },
+    {
+      "fixtureID": "down_step_1cm",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "failed"
+    },
+    {
+      "fixtureID": "support_gap",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "support_gap",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "zero_input_overlap",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "zero_input_overlap",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_ceiling",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "low_ceiling",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "turn_unsupported",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "turn_unsupported",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "yaw_45_diagonal_wall",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "yaw_45_diagonal_wall",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_14.9",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_14.9",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15.1",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_15.1",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_16.89",
+      "envelope": "horizontal_margin",
+      "arm": "raw_trimesh",
+      "status": "passed"
+    },
+    {
+      "fixtureID": "slope_16.89",
+      "envelope": "horizontal_margin",
+      "arm": "two_sided_internal_edges",
+      "status": "passed"
+    }
+  ],
+  "failedWrappers": [
+    {
+      "fixtureID": "down_step_1cm",
+      "arm": "raw_trimesh",
+      "envelope": "horizontal_margin",
+      "status": "failed",
+      "failures": [
+        {
+          "stage": "fixture_geometry",
+          "probeID": "down_step_1cm",
+          "error": "flat/open motion differs from requested translation"
+        }
+      ],
+      "expectationsUnchanged": true,
+      "physicalAuthority": false
+    },
+    {
+      "fixtureID": "down_step_1cm",
+      "arm": "two_sided_internal_edges",
+      "envelope": "horizontal_margin",
+      "status": "failed",
+      "failures": [
+        {
+          "stage": "fixture_geometry",
+          "probeID": "down_step_1cm",
+          "error": "flat/open motion differs from requested translation"
+        }
+      ],
+      "expectationsUnchanged": true,
+      "physicalAuthority": false
+    }
+  ],
+  "failedRows": [
+    {
+      "fixtureID": "down_step_1cm",
+      "arm": "raw_trimesh",
+      "envelope": "horizontal_margin",
+      "row": {
+        "id": "down_step_1cm",
+        "kind": "translation",
+        "arm": "raw_trimesh",
+        "envelope": "horizontal_margin",
+        "inputArm": "exact_xyz",
+        "originalFoot": [
+          -0.14999999999999997,
+          0.002,
+          0
+        ],
+        "originalYawRadians": 0,
+        "originalDesiredDelta": [
+          0.025,
+          0,
+          0
+        ],
+        "independentEvidence": {
+          "origin": "authored analytic fixture",
+          "nativeOracleExecuted": false,
+          "status": "independent_oracle_required",
+          "hazardsMayNotBeSuppressed": true
+        },
+        "support": "unknown",
+        "semanticFloor": "unknown",
+        "physicalAuthority": false,
+        "movementApplied": false,
+        "arrivalEstablished": false,
+        "queryBandDifference": "KCC full nominal cuboid includes foot-to-foot+0.002m; existing VTK excludes that lower slice",
+        "frozenHalfExtents": [
+          0.3,
+          0.8,
+          0.375
+        ],
+        "engineHalfExtentsFloat32": [
+          0.30000001192092896,
+          0.800000011920929,
+          0.375
+        ],
+        "status": "proposal_only",
+        "controllerCalled": true,
+        "requestedCenter": [
+          -0.14999999999999997,
+          0.802,
+          0
+        ],
+        "queryPoseFloat32": [
+          -0.15000000596046448,
+          0.8019999861717224,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "numericalPoseConversionOnly": true,
+        "requestedDelta": [
+          0.025,
+          0,
+          0
+        ],
+        "requestedDeltaFloat32": [
+          0.02500000037252903,
+          0,
+          0
+        ],
+        "proposedMovement": [
+          0.01966019719839096,
+          9.532194235362113e-05,
+          0
+        ],
+        "proposalWasNotApplied": true,
+        "zeroInputDepenetrationProposal": null,
+        "computedGrounded": true,
+        "computedGroundedIsNotSupportEvidence": true,
+        "collisions": [
+          {
+            "colliderHandle": 0,
+            "toi": 0.01969042420387268,
+            "translationApplied": [
+              0.01969042420387268,
+              0,
+              0
+            ],
+            "translationRemaining": [
+              0.005309576168656349,
+              0,
+              0
+            ],
+            "witness1": [
+              0.17024308443069458,
+              3.80147248506546e-05,
+              0.37493520975112915
+            ],
+            "witness2": [
+              0.1696385145187378,
+              0.001999974250793457,
+              0.374935120344162
+            ],
+            "normal1": [
+              -0.30227896571159363,
+              0.9532194137573242,
+              0
+            ],
+            "normal2": [
+              0.30227896571159363,
+              -0.9532194137573242,
+              0
+            ],
+            "originalTriangleID": null,
+            "originalTriangleIDReason": "not exposed by upstream CharacterCollision"
+          }
+        ],
+        "independentHazardsMustNotBeSuppressed": true
+      }
+    },
+    {
+      "fixtureID": "down_step_1cm",
+      "arm": "two_sided_internal_edges",
+      "envelope": "horizontal_margin",
+      "row": {
+        "id": "down_step_1cm",
+        "kind": "translation",
+        "arm": "two_sided_internal_edges",
+        "envelope": "horizontal_margin",
+        "inputArm": "exact_xyz",
+        "originalFoot": [
+          -0.14999999999999997,
+          0.002,
+          0
+        ],
+        "originalYawRadians": 0,
+        "originalDesiredDelta": [
+          0.025,
+          0,
+          0
+        ],
+        "independentEvidence": {
+          "origin": "authored analytic fixture",
+          "nativeOracleExecuted": false,
+          "status": "independent_oracle_required",
+          "hazardsMayNotBeSuppressed": true
+        },
+        "support": "unknown",
+        "semanticFloor": "unknown",
+        "physicalAuthority": false,
+        "movementApplied": false,
+        "arrivalEstablished": false,
+        "queryBandDifference": "KCC full nominal cuboid includes foot-to-foot+0.002m; existing VTK excludes that lower slice",
+        "frozenHalfExtents": [
+          0.3,
+          0.8,
+          0.375
+        ],
+        "engineHalfExtentsFloat32": [
+          0.30000001192092896,
+          0.800000011920929,
+          0.375
+        ],
+        "status": "proposal_only",
+        "controllerCalled": true,
+        "requestedCenter": [
+          -0.14999999999999997,
+          0.802,
+          0
+        ],
+        "queryPoseFloat32": [
+          -0.15000000596046448,
+          0.8019999861717224,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "numericalPoseConversionOnly": true,
+        "requestedDelta": [
+          0.025,
+          0,
+          0
+        ],
+        "requestedDeltaFloat32": [
+          0.02500000037252903,
+          0,
+          0
+        ],
+        "proposedMovement": [
+          0.01966019719839096,
+          9.532194235362113e-05,
+          0
+        ],
+        "proposalWasNotApplied": true,
+        "zeroInputDepenetrationProposal": null,
+        "computedGrounded": true,
+        "computedGroundedIsNotSupportEvidence": true,
+        "collisions": [
+          {
+            "colliderHandle": 0,
+            "toi": 0.01969042420387268,
+            "translationApplied": [
+              0.01969042420387268,
+              0,
+              0
+            ],
+            "translationRemaining": [
+              0.005309576168656349,
+              0,
+              0
+            ],
+            "witness1": [
+              0.17024308443069458,
+              3.80147248506546e-05,
+              0.37493520975112915
+            ],
+            "witness2": [
+              0.1696385145187378,
+              0.001999974250793457,
+              0.374935120344162
+            ],
+            "normal1": [
+              -0.30227896571159363,
+              0.9532194137573242,
+              0
+            ],
+            "normal2": [
+              0.30227896571159363,
+              -0.9532194137573242,
+              0
+            ],
+            "originalTriangleID": null,
+            "originalTriangleIDReason": "not exposed by upstream CharacterCollision"
+          }
+        ],
+        "independentHazardsMustNotBeSuppressed": true
+      }
+    }
+  ],
+  "pairedMovementOrGroundedDifferences": [],
+  "pairedComparisons": 54,
+  "previous73RowsExactlyReproduced": true,
+  "inputHashesUnchanged": true,
+  "allFixturesAttempted": true,
+  "realRoomQueries": 0,
+  "physicalAuthority": false,
+  "rawFileInventory": {
+    "GUARD_RUN/RESULT.json": {
+      "bytes": 36198,
+      "sha256": "332be9a50b577d7ab2e0b35b6dc23754f2face047fa6a9a45a948e8cbb3ed4eb"
+    },
+    "GUARD_RUN/controls.stderr": {
+      "bytes": 100,
+      "sha256": "6ca290ae9b02f65fff951cbc3cf038048e23a6a7092909e957dfaded6f53e393"
+    },
+    "GUARD_RUN/controls.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controls/SUMMARY.json": {
+      "bytes": 1010,
+      "sha256": "20d6cf89eac7f114043797422724b643495e969a407b25268106fc29472b0dae"
+    },
+    "controls/assertion-results.jsonl": {
+      "bytes": 12360,
+      "sha256": "ff62e2698e0979be0180b2fb6f24688ca679369f2f04c759fac59567b24e688d"
+    },
+    "controls/probe-rows.jsonl": {
+      "bytes": 189202,
+      "sha256": "a1b38dbe40da584c81ad7000771e35dc196ac71f9863247ed127af090dbab335"
+    },
+    "controls/wrapper-records.jsonl": {
+      "bytes": 261221,
+      "sha256": "ad0536e58d2295788d855021a79cc890d86f40dd24eb594655d2a1fe857175ee"
+    }
+  },
+  "resourceMetrics": {
+    "wallSeconds": 1.6315455499970994,
+    "aggregateCPUSeconds": 1.624457,
+    "peakObservedAggregateRSS": 235008000,
+    "peakFastExitChildRSS": 222539776
+  },
+  "scope": "Authored analytic assertions only; no accuracy percentage, room passage, missing-hazard recall or physical safety established."
+}

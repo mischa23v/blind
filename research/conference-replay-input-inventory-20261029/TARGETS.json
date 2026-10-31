@@ -1,0 +1,250 @@
+{
+  "status": "SOURCE_INVENTORY_NOT_REPLAY_ADMISSION",
+  "coordinateFrame": "registeredGameXYZ=[levelX,levelZ,-levelY]; level=OBJ @ Q.T + translation from preserved stage37",
+  "cameraAnchorsAreNotMeasuredBodyPoses": true,
+  "tableSequence": [
+    92,
+    120,
+    200,
+    220,
+    20,
+    92
+  ],
+  "primaryPairs": [
+    {
+      "name": "table_92_to_120",
+      "requestedStartXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ],
+      "requestedGoalXYZ": [
+        -0.9024902299197737,
+        -4.96541132373185e-05,
+        3.796214880284393
+      ],
+      "originalStartXYZ": [
+        -2.281401302639457,
+        0.0,
+        1.0373834286611066
+      ],
+      "originalGoalXYZ": [
+        -0.9024904099661475,
+        0.0,
+        3.796214579425151
+      ],
+      "sourcePoseIndices": [
+        92,
+        120
+      ],
+      "sourceFrames": [
+        "frame_00093",
+        "frame_00121"
+      ],
+      "source": "evidence/LOOP_FROZEN.json"
+    },
+    {
+      "name": "table_120_to_200",
+      "requestedStartXYZ": [
+        -0.9024902299197737,
+        -4.96541132373185e-05,
+        3.796214880284393
+      ],
+      "requestedGoalXYZ": [
+        0.9934880108773039,
+        -0.0002434645272815228,
+        1.4958630505636947
+      ],
+      "originalStartXYZ": [
+        -0.9024904099661475,
+        0.0,
+        3.796214579425151
+      ],
+      "originalGoalXYZ": [
+        0.9934880945505575,
+        0.0,
+        1.4958629589009271
+      ],
+      "sourcePoseIndices": [
+        120,
+        200
+      ],
+      "sourceFrames": [
+        "frame_00121",
+        "frame_00216"
+      ],
+      "source": "evidence/LOOP_FROZEN.json"
+    },
+    {
+      "name": "table_200_to_220",
+      "requestedStartXYZ": [
+        0.9934880108773039,
+        -0.0002434645272815228,
+        1.4958630505636947
+      ],
+      "requestedGoalXYZ": [
+        0.22096444884248076,
+        0.00039939608658245973,
+        -0.6243468497785633
+      ],
+      "originalStartXYZ": [
+        0.9934880945505575,
+        0.0,
+        1.4958629589009271
+      ],
+      "originalGoalXYZ": [
+        0.2209646416855992,
+        0.0,
+        -0.6243470786782905
+      ],
+      "sourcePoseIndices": [
+        200,
+        220
+      ],
+      "sourceFrames": [
+        "frame_00216",
+        "frame_00236"
+      ],
+      "source": "evidence/LOOP_FROZEN.json"
+    },
+    {
+      "name": "table_220_to_20",
+      "requestedStartXYZ": [
+        0.22096444884248076,
+        0.00039939608658245973,
+        -0.6243468497785633
+      ],
+      "requestedGoalXYZ": [
+        -1.5490112358410875,
+        0.001570562930891306,
+        -3.8460671468402805
+      ],
+      "originalStartXYZ": [
+        0.2209646416855992,
+        0.0,
+        -0.6243470786782905
+      ],
+      "originalGoalXYZ": [
+        -1.5490109087842536,
+        0.0,
+        -3.84606766234802
+      ],
+      "sourcePoseIndices": [
+        220,
+        20
+      ],
+      "sourceFrames": [
+        "frame_00236",
+        "frame_00021"
+      ],
+      "source": "evidence/LOOP_FROZEN.json"
+    },
+    {
+      "name": "table_20_to_92",
+      "requestedStartXYZ": [
+        -1.5490112358410875,
+        0.001570562930891306,
+        -3.8460671468402805
+      ],
+      "requestedGoalXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ],
+      "originalStartXYZ": [
+        -1.5490109087842536,
+        0.0,
+        -3.84606766234802
+      ],
+      "originalGoalXYZ": [
+        -2.281401302639457,
+        0.0,
+        1.0373834286611066
+      ],
+      "sourcePoseIndices": [
+        20,
+        92
+      ],
+      "sourceFrames": [
+        "frame_00021",
+        "frame_00093"
+      ],
+      "source": "evidence/LOOP_FROZEN.json"
+    },
+    {
+      "name": "varpu_130_to_160",
+      "requestedStartXYZ": [
+        1.395818598103762,
+        -0.0007736767463522032,
+        3.6596092445038324
+      ],
+      "requestedGoalXYZ": [
+        4.559319120668386,
+        -0.0011885450791200292,
+        0.3174664138967077
+      ],
+      "originalStartXYZ": [
+        1.395818549852976,
+        0.0,
+        3.6596092423337994
+      ],
+      "originalGoalXYZ": [
+        4.559319477295879,
+        0.0,
+        0.31746676921436623
+      ],
+      "sourcePoseIndices": [
+        130,
+        160
+      ],
+      "source": "evidence/REVERSE_FROZEN.json",
+      "forwardIsExactReversalOfPreservedOriginalAnchorPair": true
+    },
+    {
+      "name": "varpu_160_to_130",
+      "requestedStartXYZ": [
+        4.559319120668386,
+        -0.0011885450791200292,
+        0.3174664138967077
+      ],
+      "requestedGoalXYZ": [
+        1.395818598103762,
+        -0.0007736767463522032,
+        3.6596092445038324
+      ],
+      "originalStartXYZ": [
+        4.559319477295879,
+        0.0,
+        0.31746676921436623
+      ],
+      "originalGoalXYZ": [
+        1.395818549852976,
+        0.0,
+        3.6596092423337994
+      ],
+      "sourcePoseIndices": [
+        160,
+        130
+      ],
+      "source": "evidence/REVERSE_FROZEN.json",
+      "forwardIsExactReversalOfPreservedOriginalAnchorPair": false
+    }
+  ],
+  "historicalSeparateReturnDefinition": {
+    "name": "entryRank0TargetToOriginalOutside130",
+    "requestedStartXYZ": [
+      4.625,
+      0.0,
+      0.22500000000000053
+    ],
+    "requestedGoalXYZ": [
+      1.395818598103762,
+      -0.0007736767463522032,
+      3.6596092445038324
+    ],
+    "sourceEntryRank": 0,
+    "continuousExecutionStillMustUseActualActorEndState": true
+  },
+  "historical32CandidateOutcomesMustRemainPreserved": true,
+  "routeSelectionOrMovementExecuted": false
+}

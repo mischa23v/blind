@@ -1,0 +1,88 @@
+{
+  "currentCoverageKnown": false,
+  "errors": [
+    "Bedroom3: sourceGeometryMismatch",
+    "Hallway2: sourceGeometryMismatch"
+  ],
+  "fullFootprintSupportVerified": false,
+  "outcomes": [
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-aisle",
+      "profile": "declared-nominal"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-aisle",
+      "profile": "declared-wide"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-around-bed",
+      "profile": "declared-nominal"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-around-bed",
+      "profile": "declared-wide"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-contained-start",
+      "profile": "declared-nominal"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-contained-start",
+      "profile": "declared-wide"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-long",
+      "profile": "declared-nominal"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-long",
+      "profile": "declared-wide"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-corner",
+      "profile": "declared-nominal"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-corner",
+      "profile": "declared-wide"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-missing-floor",
+      "profile": "declared-nominal"
+    },
+    {
+      "error": "sourceGeometryMismatch",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-missing-floor",
+      "profile": "declared-wide"
+    }
+  ],
+  "physicalAuthority": false,
+  "profileAddendumSHA256": "none",
+  "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+  "schedule": "original-baseline",
+  "schema": 1,
+  "scope": "candidate waypoint replay; not controller/device arrival"
+}

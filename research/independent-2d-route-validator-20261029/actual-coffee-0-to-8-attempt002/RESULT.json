@@ -1,0 +1,161 @@
+{
+  "scope": "historical real Coffee 0\u21928 path versus predeclared MANUAL_DIAGNOSTIC_EXCLUSIONS_NOT_MEASURED_TABLES",
+  "physical_clearance": "unknown",
+  "live_guidance_allowed": false,
+  "floor_body_head_projection_coverage": "unknown",
+  "frame": "unchanged Coffee OBJ source XZ; historical replay, not current localization",
+  "path_modified": false,
+  "original_20_queries_modified": false,
+  "detour_generated": false,
+  "profile": {
+    "width": 0.45,
+    "depth": 0.3,
+    "height": 1.6,
+    "body_radius": 0.2704163456597992,
+    "margin": 0.15,
+    "sweep_radius": 0.42041634565979924,
+    "numerical_guard": 1e-08
+  },
+  "input_manifest_sha256": "99a2890dfb2a3b1f316d2691ff0803df89fd915bfd2f125c0d08059115a3eb36",
+  "geos_version": "3.13.1-CAPI-1.19.2",
+  "segments": [
+    {
+      "index_zero_based": 0,
+      "start_xz": [
+        -1.7984265089035034,
+        -2.121840476989746
+      ],
+      "end_xz": [
+        -1.1225649118423462,
+        0.4450380802154541
+      ],
+      "windows": [
+        {
+          "id": "south-small-patches",
+          "centerline_distance_metres": 0.6034860020796169,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.18306965641981765
+        },
+        {
+          "id": "north-small-patches",
+          "centerline_distance_metres": 1.0079684472196766,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.5875521015598774
+        }
+      ]
+    },
+    {
+      "index_zero_based": 1,
+      "start_xz": [
+        -1.1225649118423462,
+        0.4450380802154541
+      ],
+      "end_xz": [
+        -1.072564959526062,
+        0.5450379848480225
+      ],
+      "windows": [
+        {
+          "id": "south-small-patches",
+          "centerline_distance_metres": 1.189605114101042,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.7691887684412427
+        },
+        {
+          "id": "north-small-patches",
+          "centerline_distance_metres": 0.8973581807250514,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.4769418350652521
+        }
+      ]
+    },
+    {
+      "index_zero_based": 2,
+      "start_xz": [
+        -1.072564959526062,
+        0.5450379848480225
+      ],
+      "end_xz": [
+        -1.04756498336792,
+        0.5700380802154541
+      ],
+      "windows": [
+        {
+          "id": "south-small-patches",
+          "centerline_distance_metres": 1.2745239271492192,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.85410758148942
+        },
+        {
+          "id": "north-small-patches",
+          "centerline_distance_metres": 0.8660976903804832,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.445681344720684
+        }
+      ]
+    },
+    {
+      "index_zero_based": 3,
+      "start_xz": [
+        -1.04756498336792,
+        0.5700380802154541
+      ],
+      "end_xz": [
+        -0.9725649356842041,
+        0.6450381278991699
+      ],
+      "windows": [
+        {
+          "id": "south-small-patches",
+          "centerline_distance_metres": 1.2939417089603822,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.873525363300583
+        },
+        {
+          "id": "north-small-patches",
+          "centerline_distance_metres": 0.7744327506980083,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.3540164050382091
+        }
+      ]
+    },
+    {
+      "index_zero_based": 4,
+      "start_xz": [
+        -0.9725649356842041,
+        0.6450381278991699
+      ],
+      "end_xz": [
+        1.8415476083755493,
+        2.3337883949279785
+      ],
+      "windows": [
+        {
+          "id": "south-small-patches",
+          "centerline_distance_metres": 1.3560627649670929,
+          "centerline_intersection_length_metres": 0.0,
+          "whole_body_plus_margin_contact": false,
+          "clearance_after_body_and_margin_metres": 0.9356464193072936
+        },
+        {
+          "id": "north-small-patches",
+          "centerline_distance_metres": 0.0,
+          "centerline_intersection_length_metres": 0.7166625376272356,
+          "whole_body_plus_margin_contact": true,
+          "clearance_after_body_and_margin_metres": -0.42041634565979924
+        }
+      ]
+    }
+  ],
+  "manual_exclusion_status": "rejected",
+  "sources_unchanged": true,
+  "wall_seconds": 0.007307296999897517
+}

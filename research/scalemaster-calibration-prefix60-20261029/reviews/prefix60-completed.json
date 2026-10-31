@@ -1,0 +1,84 @@
+{
+  "status": "PASS_independent_saved_output_recount",
+  "freezeSHA256": "f0c575341117f220c94da85d08f941efcd4ecda76113757b043f920a26c26f8f",
+  "frames": 60,
+  "acceptedEndpointPixels": 726447,
+  "totalRasterPixels": 2949120,
+  "acceptedFraction": 0.24632670084635416,
+  "endpointCells": 24948,
+  "vertices": 9069,
+  "triangles": 16986,
+  "checks": [
+    "All source/small-input pins unchanged",
+    "All120 extracted PNG hashes and extraction receipt match; archive not reread",
+    "60 ordered per-frame rows and all aggregate mask counters",
+    "Endpoint/frame count sums, unique cell IDs, finite centroids inside respective cells",
+    "All native PLY vertex values and triangle indices match saved native arrays",
+    "Selected identity/.001 contract, native software controls and four-stage resource receipt"
+  ],
+  "resources": {
+    "status": "completed",
+    "stop_reason": null,
+    "stages": [
+      {
+        "stage": 0,
+        "script": "replay.py",
+        "exit_code": 0
+      },
+      {
+        "stage": 1,
+        "script": "extract_prefix.py",
+        "exit_code": 0
+      },
+      {
+        "stage": 2,
+        "script": "replay.py",
+        "exit_code": 0
+      },
+      {
+        "stage": 3,
+        "script": "preview.py",
+        "exit_code": 0
+      }
+    ],
+    "source_freeze_sha256": "f0c575341117f220c94da85d08f941efcd4ecda76113757b043f920a26c26f8f",
+    "interrupted_or_failed_active_stage": null,
+    "wall_seconds": 14.445302716994775,
+    "CPU_seconds": 14.31,
+    "sampled_peak_process_tree_RSS_bytes": 274853888,
+    "output_bytes_before_receipt": 8005336,
+    "conservative_sum_of_process_peak_RSS_bytes": 277848064,
+    "limits": {
+      "CPU_seconds": 60,
+      "wall_seconds": 90,
+      "RSS_bytes": 1073741824,
+      "output_bytes": 268435456,
+      "logical_CPUs": 1,
+      "extracted_bytes": 33554432,
+      "free_reserve_bytes": 5368709120
+    },
+    "sampling_seconds": 0.05,
+    "hard_aggregate_RSS_limit_established": false,
+    "memory_enforcement": "sampled RSS with960MiB early stop, not RLIMIT_AS/cgroup; possible sampling overshoot disclosed",
+    "no_install_network_retry_or_publication": true
+  },
+  "limits": "No independent calibration, metric accuracy, stair detection, free-space or physical guidance claim. Prefix may be landing/approach. Raw/derived geometry remains private.",
+  "reviewScope": "Saved receipts/NPZ/native PLY arithmetic and hashes only; no image decode, reconstruction or query rerun.",
+  "accountingCaveat": "Guard subtracts initial CPU startup sample; RSS sampled with conservative peak postcheck, not hard cgroup.",
+  "evidenceSHA256": {
+    "PREFLIGHT.json": "d963232ca1cadf2e525897ac0c475b5bc1fb029ab4a910714fc55af857f53a66",
+    "geometry-for-preview.npz": "15c8f677e67d25695ae48f37d163801d098eda350447f25ce35184c110b9d097",
+    "INTEGRATION.jsonl": "ab2033415181576a2c4ea0d47ea77b70e0f9b6b3351dad0a02d397dcc1c819d9",
+    "RESULT.json": "1c1cad6da5ac206d0c81121ea01bf538ef70ad7536abba640beb620b64cb2fd4",
+    "SOFTWARE_CONTROLS.json": "48d18e59f8ef7ce67ef3447cfca03e05870e1b5448aad8620f226482bbd01dad",
+    "observed-endpoint-centroids.ply": "4cee244576ccae0d3a2812a26bd9bf0c8ef5e919ccb1edfbed5dd07c8f0d9214",
+    "SOFTWARE_MODULES.json": "a75f2ce10c48cc09c02f6762f270dbd8dac8bab6a4932bda1158564afe484cf4",
+    "observed-hit-ledger.npz": "9d10b67c7fce17803f798fc51c5187de279d3e7e0e14e42a70bc2dcabf57734e",
+    "EXECUTION_RECEIPT.json": "61290308aecb2a1d6d7bb56f70cc666f6f64e3998de70c7d6a65972a47694cd6",
+    "native-unfiltered-tsdf.ply": "3ff336da6687fe842d59724b615a4cb1b54ffff228174ea5ed31047a17f40a5c",
+    "PREVIEW.json": "e7864210d22d17e2b0b98863f629bdbffa952944daff561975365fce3e0473dd",
+    "REPLAY_MODULES.json": "a75f2ce10c48cc09c02f6762f270dbd8dac8bab6a4932bda1158564afe484cf4",
+    "images/receipt.json": "b225fa9f4f9eefbf55ccd7ddd5ed7081054284b0c3cc746691438bffaca76497",
+    "cache/mpl/fontlist-v390.json": "e6b2d365d483fbd744d1b0450cc6c93c3ec8406f7d72b1cb676b26e114ffe7d5"
+  }
+}

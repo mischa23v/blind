@@ -1,0 +1,24 @@
+{
+  "status": "applied reviewed source candidate; native unverified",
+  "applied_utc": "2026-10-28T07:18:16Z",
+  "frozen_utc": "2026-10-28T07:35:40Z",
+  "source_sha256": {
+    "ios/BlindAssist/ConnectedJourneyRuntime.swift": "8a620961be87ff94f8279ca9ff04fcf588c02c0c565cbb87b2cab82ede699013",
+    "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift": "5a9118652a1a7ac6d7b20d2d391284e43af6f3628b150ba172d9096737c2720c"
+  },
+  "portable_checks": {
+    "applied_source_and_provenance": 19,
+    "existing_node_structural_regressions": 12
+  },
+  "node_command": "node --test tools/test/native-runtime-phases.test.mjs tools/test/native-runtime-priority.test.mjs tools/test/native-runtime-buffer.test.mjs",
+  "swift_compiled": false,
+  "native_executed": false,
+  "latency_improvement_claimed": false,
+  "existing_failure_runs_preserved": [
+    40644081432,
+    40645432883
+  ],
+  "scope": "DEBUG actual outer task completion fences; installed fixture and two functional scenarios only; original3s helper/heldIO bodies unchanged",
+  "no_ci_launch": true,
+  "no_push": true
+}

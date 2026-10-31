@@ -1,0 +1,50 @@
+{
+  "checked_at_utc": "2026-10-28T15:22:00Z",
+  "python": "3.12.14",
+  "platform": "x86_64",
+  "libc": [
+    "glibc",
+    "2.41"
+  ],
+  "modules": {
+    "pxr": false,
+    "bpy": false,
+    "trimesh": false,
+    "open3d": false,
+    "pyassimp": false,
+    "meshoptimizer": false
+  },
+  "blender": {
+    "version": "4.3.2",
+    "build_hash": "Unknown",
+    "usd_build_option": false,
+    "usd_import_operator": false,
+    "pxr_available": false,
+    "probe": "blender --background --factory-startup --disable-autoexec --threads 1 --python-expr capability-only query",
+    "geometry_import_ran": false
+  },
+  "assimp": {
+    "version": [
+      5,
+      4,
+      3
+    ],
+    "extension_support": {
+      ".usd": false,
+      ".usda": false,
+      ".usdc": false,
+      ".usdz": false,
+      ".obj": true,
+      ".gltf": true
+    },
+    "geometry_import_ran": false
+  },
+  "local_usd_assets": [],
+  "attachment_usd_members": {
+    "attachments/63cb3411-027b-4cee-ba0d-36c58e6cf5ec/native-unit-case-statuses-40706611490-1.zip": [],
+    "attachments/c48c403b-bb99-43d3-9d24-a95ca18c3d28/main-ui-audit-40706611490.zip": [],
+    "attachments/a38d114a-f01b-4f4b-818d-ed935ed52f7b/main-ui-audit-40710093281.zip": [],
+    "attachments/b9fd0242-1b49-4ebf-b905-54115d559b89/native-unit-case-statuses-40710093281-1.zip": []
+  },
+  "no_dependency_installed": true
+}

@@ -1,0 +1,376 @@
+{
+  "patchSelectionSHA256": "7e938424d28ae9b3a64480c2629aacd422a75d00cb8087cbfc0724fd99b81497",
+  "originalPosesSHA256": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+  "analysisSourceSHA256": "0dfdeec56ae5db3a3140c70f8adb929f396e551e93fea2f5795e31a1a14cc799",
+  "frames": [
+    {
+      "frame": "frame_00290",
+      "rgbSHA256": "5e8693e74bef6cc3a21882586e19565fe13848004b3c7e0ed668c12f5578ca55",
+      "depthSHA256": "333eeb023a27656ae4f313db27a6b4ecee72acfff4cf8691a769aa92117ac38e",
+      "rgbSize": [
+        738,
+        994
+      ],
+      "depthShape": [
+        994,
+        738
+      ],
+      "depthDtype": "uint16",
+      "rgbEXIFOrientation": null,
+      "intrinsics": {
+        "fl_x": 807.7563082379797,
+        "fl_y": 807.7563082379797,
+        "cx": 367.5287170410156,
+        "cy": 504.5511474609375
+      },
+      "rasterTransformApplied": "none; noresize/noimageflip/rotation",
+      "patches": {
+        "table": {
+          "pixelCount": 5000,
+          "zeroCount": 0,
+          "atOrBeyond4m": 0,
+          "positiveDepthMetres": {
+            "count": 5000,
+            "min": 1.483,
+            "p05": 1.485,
+            "median": 1.597,
+            "p95": 1.722,
+            "max": 1.73
+          },
+          "uniquePositiveMillimetreValues": 71,
+          "planeInput": "all positive<4m at fixed4pixelstride, nooutlier removal"
+        },
+        "floor": {
+          "pixelCount": 6300,
+          "zeroCount": 0,
+          "atOrBeyond4m": 0,
+          "positiveDepthMetres": {
+            "count": 6300,
+            "min": 2.34,
+            "p05": 2.366,
+            "median": 2.55,
+            "p95": 2.766,
+            "max": 2.802
+          },
+          "uniquePositiveMillimetreValues": 88,
+          "planeInput": "all positive<4m at fixed4pixelstride, nooutlier removal"
+        }
+      },
+      "localPlaneDiagnostic": {
+        "tableFit": {
+          "points": 325,
+          "singularValues": [
+            1.4571106386913693,
+            0.9687508452993966,
+            0.009096034742104795
+          ],
+          "absoluteResidualMetres": {
+            "count": 325,
+            "min": 3.9759438097419775e-07,
+            "p05": 2.3094358459929687e-05,
+            "median": 0.00028250756727488113,
+            "p95": 0.0010089604634802908,
+            "max": 0.0016606050082762502
+          },
+          "normalCameraCV": [
+            0.007747015538101893,
+            -0.9911643244685041,
+            -0.132413238202026
+          ],
+          "offset": 0.6252825036930847
+        },
+        "floorFit": {
+          "points": 414,
+          "singularValues": [
+            2.869006384408465,
+            1.6230487308436847,
+            0.009958392203771158
+          ],
+          "absoluteResidualMetres": {
+            "count": 414,
+            "min": 8.854840405358999e-07,
+            "p05": 3.3699398001463265e-05,
+            "median": 0.0003505379800577968,
+            "p95": 0.0009261829988192024,
+            "max": 0.00135833489456183
+          },
+          "normalCameraCV": [
+            -0.01310649070322401,
+            -0.9901815060259057,
+            -0.13917185428712223
+          ],
+          "offset": 1.2760915379814506
+        },
+        "unsignedNormalAngleDegrees": 1.2572904034509649,
+        "tablePointsSignedDistanceToFloorPlaneMetres": {
+          "count": 325,
+          "min": 0.6466585832945413,
+          "p05": 0.647155251307106,
+          "median": 0.6495903326711645,
+          "p95": 0.6514713125067519,
+          "max": 0.6528108114456125
+        },
+        "tableDepthMinusExtrapolatedFloorAxialMetres": {
+          "count": 325,
+          "min": -1.8025383405358673,
+          "p05": -1.786338404210132,
+          "median": -1.6563404209073775,
+          "p95": -1.54243884614835,
+          "max": -1.536905833731213
+        },
+        "floorExtrapolationValidRays": 325,
+        "note": "smallRGBchosenfloorpatch plane extrapolation, no independent calibration/support/height truth; no globalposes or mesh registration used"
+      }
+    },
+    {
+      "frame": "frame_00357",
+      "rgbSHA256": "a0d6a5276047ab5f652b6f0086486d126ba1f87a8864fea2cd3b7d98bc87ed9d",
+      "depthSHA256": "cc2282608bc1f34157c2504d8058baf7af43db786067210aad0569f2c190708f",
+      "rgbSize": [
+        738,
+        994
+      ],
+      "depthShape": [
+        994,
+        738
+      ],
+      "depthDtype": "uint16",
+      "rgbEXIFOrientation": null,
+      "intrinsics": {
+        "fl_x": 807.4520260304396,
+        "fl_y": 807.4520260304396,
+        "cx": 367.7223205566406,
+        "cy": 504.64886474609375
+      },
+      "rasterTransformApplied": "none; noresize/noimageflip/rotation",
+      "patches": {
+        "table": {
+          "pixelCount": 2100,
+          "zeroCount": 0,
+          "atOrBeyond4m": 0,
+          "positiveDepthMetres": {
+            "count": 2100,
+            "min": 2.366,
+            "p05": 2.3719,
+            "median": 2.505,
+            "p95": 2.6582,
+            "max": 2.678
+          },
+          "uniquePositiveMillimetreValues": 82,
+          "planeInput": "all positive<4m at fixed4pixelstride, nooutlier removal"
+        },
+        "floor": {
+          "pixelCount": 3000,
+          "zeroCount": 0,
+          "atOrBeyond4m": 0,
+          "positiveDepthMetres": {
+            "count": 3000,
+            "min": 2.998,
+            "p05": 3.034,
+            "median": 3.288,
+            "p95": 3.5436999999999905,
+            "max": 3.588
+          },
+          "uniquePositiveMillimetreValues": 108,
+          "planeInput": "all positive<4m at fixed4pixelstride, nooutlier removal"
+        }
+      },
+      "localPlaneDiagnostic": {
+        "tableFit": {
+          "points": 144,
+          "singularValues": [
+            1.1457923839210593,
+            0.750074786089352,
+            0.05501981386020031
+          ],
+          "absoluteResidualMetres": {
+            "count": 144,
+            "min": 2.9006911193452112e-05,
+            "p05": 0.00038316285058881964,
+            "median": 0.0027856797272723943,
+            "p95": 0.009530525196547386,
+            "max": 0.016487859756052603
+          },
+          "normalCameraCV": [
+            -0.005094468306749345,
+            -0.9994521348525887,
+            -0.03270285203578206
+          ],
+          "offset": 0.7642151388973264
+        },
+        "floorFit": {
+          "points": 195,
+          "singularValues": [
+            2.365124131651275,
+            0.853892323155967,
+            0.019558949253751706
+          ],
+          "absoluteResidualMetres": {
+            "count": 195,
+            "min": 4.754592540123781e-06,
+            "p05": 0.00011090974334362346,
+            "median": 0.0010233740632343835,
+            "p95": 0.0025151896257831208,
+            "max": 0.005313542859821885
+          },
+          "normalCameraCV": [
+            0.025857142531483534,
+            -0.999186163973957,
+            -0.030958325263409574
+          ],
+          "offset": 1.3737691295709349
+        },
+        "unsignedNormalAngleDegrees": 1.7763478043773109,
+        "tablePointsSignedDistanceToFloorPlaneMetres": {
+          "count": 144,
+          "min": 0.6088910702779339,
+          "p05": 0.616705737227542,
+          "median": 0.6310732555255073,
+          "p95": 0.6330764466294448,
+          "max": 0.6335778820703978
+        },
+        "tableDepthMinusExtrapolatedFloorAxialMetres": {
+          "count": 144,
+          "min": -2.252153216984588,
+          "p05": -2.2444792526446613,
+          "median": -2.1189853859241095,
+          "p95": -1.9759820044185168,
+          "max": -1.9280644205905122
+        },
+        "floorExtrapolationValidRays": 144,
+        "note": "smallRGBchosenfloorpatch plane extrapolation, no independent calibration/support/height truth; no globalposes or mesh registration used"
+      }
+    },
+    {
+      "frame": "frame_00391",
+      "rgbSHA256": "ad276e845d7b444bb35dc91cafb786e351a2cae0bc455005b94be24e814f1e23",
+      "depthSHA256": "42e35845a580ec2b66a5d6741b0973eea173c10d92a8f6b3b0758da4c4e0c2c9",
+      "rgbSize": [
+        738,
+        994
+      ],
+      "depthShape": [
+        994,
+        738
+      ],
+      "depthDtype": "uint16",
+      "rgbEXIFOrientation": null,
+      "intrinsics": {
+        "fl_x": 807.4880072029434,
+        "fl_y": 807.4880072029434,
+        "cx": 367.6266784667969,
+        "cy": 504.643798828125
+      },
+      "rasterTransformApplied": "none; noresize/noimageflip/rotation",
+      "patches": {
+        "table": {
+          "pixelCount": 4000,
+          "zeroCount": 0,
+          "atOrBeyond4m": 0,
+          "positiveDepthMetres": {
+            "count": 4000,
+            "min": 1.59,
+            "p05": 1.60695,
+            "median": 1.671,
+            "p95": 1.766,
+            "max": 1.786
+          },
+          "uniquePositiveMillimetreValues": 146,
+          "planeInput": "all positive<4m at fixed4pixelstride, nooutlier removal"
+        },
+        "floor": {
+          "pixelCount": 7600,
+          "zeroCount": 0,
+          "atOrBeyond4m": 0,
+          "positiveDepthMetres": {
+            "count": 7600,
+            "min": 2.568,
+            "p05": 2.59,
+            "median": 2.812,
+            "p95": 3.09,
+            "max": 3.13
+          },
+          "uniquePositiveMillimetreValues": 66,
+          "planeInput": "all positive<4m at fixed4pixelstride, nooutlier removal"
+        }
+      },
+      "localPlaneDiagnostic": {
+        "tableFit": {
+          "points": 260,
+          "singularValues": [
+            0.8772993862244204,
+            0.77573641421682,
+            0.09246149278054124
+          ],
+          "absoluteResidualMetres": {
+            "count": 260,
+            "min": 2.5652322121039184e-05,
+            "p05": 0.000479041238410971,
+            "median": 0.0033325167123646193,
+            "p95": 0.011263926817055292,
+            "max": 0.020784500092090985
+          },
+          "normalCameraCV": [
+            -0.019817062877821874,
+            -0.9965601536422303,
+            -0.08046828065437087
+          ],
+          "offset": 0.9552446072534405
+        },
+        "floorFit": {
+          "points": 480,
+          "singularValues": [
+            3.830183404867187,
+            1.9812635215225616,
+            0.02694949001323782
+          ],
+          "absoluteResidualMetres": {
+            "count": 480,
+            "min": 1.6981585351238948e-06,
+            "p05": 7.159926283174522e-05,
+            "median": 0.0008634729326884028,
+            "p95": 0.0022939163305667355,
+            "max": 0.003821785955380852
+          },
+          "normalCameraCV": [
+            0.001953145655049512,
+            -0.9999471620823855,
+            0.010092485592415691
+          ],
+          "offset": 1.4218186579804013
+        },
+        "unsignedNormalAngleDegrees": 5.342032361170837,
+        "tablePointsSignedDistanceToFloorPlaneMetres": {
+          "count": 260,
+          "min": 0.5907397277801002,
+          "p05": 0.6003946382953751,
+          "median": 0.6207033297953501,
+          "p95": 0.625598056482785,
+          "max": 0.6265799648020182
+        },
+        "tableDepthMinusExtrapolatedFloorAxialMetres": {
+          "count": 260,
+          "min": -1.3928510313343085,
+          "p05": -1.3857435655040868,
+          "median": -1.3002316107826912,
+          "p95": -1.1893261318909765,
+          "max": -1.1628861706496598
+        },
+        "floorExtrapolationValidRays": 260,
+        "note": "smallRGBchosenfloorpatch plane extrapolation, no independent calibration/support/height truth; no globalposes or mesh registration used"
+      }
+    }
+  ],
+  "contract": {
+    "depthMetresPerUnit": 0.001,
+    "pixelConvention": "integeroriginalexportpixels",
+    "cameraCoordinates": "localCVxrightydownzforward only; no globalpose transform",
+    "processedExportNotNativeSensor": true,
+    "originalUpsamplingFilterUnknown": true,
+    "confidenceSynchronizationAndCalibrationIncomplete": true,
+    "physicalAuthority": false
+  },
+  "wallSeconds": 0.10971074999997654,
+  "peakRSSKiB": 34348,
+  "noSourceMutation": true
+}

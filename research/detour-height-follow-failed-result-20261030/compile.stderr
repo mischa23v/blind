@@ -1,0 +1,86 @@
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:39:33: warning: 'amax[0]' may be used uninitialized [-Wmaybe-uninitialized]
+   39 |         const float maxx = dtMin(amax[0]-px,bmax[0]-px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:310:24: note: 'amax[0]' was declared here
+  310 |         float amin[2], amax[2];
+      |                        ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:45:21: warning: 'amin[1]' may be used uninitialized [-Wmaybe-uninitialized]
+   45 |         const float ak = amin[1] - ad*amin[0];
+      |                     ^~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:310:15: note: 'amin[1]' was declared here
+  310 |         float amin[2], amax[2];
+      |               ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:44:34: warning: 'amax[1]' may be used uninitialized [-Wmaybe-uninitialized]
+   44 |         const float ad = (amax[1]-amin[1]) / (amax[0]-amin[0]);
+      |                          ~~~~~~~~^~~~~~~~~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:310:24: note: 'amax[1]' was declared here
+  310 |         float amin[2], amax[2];
+      |                        ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:38:33: warning: 'amin[0]' may be used uninitialized [-Wmaybe-uninitialized]
+   38 |         const float minx = dtMax(amin[0]+px,bmin[0]+px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:310:15: note: 'amin[0]' was declared here
+  310 |         float amin[2], amax[2];
+      |               ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:38:33: warning: 'bmin[0]' may be used uninitialized [-Wmaybe-uninitialized]
+   38 |         const float minx = dtMax(amin[0]+px,bmin[0]+px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:315:15: note: 'bmin[0]' was declared here
+  315 |         float bmin[2], bmax[2];
+      |               ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:47:21: warning: 'bmin[1]' may be used uninitialized [-Wmaybe-uninitialized]
+   47 |         const float bk = bmin[1] - bd*bmin[0];
+      |                     ^~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:315:15: note: 'bmin[1]' was declared here
+  315 |         float bmin[2], bmax[2];
+      |               ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:39:33: warning: 'bmax[0]' may be used uninitialized [-Wmaybe-uninitialized]
+   39 |         const float maxx = dtMin(amax[0]-px,bmax[0]-px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:315:24: note: 'bmax[0]' was declared here
+  315 |         float bmin[2], bmax[2];
+      |                        ^~~~
+In function 'bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)',
+    inlined from 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const' at /workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:46:34: warning: 'bmax[1]' may be used uninitialized [-Wmaybe-uninitialized]
+   46 |         const float bd = (bmax[1]-bmin[1]) / (bmax[0]-bmin[0]);
+      |                          ~~~~~~~~^~~~~~~~~
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp: In member function 'int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const':
+/workspace/scratch/90f3f6703064/coffee-native-replay-prepared-002/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Source/DetourNavMesh.cpp:315:24: note: 'bmax[1]' was declared here
+  315 |         float bmin[2], bmax[2];
+      |                        ^~~~
+/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/height_adapter.cpp: In function 'void* bh_begin(void*, const float*, BHResult*)':
+/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/height_adapter.cpp:31:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+   31 |     if(!r)return 0;bh_reset(r);
+      |     ^~
+/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/height_adapter.cpp:31:20: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   31 |     if(!r)return 0;bh_reset(r);
+      |                    ^~~~~~~~
+/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/height_adapter.cpp: In function 'int bh_step(void*, const float*, BHResult*)':
+/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/height_adapter.cpp:47:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+   47 |     if(!r)return 0;bh_reset(r);BHState* s=static_cast<BHState*>(state);
+      |     ^~
+/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/height_adapter.cpp:47:20: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   47 |     if(!r)return 0;bh_reset(r);BHState* s=static_cast<BHState*>(state);
+      |                    ^~~~~~~~

@@ -1,0 +1,27 @@
+--- blind/research/coffee-room-journey-recovery-20261029/collision-protocol/upstream/blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py	2026-10-29 23:33:35.388459623 +0300
++++ blind/research/conference-contact-ids-source-20261030/oriented_ground_container_debug.py	2026-10-30 03:15:34.509663759 +0300
+@@ -11,13 +11,14 @@
+ import numpy as np
+ import vtk
+ 
+-ROOT=Path(__file__).resolve().parents[1]
++ROOT=Path(__file__).resolve().parents[1]/'coffee-room-journey-recovery-20261029/collision-protocol/upstream/blind-split-candidate-game-03'
+ sys.path.insert(0,str(ROOT/'source'))
+ from oriented_container import OrientedReferenceContainer,BodyGeometry,GeometryFailure
+ 
+ 
+ class GroundedReferenceContainer(OrientedReferenceContainer):
+-    def __init__(self,surface,model_to_reference,*,ground,body=BodyGeometry(),maximum_candidate_cells=200000):
++    def __init__(self,surface,model_to_reference,*,ground,body=BodyGeometry(),maximum_candidate_cells=200000,contact_recorder=None):
++        self._contact_recorder=contact_recorder
+         self._ground=ground
+         super().__init__(surface,model_to_reference,body,maximum_candidate_cells=maximum_candidate_cells)
+         self.check()
+@@ -79,6 +80,7 @@
+                     if inside not in (0,1):raise GeometryFailure('invalid VTK hexahedron containment status')
+                     if inside:reason='containedTriangleVertex';break
+             if reason is None:continue
++            if self._contact_recorder is not None:self._contact_recorder(self.box_queries,cell_id,reason)
+             if self._ground.is_ground(cell_id):
+                 ground_hits+=1
+                 if len(ground_ids)<16:ground_ids.append(cell_id)

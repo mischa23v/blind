@@ -1,0 +1,188 @@
+{
+  "scope": "frozen outcome checkpoint, not independent physics review",
+  "executionRoot": "/workspace/scratch/90f3f6703064/blind/research/journey-benchmark-readiness-84/evaluator-forward-recovery-01",
+  "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+  "cacheManifestSHA256": "01fd57f962f2c57ee8e7aae8f60504ec1bc3514d2a01650e3b9374345152c6b6",
+  "completedThroughEpisode": 9,
+  "statusCounts": {
+    "completeOrderedPairSyntheticEpisode": 9,
+    "interruptedUnknown": 1,
+    "notRun": 90
+  },
+  "arrivalCount": 9,
+  "pairRows": [
+    {
+      "episodeIndex": 5,
+      "pairIndex": 1,
+      "conditionID": "nominal",
+      "seed": 72001,
+      "status": "completeOrderedPairSyntheticEpisode",
+      "movementExecuted": true,
+      "processStarted": true,
+      "actualDistanceMetres": 7.677483216479521,
+      "processCompleted": true,
+      "arrival": true,
+      "partialProgress": {
+        "status": "completeOrderedPairSyntheticEpisode",
+        "lastCommittedTick": 631,
+        "leg": 0,
+        "completedLegs": 1,
+        "actualDistanceMetres": 7.677483216479521,
+        "actual3DDistanceMetres": 7.694961588234801,
+        "position": [
+          1.0824456868568146,
+          0.010873200827812717,
+          1.8221382451981771
+        ],
+        "yaw": -1.8369929848531226,
+        "arrival": true,
+        "actualTraceCSVFlushed": true
+      },
+      "terminalResultParseError": null,
+      "partialProgressParseError": null,
+      "partialTracePath": "episodes/episode-005/result/ACTUAL_TRACE_PARTIAL.csv",
+      "partialProgressNotTerminal": false,
+      "receipt": "runs/episode-005/RUN_RECEIPT.json",
+      "resultPath": "episodes/episode-005/result/RESULT.json",
+      "failure": null
+    },
+    {
+      "episodeIndex": 6,
+      "pairIndex": 1,
+      "conditionID": "command_delay",
+      "seed": 72001,
+      "status": "completeOrderedPairSyntheticEpisode",
+      "movementExecuted": true,
+      "processStarted": true,
+      "actualDistanceMetres": 7.912251740152821,
+      "processCompleted": true,
+      "arrival": true,
+      "partialProgress": {
+        "status": "completeOrderedPairSyntheticEpisode",
+        "lastCommittedTick": 1051,
+        "leg": 0,
+        "completedLegs": 1,
+        "actualDistanceMetres": 7.912251740152821,
+        "actual3DDistanceMetres": 7.958457261149904,
+        "position": [
+          1.064695988760027,
+          0.010817507043650584,
+          1.763626318422512
+        ],
+        "yaw": -1.8878590079008708,
+        "arrival": true,
+        "actualTraceCSVFlushed": true
+      },
+      "terminalResultParseError": null,
+      "partialProgressParseError": null,
+      "partialTracePath": "episodes/episode-006/result/ACTUAL_TRACE_PARTIAL.csv",
+      "partialProgressNotTerminal": false,
+      "receipt": "runs/episode-006/RUN_RECEIPT.json",
+      "resultPath": "episodes/episode-006/result/RESULT.json",
+      "failure": null
+    },
+    {
+      "episodeIndex": 7,
+      "pairIndex": 1,
+      "conditionID": "temporal_jitter",
+      "seed": 72001,
+      "status": "completeOrderedPairSyntheticEpisode",
+      "movementExecuted": true,
+      "processStarted": true,
+      "actualDistanceMetres": 7.77995316526368,
+      "processCompleted": true,
+      "arrival": true,
+      "partialProgress": {
+        "status": "completeOrderedPairSyntheticEpisode",
+        "lastCommittedTick": 843,
+        "leg": 0,
+        "completedLegs": 1,
+        "actualDistanceMetres": 7.77995316526368,
+        "actual3DDistanceMetres": 7.812360043179541,
+        "position": [
+          1.0666216098558339,
+          0.010747206596795778,
+          1.7729884840148644
+        ],
+        "yaw": -1.9108801965080595,
+        "arrival": true,
+        "actualTraceCSVFlushed": true
+      },
+      "terminalResultParseError": null,
+      "partialProgressParseError": null,
+      "partialTracePath": "episodes/episode-007/result/ACTUAL_TRACE_PARTIAL.csv",
+      "partialProgressNotTerminal": false,
+      "receipt": "runs/episode-007/RUN_RECEIPT.json",
+      "resultPath": "episodes/episode-007/result/RESULT.json",
+      "failure": null
+    },
+    {
+      "episodeIndex": 8,
+      "pairIndex": 1,
+      "conditionID": "extra_translation",
+      "seed": 72001,
+      "status": "interruptedUnknown",
+      "movementExecuted": null,
+      "processStarted": true,
+      "actualDistanceMetres": null,
+      "processCompleted": false,
+      "arrival": false,
+      "partialProgress": {
+        "status": "timeout",
+        "lastCommittedTick": 322,
+        "leg": 0,
+        "completedLegs": 0,
+        "actualDistanceMetres": 4.217119671960106,
+        "actual3DDistanceMetres": 4.227782280224461,
+        "position": [
+          0.05138678619973422,
+          0.003313999675268681,
+          4.300719967558023
+        ],
+        "yaw": 0.3741892018479642,
+        "arrival": false,
+        "actualTraceCSVFlushed": true
+      },
+      "partialProgressNotTerminal": true,
+      "partialTracePath": "episodes/episode-008/result/ACTUAL_TRACE_PARTIAL.csv",
+      "failure": "exec-server transport disconnected; original producer termination inaccessible; no terminal receipt; evidence unchanged beyond declared deadline plus60s",
+      "recoveryRecord": "RECOVERY_PREFLIGHT.json"
+    },
+    {
+      "episodeIndex": 9,
+      "pairIndex": 1,
+      "conditionID": "tracking_interruption",
+      "seed": 72001,
+      "status": "completeOrderedPairSyntheticEpisode",
+      "movementExecuted": true,
+      "processStarted": true,
+      "actualDistanceMetres": 7.677483216479521,
+      "processCompleted": true,
+      "arrival": true,
+      "partialProgress": {
+        "status": "completeOrderedPairSyntheticEpisode",
+        "lastCommittedTick": 654,
+        "leg": 0,
+        "completedLegs": 1,
+        "actualDistanceMetres": 7.677483216479521,
+        "actual3DDistanceMetres": 7.694961588234801,
+        "position": [
+          1.0824456868568146,
+          0.010873200827812717,
+          1.8221382451981771
+        ],
+        "yaw": -1.8369929848531226,
+        "arrival": true,
+        "actualTraceCSVFlushed": true
+      },
+      "terminalResultParseError": null,
+      "partialProgressParseError": null,
+      "partialTracePath": "episodes/episode-009/result/ACTUAL_TRACE_PARTIAL.csv",
+      "partialProgressNotTerminal": false,
+      "receipt": "runs/episode-009/RUN_RECEIPT.json",
+      "resultPath": "episodes/episode-009/result/RESULT.json",
+      "failure": null
+    }
+  ],
+  "physicalAuthority": false
+}

@@ -1,0 +1,88 @@
+{
+  "base_checkpoint": "26bfa69e8fb7a9f32df6d4c581477d91e95dfaed",
+  "scope": "Durable private local diagnostic candidate; no export/upload/physical guidance. No Nav/PlaceStore/PBX edits in this stage. Root sole publisher; stage publication approval pending.",
+  "validation": {
+    "sqlite_schema_checks_passed": 9,
+    "swift_grdb_native_tests_executed": false,
+    "core_recording_methods_authored": 12,
+    "hosted_diagnostic_methods_authored": 10,
+    "repository_diagnostic_methods_authored": 7
+  },
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationTestRecording.swift",
+      "sha256": "fa28f11d9f03e4836714c6ef4f353f1c6fc244dad06ccbb6a564e55f37f214c1",
+      "bytes": 12635
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationTestArchive.swift",
+      "sha256": "ce077e292440c61c7531e4266d535a24f370e847bbd474346faa716c2e9d9410",
+      "bytes": 1072
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NavigationTestRecordingTests.swift",
+      "sha256": "24454585ccb5a146a9b5c7bbeb23b09068e2479b3b6a846f904109786ba1445f",
+      "bytes": 10565
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/RecordedRouteRepository.swift",
+      "sha256": "410b440a3bfec399b9e422a8a3b48798cd67d3146f0e931abeaf25430a383d0d",
+      "bytes": 32854
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/SQL/navigation_test_recordings.sql",
+      "sha256": "d35bd6f30e3776cfd330b3f1217d3db724f103bbf0f9b0ddfcaef59a20651c04",
+      "bytes": 1214
+    },
+    {
+      "path": "BlindMemory/Tests/BlindMemoryTests/RecordedRouteRepositoryTests.swift",
+      "sha256": "e7575f67a3ab62190f6b82499b3104e09051985847c31a3ac57baeccd75237ca",
+      "bytes": 18723
+    },
+    {
+      "path": "ios/BlindAssist/RecordedRouteStore.swift",
+      "sha256": "a23aa957a2d16b4d732f08c0fb22457b441589fc1290025b7d7490e1e506f42d",
+      "bytes": 33291
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+      "sha256": "552b8942827b3029a091e5cef21feeb4a2c649904c0bebe4bdc7e8db4a0a0264",
+      "bytes": 8296
+    },
+    {
+      "path": "ios/BlindAssist/NavigationTestRecordingView.swift",
+      "sha256": "443038b154476bbf6c5d0ac6b268919aee5df24b5cd2a23b2f0f6bf9355f2aed",
+      "bytes": 17418
+    },
+    {
+      "path": "ios/BlindAssistTests/RecordedRouteStoreTests.swift",
+      "sha256": "17a04706728b944848f65798741fa4ecc0619df8f93af030ccdde38324f9a116",
+      "bytes": 34840
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/README.md",
+      "sha256": "587c4f8c45e67c788373660d0feb2d87988419857f7df82bed5b86df223afe87",
+      "bytes": 7818
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/DURABLE_IMPLEMENTATION.md",
+      "sha256": "3da0d6d97aa8d7fd8288fbc66b4dea97b59a119565c7c2c2991359705a125012",
+      "bytes": 6462
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/DURABLE_FOLLOWUP.md",
+      "sha256": "12e3c31c69dead44167e9117334e0f9b987f71670bb35296692446cd55119ddc",
+      "bytes": 10225
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/check_durable_schema.py",
+      "sha256": "f50a579419ef43e803b888b544ca39bbd687386925eb4e48b177dc89688c6108",
+      "bytes": 2401
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/DURABLE_SCHEMA_CHECK.json",
+      "sha256": "eef9dda08f22a21f35321e306a0b6ed57851fd8e2739ac6bfe96768a0b7cc14b",
+      "bytes": 699
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+2026-10-28T07:42:37.5091190Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8767fa0e4696ce8b7d5562fe623783cd137c55ee:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T07:42:41.2981760Z  * [new ref]         8767fa0e4696ce8b7d5562fe623783cd137c55ee -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T07:42:41.3335780Z 8767fa0e4696ce8b7d5562fe623783cd137c55ee
+2026-10-28T07:42:43.5807800Z 8767fa0e4696ce8b7d5562fe623783cd137c55ee
+2026-10-28T07:42:44.2868680Z 8767fa0e4696ce8b7d5562fe623783cd137c55ee
+2026-10-28T07:44:37.1000590Z core exit status: 0
+2026-10-28T07:44:37.1527970Z 	 Executed 1402 tests, with 1 test skipped and 0 failures (0 unexpected) in 9.547 (9.790) seconds
+2026-10-28T07:44:37.1529030Z 	 Executed 1402 tests, with 1 test skipped and 0 failures (0 unexpected) in 9.547 (9.797) seconds
+2026-10-28T07:45:51.2958320Z memory exit status: 0
+2026-10-28T07:45:51.3342950Z 	 Executed 51 tests, with 0 failures (0 unexpected) in 13.290 (13.303) seconds
+2026-10-28T07:45:51.3343970Z 	 Executed 51 tests, with 0 failures (0 unexpected) in 13.290 (13.304) seconds
+2026-10-28T07:48:44.3757330Z build exit status: 65
+2026-10-28T07:48:44.4959570Z /Users/runner/work/blind/blind/ios/BlindAssist/RecordedRoomRoutePreview.swift:108:26: error: cannot assign to value: 'error' is immutable
+2026-10-28T07:48:44.4963190Z     |                          `- error: cannot assign to value: 'error' is immutable
+2026-10-28T07:48:44.4964080Z /Users/runner/work/blind/blind/ios/BlindAssist/RecordedRoomRoutePreview.swift:108:34: error: cannot assign value of type 'Bool' to type 'any Error'
+2026-10-28T07:48:44.4967770Z     |                                  `- error: cannot assign value of type 'Bool' to type 'any Error'
+2026-10-28T07:48:44.4968310Z ** BUILD FAILED **
+2026-10-28T07:48:44.5132630Z ** BUILD FAILED **
+2026-10-28T07:48:44.5366880Z ##[group]Run python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-main-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+2026-10-28T07:48:44.5368250Z [36;1mpython3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-main-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"[0m
+2026-10-28T07:48:48.9841500Z NATIVE_UNIT_CASE_STATUSES={"schema":1,"target":"IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame","complete":false,"target_pass_verified":false,"source_verified":false,"expected_commit":"8767fa0e4696ce8b7d5562fe623783cd137c55ee","limits":{"query_bytes":4194304,"query_seconds":30,"tree_nodes":10000},"provenance":{"actual_head":"8767fa0e4696ce8b7d5562fe623783cd137c55ee","tracked_source_clean":true,"untracked_scopes":["ios","BlindCore","BlindMemory","tools/ci",".github/workflows"],"generated_metadata":[{"path":"BlindMemory/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]},{"path":"ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"6b084e49d5d284417604f429760803ccef55769b2b5d9c82d1d60d671e57a63c","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]}]},"source_commit":"8767fa0e4696ce8b7d5562fe623783cd137c55ee","error_type":"ValueError","error":"xcresult query exit code 64"}

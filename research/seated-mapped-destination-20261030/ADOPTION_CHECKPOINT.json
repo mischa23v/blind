@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "status": "reviewed_source_adoption_native_unexecuted",
+  "actualPublishedBaseCommit": "79951a34966f0881cd942fc27c833e020aacde2b",
+  "actualPublishedBaseTree": "100b36355cae305689aad8dd1ff886d8116f144a",
+  "originalProposalBaseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
+  "resolvedFutureBaseManifestSHA256": "8ee9fe6108da5257b60c5b88284f4e89724186bfbf3652188db081b043e2ef07",
+  "frozenProposalManifestSHA256": "f7861dd0ae098224e3345e57086f623895a3eb02e0c66668c2b271889ba67b6f",
+  "frozenCombinedPatchSHA256": "1f3fbc6a564298f1260c3511f25e81218517fbf3e681af7ec70a03810f371f81",
+  "originalCoreManifestSHA256": "50d25e4abd7371d3c72936232c7e782deebd7aba736076cb2665bdcc16483ff7",
+  "triggerAuditSHA256": "712c48a7d20a9af8784470476ab9c010b83c667619bd1bb26e208456c89ed5e9",
+  "independentCoreReviewSHA256": "2b53d930326525091c086b60c9b69c683cfe5e4978df8dccd27a40dbc33653d5",
+  "baseVerification": {
+    "matchedExistingPaths": 15,
+    "expectedAbsentPaths": 2,
+    "afterHashesMatched": 17
+  },
+  "files": [
+    {
+      "path": "ios/BlindAssist/ConnectedJourneyRuntime.swift",
+      "before": "d8401abe23d36b6869a9d1b0230f2c4c409f80ea0225deee6db4a8c53d6b8965",
+      "after": "2ff5097fad719a5c6e562d2c067a209b4469eab009944129b2c94ae2265403e1",
+      "bytes": 44281
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
+      "before": "4b7226a847d923a0431b61df17ef9e8214b3070d033e710e7c9bcf9adf1c67d5",
+      "after": "2a8b60835c13d94809376f7e9ff455b3c47d6d4a8177cd460e4e78239e130afa",
+      "bytes": 43293
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshRouteAudit.swift",
+      "before": "35ee974196cbe7544d73fab18e1fc301e1bfb3a0b77cd67de64262501fba2ba5",
+      "after": "e217126cda66bdb6299cea7da55d414b8d12b9d3293e15dc98bcd21fe23c433f",
+      "bytes": 13610
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
+      "before": "adb0d1f8adfcaf721235c4f1e1ace691515a4059a45ada36c62ad8cd70ef6a62",
+      "after": "f29deaa1083e7d7d0dc86d6b871608cfdaa964ff30a587f171a21f37b3912a3c",
+      "bytes": 9396
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "before": "d0ff7752d5044c91ce50382f9671fa6a011897bce2c59eb98de0a194d9d1e06e",
+      "after": "d114861d0760fff9dbfd9e7caabb3f490ba058188ab798ca0db458faa4b5dd60",
+      "bytes": 521695
+    },
+    {
+      "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+      "before": "ff2de465ab6ec2b6ccbab11f548fac5ece5247c7f29e6237d23654c10d174657",
+      "after": "cdbdf36509ec6ea896ba43157c0540e3d79c878684a4fb4aaf128dd98c3ce215",
+      "bytes": 51677
+    },
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "before": "3937a1fbdaf870e51ad89b9270a47cc97517d548b8e79fd5b0c948ef7f0ab26e",
+      "after": "53fd0097c5ee93e75856240ed3b72b3fc6b6317294cf780613bb450baafb4f76",
+      "bytes": 16185
+    },
+    {
+      "path": "tools/ci/collect-seated-projection.py",
+      "before": "eaeca8bfbdcd491f362b9740c55840d7cef7d58575d5b2e63bcd2e999b64b358",
+      "after": "330592b429c7d92ae71fb264857aa26a81a91d698ef01768e194c39a33ffd441",
+      "bytes": 6535
+    },
+    {
+      "path": "tools/ci/test-collect-seated-projection.py",
+      "before": "2a6ef43f1eacaf69767588ae2b007a00f5dec7defb4fdb167260583135c4b316",
+      "after": "677ca50c4a95688996684d74fc1a465a433070ff562e78db07ad8997f4eac70c",
+      "bytes": 11880
+    },
+    {
+      "path": "tools/ci/export-seated-case-diagnostics.py",
+      "before": "c6d4e61d8175096faace4bee2f11732dddc80abf3447c4246d6f557e2fded571",
+      "after": "9921aaedcf524067ac43a737c9773a8abe35bd932e94b8bb318c0961ab4f9ebd",
+      "bytes": 10518
+    },
+    {
+      "path": "tools/ci/test_export_seated_case_diagnostics.py",
+      "before": "0b39d597ae4f93bac4f01ac03ff7e5309a986cea029cc68459e29161409d68f8",
+      "after": "4ecb3b818d2717f69c86836ac92154d10d0a02d3d23dd7ea9c2594558a38be42",
+      "bytes": 16776
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "before": "0df32fdca1ebcf810395c434bfea93c7dc7a937df83f1e371ca41325ee0de29e",
+      "after": "2f470b66f839480cdb284381252c0e313069e023de3664f41740d24b865deb5a",
+      "bytes": 46149
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "before": "b8dc9135221fdd7e0ee96937fa1385560e3af4eb84c1aa6e5e635b68a24b9963",
+      "after": "ac1a014aa563a54991f3c35a64ea8dbc7640b60d287a7445f0b0d9164f228931",
+      "bytes": 55721
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "before": "7ed59f80e1230d144e5fdd15f58bae7d799bd4b485f514667044e898b063ce93",
+      "after": "1abab210b8beac93b45880be39b15317ce83ef121be4a26a3a483e29f9a2e106",
+      "bytes": 44456
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/seated-mapped-destination-layer.patch",
+      "before": null,
+      "after": "41af26154537dcb8a33e89b1ed1b6585a77f5fa9f6b57dc267348f8092fe6b42",
+      "bytes": 87609
+    },
+    {
+      "path": "research/seated-mapped-destination-20261030/README.md",
+      "before": null,
+      "after": "10105730d69cff38eb8abbe02b45b55869bcce414743a6e863e24c1449ba4062",
+      "bytes": 8619
+    },
+    {
+      "path": "research/seated-mapped-destination-20261030/SOURCE_RECEIPT.json",
+      "before": null,
+      "after": "699dd48d63edf524ec36a0bd774f18e029a476a5d715022005336d1546272a3d",
+      "bytes": 2190
+    }
+  ],
+  "portableEvidence": {
+    "coreSourceControls": 10,
+    "integratedSourceControls": 454,
+    "currentPins": 167,
+    "strictCollectorControls": 62,
+    "diagnosticExporterControls": 57,
+    "publicationForwardReverseFiles": 17,
+    "outerHistoricalRestored": 12,
+    "outerHistoricalRemoved": 2
+  },
+  "nativeSelection": {
+    "status": "unexecuted",
+    "projectionMethods": 17,
+    "collisionMethods": 4,
+    "total": 21,
+    "originalIdentitiesRetained": 18,
+    "newMethods": 3
+  },
+  "physicalAuthority": false,
+  "liveSavedWorldOwnerHookup": "unavailable; production reset source remains unregistered",
+  "proposalBytesChanged": false,
+  "sharedSourceAppliedByAuthor": false,
+  "adoptionDocumentSHA256": "635b6aa53e2d568d20a94dd56a785bda269353da1b94781a493abce8ebe81277"
+}

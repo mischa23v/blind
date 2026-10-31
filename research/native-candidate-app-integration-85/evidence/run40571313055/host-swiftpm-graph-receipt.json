@@ -1,0 +1,90 @@
+{
+  "label": "host-swiftpm-graph",
+  "command": [
+    "xcrun",
+    "--sdk",
+    "macosx",
+    "swift",
+    "build",
+    "--build-system",
+    "native",
+    "--package-path",
+    "/Users/runner/work/blind/blind/research/mesh-candidate-ingress-83",
+    "--scratch-path",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph",
+    "--configuration",
+    "release",
+    "--jobs",
+    "1",
+    "--triple",
+    "arm64-apple-macosx14.0",
+    "--sdk",
+    "/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+    "-Xswiftc",
+    "-enable-testing",
+    "-Xcc",
+    "-O1",
+    "-Xcxx",
+    "-O1",
+    "--cache-path",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/swiftpm-cache",
+    "--manifest-cache",
+    "local",
+    "-Xswiftc",
+    "-module-cache-path",
+    "-Xswiftc",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph-module-cache",
+    "-Xcc",
+    "-fmodules-cache-path=/Users/runner/work/_temp/blind-native-app-integration-85/host-graph-clang-cache"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "exceptionType": null,
+  "wallSeconds": 51.72599187499998,
+  "scratchBytesAfterCommand": 35442891,
+  "scratchCapExceeded": false,
+  "scratchScanComplete": true,
+  "scratchEntriesScanned": 209,
+  "largestScratchFiles": [
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570792
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871728
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4514152
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/IOKit-FVLFRHYESQKG.pcm",
+      "bytes": 3726544
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Security-2U1WYKGRJLUTR.pcm",
+      "bytes": 3125176
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/CoreFoundation-3FUAIX7UFC0QF.pcm",
+      "bytes": 1399576
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/_DarwinFoundation3-1HJQN0P0Q3SIW.pcm",
+      "bytes": 632024
+    },
+    {
+      "path": "host-graph/build.db",
+      "bytes": 536576
+    }
+  ],
+  "fileCapBytes": 134217728,
+  "scratchCapBytes": 536870912,
+  "cpuCapSeconds": 300,
+  "wallTimeoutSeconds": 300,
+  "scratchAccounting": "stage-end only; scoped tree; not a live disk quota",
+  "terminationSignal": null,
+  "fileSizeLimitSignal": false,
+  "logTail": "Building for production...\n[0/30] Write swift-version--321F17CF50CD0476.txt\n[1/30] Write sources\n[4/30] Compiling RecastRegion.cpp\n[6/31] Compiling MeshBufferDecoder81 MeshBufferDecoder.swift\n[6/31] Compiling RecastRasterization.cpp\n[8/32] Compiling MeshSnapshot82 ARKitMeshAdapter.swift\n[8/32] Compiling RecastMeshDetail.cpp\n[9/32] Compiling RecastMesh.cpp\n[10/32] Compiling RecastLayers.cpp\n[11/32] Compiling RecastFilter.cpp\n[12/32] Compiling RecastContour.cpp\n[13/32] Compiling RecastAssert.cpp\n[14/32] Compiling RecastArea.cpp\n[15/32] Compiling RecastAlloc.cpp\n[16/32] Compiling Recast.cpp\n[17/32] Compiling DetourProximityGrid.cpp\n[18/32] Compiling DetourPathQueue.cpp\n[19/32] Compiling DetourPathCorridor.cpp\n[20/32] Compiling DetourObstacleAvoidance.cpp\n[21/32] Compiling DetourLocalBoundary.cpp\n[22/32] Compiling DetourCrowd.cpp\n[23/32] Compiling DetourNode.cpp\n[24/32] Compiling DetourNavMeshQuery.cpp\n[25/32] Compiling DetourNavMeshBuilder.cpp\n[26/32] Compiling DetourNavMesh.cpp\n[27/32] Compiling DetourCommon.cpp\n[28/32] Compiling DetourAssert.cpp\n[29/32] Compiling DetourAlloc.cpp\n[30/32] Compiling CDetour clearance_adapter.cpp\n[31/32] Write sources\n[33/33] Compiling BlindRoomMesh Bridge.swift\n[34/34] Compiling MeshCandidateIngress83 ARKitIngress.swift\nBuild complete! (36.08s)\nwarning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system."
+}

@@ -5,6 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { assertDepthHazardsBefore, declaration, frameSignature, withoutComments } from './helpers/navigation-source-contract.mjs';
 
 const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8');
 const section = (source, start, end) => {
@@ -17,16 +18,6 @@ const before = (source, first, second) => {
   const a = source.indexOf(first), b = source.indexOf(second);
   assert.ok(a >= 0 && b > a, `Expected ${first} before ${second}`);
 };
-
-function declaration(source, signature) {
- const start=source.indexOf(signature); assert.ok(start>=0,signature);
- const open=source.indexOf('{',start); let depth=0;
- for(let i=open;i<source.length;i++) {
-  if(source[i]==='{') depth++;
-  if(source[i]==='}' && --depth===0) return source.slice(start,i+1);
- }
- assert.fail(`Unclosed declaration: ${signature}`);
-}
 
 test('room A to B during debounce cannot attach the previous room to a new capture (source)', async () => {
   const source = await read('ios/BlindAssist/NavigationModel.swift');
@@ -151,20 +142,75 @@ test('tracking recovery cannot resurrect pre-failure spatial work or permanently
   assert.match(capture, /self\.observationFrameID == sessionFrameID/);
 });
 
-test('privacy and session resets cancel RGB work while depth-only failure keeps its bounded token (source)', async () => {
-  const source = await read('ios/BlindAssist/NavigationModel.swift');
-  const invalidate = section(source, 'private func invalidatePerceptionWork(', 'private func invalidateRecognizedRoom');
+function assertRGBPreservation(source) {
+  source = withoutComments(source);
+  const invalidate = declaration(source, 'private func invalidatePerceptionWork(');
   assert.match(invalidate, /preserveRGBHistoryWork: Bool = false/);
   assert.match(invalidate, /perceptionGeneration = UUID\(\)/);
   assert.match(invalidate, /if !preserveRGBHistoryWork \{ backgroundPerception.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
   assert.match(invalidate, /observedObjects\.invalidateGeometry\(\)/);
-  const stop = section(source, 'private func stopCameraMonitoring()', 'private func startWatchdog()');
-  const launch = section(source, 'private func launch(', 'func stop()');
-  assert.match(stop, /invalidatePerceptionWork\(\)/);
-  assert.match(launch, /invalidatePerceptionWork\(\)/);
-  // Preservation is limited to per-frame depth/tracking loss and a newly lost
-  // monitoring state with an independently verified fresh RGB capture.
-  assert.equal((source.match(/invalidatePerceptionWork\(preserveRGBHistoryWork: true\)/g) ?? []).length, 3);
+  for (const signature of ['private func stopCameraMonitoring()', 'private func launch(']) {
+    assert.match(declaration(source, signature), /invalidatePerceptionWork\(\)/);
+  }
+  const call = 'invalidatePerceptionWork(preserveRGBHistoryWork: true)';
+  const frame = declaration(source, frameSignature);
+  const recovery = declaration(source, 'private func processRecoveryHazards(');
+  const publish = declaration(source, 'private func publish()');
+  const missingDepth = declaration(frame, 'guard let observation = DepthSampler.observation(from: frame) else');
+  const tracking = declaration(frame, 'if !observation.trackingNormal');
+  const recoveryTracking = declaration(recovery, 'if case .normal = frame.camera.trackingState {} else');
+  const recoveryMissing = declaration(recovery, 'if lastObservation != nil');
+  const freshRGB = declaration(publish, 'if preserveRGB');
+  assert.match(missingDepth, /if lastObservation != nil \{ invalidatePerceptionWork\(preserveRGBHistoryWork: true\) \}/);
+  assert.match(tracking, /^if !observation\.trackingNormal \{\s*journeys\.breakTracking\(\)\s*beginAutomaticRecoveryAfterLoss\(\)\s*invalidatePerceptionWork\(preserveRGBHistoryWork: true\); invalidateRecognizedRoom\(\)/);
+  assert.match(recoveryTracking, /^if case \.normal = frame\.camera\.trackingState \{\} else \{\s*invalidatePerceptionWork\(preserveRGBHistoryWork: true\)/);
+  assert.match(recoveryMissing, /^if lastObservation != nil \{ invalidatePerceptionWork\(preserveRGBHistoryWork: true\) \}$/);
+  assert.match(recovery, /if let observation = DepthSampler\.observation\(from: frame\) \{\s*processDepthHazards\(observation, frame: frame, receivedAt: receivedAt\)\s*\} else \{\s*if lastObservation != nil \{ invalidatePerceptionWork\(preserveRGBHistoryWork: true\) \}/);
+  assert.match(publish, /let preserveRGB = !detection\.hazard\.isUrgent &&\s*session\.currentFrame\.flatMap \{ captureObjectView\(\$0\) \} != nil\s*if preserveRGB/);
+  assert.match(freshRGB, /^if preserveRGB \{ invalidatePerceptionWork\(preserveRGBHistoryWork: true\) \}$/);
+  // Each explicit loss branch has one synchronous preservation call. New calls
+  // elsewhere (especially privacy, stop, launch or another lifecycle) fail closed;
+  // changing the number of helpers cannot silently broaden the permission.
+  for (const branch of [missingDepth, tracking, recoveryTracking, recoveryMissing, freshRGB]) {
+    assert.ok(branch.includes(call));
+    assert.ok(!branch.replace(call, '').includes(call), 'Only one preservation call in each reviewed branch');
+  }
+  for (const [scope, allowed] of [[frame, [missingDepth, tracking]], [recovery, [recoveryTracking, recoveryMissing]], [publish, [freshRGB]]]) {
+    const remainder = allowed.reduce((text, branch) => text.replace(branch, ''), scope);
+    assert.ok(!remainder.includes(call), 'RGB preservation stays inside the reviewed loss/fresh-capture branches');
+  }
+  assert.ok(!source.replace(frame, '').replace(recovery, '').replace(publish, '').includes(call),
+    'No RGB-preserving invalidation in privacy or lifecycle paths');
+}
+
+test('privacy and session resets cancel RGB work while depth-only failure keeps its bounded token (source)', async () => {
+  const source = await read('ios/BlindAssist/NavigationModel.swift');
+  assertRGBPreservation(source);
+});
+
+test('RGB-preservation contracts reject privacy/session leakage and weakened loss or freshness guards', async () => {
+  const source = await read('ios/BlindAssist/NavigationModel.swift');
+  const call = 'invalidatePerceptionWork(preserveRGBHistoryWork: true)';
+  const recovery = declaration(source, 'private func processRecoveryHazards(');
+  const mutations = [
+    source.replace('private func stopCameraMonitoring() {', `private func stopCameraMonitoring() { ${call}`),
+    source.replace('func clearObservedObjects() {', `func clearObservedObjects() { ${call}`),
+    source.replace('if lastObservation != nil { ' + call, 'if true { ' + call),
+    source.replace('if !observation.trackingNormal {', 'if true {'),
+    source.replace('let preserveRGB = !detection.hazard.isUrgent &&', 'let preserveRGB ='),
+    source.replace('session.currentFrame.flatMap { captureObjectView($0) } != nil', 'session.currentFrame != nil'),
+    source.replace(call, `Task { ${call} }`),
+    source.replace(call, ''),
+    source.replace(call, `${call}; ${call}`),
+    source.replace(recovery, recovery.replace('if case .normal = frame.camera.trackingState {} else', 'if true')),
+    source.replace(recovery, recovery.replace('if lastObservation != nil', 'if true')),
+    source.replace(recovery, recovery.replace('if let observation = DepthSampler.observation(from: frame)', 'if let observation = cachedObservation')),
+    source.replace(recovery, recovery.replace(call, ''))
+  ];
+  for (const changed of mutations) {
+    assert.notEqual(changed, source);
+    assert.throws(() => assertRGBPreservation(changed), { name: 'AssertionError' });
+  }
 });
 
 test('item and room forget paths invalidate captured work and perform scoped history deletion (source)', async () => {
@@ -321,26 +367,24 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
   before(mount, 'journeys.breakTracking()', 'cancelDescription()');
   const frames = section(source, 'func session(_ session: ARSession, didUpdate frame:', '#if BLIND_FAMILIAR_PEOPLE\n    @discardableResult');
   const assertRawRetirement = candidate => {
-    const opening = candidate.indexOf('{');
-    const throttle = candidate.indexOf('guard running');
+    const frame = declaration(candidate, frameSignature);
+    const opening = frame.indexOf('{');
+    const throttle = frame.indexOf('guard running');
     assert.ok(opening >= 0 && throttle > opening);
-    const prefix = candidate.slice(opening + 1, throttle).replace(/\/\/[^\n]*/g, '').trim();
+    const prefix = frame.slice(opening + 1, throttle).replace(/\/\/[^\n]*/g, '').trim();
     const registrationHook = `if places.scanning, let scanSession = UUID(uuidString: observationFrameID) {
             places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)
         }`;
     assert.ok(prefix.endsWith(registrationHook), 'Bounded registration capture is synchronous after all loss retirements and before scan throttle');
     const retirementPrefix = prefix.slice(0, -registrationHook.length).trim();
-    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*withObservedScene \{ \$0\.trackingLost\(at: frame\.timestamp\) \}\s*mapping\.trackingLost\(at: frame\.timestamp\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+    assert.match(retirementPrefix, /^guard session === self\.session else \{ return \}\s*if let worldSessionID = UUID\(uuidString: observationFrameID\) \{\s*places\.observeWorldMapTrackingInterruption\(frame: frame, sessionID: worldSessionID,\s*now: ProcessInfo\.processInfo\.systemUptime\)\s*\}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*withObservedScene \{ \$0\.trackingLost\(at: frame\.timestamp\) \}\s*mapping\.trackingLost\(at: frame\.timestamp\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}\s*#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\s*if case \.normal = frame\.camera\.trackingState \{\} else \{ meshCandidateDiagnostics\.stop\(\) \}\s*#endif$/,
       'All exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
     before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
     before(candidate, 'nativeObservations.trackingLost()', 'frame.timestamp - lastProcessed');
     before(candidate, 'mapping.trackingLost(at: frame.timestamp)', 'frame.timestamp - lastProcessed');
     before(candidate, 'stopReadingTool(announce: false)', 'frame.timestamp - lastProcessed');
     before(candidate, 'clearBoardingReading()', 'frame.timestamp - lastProcessed');
-    assert.match(candidate, /let legacyDetection = detector\.process\(observation\)/);
-    before(candidate, 'let legacyDetection = detector.process(observation)', 'updateReadingTool(frame: frame)');
-    before(candidate, 'phoneDetection = legacyDetection', 'updateReadingTool(frame: frame)');
-    before(candidate, 'phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)', 'updateReadingTool(frame: frame)');
+    assertDepthHazardsBefore(candidate, 'updateReadingTool(frame: frame)');
     const missingDepth = section(candidate, 'guard let observation = DepthSampler.observation(from: frame)', 'if !observation.trackingNormal');
     before(missingDepth, 'detector.invalidateRecentEvidence()', 'updateNonspatialObjectMemory(frame: frame)');
     before(missingDepth, 'publish()', 'updateNonspatialObjectMemory(frame: frame)');
@@ -353,6 +397,11 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
   assert.throws(() => assert.match(source.replace('readingTool == .liveText || readingTool == .document',
     'readingTool == .liveText || readingTool == .document || readingTool == .light'), exactTextTools));
   const mutations = [
+    frames.replace('guard session === self.session else { return }', '/* foreign session admitted */'),
+    frames.replace('places.observeWorldMapTrackingInterruption(frame: frame, sessionID: worldSessionID,', '/* missing saved-frame withdrawal */ ignored(frame: frame, sessionID: worldSessionID,'),
+    frames.replace('places.observeWorldMapTrackingInterruption(frame: frame, sessionID: worldSessionID,\n                now: ProcessInfo.processInfo.systemUptime)', 'Task { places.observeWorldMapTrackingInterruption(frame: frame, sessionID: worldSessionID, now: ProcessInfo.processInfo.systemUptime) }'),
+    frames.replace('if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }', 'if case .normal = frame.camera.trackingState {} else { Task { meshCandidateDiagnostics.stop() } }'),
+    frames.replace('if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }', '').replace('journeys.breakTracking()', 'meshCandidateDiagnostics.stop(); journeys.breakTracking()'),
     frames.replace('places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)', '/* missing registration capture */'),
     frames.replace('places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)', 'Task { places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime) }'),
     frames.replace('clearBoardingReading()', '/* missing boarding retirement */'),

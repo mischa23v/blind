@@ -1,0 +1,89 @@
+{
+  "sourceControlsPassed": 30,
+  "sourceMutationControlsRejected": 12,
+  "existingHostedMethodsPreserved": 20,
+  "authoredHostedMethods": [
+    "testWithdrawnPortalDepartureReplansOnlyFromFreshDestinationEndpoint",
+    "testExpiredPortalDepartureReplansOnFreshUpperFloorWithoutRecordingCrossing",
+    "testFreshDifferentDestinationNodeDoesNotInventMissingPortalEndpoint",
+    "testPortalRecoveryRefusesAmbiguousOrMidLegPoseUntilUniqueEndpointExists",
+    "testPortalRecoveryRejectsOldSessionAndRestartRequiresNewLocalization",
+    "testInterruptedReversePortalPreservesReturnGoalAndOriginalStart",
+    "testGoalChangeDuringPortalInterruptionCannotReviveOldDestination"
+  ],
+  "originalCoordinatorMethodsPreserved": 9,
+  "originalRuntimeMethodsPreserved": 10,
+  "oldHostedFixturePrefixUnchanged": true,
+  "mutations": [
+    {
+      "mutation": "wrong_destination_binding",
+      "rejected": true,
+      "sourceFailure": "current owner and exact destination binding required"
+    },
+    {
+      "mutation": "wrong_destination_floor",
+      "rejected": true,
+      "sourceFailure": "destination floor remains separate"
+    },
+    {
+      "mutation": "source_rearm_erased",
+      "rejected": true,
+      "sourceFailure": "source endpoint retains existing rearm path"
+    },
+    {
+      "mutation": "no_fresh_endpoint_validation",
+      "rejected": true,
+      "sourceFailure": "current capture and support checked before retirement"
+    },
+    {
+      "mutation": "valid_association_dropped",
+      "rejected": true,
+      "sourceFailure": "valid expected portal completion preserved"
+    },
+    {
+      "mutation": "fabricated_crossing",
+      "rejected": true,
+      "sourceFailure": "recovery only retires itinerary without fabricating history pose or geometry"
+    },
+    {
+      "mutation": "replay_ledger_reset",
+      "rejected": true,
+      "sourceFailure": "withdrawal still drops departure evidence but keeps current owner ledger"
+    },
+    {
+      "mutation": "departure_lease_widened",
+      "rejected": true,
+      "sourceFailure": "original portal source ownership and 120 second bound remain"
+    },
+    {
+      "mutation": "recovery_not_consumed",
+      "rejected": true,
+      "sourceFailure": "substring not found"
+    },
+    {
+      "mutation": "ambiguous_endpoint_allowed",
+      "rejected": true,
+      "sourceFailure": "ambiguous and non-endpoint poses stay unresolved"
+    },
+    {
+      "mutation": "support_height_skipped",
+      "rejected": true,
+      "sourceFailure": "endpoint association retains uncertainty and support height"
+    },
+    {
+      "mutation": "hazard_veto_removed",
+      "rejected": true,
+      "sourceFailure": "current hazards retain independent veto"
+    }
+  ],
+  "nativeExecuted": false,
+  "deviceExecuted": false,
+  "physicalAuthority": false,
+  "initialSourceCheckerAttempt": {
+    "status": "failed",
+    "reason": "1200 mutation accepted by substring-only bound check",
+    "repair": "Require the original 120-bound followed by else; unchanged 12-mutation set rerun."
+  },
+  "sharedHEAD": "ff0f50df695bfa48fd72697858c574fda653dc4e",
+  "futureBaseManifestSHA256": "e160a0ebf31818e19cf287fc7dea2e15f9ca058ec8cf73c7b1e791af042e26eb"
+}

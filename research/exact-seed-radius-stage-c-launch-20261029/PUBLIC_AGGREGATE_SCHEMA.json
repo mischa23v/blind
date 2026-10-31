@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "aggregateSchema": "blind.exact-seed-radius-stage-c.aggregate.v1",
+  "maximumBytes": 131072,
+  "maximumCandidateReceipts": 25,
+  "minimumCandidateReceipts": 0,
+  "candidateCountsAllowed": [
+    0,
+    25
+  ],
+  "candidateIdentitySource": "exact frozen REQUESTS_49A.json in INPUT_TRANSFER_SCOPE.json",
+  "requiredTopLevel": [
+    "schema",
+    "status",
+    "nativeCommandsCompleted",
+    "sourcePinsBefore",
+    "sourcePinsAfter",
+    "toolPinsBefore",
+    "toolPinsAfter",
+    "physicalAuthority",
+    "appActivation",
+    "frozenInputSHA256"
+  ],
+  "optionalTopLevel": [
+    "resources",
+    "routeAcceptance",
+    "observerGroupsPassed",
+    "candidateReceipts",
+    "pathDigestEncoding"
+  ],
+  "statusAllowed": [
+    "failed-or-inconclusive",
+    "passed-fixed-source-route-matrix"
+  ],
+  "candidateExactKeysAndObservedTypeShapes": {
+    "requestID": [
+      "str"
+    ],
+    "fixtureSHA256": [
+      "str"
+    ],
+    "bodyProfileID": [
+      "str"
+    ],
+    "bodyFloat32Bits": [
+      "dict"
+    ],
+    "requestedStartFloat32SHA256": [
+      "str"
+    ],
+    "requestedGoalFloat32SHA256": [
+      "str"
+    ],
+    "projectedStartFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "projectedGoalFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "nativeStatus": [
+      "NoneType",
+      "int"
+    ],
+    "nativeSucceeded": [
+      "bool"
+    ],
+    "nativeComplete": [
+      "NoneType",
+      "bool"
+    ],
+    "buildFailed": [
+      "NoneType",
+      "bool"
+    ],
+    "endpointAdmissionRejected": [
+      "NoneType",
+      "bool"
+    ],
+    "fullLayoutValidated": [
+      "bool"
+    ],
+    "routeQueryAttempted": [
+      "bool"
+    ],
+    "initialBodyContact": [
+      "bool"
+    ],
+    "initialMarginContact": [
+      "bool"
+    ],
+    "bodyContact": [
+      "NoneType",
+      "bool"
+    ],
+    "marginContact": [
+      "NoneType",
+      "bool"
+    ],
+    "pathAvailable": [
+      "bool"
+    ],
+    "pathPointCount": [
+      "int"
+    ],
+    "orderedPathFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "detourPathLength3DMetres": [
+      "NoneType",
+      "float"
+    ],
+    "detourPathLengthXZMetres": [
+      "NoneType",
+      "float"
+    ],
+    "connectorInclusiveSegmentLength3DMetres": [
+      "NoneType",
+      "float"
+    ],
+    "connectorInclusiveSegmentLengthXZMetres": [
+      "NoneType",
+      "float"
+    ],
+    "orderedSegmentEndpointsFloat32SHA256": [
+      "NoneType",
+      "str"
+    ],
+    "routeContactCounts": [
+      "dict"
+    ],
+    "initialContactCounts": [
+      "dict"
+    ],
+    "publishedReferencePathSHA256": [
+      "dict"
+    ],
+    "matchesPublishedReferencePath": [
+      "dict"
+    ]
+  },
+  "bodyFloat32BitsExactKeys": [
+    "rawRadius",
+    "rawHeight",
+    "effectiveRadius",
+    "effectiveHeight"
+  ],
+  "contactCountExactKeys": [
+    "segmentCount",
+    "bodyContactSegmentCount",
+    "marginContactSegmentCount",
+    "uniqueMarginObstacleSurfaceCount",
+    "uniqueMarginFurnitureBoundCount",
+    "uniqueFloorSurfaceCount"
+  ],
+  "referenceExactKeys": [
+    "legacy",
+    "strict"
+  ],
+  "coordinateAndFeatureIDArraysAllowed": false,
+  "allSHA256Fields": "lowercase 64 hexadecimal characters or explicitly nullable digest",
+  "allLengths": "finite nonnegative number or null when absent",
+  "allContactCounts": "bounded nonnegative integers; segmentCount <=259",
+  "pathPointCount": "integer 0..256, zero/null digest for absent path only",
+  "warning": "Observed union shapes here are from unchanged published reference parser fixtures, not native candidate results. Validate optional native status/booleans as nullable even if current fixture inventory did not exercise every null.",
+  "resourceExactKeysAndTypes": {
+    "wallSeconds": "finite nonnegative number",
+    "observedAggregateCPUSeconds": "finite nonnegative number",
+    "observedPeakRSSBytes": "nonnegative integer",
+    "observedPeakOutputBytes": "nonnegative integer",
+    "finalOwnedOutputBytes": "nonnegative integer",
+    "terminalObservationCompleted": "boolean",
+    "measurementBoundary": "terminal-guard-observation-before-bounded-metadata-export-refresh",
+    "limitBreached": "exact object with cpu, wall, rss, output boolean fields",
+    "exportReserveUnavailable": "boolean"
+  },
+  "encodedByteCapEnforced": true
+}

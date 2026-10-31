@@ -202,4 +202,66 @@ final class NativeLocalGridTests: XCTestCase {
         XCTAssertLessThanOrEqual(state.cellCount, NativeLocalGridConsumer.maximumCells)
         XCTAssertEqual(state.status, .truncated)
     }
+
+    func testNavigationEvidenceSelectsOnlyLatestExactCaptureNotHistoricalObstacles() throws {
+        var c = NativeLocalGridConsumer(); c.begin(generation: 1)
+        c.consume(packet(obstacles: cells([Point3(1, 2, 3)])), now: 1)
+        let snapshot = c.consume(packet(event: 2, sequence: 4, time: 1.2, node: 2,
+            poses: [.init(id: 1, transform: .identity), .init(id: 2, transform: .identity)],
+            ground: cells([Point3(4, 5, 6)]), obstacles: cells([]), empty: cells([])), now: 1.2)
+        guard case .current(let evidence) = snapshot.navigationEvidence(now: 1.3) else { return XCTFail("current capture missing") }
+        XCTAssertEqual(evidence.revision.captureSequence, 4) // skipped captures are not fabricated
+        XCTAssertEqual(evidence.historicalTileCount, 1)
+        XCTAssertEqual(evidence.tile.ground.points, [Point3(4, 5, 6)])
+        XCTAssertEqual(evidence.tile.obstacles.points, [])
+        XCTAssertFalse(evidence.absenceEstablishesFreeSpace)
+        XCTAssertFalse(evidence.fullFootprintSupportKnown)
+        XCTAssertFalse(evidence.originalARCaptureIdentityAvailable)
+        XCTAssertFalse(evidence.registeredMetricFrameAvailable)
+        XCTAssertFalse(evidence.authorizesPhysicalGuidance)
+    }
+    func testNavigationEvidenceRechecksCachedSnapshotAgeAndFutureClock() {
+        var c = NativeLocalGridConsumer(); c.begin(generation: 1)
+        let snapshot = c.consume(packet(), now: 1)
+        XCTAssertEqual(snapshot.navigationEvidence(now: 1.501), .unavailable(.staleCapture))
+        XCTAssertEqual(snapshot.navigationEvidence(now: 0.9), .unavailable(.staleCapture))
+        XCTAssertEqual(snapshot.navigationEvidence(now: .nan), .unavailable(.invalidClock))
+        guard case .current = snapshot.navigationEvidence(now: 1.5) else { return XCTFail("boundary unexpectedly refused") }
+    }
+    func testNavigationEvidenceRetiresAfterMovedObjectReplacementAndRevisionChange() {
+        var c = NativeLocalGridConsumer(); c.begin(generation: 1)
+        let first = c.consume(packet(obstacles: cells([Point3(1, 0, 1)])), now: 1)
+        guard case .current(let old) = first.navigationEvidence(now: 1) else { return XCTFail("missing first") }
+        let next = c.consume(packet(event: 2, sequence: 2, time: 1.1,
+            obstacles: cells([Point3(2, 0, 2)])), now: 1.1)
+        XCTAssertFalse(next.isCurrent(old, now: 1.1))
+        guard case .current(let fresh) = next.navigationEvidence(now: 1.1) else { return XCTFail("missing replacement") }
+        XCTAssertEqual(fresh.tile.obstacles.points, [Point3(2, 0, 2)])
+        let delayed = c.consume(packet(event: 1, sequence: 1, time: 1), now: 1.2)
+        XCTAssertTrue(delayed.isCurrent(fresh, now: 1.2))
+        XCTAssertFalse(delayed.isCurrent(fresh, now: 1.7))
+        c.invalidate()
+        XCTAssertFalse(c.snapshot().isCurrent(fresh, now: 1.2))
+    }
+    func testNavigationEvidenceDoesNotFallbackWhenLatestLayersMissingOrTruncated() {
+        var c = NativeLocalGridConsumer(); c.begin(generation: 1)
+        c.consume(packet(), now: 1)
+        let unknown = c.consume(packet(event: 2, sequence: 2, time: 1.1,
+            ground: .unavailable), now: 1.1)
+        guard case .unavailable = unknown.navigationEvidence(now: 1.1) else { return XCTFail("unknown became evidence") }
+        let partial = c.consume(packet(event: 3, sequence: 3, time: 1.2,
+            ground: cells([Point3(0, 0, 0)], original: 2, truncated: true)), now: 1.2)
+        XCTAssertEqual(partial.navigationEvidence(now: 1.2), .unavailable(.truncated))
+    }
+    func testNavigationEvidenceGraphUpdateRetiresEvenSameCaptureAndClock() {
+        var c = NativeLocalGridConsumer(); c.begin(generation: 1)
+        let first = c.consume(packet(), now: 1)
+        guard case .current(let old) = first.navigationEvidence(now: 1) else { return XCTFail("missing first") }
+        let revised = c.consume(packet(event: 2, poses: [.init(id: 1, transform: translated(1))]), now: 1.1)
+        XCTAssertFalse(revised.isCurrent(old, now: 1.1))
+        guard case .current(let fresh) = revised.navigationEvidence(now: 1.1) else { return XCTFail("missing revised") }
+        XCTAssertEqual(fresh.revision.captureSequence, old.revision.captureSequence)
+        XCTAssertNotEqual(fresh.revision.event, old.revision.event)
+        XCTAssertEqual(fresh.capturedAt, old.capturedAt)
+    }
 }

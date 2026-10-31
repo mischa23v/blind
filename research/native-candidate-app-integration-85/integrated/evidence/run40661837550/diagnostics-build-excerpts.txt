@@ -1,0 +1,13 @@
+2026-10-28T09:14:22.8489380Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ac56c97861d23888c24f13d2482055f9302d5ea0:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T09:14:26.9706420Z  * [new ref]         ac56c97861d23888c24f13d2482055f9302d5ea0 -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T09:14:26.9857580Z ac56c97861d23888c24f13d2482055f9302d5ea0
+2026-10-28T09:14:28.0465330Z ac56c97861d23888c24f13d2482055f9302d5ea0
+2026-10-28T09:14:28.8146580Z   "sourceChecksPassed": 54,
+2026-10-28T09:14:28.8176670Z   "runtimeOptIn": false,
+2026-10-28T09:14:28.8176950Z   "geometryCopyEnabled": false,
+2026-10-28T09:14:28.8339000Z ac56c97861d23888c24f13d2482055f9302d5ea0
+2026-10-28T09:16:52.0150160Z diagnostics-build exit status: 65
+2026-10-28T09:16:52.1456830Z /Users/runner/work/blind/blind/ios/BlindAssist/PlaceStore.swift:88:27: error: cannot use mutating member on immutable value: 'directory' is a 'let' constant
+2026-10-28T09:16:52.1457940Z     |                 |         `- error: cannot use mutating member on immutable value: 'directory' is a 'let' constant
+2026-10-28T09:16:52.1458360Z ** BUILD FAILED **
+2026-10-28T09:16:52.1702250Z ** BUILD FAILED **

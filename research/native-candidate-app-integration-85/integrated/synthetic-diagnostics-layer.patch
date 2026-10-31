@@ -1,0 +1,212 @@
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -326,6 +326,8 @@
+  public struct DiagnosticStageReceipt: Sendable {
+   public let stage: DiagnosticStage
+   public let elapsedMilliseconds: Int
++  /// Diagnostic owner-lock wait only, not native work; sampled on this caller.
++  public let diagnosticLockWaitMicroseconds: Int
+   /// Current worker thread only; nil is unavailable, never zero CPU evidence.
+   public let workerCPUTimeMicroseconds: Int64?
+   public let workerThreadID: UInt64?
+@@ -401,11 +403,16 @@
+  }
+  private func recordDiagnosticStage(_ stage: DiagnosticStage, workerCPU:Bool=false) {
+   guard let startedAt=diagnosticStartedAt else{return}
++  let sampledAt=ProcessInfo.processInfo.systemUptime
+   let cpu=workerCPU ? Self.workerCPUClock():nil
++  let lockRequestedAt=ProcessInfo.processInfo.systemUptime
+   locked {
++   let lockAcquiredAt=ProcessInfo.processInfo.systemUptime
+    if diagnosticReceipts.count<64 {
+-    let elapsed=max(0,Int((ProcessInfo.processInfo.systemUptime-startedAt)*1_000))
++    let elapsed=max(0,Int((sampledAt-startedAt)*1_000))
++    let lockWait=max(0,Int((lockAcquiredAt-lockRequestedAt)*1_000_000))
+     diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed,
++     diagnosticLockWaitMicroseconds:lockWait,
+      workerCPUTimeMicroseconds:cpu?.0,workerThreadID:cpu?.1))
+    }
+   }
+--- a/ios/BlindAssistTests/ClassificationIngressTests.swift
++++ b/ios/BlindAssistTests/ClassificationIngressTests.swift
+@@ -56,6 +56,8 @@
+             return (wall, bc - ac, true)
+         }
+         let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
++        let maxLockWait = rows.map(\.diagnosticLockWaitMicroseconds).max() ?? 0
++        print("CLASSIFICATION_DIAGNOSTIC_LOCK lane=ingress83 records=\(rows.count) max_wait_us=\(maxLockWait)")
+         let worker = pair(.workerStarted, .workerFinished)
+         let build = pair(.nativeBuildBegin, .nativeBuildEnd)
+         let route = pair(.routeBegin, .routeEnd)
+--- a/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift
++++ b/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift
+@@ -35,6 +35,8 @@
+             return (wall, bc - ac, true)
+         }
+         let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
++        let maxLockWait = rows.map(\.diagnosticLockWaitMicroseconds).max() ?? 0
++        print("CLASSIFICATION_DIAGNOSTIC_LOCK lane=runtime75 records=\(rows.count) max_wait_us=\(maxLockWait)")
+         let worker = pair(.workerStarted, .workerFinished)
+         let build = pair(.nativeBuildBegin, .nativeBuildEnd)
+         let route = pair(.routeBegin, .routeEnd)
+--- /dev/null
++++ b/tools/ci/extract-ask-layout-trace.py
+@@ -0,0 +1,56 @@
++#!/usr/bin/env python3
++"""Bounded synthetic metadata only; no UI outcome inference or arbitrary text."""
++import math
++import re
++import sys
++
++number = r"-?[0-9]+(?:\.[0-9]+)?"
++record = re.compile(
++    r"ASK_LAYOUT_TRACE schema=1 sequence=([1-9]|[1-5][0-9]|6[0-4]) uptime=("+number+r") "
++    r"event=(appear|disappear|category|geometry) role=(reason|ask-form) "
++    r"category=(xSmall|small|medium|large|xLarge|xxLarge|xxxLarge|accessibility[1-5]) "
++    r"frame=\(\(("+number+r"), ("+number+r")\), \(("+number+r"), ("+number+r")\)\) "
++    r"provenance=app_callback_not_audit_failure_state"
++)
++marker = b"ASK_LAYOUT_TRACE truncated=true limit=64"
++limit = 8 * 1024 * 1024
++seen = rejected = dropped = consumed = 0
++marker_seen = oversize = False
++print("ASK_LAYOUT_TRACE_BEGIN max_records=64 max_bytes=8388608")
++with open(sys.argv[1], "rb") as stream:
++    while consumed < limit:
++        raw = stream.readline(min(2049, limit - consumed))
++        if not raw:
++            break
++        consumed += len(raw)
++        ends = raw.endswith(b"\n")
++        if oversize or len(raw) > 2048 or not ends:
++            if not oversize and raw.startswith(b"ASK_LAYOUT_TRACE "):
++                rejected += 1
++            oversize = not ends
++            continue
++        line = raw.rstrip(b"\r\n")
++        if line == marker:
++            if not marker_seen:
++                print(marker.decode())
++                marker_seen = True
++            continue
++        match = record.fullmatch(line.decode("ascii", errors="replace"))
++        valid = False
++        if match:
++            uptime, x, y, width, height = (float(match.group(i)) for i in (2,6,7,8,9))
++            valid = (all(math.isfinite(v) for v in (uptime,x,y,width,height))
++                     and 0 <= uptime <= 1e9 and abs(x) <= 1e6 and abs(y) <= 1e6
++                     and 0 <= width <= 1e6 and 0 <= height <= 1e6)
++        if valid:
++            if seen < 64:
++                print(line.decode())
++                seen += 1
++            else:
++                dropped += 1
++        elif line.startswith(b"ASK_LAYOUT_TRACE "):
++            rejected += 1
++budget = consumed >= limit
++incomplete = budget or marker_seen or dropped > 0
++status = "unavailable" if seen == 0 else ("partial" if incomplete or rejected else "observed")
++print(f"ASK_LAYOUT_TRACE_END records={seen} rejected_prefix_records={rejected} dropped_valid_records={dropped} scan_budget_reached={str(budget).lower()} status={status} ui_outcome=not_inferred native_format=unverified")
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -42,6 +42,12 @@
+     local cpuNumber='(-1|[0-9]+)'
+     grep -E "^CLASSIFICATION_WORKER_CPU id=[0-9A-F-]{36} worker_begin_ms=$cpuNumber lane=(ingress83|runtime75) worker_wall_ms=$cpuNumber worker_cpu_us=$cpuNumber worker_pair_valid=(true|false) build_wall_ms=$cpuNumber build_cpu_us=$cpuNumber build_pair_valid=(true|false) route_wall_ms=$cpuNumber route_cpu_us=$cpuNumber route_pair_valid=(true|false) retired=(true|false) native_failed=(true|false) records=([0-9]|[1-5][0-9]|6[0-4])$" "$out/$label.log" | head -64 | cut -c 1-2000 || true
+     echo 'CLASSIFICATION_WORKER_CPU_END'
++  fi
++  if [[ "$label" = ui ]]; then
++    python3 tools/ci/extract-ask-layout-trace.py "$out/$label.log" || true
++  fi
++  if [[ "$label" = unit ]]; then
++    grep -E '^CLASSIFICATION_DIAGNOSTIC_LOCK lane=(ingress83|runtime75) records=([0-9]|[1-5][0-9]|6[0-4]) max_wait_us=[0-9]{1,15}$' "$out/$label.log" | head -64 | cut -c 1-200 || true
+   fi
+   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
+   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.
+--- a/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
++++ b/research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json
+@@ -52,7 +52,7 @@
+     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
+     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
+-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4",
++    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e",
+     "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
+     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+     "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
+@@ -175,5 +175,17 @@
+     ],
+     "defaultCallerActivation": false,
+     "nativeSwiftExecuted": false
++  },
++  "synthetic_diagnostics_layer": {
++    "beforeManifestSHA256": "0e3d03c681912e58aef1c9c55086fb8acba2e003d4aa3e3aea2761c32386b749",
++    "before": {
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4"
++    },
++    "after": {
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
++    },
++    "defaultCallerActivation": false,
++    "nativeSwiftExecuted": false,
++    "scope": "DEBUG synthetic pre-lock timing and separately observed lock wait only"
+   }
+ }
+--- a/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
++++ b/research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json
+@@ -43,7 +43,7 @@
+     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
+     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
+     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
+-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "0e3d03c681912e58aef1c9c55086fb8acba2e003d4aa3e3aea2761c32386b749"
++    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a"
+   },
+   "immutable_snapshot_layer": {
+     "scope": "current source only; new native tests authored, not executed",
+@@ -95,5 +95,16 @@
+     "added": [],
+     "defaultCallerActivation": false,
+     "nativeSwiftExecuted": false
++  },
++  "synthetic_diagnostics_layer": {
++    "beforeManifestSHA256": "422cedceb07da811737dbd82e189771c5ee3d5e4656c8cc523a1921e61c6411d",
++    "before": {
++      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "0e3d03c681912e58aef1c9c55086fb8acba2e003d4aa3e3aea2761c32386b749"
++    },
++    "after": {
++      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a"
++    },
++    "defaultCallerActivation": false,
++    "nativeSwiftExecuted": false
+   }
+ }
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -155,8 +155,8 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+-      "bytes": 39802,
+-      "sha256": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4"
++      "bytes": 40193,
++      "sha256": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+@@ -628,5 +628,16 @@
+     ],
+     "defaultCallerActivation": false,
+     "nativeSwiftExecuted": false
++  },
++  "synthetic_diagnostics_layer": {
++    "beforeManifestSHA256": "35ecc7f6575a5c6025821b32f5c666a57edce6c23cfb1b71bf95a0c6003e3875",
++    "before": {
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4"
++    },
++    "after": {
++      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
++    },
++    "defaultCallerActivation": false,
++    "nativeSwiftExecuted": false
+   }
+ }

@@ -1,0 +1,84 @@
+{
+  "additionalSavedGroundRows": 2,
+  "files": {
+    "coffee.indices.u32": {
+      "bytes": 1048440,
+      "sha256": "a7f7238114579bebe9951f35b2122559540d4076c3186bee767d2e8a2d096767"
+    },
+    "coffee.probes.json": {
+      "bytes": 52700,
+      "sha256": "e492bd97cbc0c626f5365935f3d6bca7b9d363328c95f2a34e3ee7fda139e4a2"
+    },
+    "coffee.vertices.f32": {
+      "bytes": 623580,
+      "sha256": "e373a1dba8872e7d9201ba9e35e3f28598fdc660842a28f7867386b1d40fb503"
+    },
+    "conference.indices.u32": {
+      "bytes": 352392,
+      "sha256": "2c5cb77f5548e12c2bcf59680b459389a097567cec0079f30526481d6e9b9324"
+    },
+    "conference.probes.json": {
+      "bytes": 148533,
+      "sha256": "9d0e8b4dd71f43c9aa32398fdae0e7f2dc8ef8b3511db65ff7df98e6c438f46b"
+    },
+    "conference.vertices.f32": {
+      "bytes": 220776,
+      "sha256": "50557edee3f4f0b1432c21206f1cc4f3b4c1133f0c0e754db70268eca7c250eb"
+    }
+  },
+  "fixedOriginalRows": 49,
+  "inputSHA256": {
+    "@REPO@/research/coffee-room-journey-recovery-20261029/collision-protocol/joint-route-body-candidate/SCHEDULE_0_8.json": "19bc3032e46b7218e62c1481d54be9a978c3233cbf19c19d1400ba4234d44d40",
+    "@REPO@/research/conference-body-source-20261029/ROUTES.json": "8c576659086d346cfd08cc63cbb40d416b962bc6b4ca45b4cd12a6c9d26dee1e",
+    "@REPO@/research/conference-replay-input-inventory-20261029/evidence/REGISTRATION_RESULT.json": "89653e85c7686aea4aef67b440d72d01d25494ebeea8891ef232be6b935592cb",
+    "@REPO@/research/rapier-analytic-comparator-source-20261030/REAL_ROOM_SELECTION.json": "847a2d252f242b2362dce8cfaa8b95d6e2b985a886fd5819c1f6c1a8088e3fd6",
+    "@WORKSPACE@/coffee-joint-route-body-attempt-001/comparison/CONTACTS.jsonl.gz": "8cbcb6fbc5fd87c4dd22cba1d82d03131e2ce3eb394ce54f425adc290298534e",
+    "@WORKSPACE@/coffee-joint-route-body-attempt-001/comparison/RECEIPT.json": "f3e0881536a80d2222d33e5f54617efc38914b532a6c644a2a327c8f7643ab2f",
+    "@WORKSPACE@/coffee-recovered-source/textured.obj": "f10de085426143ad095fefc713b4966d22fdf08beda9ff9ead759019a0a8306a",
+    "@WORKSPACE@/conference-body-comparison-attempt-001/comparison/CONTACTS.jsonl.gz": "f1b930185ee94b4b61fd8dbd2b85815ebe1d22148e34bbc3e796b010d91395be",
+    "@WORKSPACE@/conference-body-comparison-attempt-001/comparison/RECEIPT.json": "1f772214cbf62fa9c78f5a6891d17d4794abdc57d0fb9351809153cd99075b3f",
+    "@WORKSPACE@/conference-source-recovery/extracted-001/textured.obj": "79cfd017b9c88dca840c8ec969208a93593b03f600303d70cc6777b7c55438a1"
+  },
+  "maximumNestedRows": 408,
+  "physicalAuthority": false,
+  "rowsSelectedBeforeEngineResults": true,
+  "scenes": {
+    "coffee": {
+      "additionalFloat32ExactAliases": 0,
+      "cameraMeshCalibrationEstablished": false,
+      "distinctFloat32XYZ": 43617,
+      "distinctOriginalXYZ": 43617,
+      "frame": "original OBJ +Y up; identity normalization in raw VTK arm",
+      "indexBytesSHA256": "a7f7238114579bebe9951f35b2122559540d4076c3186bee767d2e8a2d096767",
+      "maxAbsCoordinateFloat32ConversionMetres": 1.1920166009815603e-07,
+      "probeCount": 9,
+      "probeSHA256": "e492bd97cbc0c626f5365935f3d6bca7b9d363328c95f2a34e3ee7fda139e4a2",
+      "sourceOBJ_SHA256": "f10de085426143ad095fefc713b4966d22fdf08beda9ff9ead759019a0a8306a",
+      "sourceTriangleOrdinalWindingPreserved": true,
+      "triangles": 87370,
+      "unsupportedOversize": 0,
+      "vertexBytesSHA256": "e373a1dba8872e7d9201ba9e35e3f28598fdc660842a28f7867386b1d40fb503",
+      "vertices": 51965
+    },
+    "conference": {
+      "additionalFloat32ExactAliases": 0,
+      "cameraMeshCalibrationEstablished": false,
+      "distinctFloat32XYZ": 14663,
+      "distinctOriginalXYZ": 14663,
+      "frame": "historical rigid registration comparator; exact executed Float32 bytes, not calibrated camera frame",
+      "indexBytesSHA256": "2c5cb77f5548e12c2bcf59680b459389a097567cec0079f30526481d6e9b9324",
+      "maxAbsCoordinateFloat32ConversionMetres": 2.3841082086306642e-07,
+      "probeCount": 42,
+      "probeSHA256": "9d0e8b4dd71f43c9aa32398fdae0e7f2dc8ef8b3511db65ff7df98e6c438f46b",
+      "sourceOBJ_SHA256": "79cfd017b9c88dca840c8ec969208a93593b03f600303d70cc6777b7c55438a1",
+      "sourceTriangleOrdinalWindingPreserved": true,
+      "triangles": 29366,
+      "unsupportedOversize": 0,
+      "vertexBytesSHA256": "50557edee3f4f0b1432c21206f1cc4f3b4c1133f0c0e754db70268eca7c250eb",
+      "vertices": 18398
+    }
+  },
+  "schema": 1,
+  "selectionSHA256": "847a2d252f242b2362dce8cfaa8b95d6e2b985a886fd5819c1f6c1a8088e3fd6",
+  "status": "materialized_source_only_no_Rapier_execution"
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "as_of": "2026-10-30T17:30:00Z",
+  "checks": [
+    "all 16 IDs retained",
+    "0 accepted workstreams and 0/400 whole journeys",
+    "13/2/1 groups not percentages",
+    "historical laps/matrix/component/family data unchanged",
+    "dependency DAG preserved",
+    "source/testing/device gates explicit",
+    "119 compile failure retained",
+    "ff0 exact seated failures retained",
+    "failed unit step separate from running overall job",
+    "reviewed candidate not marked published/native-tested",
+    "three active source slices not accepted",
+    "no internal workspace paths"
+  ],
+  "rejected_mutations": 9,
+  "scope": "Saved source/evidence accounting only; no live CI query, native execution, phone accuracy or device acceptance."
+}

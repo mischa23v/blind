@@ -1,0 +1,3 @@
+# Actual first Stage B failure
+
+Source binding published at 4d4e4da91202903236c50a0f454c19270bd74035 ran and exited 1 before the first scan insertion. The defaults assertion demanded 1e-12 probability agreement, whereas upstream stores float log-odds and the original native controls use absolute1e-7. The separate corrected source preserves this failure and changes no geometry or occupancy threshold. Seven pure-stdlib AST guard controls actually passed in0.004s with exit0 under20second outertimeout. Source hash of corrected retention:52027afeb32a38f49d69e25713fa434d01291e4fc8a75d111daf151b5f44d7d4. Corrected three-frame replay has not yet run.

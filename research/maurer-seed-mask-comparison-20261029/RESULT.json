@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "limits": {
+    "CPUCount": 1,
+    "RSSBytes": 536870912,
+    "cpuSeconds": 60,
+    "outputBytes": 104857600,
+    "wallSeconds": 120
+  },
+  "aggregateCPUSeconds": 1.964884,
+  "elapsedSeconds": 1.9938933039957192,
+  "peakConservativeAggregateRSSBytes": 138096640,
+  "peakSampledAggregateRSSBytes": 136241152,
+  "verifiedPinnedFileCount": 13,
+  "allPinnedInputsReverifiedAfterWorker": true,
+  "physicalAuthority": false,
+  "resourceEnforcement": "single CPU affinity; aggregate sampling with fast-exit rusage; child CPU/FSIZE rlimits; wall alarm",
+  "compileAttempts": 1,
+  "comparisonAttempts": 1,
+  "compileReturncode": 0,
+  "comparisonReturncode": 0,
+  "totals": {
+    "cases": 4113,
+    "tileRequests": 8226,
+    "checkedBits": 394938,
+    "exactDistanceCells": 43355,
+    "oracleWork": 92673168
+  },
+  "routesExecuted": false,
+  "RecastTilesExecuted": false,
+  "SwiftExecuted": false,
+  "allPinsUnchangedAfter": true,
+  "recordedFinalOutputBytes": 542623,
+  "derivedAggregateOnly": true,
+  "workUnitsNotComparableToDiskSeedTests": true,
+  "timingTilePairsNotSingleLayout": true
+}

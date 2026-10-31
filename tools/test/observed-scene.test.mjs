@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { assertDepthHazardsBefore, declaration, depthHazardsCall, depthHazardsSignature, frameSignature } from './helpers/navigation-source-contract.mjs';
 const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8');
 const model = await read('ios/BlindAssist/NavigationModel.swift');
 const scene = await read('BlindCore/Sources/BlindCore/ObservedScene.swift');
@@ -13,20 +14,7 @@ function assertRequiredOrder(source, earlier, later) {
   assert.ok(first >= 0 && second >= 0 && first < second, `${earlier} must exist before ${later}`);
 }
 function assertDetectorBeforeOffer(source) {
-  const frameStart = source.indexOf('func session(_ session: ARSession, didUpdate frame:');
-  assert.ok(frameStart >= 0, 'native frame callback must exist');
-  const frame = source.slice(frameStart);
-  const offer = frame.indexOf('$0.offer(observation, session: sceneSession');
-  const detector = frame.indexOf('detector.process(observation)');
-  assert.ok(detector >= 0 && offer >= 0 && detector < offer, 'actual urgent detector must precede scene work');
-  const required = frame.includes('let legacyDetection = detector.process(observation)')
-    ? ['if legacyDetection.hazard.isUrgent', 'phoneDetection = legacyDetection',
-       'phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)']
-    : ['phoneDetection = detector.process(observation)'];
-  for (const assignment of required) {
-    const position = frame.indexOf(assignment);
-    assert.ok(position >= 0 && position < offer, `${assignment} must precede scene work`);
-  }
+  assertDepthHazardsBefore(source, '$0.offer(observation, session: sceneSession');
 }
 test('observed scene consumes actual depth after urgent detector, off the native owner', () => {
   assertDetectorBeforeOffer(model);
@@ -87,21 +75,34 @@ test('new goal and changed body independently fence queued candidate plans', () 
 });
 
 test('urgent detector ordering contract rejects missing calls and premature scene work', () => {
-  const combined = model.includes('let legacyDetection = detector.process(observation)') ? model : model.replace(
-    'phoneDetection = detector.process(observation)',
-    `let legacyDetection = detector.process(observation)
-        if legacyDetection.hazard.isUrgent {
-            phoneDetection = legacyDetection
-        } else {
-            phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
-        }`);
-  for (const source of [model, combined]) {
-    assertDetectorBeforeOffer(source);
-    assert.throws(() => assertDetectorBeforeOffer(source.replaceAll('detector.process(observation)', 'detector.unavailable(observation)')));
-    assert.throws(() => assertDetectorBeforeOffer(source.replace('detector.process(observation)', '$0.offer(observation, session: sceneSession); detector.process(observation)')));
+  assertDetectorBeforeOffer(model);
+  const frame = declaration(model, frameSignature);
+  const helper = declaration(model, depthHazardsSignature);
+  // Declaration position is not execution order: the callsite and helper must
+  // both be inspected, without searching through later unrelated methods.
+  assertDetectorBeforeOffer(model.replace(helper, '').replace(frame, `${helper}\n${frame}`));
+  const mutate = changed => model.replace(frame, changed);
+  const offer = '$0.offer(observation, session: sceneSession';
+  const mutations = [
+    mutate(frame.replace(depthHazardsCall, '')),
+    mutate(frame.replace(depthHazardsCall, `Task { ${depthHazardsCall} }`)),
+    mutate(frame.replace(depthHazardsCall, `defer { ${depthHazardsCall} }`)),
+    mutate(frame.replace(depthHazardsCall, `if false { ${depthHazardsCall} }`)),
+    mutate(frame.replace(depthHazardsCall, `#if NEVER_ENABLED\n        ${depthHazardsCall}\n        #endif`)),
+    mutate(frame.replace(depthHazardsCall, `await ${depthHazardsCall}`)),
+    mutate(frame.replace(depthHazardsCall, `${offer}); ${depthHazardsCall}`)),
+    mutate(frame.replace(depthHazardsCall, '').replace('updateReadingTool(frame: frame)', `${depthHazardsCall}\n        updateReadingTool(frame: frame)`)),
+    model.replace(helper, helper.replace('detector.process(observation)', 'detector.unavailable(observation)')),
+    model.replace(helper, helper.replace('detector.process(observation)', `${offer}); detector.process(observation)`)),
+    model.replace(helper, helper.replace('phoneDetection = legacyDetection', 'phoneDetection = Detection(.uncertain)')),
+    model.replace(helper, helper.replace('phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)', 'phoneDetection = Detection(.uncertain)')),
+    model.replace(helper, helper.replace('let legacyDetection = detector.process(observation)', 'return\n        let legacyDetection = detector.process(observation)')),
+    model.replace(helper, helper.replace('let legacyDetection = detector.process(observation)', 'Task { let legacyDetection = detector.process(observation) }'))
+  ];
+  for (const changed of mutations) {
+    assert.notEqual(changed, model);
+    assert.throws(() => assertDetectorBeforeOffer(changed), { name: 'AssertionError' });
   }
-  assert.throws(() => assertDetectorBeforeOffer(combined.replace('phoneDetection = legacyDetection', 'phoneDetection = Detection(.uncertain)')));
-  assert.throws(() => assertDetectorBeforeOffer(combined.replace('phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)', 'phoneDetection = Detection(.uncertain)')));
 });
 
 test('capture-loss and timestamp-order contracts reject absent guard tokens', () => {

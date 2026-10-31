@@ -1,0 +1,618 @@
+{
+  "observed_at": "2026-10-30T05:06:38Z",
+  "source561": {
+    "run_id": 41003352906,
+    "jobs": [
+      {
+        "id": 123894584466,
+        "name": "mesh-diagnostics-compile",
+        "status": "completed",
+        "conclusion": "failure",
+        "run_id": 41003352906,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Verify integrated no-copy source and toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Compile diagnostics flag present only",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run exact flag-only seated projection and ownership fixtures",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 5
+          },
+          {
+            "name": "Verify exact twelve synthetic hosted cases and source identity",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 6
+          },
+          {
+            "name": "Preserve bounded flag-only synthetic fixture receipt",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7
+          },
+          {
+            "name": "Emit bounded log-only CI receipts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17
+          }
+        ]
+      },
+      {
+        "id": 123894584687,
+        "name": "classified-mesh-bench",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 41003352906,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Verify source and installed Apple toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run isolated classified-mesh package fixtures on macOS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Preserve classified-mesh synthetic test results",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 5
+          },
+          {
+            "name": "Emit bounded log-only CI receipts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          }
+        ]
+      },
+      {
+        "id": 123894584882,
+        "name": "native",
+        "status": "completed",
+        "conclusion": "failure",
+        "run_id": 41003352906,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Verify source and installed Apple toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "BlindCore package tests on macOS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "BlindMemory package tests on macOS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Unsigned default iOS Simulator build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Hosted iOS unit tests",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 7
+          },
+          {
+            "name": "Extract bounded hosted-unit case statuses before UI tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Preserve bounded hosted-unit case statuses",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 9
+          },
+          {
+            "name": "Preserve bounded public Apple same-export comparison assets",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 10
+          },
+          {
+            "name": "Run exact optional seed-radius policy and existing strict controls",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Export bounded focused identities and assertion failures before strict validation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Verify exact fourteen seed-radius hosted cases and source identity",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Preserve bounded optional-policy hosted receipt",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 14
+          },
+          {
+            "name": "iOS UI and accessibility audit tests",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 15
+          },
+          {
+            "name": "Extract callback evidence from the existing UI result bundle",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Preserve bounded synthetic main UI audit evidence",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 17
+          },
+          {
+            "name": "Inspect exact synthetic UI test device identities",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 18
+          },
+          {
+            "name": "Preserve bounded synthetic UI device identity evidence",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 19
+          },
+          {
+            "name": "Extract bounded synthetic Practice runtime evidence",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 20
+          },
+          {
+            "name": "Preserve bounded synthetic Practice runtime evidence",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 21
+          },
+          {
+            "name": "Summarize native evidence and preserve source",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22
+          },
+          {
+            "name": "Emit bounded log-only CI receipts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 46
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47
+          }
+        ]
+      }
+    ],
+    "artifacts": []
+  },
+  "source276": {
+    "runs": [
+      {
+        "id": 41004441091,
+        "name": "Candidate room mesh SwiftPM proof",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mischa23v/blind/actions/runs/41004441091",
+        "head_sha": "276b1c522bd5ff4ff26df23ba83a7728bdce3df9",
+        "updated_at": "2026-10-30T04:44:29Z"
+      },
+      {
+        "id": 41004441011,
+        "name": "Candidate owned mesh ingress integration",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mischa23v/blind/actions/runs/41004441011",
+        "head_sha": "276b1c522bd5ff4ff26df23ba83a7728bdce3df9",
+        "updated_at": "2026-10-30T04:45:01Z"
+      },
+      {
+        "id": 41004440960,
+        "name": "Native Apple SDK checks",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/mischa23v/blind/actions/runs/41004440960",
+        "head_sha": "276b1c522bd5ff4ff26df23ba83a7728bdce3df9",
+        "updated_at": "2026-10-30T05:02:14Z"
+      }
+    ],
+    "jobs": [
+      {
+        "id": 123901373491,
+        "name": "classified-mesh-bench",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 41004440960,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Verify source and installed Apple toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run isolated classified-mesh package fixtures on macOS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Preserve classified-mesh synthetic test results",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 5
+          },
+          {
+            "name": "Emit bounded log-only CI receipts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          }
+        ]
+      },
+      {
+        "id": 123901373776,
+        "name": "native",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_id": 41004440960,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Verify source and installed Apple toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "BlindCore package tests on macOS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "BlindMemory package tests on macOS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Unsigned default iOS Simulator build",
+            "status": "in_progress",
+            "conclusion": null,
+            "number": 6
+          },
+          {
+            "name": "Hosted iOS unit tests",
+            "status": "pending",
+            "conclusion": null,
+            "number": 7
+          },
+          {
+            "name": "Extract bounded hosted-unit case statuses before UI tests",
+            "status": "pending",
+            "conclusion": null,
+            "number": 8
+          },
+          {
+            "name": "Preserve bounded hosted-unit case statuses",
+            "status": "pending",
+            "conclusion": null,
+            "number": 9
+          },
+          {
+            "name": "Preserve bounded public Apple same-export comparison assets",
+            "status": "pending",
+            "conclusion": null,
+            "number": 10
+          },
+          {
+            "name": "Run exact optional seed-radius policy and existing strict controls",
+            "status": "pending",
+            "conclusion": null,
+            "number": 11
+          },
+          {
+            "name": "Export bounded focused identities and assertion failures before strict validation",
+            "status": "pending",
+            "conclusion": null,
+            "number": 12
+          },
+          {
+            "name": "Verify exact fourteen seed-radius hosted cases and source identity",
+            "status": "pending",
+            "conclusion": null,
+            "number": 13
+          },
+          {
+            "name": "Preserve bounded optional-policy hosted receipt",
+            "status": "pending",
+            "conclusion": null,
+            "number": 14
+          },
+          {
+            "name": "iOS UI and accessibility audit tests",
+            "status": "pending",
+            "conclusion": null,
+            "number": 15
+          },
+          {
+            "name": "Extract callback evidence from the existing UI result bundle",
+            "status": "pending",
+            "conclusion": null,
+            "number": 16
+          },
+          {
+            "name": "Preserve bounded synthetic main UI audit evidence",
+            "status": "pending",
+            "conclusion": null,
+            "number": 17
+          },
+          {
+            "name": "Inspect exact synthetic UI test device identities",
+            "status": "pending",
+            "conclusion": null,
+            "number": 18
+          },
+          {
+            "name": "Preserve bounded synthetic UI device identity evidence",
+            "status": "pending",
+            "conclusion": null,
+            "number": 19
+          },
+          {
+            "name": "Extract bounded synthetic Practice runtime evidence",
+            "status": "pending",
+            "conclusion": null,
+            "number": 20
+          },
+          {
+            "name": "Preserve bounded synthetic Practice runtime evidence",
+            "status": "pending",
+            "conclusion": null,
+            "number": 21
+          },
+          {
+            "name": "Summarize native evidence and preserve source",
+            "status": "pending",
+            "conclusion": null,
+            "number": 22
+          },
+          {
+            "name": "Emit bounded log-only CI receipts",
+            "status": "pending",
+            "conclusion": null,
+            "number": 23
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "pending",
+            "conclusion": null,
+            "number": 46
+          }
+        ]
+      },
+      {
+        "id": 123901373790,
+        "name": "mesh-diagnostics-compile",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_id": 41004440960,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Verify integrated no-copy source and toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Compile diagnostics flag present only",
+            "status": "in_progress",
+            "conclusion": null,
+            "number": 4
+          },
+          {
+            "name": "Run exact flag-only seated projection and ownership fixtures",
+            "status": "pending",
+            "conclusion": null,
+            "number": 5
+          },
+          {
+            "name": "Verify exact twelve synthetic hosted cases and source identity",
+            "status": "pending",
+            "conclusion": null,
+            "number": 6
+          },
+          {
+            "name": "Preserve bounded flag-only synthetic fixture receipt",
+            "status": "pending",
+            "conclusion": null,
+            "number": 7
+          },
+          {
+            "name": "Emit bounded log-only CI receipts",
+            "status": "pending",
+            "conclusion": null,
+            "number": 8
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "pending",
+            "conclusion": null,
+            "number": 16
+          }
+        ]
+      }
+    ],
+    "artifact_lists": {
+      "41004441091": {
+        "artifacts": []
+      },
+      "41004441011": {
+        "artifacts": []
+      },
+      "41004440960": {
+        "artifacts": []
+      }
+    },
+    "scope": "Snapshot only; native and seated still running. Root monitors terminal results."
+  }
+}

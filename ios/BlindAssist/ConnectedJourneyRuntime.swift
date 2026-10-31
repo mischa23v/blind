@@ -102,6 +102,39 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     // Opt-in hosted-test instrumentation only. Nil for ordinary app instances;
     // no global logging, user payloads, scheduling changes or release-build API.
     var diagnosticPhaseRecorder: (@Sendable (String, UUID, TimeInterval) -> Void)?
+    // Test observability only: retain the actual outer tasks, including main-owner
+    // publication. Never substitute a test executor or change production priority.
+    private var diagnosticRestoreCompletion: (UUID, Task<Void, Never>)?
+    private var diagnosticCatalogCompletion: (UUID, Task<Void, Never>)?
+    private var diagnosticWriteCompletion: (UUID, Task<Void, Never>)?
+    enum DiagnosticCompletionError: Error { case missingOperation, unfinishedOperation }
+
+    /// Functional fixture fence, not a latency claim. Tests must release held IO
+    /// before calling. Successor catalog/write operations are part of the fence.
+    /// A completed task that leaves its own operation active is an error, not a retry.
+    func waitForPendingOperationsForTesting() async throws {
+        while loadID != nil || mapWorkID != nil || writing != nil {
+            if let id = loadID {
+                guard let operation = diagnosticRestoreCompletion, operation.0 == id else {
+                    throw DiagnosticCompletionError.missingOperation
+                }
+                await operation.1.value
+                guard loadID != id else { throw DiagnosticCompletionError.unfinishedOperation }
+            } else if let id = mapWorkID {
+                guard let operation = diagnosticCatalogCompletion, operation.0 == id else {
+                    throw DiagnosticCompletionError.missingOperation
+                }
+                await operation.1.value
+                guard mapWorkID != id else { throw DiagnosticCompletionError.unfinishedOperation }
+            } else if let id = writing {
+                guard let operation = diagnosticWriteCompletion, operation.0 == id else {
+                    throw DiagnosticCompletionError.missingOperation
+                }
+                await operation.1.value
+                guard writing != id else { throw DiagnosticCompletionError.unfinishedOperation }
+            }
+        }
+    }
 #endif
     public private(set) var snapshot = ConnectedJourneySnapshot()
     public private(set) var loading = false
@@ -116,7 +149,43 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     public var onChange: (() -> Void)?
     public var goal: JourneyGoal? { snapshot.goal }
     public var question: JourneyReturnQuestion? { coordinator?.currentQuestion }
+    /// Diagnostic reason for withholding executable following; not a hazard
+    /// observation or replacement for current obstacle/support evidence.
+    public private(set) var routeReassociationReason: SpatialRouteError?
     public var expectedSessionID: UUID? { coordinator?.expectedSessionID }
+    /// Read-only diagnostic snapshot; unlike next(now:), never changes held output.
+    public var diagnosticOwnedRoute: NavigationTestRecording.OwnedRoute? {
+        guard !loading, !externalMapPending, !mapValidationBlocked, mapWorkID == nil,
+              !commandBlocked else { return nil }
+        return coordinator?.diagnosticOwnedRoute
+    }
+#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    /// Selected intent only, never observed current room/floor or live localization.
+    /// Reuses the installed catalog. Neither lookup nor the receipt changes history.
+    public struct DiagnosticDestination: Equatable, Sendable {
+        public let reference: JourneyReference
+        public let goalRevision: UUID
+        public let artifact: SpatialMapArtifactIdentity
+        public let mapRevision: SpatialMapRevision
+        public let position: Point3
+        public let registryInstallationID: UUID
+        public let catalogRevision: UUID
+        public let ownerID: UUID
+    }
+    private let diagnosticDestinationOwnerID = UUID() // Never persisted/recovered.
+    public var diagnosticDestination: DiagnosticDestination? {
+        guard !loading, !storageError, !externalMapPending, !mapValidationBlocked,
+              mapWorkID == nil, !commandBlocked, let catalog, let goal,
+              goal.status == .active || goal.status == .paused,
+              (try? catalog.validate(goal.target)) != nil,
+              let node = try? catalog.node(goal.target.endpoint),
+              let revision = try? catalog.registry.map(for: goal.target.endpoint.binding),
+              let installation = catalog.installations[goal.target.endpoint.binding] else { return nil }
+        return .init(reference: goal.target, goalRevision: goal.revision,
+            artifact: installation.artifact, mapRevision: revision, position: node.position,
+            registryInstallationID: catalog.registry.installationID, catalogRevision: mapRevision, ownerID: diagnosticDestinationOwnerID)
+    }
+#endif
     public var nativeLocalizationContext: NativeLocalizationRouteContext? {
         guard !loading, !externalMapPending, !mapValidationBlocked, mapWorkID == nil, !commandBlocked else { return nil }
         return coordinator?.nativeLocalizationContext
@@ -178,7 +247,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
         let trace = diagnosticPhaseRecorder
         trace?("restore-task-queued", id, ProcessInfo.processInfo.systemUptime)
 #endif
-        Task { [weak self, io, sha256] in
+        let completion = Task { [weak self, io, sha256] in
 #if DEBUG
             trace?("restore-task-entered", id, ProcessInfo.processInfo.systemUptime)
 #endif
@@ -261,10 +330,14 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                 self.onChange?()
             }
         }
+#if DEBUG
+        diagnosticRestoreCompletion = (id, completion)
+#endif
     }
     /// Installs source-known artifacts after the existing native atomic map import
     /// succeeds. A queued initial installation is one latest value, not a FIFO.
     public func install(_ installation: SpatialMapInstallation, portals: [JourneyPortal] = []) throws {
+        guard installation.map.permitsRoutePlanning else { throw JourneyRuntimeError.noRegisteredMap }
         retire(); coordinator?.loseTracking()
         if loading { pendingInstallation = (installation, portals); return }
         guard !storageError else { throw JourneyRuntimeError.storageUnavailable }
@@ -310,7 +383,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
         let trace = diagnosticPhaseRecorder
         trace?("catalog-task-queued", input.0, ProcessInfo.processInfo.systemUptime)
 #endif
-        Task { [weak self] in
+        let completion = Task { [weak self] in
 #if DEBUG
             trace?("catalog-task-entered", input.0, ProcessInfo.processInfo.systemUptime)
             trace?("catalog-detached-queued", input.0, ProcessInfo.processInfo.systemUptime)
@@ -361,6 +434,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
             }
             self.onChange?()
         }
+#if DEBUG
+        diagnosticCatalogCompletion = (input.0, completion)
+#endif
     }
     public func configure(body: BodyEnvelope, limits: SpatialLocalizationLimits) throws {
         retire(); coordinator?.loseTracking()
@@ -462,9 +538,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
         if let binding { try withdrawMap(binding) }
         else { externalMapPending = false; cameraRestarted() }
     }
-    public func cameraRestarted() { retire(); lastEndpoint = nil; coordinator?.loseTracking(); status = "Destination retained. Live location is unknown."; onChange?() }
+    public func cameraRestarted() { retire(); lastEndpoint = nil;routeReassociationReason=nil; coordinator?.loseTracking(); status = "Destination retained. Live location is unknown."; onChange?() }
     public func beginLocalization(in binding: SpatialMapBinding) throws -> UUID {
-        retireOutput(); lastEndpoint = nil
+        retireOutput(); lastEndpoint = nil;routeReassociationReason=nil
         guard !loading, !externalMapPending, !mapValidationBlocked, mapWorkID == nil else { throw JourneyRuntimeError.loading }
         guard var owner = coordinator else { throw JourneyRuntimeError.noRegisteredMap }
         defer { coordinator = owner }
@@ -491,24 +567,38 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                 pendingStartOrigin = nil
             }
             if canOutput, snapshot.goal?.status == .active, !snapshot.returnClarificationPending {
+                if try coordinator?.retireUnassociatedPortal(at: endpoint, now: now) == true {
+                    // This capture established only the current endpoint. The
+                    // abandoned transition contributes no crossing/history fact.
+                    retireOutput(); routeReassociationReason = nil
+                    status = "Destination retained. Replanning from fresh current location; the earlier transition was not verified."
+                }
                 if coordinator?.currentLeg == nil, let target = snapshot.goal?.target.endpoint, sameLocation(endpoint, target) {
                     try mutate(retireClarification: false) { try $0.completeAtGoal(now: now, recordedAt: Date(), persist: { _ in }) }
                 } else if case .local(_, let to)? = coordinator?.currentLeg, sameLocation(endpoint, to) {
                     try mutate(retireClarification: false) { try $0.completeLocalLeg(now: now, recordedAt: Date(), persist: { _ in }) }
-                    if case .portal? = coordinator?.currentLeg { try coordinator?.armPortal(now: now, recordedAt: Date()) }
+                    if case .portal? = coordinator?.currentLeg {
+                        try coordinator?.armPortal(now:now,recordedAt:Date())
+                        try preparePortalDestinationLocalization(now:now)
+                    }
                 } else if case .portal(_, let from, _)? = coordinator?.currentLeg, sameLocation(endpoint, from) {
                     // Evidence withdrawal discards the old departure receipt but
                     // retains intent. Only this fresh measured source endpoint
                     // can rearm it; the old departure is never restored.
                     try coordinator?.armPortal(now: now, recordedAt: Date())
+                    try preparePortalDestinationLocalization(now:now)
                 } else if case .portal(_, _, let to)? = coordinator?.currentLeg, sameLocation(endpoint, to) {
                     try mutate(retireClarification: false) { try $0.completePortal(now: now, recordedAt: Date(), persist: { _ in }) }
-                    try coordinator?.prepareLocalLeg(now: now)
+                    // completePortal already prepares the next local leg exactly once.
                 } else if coordinator?.currentLeg == nil {
                     try coordinator?.plan(from: endpoint, now: now)
+                    routeReassociationReason=nil
                     // An itinerary can begin directly at an authored portal
                     // source. Associate the fresh source, never crossing guidance.
-                    if case .portal? = coordinator?.currentLeg { try coordinator?.armPortal(now: now, recordedAt: Date()) }
+                    if case .portal? = coordinator?.currentLeg {
+                        try coordinator?.armPortal(now:now,recordedAt:Date())
+                        try preparePortalDestinationLocalization(now:now)
+                    }
                 } else {
                     // The existing owner verifies proximity before advancing. A
                     // non-waypoint sample is not arrival and leaves the plan alone.
@@ -519,9 +609,25 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
         onChange?()
     }
     private var canOutput: Bool { !loading && !externalMapPending && !mapValidationBlocked && mapWorkID == nil && durable && !storageError && !commandBlocked }
+    private func preparePortalDestinationLocalization(now:Double) throws {
+        guard let target=coordinator?.pendingPortalDestination(now:now) else{return}
+        // Begin only requests a new existing owner/session. It supplies no pose,
+        // transform, crossing evidence, calibration or support. The native issuer
+        // must bind fresh evidence to THIS new destination context before accept.
+        _ = try coordinator?.beginLocalization(in:target.binding)
+        lastEndpoint=nil;retireOutput()
+        status="Transition destination selected. Current destination location and crossing remain unverified; fresh registered evidence required."
+    }
     public func next(now: Double) throws -> ConnectedJourneyRouteTicket {
         guard canOutput, let coordinator else { throw JourneyRuntimeError.storageUnavailable }
-        let ticket = try coordinator.next(now: now); held = ticket; return ticket
+        do {
+            let ticket=try coordinator.next(now:now);held=ticket;routeReassociationReason=nil;return ticket
+        } catch let reason as SpatialRouteError where reason == .offRoute || reason == .blockedLeg {
+            retireOutput();self.coordinator?.requireRouteReassociation();lastEndpoint=nil
+            routeReassociationReason=reason
+            status="Route withheld (\(reason)). Fresh supported association with a unique mapped endpoint is required; no snapping or shortcut was applied."
+            onChange?();throw reason
+        } catch {retireOutput();throw error}
     }
     public func permits(_ ticket: SpatialRouteTicket, now: Double) -> Bool {
         guard canOutput, let held,
@@ -529,6 +635,8 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
               held.route.spatial == ticket.spatial else { return false }
         return coordinator?.permits(held, now: now) == true
     }
+    /// Current phone evidence can veto held output without deleting the goal/map.
+    public func retireCurrentObstacleEvidence() { retireOutput() }
     public func revalidate(now: Double) { if let held, !permits(held.route, now: now) { retireOutput() } }
     public func saveReference(origin: CompanionCommandOrigin, now: Double) throws {
         guard CommandAuthority.permits(.changeGoal, from: origin) else { throw ConnectedJourneyError.unauthorized }
@@ -617,7 +725,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     }
     private func startWrite(_ ticket: UUID, _ payload: JourneyRuntimeWrite) {
         writing = ticket
-        Task { [weak self, io] in
+        let completion = Task { [weak self, io] in
             var error: Error?
             do { try await io.write(payload) } catch let failure { error = failure }
             guard let self, self.writing == ticket else { return }
@@ -638,9 +746,13 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
             }
             self.onChange?()
         }
+#if DEBUG
+        diagnosticWriteCompletion = (ticket, completion)
+#endif
     }
     private func retireOutput() { held = nil; onOutputRetired?() }
     private func retire() {
+        routeReassociationReason=nil
         retireOutput()
         if let question { onClarificationRetired?(question.id) }
         if let token = clarificationToken { _ = clarificationLedger.finish(token: token, outcome: .interrupted, now: 0) }

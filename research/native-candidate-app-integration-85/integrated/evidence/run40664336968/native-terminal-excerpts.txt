@@ -1,0 +1,29 @@
+2026-10-28T09:27:14.4989050Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +9e8585c81874a97a4eac670a73ee7dd11886d8da:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T09:27:21.2364270Z  * [new ref]         9e8585c81874a97a4eac670a73ee7dd11886d8da -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T09:27:21.2598900Z 9e8585c81874a97a4eac670a73ee7dd11886d8da
+2026-10-28T09:27:22.9900570Z 9e8585c81874a97a4eac670a73ee7dd11886d8da
+2026-10-28T09:27:23.7020810Z 9e8585c81874a97a4eac670a73ee7dd11886d8da
+2026-10-28T09:29:03.5851300Z core exit status: 0
+2026-10-28T09:29:03.6328230Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 8.313 (8.508) seconds
+2026-10-28T09:29:03.6330700Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 8.313 (8.513) seconds
+2026-10-28T09:30:03.4460840Z memory exit status: 0
+2026-10-28T09:30:03.4665920Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 11.374 (11.386) seconds
+2026-10-28T09:30:03.4667960Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 11.374 (11.390) seconds
+2026-10-28T09:32:42.6645620Z build exit status: 0
+2026-10-28T09:32:42.7871570Z ** BUILD SUCCEEDED **
+2026-10-28T09:37:58.9414210Z unit exit status: 65
+2026-10-28T09:37:59.4499520Z /Users/runner/work/blind/blind/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift:123: error: -[BlindAssistTests.ObservedSceneRuntimeTests testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene] : XCTAssertLessThanOrEqual failed: ("3.5368111666666664") is greater than ("1.2") - Original latency budget exceeded; functional completion is not a speed claim
+2026-10-28T09:37:59.4502470Z Test Case '-[BlindAssistTests.ObservedSceneRuntimeTests testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene]' failed (3.889 seconds).
+2026-10-28T09:37:59.4880660Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomDiagnosticGeometryAppleFixtureTests.swift:115: error: -[BlindAssistTests.SavedRoomDiagnosticGeometryAppleFixtureTests testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor] : XCTAssertEqual failed: ("2992BA3E-95A8-4D34-825A-87A3E76C74E9") is not equal to ("27A67E9F-C699-42D4-9135-DB8DEE4F0168")
+2026-10-28T09:37:59.4883560Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomDiagnosticGeometryAppleFixtureTests.swift:115: error: -[BlindAssistTests.SavedRoomDiagnosticGeometryAppleFixtureTests testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor] : XCTAssertEqual failed: ("B966A24E-2050-4395-AAC2-7B9BDB6BC1F0") is not equal to ("D9630927-9666-422B-8B42-B2FAF91B709E")
+2026-10-28T09:37:59.4886220Z Test Case '-[BlindAssistTests.SavedRoomDiagnosticGeometryAppleFixtureTests testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor]' failed (0.026 seconds).
+2026-10-28T09:38:00.5547880Z OBSERVED_SCENE_FENCE_PHASE phase=goal OBSERVED_SCENE_WORK_TIMING id=F92C1F96-61F4-44E2-9BF2-880D48166A2C admitted=1004.9169149583335 workerStarted=1004.9475940416668 workerFinished=1006.4411912083334 mainDelivered=1006.4412360833334 queueAdmission=0.030679083333325252 workerWall=1.493597166666632 mainHandoff=4.487499995775579e-05
+2026-10-28T09:38:00.5551760Z OBSERVED_SCENE_FENCE_PHASE phase=body OBSERVED_SCENE_WORK_TIMING id=515F0FDC-941B-40D0-95DA-F9E0F4C29479 admitted=1006.4419373750001 workerStarted=1006.4450322916667 workerFinished=1008.1794915833334 mainDelivered=1008.17955125 queueAdmission=0.0030949166666687233 workerWall=1.734459291666667 mainHandoff=5.966666662970965e-05
+2026-10-28T09:38:00.5556640Z OBSERVED_SCENE_FENCE_PHASE phase=fresh OBSERVED_SCENE_WORK_TIMING id=6351E541-66B4-4CE7-85F4-3B5BE1A88BCF admitted=1008.1801219583334 workerStarted=1008.3480630416667 workerFinished=1008.4361149166667 mainDelivered=1008.4361587083334 queueAdmission=0.1679410833332895 workerWall=0.08805187500001921 mainHandoff=4.379166671242274e-05
+2026-10-28T09:38:00.5560510Z OBSERVED_SCENE_FENCE_LATENCY elapsed=3.5368111666666664 originalBudget=1.2 functionalCompletion=true
+2026-10-28T09:51:17.0643900Z ui exit status: 65
+2026-10-28T09:51:17.1447620Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:373: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Contrast failed
+2026-10-28T09:51:17.1448570Z Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (48.633 seconds).
+2026-10-28T09:51:17.1563250Z PRACTICE_CANCEL elapsedUpperBound=5.074456458333316 limit=90.0 explicitEndTap=true
+2026-10-28T09:51:24.1875670Z unit xcresult: {"result": "Failed", "totalTestCount": 194, "passedTests": 185, "failedTests": 7, "skippedTests": 2, "expectedFailures": 0, "startTime": 1793179971.051, "finishTime": 1793180273.976}
+2026-10-28T09:51:24.3434180Z ui xcresult: {"result": "Failed", "totalTestCount": 18, "passedTests": 14, "failedTests": 1, "skippedTests": 3, "expectedFailures": 0, "startTime": 1793180287.183, "finishTime": 1793181068.695}

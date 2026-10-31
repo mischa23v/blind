@@ -1,0 +1,90 @@
+{
+  "label": "simulator-package-build",
+  "command": [
+    "xcrun",
+    "--sdk",
+    "macosx",
+    "swift",
+    "build",
+    "--build-system",
+    "native",
+    "--package-path",
+    "/Users/runner/work/blind/blind/research/room-mesh-package-75/BlindRoomMesh",
+    "--scratch-path",
+    "/Users/runner/work/_temp/blind-mesh-candidate-ingress-83/simulator-package",
+    "--configuration",
+    "release",
+    "--jobs",
+    "1",
+    "--triple",
+    "arm64-apple-ios17.0-simulator",
+    "--sdk",
+    "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+    "-Xswiftc",
+    "-enable-testing",
+    "-Xcc",
+    "-O1",
+    "-Xcxx",
+    "-O1",
+    "--cache-path",
+    "/Users/runner/work/_temp/blind-mesh-candidate-ingress-83/swiftpm-cache",
+    "--manifest-cache",
+    "local",
+    "-Xswiftc",
+    "-module-cache-path",
+    "-Xswiftc",
+    "/Users/runner/work/_temp/blind-mesh-candidate-ingress-83/simulator-package-module-cache",
+    "-Xcc",
+    "-fmodules-cache-path=/Users/runner/work/_temp/blind-mesh-candidate-ingress-83/simulator-package-clang-cache"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "exceptionType": null,
+  "wallSeconds": 9.418300499999987,
+  "scratchBytesAfterCommand": 87059351,
+  "scratchCapExceeded": false,
+  "scratchScanComplete": true,
+  "scratchEntriesScanned": 425,
+  "largestScratchFiles": [
+    {
+      "path": "host-package-clang-cache/18LUXMWMEVRH3/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6571024
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570360
+    },
+    {
+      "path": "host-package-clang-cache/18LUXMWMEVRH3/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871944
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871336
+    },
+    {
+      "path": "simulator-package-clang-cache/48MLG9Y0GETY/Foundation-GMXN3YSRP9U8.pcm",
+      "bytes": 5580224
+    },
+    {
+      "path": "host-package-clang-cache/18LUXMWMEVRH3/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4514376
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4513744
+    },
+    {
+      "path": "simulator-package-clang-cache/48MLG9Y0GETY/Darwin-1VRQ8X47OYAR9.pcm",
+      "bytes": 4070200
+    }
+  ],
+  "fileCapBytes": 134217728,
+  "scratchCapBytes": 536870912,
+  "cpuCapSeconds": 300,
+  "wallTimeoutSeconds": 300,
+  "scratchAccounting": "stage-end only; scoped tree; not a live disk quota",
+  "terminationSignal": null,
+  "fileSizeLimitSignal": false,
+  "logTail": "Building for production...\n[0/27] Write swift-version--321F17CF50CD0476.txt\n[1/27] Compiling RecastRegion.cpp\n[2/27] Compiling RecastRasterization.cpp\n[3/27] Compiling RecastMeshDetail.cpp\n[4/27] Compiling RecastMesh.cpp\n[5/27] Compiling RecastLayers.cpp\n[6/27] Compiling RecastFilter.cpp\n[7/27] Compiling RecastContour.cpp\n[8/27] Compiling RecastAssert.cpp\n[9/27] Compiling RecastArea.cpp\n[10/27] Compiling RecastAlloc.cpp\n[11/27] Compiling Recast.cpp\n[12/27] Compiling DetourProximityGrid.cpp\n[13/27] Compiling DetourPathQueue.cpp\n[14/27] Compiling DetourPathCorridor.cpp\n[15/27] Compiling DetourObstacleAvoidance.cpp\n[16/27] Compiling DetourLocalBoundary.cpp\n[17/27] Compiling DetourCrowd.cpp\n[18/27] Compiling DetourNode.cpp\n[19/27] Compiling DetourNavMeshQuery.cpp\n[20/27] Compiling DetourNavMeshBuilder.cpp\n[21/27] Compiling DetourNavMesh.cpp\n[22/27] Compiling DetourCommon.cpp\n[23/27] Compiling DetourAssert.cpp\n[24/27] Compiling DetourAlloc.cpp\n[25/27] Compiling CDetour clearance_adapter.cpp\n[26/27] Write sources\n[28/28] Compiling BlindRoomMesh Bridge.swift\nBuild complete! (8.14s)\nwarning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system."
+}

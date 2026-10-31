@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "fb879d235f38a3f0121b69b023e8ee14c0ded61c",
+  "method": "disposable buffered geometry/lifecycle probe; no layout-driving state",
+  "files": {
+    "ios/BlindAssist/DashboardView.swift": {
+      "before": "7c1ee284cb9b0a73ccc64dd18128a82d1864b40b5d234af71f6d1a5680b0ac86",
+      "after": "23e635dbddf5208e4e05c5b6bf6911df16b45ace0f23da3b350603659c55b2a6"
+    },
+    "ios/BlindAssistUITests/LaunchTests.swift": {
+      "before": "7678df48b63dd78f3e8dabef81e7042dc821458db59749bcbc8ab585648de6e4",
+      "after": "7fcac4c7f2353c95172566eb83be481bc27226e3f757c15df2c23cc14532c01e"
+    },
+    "ios/BlindAssistUITests/CameraAuditScopeTests.swift": {
+      "before": "ea5371aecc0303e15ac5ee9a1f80e0e76ae916db82f783888fa82c7f459fb1d8",
+      "after": "8a174433efb90b15db2922679b3caa7e9c4c105235a360656b79a89aab067566"
+    },
+    "tools/ci/camera-audit-scope-control.py": {
+      "before": "3b853a7caac35fc8d63cb206aa5260845cd198265a3d2599eb8e359331475550",
+      "after": "83dbad591291ef0fb390521b82735f2a4dde2c982c9b8f7d50c137901ea8b18a"
+    }
+  },
+  "nativeExecutionEvidence": "See runner outcomes.json build and cases; invocation alone is not execution",
+  "collectorSha256": "b60726d75696193ee042f1c69a23b8d7c8d1ace4daf82e1f8ce77bbbde04a97e",
+  "runnerInvoked": true,
+  "runnerExitCode": 1
+}

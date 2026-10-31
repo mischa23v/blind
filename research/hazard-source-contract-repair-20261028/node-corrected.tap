@@ -1,0 +1,19 @@
+✔ native hazard sampler uses shared policy without copying buffers or changing world transform (5.56983ms)
+✔ shared values retain native hazard semantics and Float-to-Double order (0.478024ms)
+✔ existing ingress cadence and nil invalidation still precede detector; runtime cadence stays owned (167.778283ms)
+✔ passive observations enter foreground loop independently of a find command (20.056875ms)
+✔ historical retrieval precedes another current-view search and never saves camera as object (9.843906ms)
+✔ unverified onset preserves original search, explicit controls cancel and current delivery checks pose (13.874886ms)
+✔ runtime detector rejects incompatible raw tensor results and has no classifier geometry fallback (2.425535ms)
+✔ history is bounded private storage, deletable and old scans do not resurrect after clear (12.127141ms)
+✔ completion is accounted on the actual speech callback and stopped sessions stay quiet (11.015939ms)
+✔ room transitions and privacy changes cannot relabel or resurrect old captures (11.141197ms)
+✔ continuous pose/hazard cadence is separate from bounded async visual observations (115.339051ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 778.295276

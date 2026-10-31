@@ -1,0 +1,171 @@
+--- real-room/run_aggregate.py
++++ support-datum/run_aggregate.py
+@@ -18,9 +18,9 @@
+         signal.signal(sig,lambda s,_f: (_ for _ in ()).throw(SystemExit('Supervisor interrupted: '+str(s))))
+     manifestBytes=(H/'RUN_PINS.json').read_bytes();manifestSHA=hashlib.sha256(manifestBytes).hexdigest()
+     pins=json.loads(manifestBytes)
+-    if pins['protocol']!='rapier-real-room-fixed-probes-v1-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
++    if pins['protocol']!='rapier-six-pose-support-datum-v1-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
+     if pins['limits']!={'cpuSeconds':CPU,'wallSeconds':WALL,'observedRSSBytes':RSS,
+-                       'outputBytes':OUTPUT,'nodeOldSpaceMiB':NODE_HEAP_MIB,'controllerCalls':328}:
++                       'outputBytes':OUTPUT,'nodeOldSpaceMiB':NODE_HEAP_MIB,'controllerCalls':48,'vtkEnvelopeBandQueries':96}:
+         raise RuntimeError('Frozen limits changed')
+     def expand(s):
+         return s.replace('@WORKSPACE@',str(ROOT.parent)).replace('@SOURCE@',str(H)).replace('@REPO@',str(ROOT))
+@@ -53,7 +53,7 @@
+     work=pathlib.Path(expand(pins['workRoot']));work.mkdir(exist_ok=False)
+     out=work/'GUARD_RUN';out.mkdir(exist_ok=False)
+     cpu=min(os.sched_getaffinity(0));os.sched_setaffinity(0,{cpu})
+-    receipt={'schema':1,'scope':'fixed_real_room_probes_only','status':'started','sourceCommit':head,
++    receipt={'schema':1,'scope':'six_pose_estimated_datum_diagnostic','status':'started','sourceCommit':head,
+              'manifestSHA256':manifestSHA,'inputHashesBefore':before,'commands':[],
+              'limits':pins['limits'],'cpuAffinity':[cpu],'peakObservedAggregateRSS':0,'peakFastExitChildRSS':0,
+              'physicalAuthority':False,'realRoomQueries':0,'rlimitASApplied':False,
+@@ -84,93 +84,56 @@
+     env={'PATH':'/usr/bin:/bin','LC_ALL':'C','HOME':str(out),'TMPDIR':str(out),
+          'UV_THREADPOOL_SIZE':'1','OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1',
+          'PYTHONDONTWRITEBYTECODE':'1','PYTHONPYCACHEPREFIX':str(out/'fresh-pycache')}
+-    packageRoot=expand(pins['packageRoot']);dataRoot=expand(pins['dataRoot'])
+-    args=[pins['nodeExecutable'],
++    packageRoot=expand(pins['packageRoot']);dataRoot=expand(pins['dataRoot']);datums=expand(pins['datums'])
++    commands=[('kcc',[pins['nodeExecutable'],
+           '--permission','--allow-fs-read='+str(H),'--allow-fs-read='+packageRoot,'--allow-fs-read='+dataRoot,
+           '--allow-fs-write='+str(work),
+           '--max-old-space-size=256','--max-semi-space-size=8','--v8-pool-size=1',
+           str(H/'room_worker.mjs'),'--package-root',packageRoot,'--data-root',dataRoot,'--output',str(work/'probes'),
+-          '--runtime-contract','managed_sandbox_trusted_official_source','--pins-sha256',manifestSHA]
+-    row={'label':'real-room-fixed-probes','argv':args,'childEnvironmentKeys':sorted(env),
+-         'runtimeContract':'managed_sandbox_trusted_official_source',
+-         'networkAccessRequestedByProtocol':False,'independentlyAirGapped':False};receipt['commands'].append(row);save()
+-    p=None;failure=None
++          '--runtime-contract','managed_sandbox_trusted_official_source','--pins-sha256',manifestSHA]),
++          ('vtk',[pins['pythonExecutable'],'-I','-B',str(H/'vtk_worker.py'),
++          '--mesh-root',dataRoot,'--datums',datums,'--probes',str(H/'PROBES.json'),'--output',str(work/'vtk')])]
++    p=None;row=None;failure=None
+     try:
+-        if usage()-initial>=CPU or time.monotonic()-started>=WALL:raise RuntimeError('Prelaunch aggregate budget exhausted')
+-        def limits():
+-            resource.setrlimit(resource.RLIMIT_CPU,(CPU,CPU))
+-            resource.setrlimit(resource.RLIMIT_FSIZE,(OUTPUT,OUTPUT))
+-            resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+-        with (out/'probes.stdout').open('xb') as stdout,(out/'probes.stderr').open('xb') as stderr:
+-            p=subprocess.Popen(args,cwd=work,env=env,stdout=stdout,stderr=stderr,
+-                               start_new_session=True,preexec_fn=limits)
+-            while True:
+-                liveCPU,liveRSS,_=group_sample(p.pid)
+-                selfRSS=int(pathlib.Path('/proc/self/statm').read_text().split()[1])*os.sysconf('SC_PAGE_SIZE')
+-                receipt['peakObservedAggregateRSS']=max(receipt['peakObservedAggregateRSS'],liveRSS+selfRSS)
+-                size=sum(v['bytes'] for v in inventory(work,True).values())
+-                if usage()-initial+liveCPU>CPU:raise RuntimeError('Aggregate CPU breach')
+-                if time.monotonic()-started>WALL:raise RuntimeError('Aggregate wall breach')
+-                if liveRSS+selfRSS>RSS:raise RuntimeError('Observed aggregate RSS breach')
+-                if size>OUTPUT:raise RuntimeError('Aggregate output breach')
+-                if p.poll() is not None:break
+-                time.sleep(.02)
+-            row['exitCode']=p.wait();leftovers=group_sample(p.pid)[2];retire(p,row)
+-            if leftovers:raise RuntimeError('Leader exited with process-group descendants')
+-            fast=resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss*1024
+-            receipt['peakFastExitChildRSS']=fast
+-            if fast>RSS or usage()-initial>CPU or time.monotonic()-started>WALL:
+-                raise RuntimeError('Final/fast-exit resource breach')
+-            terminal=stable_inventory(work)
+-            if sum(v['bytes'] for v in terminal.values())>OUTPUT-262144:raise RuntimeError('Payload/receipt reserve breach')
+-            row['terminalInventory']=terminal
+-            if row['exitCode'] not in (0,1):raise RuntimeError('Unexpected worker exit; no retry or permission widening')
+-        if row['exitCode']!=0:raise RuntimeError('Room worker failed; partial result retained')
+-        summary=json.loads((work/'probes/SUMMARY.json').read_text())
+-        expected={'scope':'fixed_real_room_probes_only','status':'completed_diagnostic_proposals_not_movement',
+-                  'wrapperCount':16,'probeCount':408,'controllerCalls':328,'unsupportedTurns':80,
+-                  'allSelectedRowsRetained':True,'wasmInitialized':True,'wrapperVersion':'0.21.0',
+-                  'physicalAuthority':False,'movementApplied':False,'arrivalEstablished':False,
+-                  'analyticControlsHadTwoKnownFailures':True,'computedGroundedIsNotSupport':True,
+-                  'runtimeContract':'managed_sandbox_trusted_official_source','nodePermissionsChecked':True,
+-                  'independentlyAirGapped':False,'namespaceSetupRequested':False,'hostSecuritySettingsChanged':False,
+-                  'networkAccessRequestedByProtocol':False,'rlimitASApplied':False,'independentHazardOraclePassed':False}
+-        for k,v in expected.items():
+-            if summary.get(k)!=v:raise RuntimeError('Worker terminal contract mismatch: '+k)
+-        if summary['pinsSHA256']!=manifestSHA:raise RuntimeError('Worker manifest identity mismatch')
+-        wrappers=[json.loads(x) for x in (work/'probes/wrapper-records.jsonl').read_text().splitlines()]
+-        probes=[json.loads(x) for x in (work/'probes/probe-rows.jsonl').read_text().splitlines()]
+-        expectedWrappers=[];expectedProbes=[];original={}
+-        for scene in ['coffee','conference']:
+-            data=json.loads((pathlib.Path(dataRoot)/(scene+'.probes.json')).read_text())
+-            original.update({x['id']:x for x in data})
+-            for envelope in ['body','horizontal_margin']:
+-                for arm in ['raw_trimesh','two_sided_internal_edges']:
+-                    for inputArm in ['exact_xyz','horizontal_projection']:
+-                        expectedWrappers.append((scene,arm,envelope,inputArm))
+-                        expectedProbes.extend((scene,arm,envelope,inputArm,x['id']) for x in data)
+-        if [(x['scene'],x['arm'],x['envelope'],x['inputArm']) for x in wrappers]!=expectedWrappers:
+-            raise RuntimeError('Wrapper inventory/order mismatch')
+-        if [(x['scene'],x['arm'],x['envelope'],x['inputArm'],x['row']['id']) for x in probes]!=expectedProbes:
+-            raise RuntimeError('Probe inventory/order mismatch')
+-        if sum(x['row']['controllerCalled'] for x in probes)!=328:raise RuntimeError('Controller inventory')
+-        for x in probes:
+-            r=x['row'];src=original[r['id']]
+-            if r['originalFoot']!=src['foot'] or r['originalYawRadians']!=src['yawRadians'] or r['originalDesiredDelta']!=src['desiredDelta']:
+-                raise RuntimeError('Original pose/input changed')
+-            if r['independentEvidence']!=src['independentEvidence']:raise RuntimeError('Independent VTK evidence changed')
+-            if r['physicalAuthority'] is not False or r['movementApplied'] is not False or r['arrivalEstablished'] is not False:
+-                raise RuntimeError('Physical authority acquired')
+-            if r['support']!='unknown' or r['semanticFloor']!='unknown' or not r.get('queryBandDifference'):
+-                raise RuntimeError('Support or lower-band distinction lost')
+-            if r['kind']=='turn':
+-                if r['status']!='unsupported_rotation' or r['controllerCalled'] is not False or r['proposedMovement'] is not None:
+-                    raise RuntimeError('Rotation unsupported contract')
+-            else:
+-                if r['proposalWasNotApplied'] is not True or not all(math.isfinite(v) for v in r['proposedMovement']):
+-                    raise RuntimeError('Invalid/unretained controller proposal')
+-        receipt['roomSummary']=summary;receipt['status']='completed-fixed-pose-diagnostic-only'
+-        receipt['wrapperRecordsVerified']=16;receipt['nestedProbeRowsVerified']=408;receipt['realRoomQueries']=328
++        for label,args in commands:
++            row={'label':label,'argv':args,'childEnvironmentKeys':sorted(env),
++                 'runtimeContract':'managed_sandbox_trusted_official_source',
++                 'networkAccessRequestedByProtocol':False,'independentlyAirGapped':False}
++            receipt['commands'].append(row);save()
++            if usage()-initial>=CPU or time.monotonic()-started>=WALL:raise RuntimeError('Prelaunch aggregate budget exhausted')
++            def limits():
++                remaining=max(1,int(CPU-(usage()-initial)))
++                resource.setrlimit(resource.RLIMIT_CPU,(remaining,remaining))
++                resource.setrlimit(resource.RLIMIT_FSIZE,(OUTPUT,OUTPUT))
++                resource.setrlimit(resource.RLIMIT_CORE,(0,0))
++            with (out/(label+'.stdout')).open('xb') as stdout,(out/(label+'.stderr')).open('xb') as stderr:
++                p=subprocess.Popen(args,cwd=work,env=env,stdout=stdout,stderr=stderr,
++                                   start_new_session=True,preexec_fn=limits)
++                while True:
++                    liveCPU,liveRSS,_=group_sample(p.pid)
++                    selfRSS=int(pathlib.Path('/proc/self/statm').read_text().split()[1])*os.sysconf('SC_PAGE_SIZE')
++                    receipt['peakObservedAggregateRSS']=max(receipt['peakObservedAggregateRSS'],liveRSS+selfRSS)
++                    size=sum(v['bytes'] for v in inventory(work,True).values())
++                    if usage()-initial+liveCPU>CPU:raise RuntimeError('Aggregate CPU breach')
++                    if time.monotonic()-started>WALL:raise RuntimeError('Aggregate wall breach')
++                    if liveRSS+selfRSS>RSS:raise RuntimeError('Observed aggregate RSS breach')
++                    if size>OUTPUT:raise RuntimeError('Aggregate output breach')
++                    if p.poll() is not None:break
++                    time.sleep(.02)
++                row['exitCode']=p.wait();leftovers=group_sample(p.pid)[2];retire(p,row)
++                if leftovers:raise RuntimeError('Leader exited with process-group descendants')
++                fast=resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss*1024
++                receipt['peakFastExitChildRSS']=max(receipt['peakFastExitChildRSS'],fast)
++                if fast>RSS or usage()-initial>CPU or time.monotonic()-started>WALL:
++                    raise RuntimeError('Final/fast-exit resource breach')
++                terminal=stable_inventory(work)
++                if sum(v['bytes'] for v in terminal.values())>OUTPUT-262144:raise RuntimeError('Payload/receipt reserve breach')
++                row['terminalInventory']=terminal
++                if row['exitCode']!=0:raise RuntimeError(label+' worker failed; no retry or permission widening; partial records retained')
++            p=None
++        from validate_results import validate_results
++        receipt['validatedResults']=validate_results(work,H,manifestSHA)
++        receipt['status']='completed-six-pose-diagnostic-only';receipt['realRoomQueries']=48;receipt['vtkEnvelopeBandQueries']=96
+     except BaseException as error:
+         failure=error;receipt['status']='failed';receipt['error']=type(error).__name__+': '+str(error)
+     finally:
+@@ -181,7 +144,7 @@
+         try:receipt['inputHashesAfter']=verify()
+         except BaseException as error:
+             receipt['status']='failed';receipt['postPinError']=str(error);failure=failure or error
+-        if p is None or row.get('groupRetired') is True:
++        if p is None or (row is not None and row.get('groupRetired') is True):
+             try:
+                 receipt['finalPayloadInventory']=stable_inventory(work)
+                 if sum(v['bytes'] for v in receipt['finalPayloadInventory'].values())>OUTPUT-262144:

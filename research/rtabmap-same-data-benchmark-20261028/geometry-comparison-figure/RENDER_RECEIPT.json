@@ -1,0 +1,136 @@
+{
+  "sources": {
+    "reference": {
+      "source": "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/reference_samples_faro_metres.npy",
+      "sha256": "55ece9f280595f12dc02644588d69d7f6ef71ffa7a8456d25102a7e96eb066e0",
+      "array": "NPY",
+      "total": 127774,
+      "displayed": 31944,
+      "omittedForDisplayOnly": 95830,
+      "bounds": [
+        [
+          -6.300055269723304,
+          -6.469215740813793,
+          -0.2639853121358535
+        ],
+        [
+          4.725204675805882,
+          6.0019812988670775,
+          2.764694815738275
+        ]
+      ]
+    },
+    "open3d": {
+      "source": "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/open3d.npz",
+      "sha256": "7e36b5d9bd7909dbe88045f4177fc4c544dc6df2cceb983f09b472ccba672ce2",
+      "array": "pointsFaroMetres",
+      "total": 231472,
+      "displayed": 57868,
+      "omittedForDisplayOnly": 173604,
+      "bounds": [
+        [
+          -6.29769914989412,
+          -6.389766319044537,
+          -0.3080601662583393
+        ],
+        [
+          4.724546658263625,
+          5.973957121983603,
+          3.0836412765555004
+        ]
+      ]
+    },
+    "fixed": {
+      "source": "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/fixed.npz",
+      "sha256": "d343a54b9ed6e8f9ca749d7e611fb055821872ebb1b35d743aa9d205b847ddcc",
+      "array": "pointsFaroMetres",
+      "total": 497307,
+      "displayed": 124327,
+      "omittedForDisplayOnly": 372980,
+      "bounds": [
+        [
+          -6.338384275784177,
+          -6.440681041042743,
+          -0.3143880241208785
+        ],
+        [
+          4.7347775032189094,
+          5.980836608505639,
+          3.139993141735954
+        ]
+      ]
+    },
+    "graph": {
+      "source": "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/graph.npz",
+      "sha256": "06d35289cf5d553d4d5512e6a54cbf9c0f46ebb774839774399abe21af2f3b40",
+      "array": "pointsFaroMetres",
+      "total": 588726,
+      "displayed": 147182,
+      "omittedForDisplayOnly": 441544,
+      "bounds": [
+        [
+          -6.4726900792023425,
+          -6.462152563386664,
+          -0.5650539522940936
+        ],
+        [
+          4.7099779999114215,
+          6.022318822215175,
+          3.1480770847562303
+        ]
+      ]
+    }
+  },
+  "boundsMetres": [
+    [
+      -6.5,
+      -6.5,
+      -1.0
+    ],
+    [
+      5.0,
+      6.5,
+      3.5
+    ]
+  ],
+  "projections": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      2
+    ]
+  ],
+  "frame": "unchanged saved FARO metric coordinates",
+  "translation": [
+    0,
+    0,
+    0
+  ],
+  "additionalTransform": "none",
+  "gravityKnown": false,
+  "subsampling": "array[::4], same rule each input, display only",
+  "pointSizePointsSquared": 0.28,
+  "alpha": 0.55,
+  "cmap": "viridis",
+  "colorCoordinate": "FARO Z",
+  "colorBoundsMetres": [
+    -1.0,
+    3.5
+  ],
+  "figureInches": [
+    16,
+    9
+  ],
+  "dpi": 150,
+  "numpy": "2.3.5",
+  "matplotlib": "3.10.8",
+  "scriptSHA256": "37833646866d3a6da33cd2b21b6c6eca7699a0c06bd57954f342c3e5f12e3f5e",
+  "figureSHA256": "bd8adbae7f0fb167138842aa0d24a7c56e33231f395c53ff9cdaf145b5d4c439"
+}

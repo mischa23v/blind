@@ -1,0 +1,69 @@
+name: Focused accessibility diagnostic
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/accessibility-diagnostic.yml'
+      - 'ios/BlindAssist/DashboardView.swift'
+      - 'ios/BlindAssistUITests/LaunchTests.swift'
+      - 'tools/ci/practice-layout-diagnostic.sh'
+      - 'tools/ci/export-practice-layout-screenshots.py'
+      - 'tools/ci/export-full-audit-evidence.py'
+      - 'tools/test/full-audit-evidence.test.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: accessibility-diagnostic-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  focused-audit:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify source and installed simulator
+        run: bash tools/ci/native-apple.sh preflight
+      - name: Record practice layout on a separate disposable simulator
+        id: layout
+        continue-on-error: true
+        run: bash tools/ci/practice-layout-diagnostic.sh
+      - name: Preserve bounded synthetic layout screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: practice-layout-screenshots
+          path: ${{ runner.temp }}/blind-practice-layout/screenshots/*.png
+          if-no-files-found: error
+          retention-days: 3
+      - name: Run the unsuppressed camera and ask accessibility audit
+        if: always()
+        run: bash tools/ci/native-apple.sh ui-diagnostic
+      - name: Validate full-audit evidence selector
+        if: always()
+        run: python3 tools/test/full-audit-evidence.test.py
+      - name: Extract bounded full-audit phase evidence
+        if: always()
+        run: python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui-diagnostic.xcresult" "$RUNNER_TEMP/blind-full-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+      - name: Preserve synthetic camera and ask audit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: full-audit-phase-evidence
+          path: |
+            ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.png
+            ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.json
+          if-no-files-found: error
+          retention-days: 3
+      - name: Retain diagnostic failure status
+        if: always() && steps.layout.outcome != 'success'
+        run: exit 1
+

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "kind": "public-text-only-stage-a-result",
+  "sourceCommit": "e99637111a1c895b26c9bd1d7eaf76cc2813b714",
+  "stageAActualControls": 8,
+  "stageAActualFrames": 3,
+  "stageBExecutedAtReview": false,
+  "physicalAuthority": false,
+  "payloadFileCount": 5,
+  "payloadBytes": 16434,
+  "files": [
+    {
+      "path": "NATIVE_PREREQUISITE_REVIEW.json",
+      "bytes": 1418,
+      "sha256": "ed7a4237ad49e17c1901682276f97ba05e86b105c26d129a76a34223a80560b0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5891,
+      "sha256": "29e220f6d418fe12162000900ac4b2baec3d65f8838940360c34e8464a061120"
+    },
+    {
+      "path": "STAGE_A.json",
+      "bytes": 4252,
+      "sha256": "4d1360780619477f123e69f53ea6d655eab4ef1abb997ddd17a87b2c7b603f1a"
+    },
+    {
+      "path": "STAGE_A_CONTROLS.txt",
+      "bytes": 1050,
+      "sha256": "21eef5665501c2af70ef16741621496c575823ec22c543df50cb6e576e0fd288"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 3823,
+      "sha256": "18792303d16cffba9767d5822b3e073ed9f90c867dca7ab932860c597835c830"
+    }
+  ],
+  "excluded": [
+    "raw photos",
+    "depth rasters",
+    "transformation file",
+    "native binary",
+    "host environment",
+    "archives"
+  ],
+  "manifestSelfExcluded": true
+}

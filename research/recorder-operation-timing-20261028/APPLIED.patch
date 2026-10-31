@@ -1,0 +1,317 @@
+--- a/ios/BlindAssist/RecordedRouteStore.swift
++++ b/ios/BlindAssist/RecordedRouteStore.swift
+@@ -13,6 +13,71 @@
+     private var restarted = false, trackingLost = false
+     private var continuityEpoch = UUID()
+     private var sampler = RecordedRouteSampler()
++#if DEBUG
++    enum DiagnosticOperationKind: Int { case read, clear }
++    struct DiagnosticOperationSnapshot: Sendable {
++        let ownerID, operationID: UUID
++        let index: Int
++        let kind: String
++        let values: [TimeInterval?]
++        func report() -> String {
++            func time(_ slot: Int) -> String { values[slot].map { String($0) } ?? "missing" }
++            func delta(_ start: Int, _ end: Int) -> String {
++                guard let first = values[start], let last = values[end] else { return "missing" }
++                return String(last - first)
++            }
++            let admission = values[0] != nil ? "queued" : (values[6] != nil ? "rejectedBusy" : "notAdmitted")
++            return "RECORDED_ROUTE_OPERATION owner=\(ownerID) id=\(operationID) index=\(index) kind=\(kind) admission=\(admission) queued=\(time(0)) workerStarted=\(time(1)) loadFinished=\(time(2)) databaseReturned=\(time(3)) workerFinished=\(time(4)) mainDelivered=\(time(5)) inlineDelivered=\(time(6)) queueWait=\(delta(0,1)) loadWall=\(delta(1,2)) databaseWall=\(delta(2,3)) workerWall=\(delta(1,4)) mainHandoff=\(delta(4,5))"
++        }
++    }
++    final class DiagnosticOperationTiming: @unchecked Sendable {
++        enum Phase: Int { case queued, workerStarted, loadFinished, databaseReturned, workerFinished, mainDelivered, inlineDelivered }
++        private let lock = NSLock()
++        private let ownerID, operationID: UUID
++        private let index: Int
++        private let kind: DiagnosticOperationKind
++        private var values: [TimeInterval?] = [nil, nil, nil, nil, nil, nil, nil]
++        init(ownerID: UUID, index: Int, kind: DiagnosticOperationKind) {
++            self.ownerID = ownerID; operationID = UUID(); self.index = index; self.kind = kind
++        }
++        func mark(_ phase: Phase) {
++            let time = ProcessInfo.processInfo.systemUptime
++            lock.lock(); defer { lock.unlock() }
++            if values[phase.rawValue] == nil { values[phase.rawValue] = time }
++        }
++        func snapshot() -> DiagnosticOperationSnapshot {
++            lock.lock(); let times = values; lock.unlock()
++            return .init(ownerID: ownerID, operationID: operationID, index: index,
++                kind: kind == .read ? "read" : "clear", values: times)
++        }
++    }
++    /// Disabled by default. Two latest handles only; an in-flight operation
++    /// separately retains its own receipt, including when a busy call replaces
++    /// the latest handle. No observations, paths, labels or database IDs enter it.
++    private final class DiagnosticOperations: @unchecked Sendable {
++        private let lock = NSLock()
++        private let ownerID = UUID()
++        private var enabled = false
++        private var index = 0
++        private var latest: [DiagnosticOperationTiming?] = [nil, nil]
++        func enable() { lock.lock(); enabled = true; lock.unlock() }
++        func begin(_ kind: DiagnosticOperationKind) -> DiagnosticOperationTiming? {
++            lock.lock(); defer { lock.unlock() }
++            guard enabled else { return nil }
++            if index < Int.max { index += 1 }
++            let receipt = DiagnosticOperationTiming(ownerID: ownerID, index: index, kind: kind)
++            latest[kind.rawValue] = receipt; return receipt
++        }
++        func last(_ kind: DiagnosticOperationKind) -> DiagnosticOperationTiming? {
++            lock.lock(); defer { lock.unlock() }; return latest[kind.rawValue]
++        }
++    }
++    private let diagnosticOperations = DiagnosticOperations()
++    func enableOperationTimingForTesting() { diagnosticOperations.enable() }
++    func diagnosticLastOperationForTesting(_ kind: DiagnosticOperationKind) -> DiagnosticOperationTiming? {
++        diagnosticOperations.last(kind)
++    }
++#endif
+     // Explicit local diagnostic; memory/receipt state protected by lock. No export.
+     private var testRecording: NavigationTestRecording?
+     private var testOwnedRoute: NavigationTestRecording.OwnedRoute?
+@@ -341,10 +406,26 @@
+     }
+     func preview(referenceKind: RecordedRouteAnchor.Kind? = nil, _ completion: @escaping (Snapshot) -> Void) { page(cursor: nil, reference: nil, referenceKind: referenceKind, completion: completion) }
+     func page(cursor: RecordedRouteCursor?, reference: String?, referenceKind: RecordedRouteAnchor.Kind? = nil, completion: @escaping (Snapshot) -> Void) {
+-        lock.lock(); guard !readPending else { lock.unlock(); completion(withheld(busy: true)); return }
++#if DEBUG
++        let timing = diagnosticOperations.begin(.read)
++#endif
++        lock.lock(); guard !readPending else { lock.unlock();
++#if DEBUG
++            timing?.mark(.inlineDelivered)
++#endif
++            completion(withheld(busy: true)); return }
+         readPending = true; let token = generation; lock.unlock()
+-        queue.async {
++#if DEBUG
++        timing?.mark(.queued)
++#endif
++        queue.async {
++#if DEBUG
++            timing?.mark(.workerStarted)
++#endif
+             self.load()
++#if DEBUG
++            timing?.mark(.loadFinished)
++#endif
+             var preview: RecordedRoutePreview?, next: RecordedRouteCursor?
+             var referenceUnavailable = false
+             do {
+@@ -357,6 +438,9 @@
+                         selectedReference = candidates[0].id
+                     }
+                     let page = try repository.reversePage(cursor: cursor, returningTo: selectedReference)
++#if DEBUG
++                    timing?.mark(.databaseReturned)
++#endif
+                     let samples = try page.samples.map { stored -> RecordedRouteSample in
+                         let sample = try RecordedRouteSample(payload: stored.row.payload)
+                         guard sample.observationID.uuidString == stored.row.id, sample.sessionID.uuidString == stored.row.sessionID,
+@@ -386,7 +470,13 @@
+             let result = Snapshot(preview: preview, trip: self.trip, nextPage: next,
+                 persistenceFailed: self.persistenceFailed, loadFailed: self.loadFailed, busy: false, budgetDeferred: self.budgetDeferred, referenceUnavailable: referenceUnavailable,
+                 durableSampleCount: Int(self.trip?.retainedCount ?? 0), volatileSampleCount: self.pending.count, droppedVolatileSampleCount: self.droppedVolatile)
++#if DEBUG
++            timing?.mark(.workerFinished)
++#endif
+             DispatchQueue.main.async {
++#if DEBUG
++                timing?.mark(.mainDelivered)
++#endif
+                 self.lock.lock(); let current = self.generation == token; self.readPending = false; self.lock.unlock()
+                 completion(current ? result : self.withheld(busy: true))
+             }
+@@ -418,10 +508,23 @@
+         }
+     }
+     func clear(_ completion: @escaping (Bool) -> Void) {
++#if DEBUG
++        let timing = diagnosticOperations.begin(.clear)
++#endif
+         lock.lock(); testWriteGeneration = UUID(); testArchive = nil; testSaveFailed = false; testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
+-        guard !clearPending else { lock.unlock(); completion(false); return }
++        guard !clearPending else { lock.unlock();
++#if DEBUG
++            timing?.mark(.inlineDelivered)
++#endif
++            completion(false); return }
+         clearPending = true; sessionID = nil; generation = UUID(); lock.unlock()
+-        queue.async {
++#if DEBUG
++        timing?.mark(.queued)
++#endif
++        queue.async {
++#if DEBUG
++            timing?.mark(.workerStarted)
++#endif
+             let erasedTrip = self.trip
+             self.pending = []; self.sampler.restart(); self.trip = nil; self.loadFailed = true
+             var success = false
+@@ -429,14 +532,26 @@
+                 // Loading here is storage-only. An existing failed clear retains the
+                 // repository for retry; an unopened store can still erase its disk data.
+                 if self.repository == nil { try self.openRepository() }
++#if DEBUG
++                timing?.mark(.loadFinished)
++#endif
+                 if let repository = self.repository {
+                     try repository.clear(trip: erasedTrip ?? repository.state()); self.trip = try repository.state()
++#if DEBUG
++                    timing?.mark(.databaseReturned)
++#endif
+                     try self.removeLegacyChunks()
+                     self.loaded = true; self.loadFailed = false; self.persistenceFailed = false; self.droppedVolatile = 0; success = true
+                 }
+             } catch { self.persistenceFailed = true }
+             let result = success
++#if DEBUG
++            timing?.mark(.workerFinished)
++#endif
+             DispatchQueue.main.async {
++#if DEBUG
++                timing?.mark(.mainDelivered)
++#endif
+                 self.lock.lock(); self.clearPending = false; self.lock.unlock(); completion(result)
+             }
+         }
+--- a/ios/BlindAssistTests/RecordedRouteStoreTests.swift
++++ b/ios/BlindAssistTests/RecordedRouteStoreTests.swift
+@@ -7,6 +7,12 @@
+ #endif
+ 
+ final class RecordedRouteStoreTests: XCTestCase {
++    private enum TimingFixture: String { case activeTrip, clearRetirement }
++    private var timingFixture: TimingFixture?
++    private func reportOperation(_ receipt: RecordedRouteStore.DiagnosticOperationTiming?, wait: StaticString) {
++        guard let receipt, let timingFixture else { return }
++        print("RECORDED_ROUTE_WAIT_FAILURE fixture=\(timingFixture.rawValue) wait=\(wait) originalBudget=5 \(receipt.snapshot().report())")
++    }
+     final class Clock: @unchecked Sendable {
+         let lock = NSLock(); private var value = 0.0
+         func read() -> Double { lock.lock(); defer { lock.unlock() }; return value }
+@@ -21,7 +27,12 @@
+     }
+     private func snapshot(_ store: RecordedRouteStore) -> RecordedRouteStore.Snapshot? {
+         var result: RecordedRouteStore.Snapshot?; let done = expectation(description: "snapshot")
+-        store.preview { result = $0; done.fulfill() }; wait(for: [done], timeout: 5); return result
++        let failuresBefore = testRun?.failureCount ?? 0
++        store.preview { result = $0; done.fulfill() }
++        let receipt = store.diagnosticLastOperationForTesting(.read)
++        wait(for: [done], timeout: 5)
++        if result == nil || (testRun?.failureCount ?? 0) > failuresBefore { reportOperation(receipt, wait: "snapshot") }
++        return result
+     }
+     func testDiagnosticRequiresOptInAndReusesAdmittedSampleThenStops() throws {
+         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+@@ -339,28 +350,38 @@
+         XCTAssertTrue(result.preview?.gaps.contains(.retentionLoss) == true)
+     }
+     func testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages() throws {
++        timingFixture = .activeTrip
+         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+         defer { try? FileManager.default.removeItem(at: directory) }
+         let url = directory.appendingPathComponent("routes.sqlite"), clock = Clock(), session = UUID()
+-        let store = RecordedRouteStore(url: url, now: clock.read); store.begin(sessionID: session); clock.set(60)
++        let store = RecordedRouteStore(url: url, now: clock.read)
++        store.enableOperationTimingForTesting()
++        store.begin(sessionID: session); clock.set(60)
+         for i in 0..<90 {
+             let time = 60 + Double(i)*0.21; clock.set(time)
+             let sample = record(session, time: time); store.offer(sessionID: session, at: time) { sample }; _ = snapshot(store)
+         }
+         store.stop(); let prior = try XCTUnwrap(snapshot(store))
+         let reopened = RecordedRouteStore(url: url, now: clock.read)
++        reopened.enableOperationTimingForTesting()
+         reopened.begin(sessionID: UUID())
++        let restartFailuresBefore = testRun?.failureCount ?? 0
+         let current = try XCTUnwrap(snapshot(reopened))
++        let restartReceipt = reopened.diagnosticLastOperationForTesting(.read)
+         XCTAssertEqual(current.trip?.id, prior.trip?.id)
+         XCTAssertLessThanOrEqual(current.preview?.reverseSamples.count ?? 0, 64)
+         XCTAssertNotNil(current.nextPage)
++        if (testRun?.failureCount ?? 0) > restartFailuresBefore { reportOperation(restartReceipt, wait: "reopenedSnapshot") }
+         let page = expectation(description: "earlier page")
++        let pageFailuresBefore = testRun?.failureCount ?? 0
+         reopened.page(cursor: current.nextPage, reference: nil) { next in
+             XCTAssertLessThanOrEqual(next.preview?.reverseSamples.count ?? 0, 64)
+             XCTAssertEqual(next.preview?.reverseSamples.last?.sourceID, "frame-60.0")
+             page.fulfill()
+         }
++        let pageReceipt = reopened.diagnosticLastOperationForTesting(.read)
+         wait(for: [page], timeout: 5)
++        if (testRun?.failureCount ?? 0) > pageFailuresBefore { reportOperation(pageReceipt, wait: "earlierPage") }
+     }
+     func testTrackingLossAndSameSessionRestartWithdrawPinUntilFreshCapture() throws {
+         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+@@ -531,18 +552,54 @@
+         XCTAssertFalse(current.preview?.reverseSamples.contains { $0.sessionID == a } ?? true)
+     }
+     func testClearRetiresQueuedReadAndStaleAnchorCannotResurrect() throws {
++        timingFixture = .clearRetirement
+         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+         defer { try? FileManager.default.removeItem(at: directory) }
+         let clock = Clock(), session = UUID(), store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
++        store.enableOperationTimingForTesting()
+         store.begin(sessionID: session); clock.set(60)
+         let sample = record(session, time: 60); store.offer(sessionID: session, at: 60) { sample }; _ = snapshot(store)
+         let old = expectation(description: "withheld read")
++        let failuresBefore = testRun?.failureCount ?? 0
+         store.preview { XCTAssertTrue($0.busy); XCTAssertNil($0.preview); old.fulfill() }
++        let oldReceipt = store.diagnosticLastOperationForTesting(.read)
+         Thread.sleep(forTimeInterval: 0.05)
+         let clear = expectation(description: "clear")
+-        store.clear { XCTAssertTrue($0); clear.fulfill() }; wait(for: [old,clear], timeout: 5)
++        store.clear { XCTAssertTrue($0); clear.fulfill() }
++        let clearReceipt = store.diagnosticLastOperationForTesting(.clear)
++        wait(for: [old,clear], timeout: 5)
++        if (testRun?.failureCount ?? 0) > failuresBefore {
++            reportOperation(oldReceipt, wait: "withheldRead")
++            reportOperation(clearReceipt, wait: "clear")
++        }
+         XCTAssertNil(snapshot(store)?.preview)
+         let denied = expectation(description: "stale last sample unavailable")
+         store.pinLatest(kind: .entrance, label: "Old", origin: .trustedInterface) { XCTAssertFalse($0); denied.fulfill() }; wait(for: [denied], timeout: 5)
+     }
++
++    func testOperationTimingReceiptsAreBoundedImmutableAndSeparateBusyCalls() {
++        let owner = UUID()
++        let accepted = RecordedRouteStore.DiagnosticOperationTiming(ownerID: owner, index: 1, kind: .read)
++        let before = accepted.snapshot()
++        XCTAssertEqual(before.values.count, 7)
++        XCTAssertTrue(before.values.allSatisfy { $0 == nil })
++        XCTAssertTrue(before.report().contains("admission=notAdmitted"))
++        accepted.mark(.queued); accepted.mark(.workerStarted); accepted.mark(.loadFinished)
++        accepted.mark(.databaseReturned); accepted.mark(.workerFinished); accepted.mark(.mainDelivered)
++        let completed = accepted.snapshot()
++        accepted.mark(.queued)
++        XCTAssertEqual(accepted.snapshot().values, completed.values) // First timestamp owns each slot.
++        XCTAssertTrue(before.values.allSatisfy { $0 == nil })
++        XCTAssertEqual(completed.ownerID, owner); XCTAssertEqual(completed.index, 1)
++        XCTAssertNil(completed.values[6]); XCTAssertTrue(completed.report().contains("admission=queued"))
++        let rejected = RecordedRouteStore.DiagnosticOperationTiming(ownerID: owner, index: 2, kind: .read)
++        rejected.mark(.inlineDelivered)
++        let rejectedSnapshot = rejected.snapshot()
++        XCTAssertNotEqual(rejectedSnapshot.operationID, completed.operationID)
++        XCTAssertEqual(rejectedSnapshot.index, 2); XCTAssertEqual(rejectedSnapshot.kind, "read")
++        XCTAssertTrue(rejectedSnapshot.values.prefix(6).allSatisfy { $0 == nil })
++        XCTAssertNotNil(rejectedSnapshot.values[6])
++        XCTAssertTrue(rejectedSnapshot.report().contains("admission=rejectedBusy"))
++        XCTAssertTrue(rejectedSnapshot.report().contains("mainDelivered=missing"))
++    }
+ }
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -36,6 +36,9 @@
+       echo 'OBSERVED_SCENE_TIMING_BEGIN (at most 8 metadata lines; 1500 characters each)'
+       grep -E '^OBSERVED_SCENE_FENCE_(PHASE|LATENCY) ' "$out/$label.log" | head -8 | cut -c 1-1500 || true
+       echo 'OBSERVED_SCENE_TIMING_END'
++      echo 'RECORDED_ROUTE_TIMING_BEGIN (at most 8 metadata lines; 1500 characters each)'
++      grep -E '^RECORDED_ROUTE_WAIT_FAILURE ' "$out/$label.log" | head -8 | cut -c 1-1500 || true
++      echo 'RECORDED_ROUTE_TIMING_END'
+     fi
+     # The finite practice session can expire while XCTest waits for UI idleness.
+     # Preserve its synthetic action chronology without changing the app or assertions.

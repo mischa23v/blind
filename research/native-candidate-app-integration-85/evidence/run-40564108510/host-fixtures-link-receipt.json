@@ -1,0 +1,106 @@
+{
+  "label": "host-fixtures-link",
+  "command": [
+    "xcrun",
+    "--sdk",
+    "macosx",
+    "swiftc",
+    "-sdk",
+    "/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+    "-target",
+    "arm64-apple-macosx14.0",
+    "-module-cache-path",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-client-cache",
+    "-I",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/Modules",
+    "-I",
+    "/Users/runner/work/blind/blind/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/clearance_adapter.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourAlloc.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourAssert.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourCommon.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourNavMesh.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourNavMeshBuilder.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourNavMeshQuery.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Detour/Source/DetourNode.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/DetourCrowd/Source/DetourCrowd.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/DetourCrowd/Source/DetourPathCorridor.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/DetourCrowd/Source/DetourPathQueue.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/DetourCrowd/Source/DetourProximityGrid.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/Recast.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastAlloc.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastArea.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastAssert.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastContour.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastFilter.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastLayers.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastMesh.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastMeshDetail.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastRasterization.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/CDetour.build/upstream/Recast/Source/RecastRegion.cpp.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/MeshBufferDecoder81.build/MeshBufferDecoder.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/MeshSnapshot82.build/ARKitMeshAdapter.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/MeshSnapshot82.build/MeshSnapshot.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/MeshCandidateIngress83.build/ARKitIngress.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/MeshCandidateIngress83.build/MeshCandidateIngress.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/BlindRoomMesh.build/Bridge.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/BlindRoomMesh.build/Exclusion.swift.o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph/arm64-apple-macosx/release/BlindRoomMesh.build/RoomMeshCandidate.swift.o",
+    "-lc++",
+    "/Users/runner/work/blind/blind/research/mesh-candidate-ingress-83/tests/main.swift",
+    "-o",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-stage83-fixtures"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "exceptionType": null,
+  "wallSeconds": 3.952630916000004,
+  "scratchBytesAfterCommand": 66719456,
+  "scratchCapExceeded": false,
+  "scratchScanComplete": true,
+  "scratchEntriesScanned": 278,
+  "largestScratchFiles": [
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570792
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570264
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871728
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871240
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4514152
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4513648
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/IOKit-FVLFRHYESQKG.pcm",
+      "bytes": 3726544
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/IOKit-FVLFRHYESQKG.pcm",
+      "bytes": 3726064
+    }
+  ],
+  "fileCapBytes": 134217728,
+  "scratchCapBytes": 536870912,
+  "cpuCapSeconds": 300,
+  "wallTimeoutSeconds": 240,
+  "scratchAccounting": "stage-end only; scoped tree; not a live disk quota",
+  "terminationSignal": null,
+  "fileSizeLimitSignal": false,
+  "logTail": ""
+}

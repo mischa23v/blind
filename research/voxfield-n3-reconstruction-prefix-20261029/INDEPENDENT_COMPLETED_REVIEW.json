@@ -1,0 +1,34 @@
+{
+  "review": "PASS prefix3 engineering only",
+  "pinsVerified": 425,
+  "nonnormalLedgerExactlyMatchesN2": true,
+  "frames": 3,
+  "submitted": 1296420,
+  "allNativeInvalidCountsZero": true,
+  "mesh": {
+    "vertices": 86589,
+    "faces": 28863,
+    "bytes": 6040882,
+    "sha256": "d23600a452fbef020df2fea63fede9457f6ed91fac40509ad414ae8421568354",
+    "allXYZFiniteAndIndicesValid": true
+  },
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 11.513626403997478,
+    "peakSummedRSSBytes": 696676352,
+    "peakCumulativeCPUSeconds": 11.343199,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 20,
+      "wallSeconds": 30,
+      "RSSBytes": 2147483648,
+      "diskBytes": 67108864,
+      "logicalCPUs": 1
+    },
+    "scope": "C1_N3 prefix3 fresh-map only, identical D1 inputs/kernel; no accuracy/reference/GT",
+    "frozenIntegrityPassed": true,
+    "finalActualChildPlusGuardCPUSeconds": 11.488875
+  },
+  "noAccuracyOrFullRunAdmission": true
+}

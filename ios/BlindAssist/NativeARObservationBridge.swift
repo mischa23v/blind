@@ -6,8 +6,31 @@ import Foundation
 /// Optional historical geometry consumer of the existing feed. Does not own the camera,
 /// invoke models, modify RTAB-Map, authorize routes or expose raw coordinates to language models.
 final class NativeARObservationBridge {
+    /// Already copied utility-worker hits only; this callback never carries RGB,
+    /// ARFrame/Metal references or a support/clearance grant.
+    var onClassifiedHits: ((NativeClassifiedHitEvidence?, UUID, Double) -> Void)?
+    private let hitMailbox = NativeClassifiedHitMailbox()
     private let pipeline = NativeObservationPipeline()
     private let recordedRoute = RecordedRouteStore()
+    // Explicit local diagnostic controls; camera start never opts into test recording.
+    @discardableResult func startNavigationTestRecording() -> Bool { recordedRoute.startTestRecording() }
+    func stopNavigationTestRecording() { recordedRoute.stopTestRecording() }
+    func deleteNavigationTestRecording(completion: @escaping (Bool) -> Void = { _ in }) { recordedRoute.deleteTestRecording(completion: completion) }
+    func retryNavigationTestSave() { recordedRoute.retryTestSave() }
+    @discardableResult func closeNavigationTestRecording() -> Bool { recordedRoute.closeTestRecording() }
+    func listSavedNavigationTests(_ completion: @escaping ([NavigationTestSessionState]?) -> Void) { recordedRoute.listSavedTestRecordings(completion) }
+    func reopenNavigationTest(id: String, completion: @escaping (Bool) -> Void) { recordedRoute.reopenTestRecording(id: id, completion: completion) }
+    func deleteSavedNavigationTest(id: String, completion: @escaping (Bool) -> Void) { recordedRoute.deleteSavedTestRecording(id: id, completion: completion) }
+    func navigationTestSnapshot() -> RecordedRouteStore.TestSnapshot { recordedRoute.testRecordingSnapshot() }
+    @discardableResult func markNavigationTestProblem(_ problem: NavigationTestRecording.Problem) -> Bool {
+        recordedRoute.markTestProblem(problem)
+    }
+    @discardableResult func recordOwnedNavigationTestPlan(_ route: NavigationTestRecording.OwnedRoute?) -> Bool {
+        recordedRoute.recordOwnedTestPlan(route)
+    }
+    @discardableResult func recordNavigationTestPlan(_ plan: NavigationTestRecording.Plan) -> Bool {
+        recordedRoute.setTestPlan(plan)
+    }
     func trackingLost() { recordedRoute.breakContinuity() }
     func readRecordedRoute(referenceKind: RecordedRouteAnchor.Kind? = nil, _ completion: @escaping (RecordedRouteStore.Snapshot) -> Void) {
         recordedRoute.preview(referenceKind: referenceKind, completion)
@@ -63,6 +86,7 @@ final class NativeARObservationBridge {
     func begin(sessionID: UUID, memory: MemoryStore?) {
         stop(); guard let memory else { return }
         self.sessionID = sessionID; self.memory = memory
+        hitMailbox.begin(outcomeGeneration)
         recordedRoute.begin(sessionID: sessionID)
         let generation = outcomeGeneration
         pipeline.begin(sessionID: sessionID, storage: Self.storage(memory)) { [weak self] outcome in
@@ -72,18 +96,34 @@ final class NativeARObservationBridge {
         }
     }
     func offer(_ frame: ARFrame, sessionID: UUID, mapTarget: SpatialMapBinding? = nil,
-               receivedAt: Double, receivedDate: Date) {
+               sameFrameAssociation: SavedWorldFrameCameraAssociation? = nil, receivedAt: Double, receivedDate: Date) {
         guard self.sessionID == sessionID else { return }
         let context = NativeARObservationAdapter.Context(sessionID: sessionID,
             frameID: "arkit-session:\(sessionID.uuidString)", mapTarget: mapTarget,
             receivedAt: receivedAt, receivedDate: receivedDate)
         if case .normal = frame.camera.trackingState {} else { recordedRoute.breakContinuity() }
-        recordedRoute.offer(sessionID: sessionID, at: frame.timestamp) {
+        recordedRoute.offer(sessionID: sessionID, at: frame.timestamp, sameFrameAssociation: sameFrameAssociation) {
             try NativeARObservationAdapter.captureRoutePose(frame, context: context)
         }
         let generation = outcomeGeneration
+        let hits = hitMailbox, hitCapturedAt = frame.timestamp
+        let deliverHits: @Sendable (NativeClassifiedHitEvidence?) -> Void = { [weak self] evidence in
+            let delivery = NativeClassifiedHitMailbox.Delivery(evidence: evidence, session: sessionID,
+                capturedAt: hitCapturedAt,
+                generation: generation)
+            guard let token = hits.offer(delivery) else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, let value = hits.take(token), self.outcomeGeneration == value.generation,
+                      self.sessionID == value.session else { return }
+                self.onClassifiedHits?(value.evidence, value.session, value.capturedAt)
+            }
+        }
         pipeline.offer(sessionID: sessionID, capturedAt: frame.timestamp, extract: {
-            try NativeARObservationAdapter.capture(frame, context: context)
+            do {
+                let record = try NativeARObservationAdapter.capture(frame, context: context)
+                deliverHits(try? NativeClassifiedHitEvidence(record: record, now: ProcessInfo.processInfo.systemUptime))
+                return record
+            } catch { deliverHits(nil); throw error }
         }) { [weak self] outcome in
             DispatchQueue.main.async { [weak self] in
                 guard self?.outcomeGeneration == generation else { return }; self?.lastOutcome = outcome
@@ -92,7 +132,7 @@ final class NativeARObservationBridge {
     }
     func stop() {
         recordedRoute.stop()
-        pipeline.stop(); sessionID = nil; outcomeGeneration = UUID()
+        pipeline.stop(); hitMailbox.clear(); sessionID = nil; outcomeGeneration = UUID()
     }
     /// Connect to the existing private spatial/map-history deletion path; no new UI needed.
     func clearHistory(memory: MemoryStore?, completion: @escaping (Bool) -> Void) {

@@ -1,0 +1,22 @@
+{
+  "status": "SOURCE_READ_ONLY_NOT_CALIBRATION",
+  "sourceArchive": "research/tools/public-mushroom-polycam-comparator-v1/public-mushroom-polycam-comparator.zip",
+  "sourceMember": "blind-polycam-rigid-registration-37/register.py",
+  "sourceSHA256": "ea96a79bea06fc89f7589468c4783d68bcb03c7557086cfa0fc7e88a8c737a4f",
+  "sourceLines": {
+    "20": "Load original Polycam intrinsic vertices/triangles",
+    "21-23": "Load historical Open3D unfiltered phone TSDF mesh",
+    "24": "Express target TSDF vertices using historical koivu_floorfix R/t metadata",
+    "38-39": "Fit source/target floor normals in predeclared bands",
+    "53-80": "Fixed high-wall fit/ambiguity calculation without route inputs",
+    "94-100": "Same-capture reserved boundary check after fit choice"
+  },
+  "FAROUsedByFit": false,
+  "routeResultsUsedByFit": false,
+  "officialPolycamPoseAlignment": false,
+  "historicalEstimatedLevelFrameUsed": true,
+  "validatedCurrentCameraToMeshAlignment": false,
+  "physicalBodyLocalization": false,
+  "currentWorkerLoadsCorrectedOccupancy": false,
+  "meaning": "Retain Q/translation and endpoints only as historical comparator inputs. Reproducing their bytes is not independent camera-mesh registration, measured floor or current localization. Do not map raw depths into the OBJ as physical truth from this result alone."
+}

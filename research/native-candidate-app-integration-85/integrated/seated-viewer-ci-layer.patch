@@ -1,0 +1,146 @@
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -129,6 +129,19 @@
+       -destination 'generic/platform=iOS Simulator' \
+       'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' build
+     ;;
++  diagnostics-unit)
++    # Exact synthetic projection/ownership class only; no camera/model/live session activation.
++    device="$(cat "$out/simulator-id")"
++    status=0
++    run_logged diagnostics-unit xcodebuild "${base[@]}" \
++      -destination "platform=iOS Simulator,id=$device" -destination-timeout 120 \
++      -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
++      '-only-testing:BlindAssistTests/SeatedMeshProjectionTests' \
++      'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' \
++      -resultBundlePath "$out/diagnostics-unit.xcresult" test || status=$?
++    printf '{"exit_code":%s}\n' "$status" > "$out/diagnostics-unit-exit.json"
++    exit "$status"
++    ;;
+   build)
+     run_logged build xcodebuild "${base[@]}" -destination 'generic/platform=iOS Simulator' build
+     ;;
+--- a/.github/workflows/native-apple.yml
++++ b/.github/workflows/native-apple.yml
+@@ -182,6 +182,23 @@
+       - name: Compile diagnostics flag present only
+         timeout-minutes: 20
+         run: bash tools/ci/native-apple.sh diagnostics-build
++      - name: Run exact flag-only seated projection and ownership fixtures
++        timeout-minutes: 10
++        run: bash tools/ci/native-apple.sh diagnostics-unit
++      - name: Verify exact ten synthetic hosted cases and source identity
++        if: always()
++        timeout-minutes: 3
++        run: python3 tools/ci/collect-seated-projection.py "$RUNNER_TEMP/blind-native-ci"
++      - name: Preserve bounded flag-only synthetic fixture receipt
++        if: always()
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: seated-projection-${{ github.run_id }}-${{ github.run_attempt }}
++          path: |
++            ${{ runner.temp }}/blind-native-ci/seated-projection-results.json
++            ${{ runner.temp }}/blind-native-ci/diagnostics-unit-exit.json
++          if-no-files-found: error
++          retention-days: 3
+ 
+   classified-mesh-bench:
+     # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.
+@@ -219,11 +236,12 @@
+           out="$RUNNER_TEMP/classified-mesh-bench"
+           mkdir -p "$out"
+           set +e
+-          xcrun swift test --package-path research/live-mesh-classified-bench-20261028 --scratch-path "$RUNNER_TEMP/classified-mesh-bench-build" --build-system native --jobs 1 --xunit-output "$out/tests.xml" 2>&1 | tee "$out/swift-test.log"
++          xcrun swift test --package-path research/live-mesh-classified-bench-20261028 --scratch-path "$RUNNER_TEMP/classified-mesh-bench-build" --build-system native --jobs 1 --xunit-output "$out/tests.xml" 2> "$out/swift-test.stderr.log" | tee "$out/swift-test.log"
+           statuses=("${PIPESTATUS[@]}")
+           set -e
+           printf '{"swift_test_exit_code":%s,"log_writer_exit_code":%s,"scope":"macOS synthetic dependency fixtures","ios_session_fixtures_excluded":5}\n' "${statuses[0]}" "${statuses[1]}" > "$out/result.json"
+           git status --porcelain > "$out/source-after.txt"
++          cat "$out/swift-test.stderr.log" >&2
+           test "${statuses[0]}" -eq 0
+           test "${statuses[1]}" -eq 0
+           python3 tools/ci/collect-classified-bench.py research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift "$out"
+--- /dev/null
++++ b/tools/ci/collect-seated-projection.py
+@@ -0,0 +1,46 @@
++"""Exact flag-only synthetic hosted identities; no live camera, guidance or physical proof."""
++import hashlib,importlib.util,json,os,re,sys
++from pathlib import Path
++sys.dont_write_bytecode=True
++H=Path(__file__).resolve().parent;ROOT=H.parents[1]
++spec=importlib.util.spec_from_file_location('native_status_reader',H/'export-native-unit-statuses.py');native=importlib.util.module_from_spec(spec);spec.loader.exec_module(native)
++EXPECTED=['SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres', 'SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce', 'SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution', 'SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection', 'SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow', 'SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection', 'SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision', 'SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement', 'SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain', 'SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns']
++
++def require(value,message):
++    if not value:raise ValueError(message)
++
++def collect(cases,summary,log,command,source):
++    names=re.findall(r'^\s*(?:@MainActor\s+)?func (test\w+)\(',source,re.M)
++    require(['SeatedMeshProjectionTests/'+n for n in names]==EXPECTED,'exact reviewed10 fixture source required')
++    require(source.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n'),'fixture must remain flag-only')
++    require(type(command.get('exit_code')) is int and command['exit_code']==0,'focused native command failed or unavailable')
++    counts=native.reconcile(cases,summary)
++    require(len(cases)==10 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
++    require(all(x['result']=='Passed' for x in cases),'failed/skipped focused fixture')
++    require(len(log.encode())<=64*1024*1024,'bounded test log required')
++    events={}
++    pattern=r"Test Case '-\[(?:BlindAssistTests\.)?SeatedMeshProjectionTests (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([0-9]+(?:\.[0-9]+)? seconds\)\.)"
++    for line in log.splitlines():
++        if not line.startswith('Test Case '):continue
++        match=re.fullmatch(pattern,line)
++        require(match is not None,'unexpected hosted test line/class')
++        name,status=match.groups();events.setdefault('SeatedMeshProjectionTests/'+name,[]).append(status)
++    require(events=={n:['started','passed'] for n in EXPECTED},'missing/extra/duplicate/failed/skipped exact log witnesses')
++    return {'status':'passed','scope':'10 flag-only synthetic hosted fixtures; no live sensing or physical authority','executed':10,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
++
++def main():
++    out=Path(sys.argv[1]);result={'status':'unavailable','complete':False,'source_verified':False,'expected_commit':os.environ.get('GITHUB_SHA')}
++    try:
++        before=native.provenance(ROOT,os.environ.get('GITHUB_SHA'))
++        bundle=out/'diagnostics-unit.xcresult';raw=native.query(['xcrun','xcresulttool','get','test-results','tests','--path',str(bundle),'--compact']);cases=native.cases_from(json.loads(raw))
++        summary=json.loads(native.query(['xcrun','xcresulttool','get','test-results','summary','--path',str(bundle),'--compact']))
++        log=out/'diagnostics-unit.log';require(log.stat().st_size<=64*1024*1024,'log exceeds64MiB');command=json.loads((out/'diagnostics-unit-exit.json').read_text())
++        source=ROOT/'ios/BlindAssistTests/SeatedMeshProjectionTests.swift'
++        result.update(collect(cases,summary,log.read_text(errors='replace'),command,source.read_text()))
++        after=native.provenance(ROOT,os.environ.get('GITHUB_SHA'));require(before==after,'source identity changed during collection')
++        result.update(complete=True,source_verified=True,source_commit=before['actual_head'],provenance=before,querySHA256=hashlib.sha256(raw).hexdigest(),fixtureSHA256=hashlib.sha256(source.read_bytes()).hexdigest())
++    except (OSError,ValueError,RecursionError, __import__('subprocess').SubprocessError) as error:
++        result.update(status='unavailable',complete=False,source_verified=False,error_type=type(error).__name__,error=str(error)[:256])
++    (out/'seated-projection-results.json').write_text(json.dumps(result,indent=2)+'\n');print('SEATED_PROJECTION_RESULTS='+json.dumps(result,separators=(',',':')))
++    return 0 if result['complete'] else 1
++if __name__=='__main__':raise SystemExit(main())
+--- /dev/null
++++ b/tools/ci/test-collect-seated-projection.py
+@@ -0,0 +1,32 @@
++"""Synthetic strict receipt parser regressions only; not Apple execution."""
++from pathlib import Path
++import importlib.util,unittest
++P=Path(__file__).parent;s=importlib.util.spec_from_file_location('seated',P/'collect-seated-projection.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
++SOURCE=(P.parents[1]/'ios/BlindAssistTests/SeatedMeshProjectionTests.swift').read_text()
++CASES=[{'identifier':x+'()','result':'Passed'} for x in m.EXPECTED]
++SUMMARY={'totalTestCount':10,'passedTests':10,'failedTests':0,'skippedTests':0,'expectedFailures':0}
++LOG='\n'.join(f"Test Case '-[BlindAssistTests.SeatedMeshProjectionTests {x.split('/')[1]}]' "+('started.' if event=='started' else 'passed (0.001 seconds).') for x in m.EXPECTED for event in ['started','passed'])+'\n'
++class Tests(unittest.TestCase):
++ def reject(self,cases=CASES,summary=SUMMARY,log=LOG,command={'exit_code':0},source=SOURCE):
++  with self.assertRaises((ValueError,KeyError)):m.collect(cases,summary,log,command,source)
++ def test_exact10(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE)['executed'],10)
++ def test_missing_case(self):self.reject(cases=CASES[:-1])
++ def test_duplicate_case(self):self.reject(cases=CASES[:-1]+CASES[:1])
++ def test_failed_case(self):self.reject(cases=[dict(CASES[0],result='Failed')]+CASES[1:])
++ def test_skipped_case(self):self.reject(cases=[dict(CASES[0],result='Skipped')]+CASES[1:])
++ def test_other_class(self):self.reject(cases=[dict(CASES[0],identifier='Other/testX()')]+CASES[1:])
++ def test_nonzero_exit(self):self.reject(command={'exit_code':65})
++ def test_bool_exit_rejected(self):self.reject(command={'exit_code':False})
++ def test_missing_exit(self):self.reject(command={})
++ def test_bad_summary(self):self.reject(summary=dict(SUMMARY,totalTestCount=9))
++ def test_missing_log_pair(self):self.reject(log='\n'.join(LOG.splitlines()[2:]))
++ def test_failed_log(self):self.reject(log=LOG.replace('passed','failed',1))
++ def test_skipped_log(self):self.reject(log=LOG.replace('passed','skipped',1))
++ def test_duplicate_log(self):self.reject(log=LOG+LOG.splitlines()[0]+'\n')
++ def test_other_log_class(self):self.reject(log=LOG.replace('BlindAssistTests.SeatedMeshProjectionTests','Other.SeatedMeshProjectionTests',1))
++ def test_other_log_case(self):self.reject(log=LOG.replace(m.EXPECTED[0].split('/')[1],'testUnexpected',1))
++ def test_source_rename(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[0].split('/')[1]+'(', 'func testUnexpected('))
++ def test_source_flag_removal(self):self.reject(source=SOURCE.replace('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n','',1))
++ def test_empty_log(self):self.reject(log='')
++ def test_unqualified_hosted_class(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE)['executed'],10)
++if __name__=='__main__':unittest.main()

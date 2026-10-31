@@ -1,0 +1,199 @@
+import Foundation
+import XCTest
+import BlindRoomMesh
+
+/// Explicit synthetic substrate tests, separate from original Apple room fixtures.
+/// No sensor, localization, speech, haptic or physical guidance is invoked.
+final class ClassifiedRoomMeshTests: XCTestCase {
+    private let identity: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
+    private let vertices: [Double] = [-3,0,-3, -3,0,3, 3,0,3, 3,0,-3]
+    private let triangles: [Int32] = [0,1,2, 0,2,3]
+    private final class Box: @unchecked Sendable {
+        private let lock = NSLock()
+        private var stored: Result<MeshCandidateRoute, MeshCandidateError>?
+        func put(_ result: Result<MeshCandidateRoute, MeshCandidateError>) { lock.lock(); stored = result; lock.unlock() }
+        func get() -> Result<MeshCandidateRoute, MeshCandidateError>? { lock.lock(); defer { lock.unlock() }; return stored }
+    }
+    // This family uses the same process-global native worker as ingress fixtures.
+    // Keep the admitted test owner until its actual discard callback, including throws.
+    static let fixtureDrainGate = ClassificationIngressTests.fixtureDrainGate
+    private final class Acknowledgement: @unchecked Sendable {
+        private let lock = NSLock()
+        private var value = false
+        func mark() { lock.lock(); value = true; lock.unlock() }
+        func get() -> Bool { lock.lock(); defer { lock.unlock() }; return value }
+    }
+    private var discardAcknowledgements: [ObjectIdentifier: (acknowledged: Acknowledgement, token: UUID)] = [:]
+    private func event(session: String, support: [MeshTriangleSupport]?) -> MeshAnchorEvent {
+        .init(sessionID: session, generation: 0, anchorID: "authored-plane", revision: 1,
+              timestamp: 1, vertices: vertices, triangles: triangles, columnMajorTransform: identity,
+              complete: true, triangleSupport: support)
+    }
+#if DEBUG
+    /// Runs only on the separate bounded diagnostic queue, never the timed
+    /// result callback. No runtime/owner/geometry capture is needed by the sink.
+    private static func cpuReceipt(id: UUID, rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
+        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage,
+                  _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int, Int64, Bool) {
+            guard let a = rows.first(where: { $0.stage == begin }),
+                  let b = rows.first(where: { $0.stage == end }),
+                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1, -1, false) }
+            let wall = b.elapsedMilliseconds - a.elapsedMilliseconds
+            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
+                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds,
+                  bc >= ac else { return (wall, -1, false) }
+            return (wall, bc - ac, true)
+        }
+        let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
+        let maxLockWait = rows.map(\.diagnosticLockWaitMicroseconds).max() ?? 0
+        print("CLASSIFICATION_DIAGNOSTIC_LOCK lane=runtime75 records=\(rows.count) max_wait_us=\(maxLockWait)")
+        let worker = pair(.workerStarted, .workerFinished)
+        let build = pair(.nativeBuildBegin, .nativeBuildEnd)
+        let route = pair(.routeBegin, .routeEnd)
+        let retired = rows.contains { $0.stage == .requestRetired }
+        let failed = rows.contains { $0.stage == .nativeFailure }
+        // Missing/mismatched clocks are -1/false, not evidence of zero CPU.
+        print("CLASSIFICATION_WORKER_CPU id=\(id.uuidString) worker_begin_ms=\(began) lane=runtime75 worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) retired=\(retired) native_failed=\(failed) records=\(rows.count)")
+    }
+#endif
+    private func makeRuntime(sessionID: String, supportPolicy: MeshSupportPolicy = .legacySlope) throws -> RoomMeshCandidateRuntime {
+        guard let token = Self.fixtureDrainGate.reserve() else {
+            XCTFail("Previous classification fixture native owner has not acknowledged discard")
+            throw MeshCandidateError.unavailable
+        }
+        let runtime: RoomMeshCandidateRuntime
+        do {
+#if DEBUG
+            runtime = try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true,
+                syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) })
+#else
+            runtime = try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy)
+#endif
+        } catch {
+            Self.fixtureDrainGate.acknowledge(token) // Constructor failed before native admission.
+            throw error
+        }
+        discardAcknowledgements[ObjectIdentifier(runtime)] = (Acknowledgement(), token)
+        addTeardownBlock { [self, runtime] in
+            await discard(runtime) // A thrown query must not bypass owned cleanup.
+        }
+        return runtime
+    }
+    private enum ReceiptEvent: String { case callback, waitFinished, failureDiscardCompleted, discardCompleted }
+    private static func stageReceipt(_ runtime: RoomMeshCandidateRuntime, event: ReceiptEvent) {
+#if DEBUG
+        guard let id = runtime.diagnosticReceiptID else { return }
+        let stages = runtime.diagnosticStageReceipts.map { "\($0.stage.rawValue):\($0.elapsedMilliseconds)" }.joined(separator: ";")
+        // Fixed public-synthetic UUID, closed stage/event names, numeric elapsed
+        // milliseconds only. No session/anchor identity, geometry or error text.
+        print("CLASSIFIED_QUERY_STAGE_RECEIPT id=\(id.uuidString) event=\(event.rawValue) stages=\(stages)")
+#endif
+    }
+    private func query(_ runtime: RoomMeshCandidateRuntime, start: [Float] = [-2,0,0], goal: [Float] = [2,0,0]) async throws -> Result<MeshCandidateRoute, MeshCandidateError> {
+        let done = expectation(description: "native candidate result"), box = Box()
+        // Test-only boundary receipts: elapsed callback time includes native-worker
+        // queueing, build/query and callback-queue delay; it does not separate them.
+        let receipt = UUID().uuidString, submittedAt = ProcessInfo.processInfo.systemUptime
+        print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:submitted")
+        runtime.request(start: start, goal: goal, body: try .init(radius: 0.225, height: 1.75)) {
+            // Completion critical path: no stdout, receipt snapshot or formatting.
+            box.put($0)
+            done.fulfill()
+        }
+        await fulfillment(of: [done], timeout: 10)
+        let result = box.get()
+        let elapsedMS = Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000)
+        if case nil = result {
+            // A thrown XCTUnwrap bypasses the test body's normal async discard.
+            // Fence this owner now; do not wait longer or infer native completion.
+            runtime.stopAndDiscard {}
+            print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-requested,elapsed_ms:\(elapsedMS)")
+        }
+        Self.stageReceipt(runtime, event: .waitFinished)
+        return try XCTUnwrap(result, "Native callback did not complete; no passing route inferred; receipt=\(receipt), wait_elapsed_ms=\(elapsedMS), terminal discard requested")
+    }
+    private func discard(_ runtime: RoomMeshCandidateRuntime) async {
+        guard let receipt = discardAcknowledgements[ObjectIdentifier(runtime)] else {
+            XCTFail("Fixture owner was not registered for acknowledged cleanup")
+            return
+        }
+        guard !receipt.acknowledged.get() else { return }
+        // Fresh standalone expectation if teardown observes an earlier timed-out wait.
+        let done = XCTestExpectation(description: "terminal geometry release")
+        done.assertForOverFulfill = true
+        runtime.stopAndDiscard {
+            receipt.acknowledged.mark()
+            Self.fixtureDrainGate.acknowledge(receipt.token)
+            done.fulfill()
+        }
+        await fulfillment(of: [done], timeout: 10)
+        Self.stageReceipt(runtime, event: .waitFinished)
+    }
+    func testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority() async throws {
+        let runtime = try makeRuntime(sessionID: "classified-floor", supportPolicy: .classifiedFloorOnly)
+        XCTAssertTrue(runtime.offer(event(session: "classified-floor", support: [.floor, .floor])))
+        let result = try await query(runtime)
+        switch result {
+        case .success(let route):
+            XCTAssertTrue(route.complete); XCTAssertTrue(runtime.isCurrent(route))
+            XCTAssertFalse(route.authorizesPhysicalGuidance); XCTAssertFalse(route.actualWorldCoverageKnown)
+            XCTAssertTrue(route.rawDepthHazardVeto)
+            runtime.invalidate(); XCTAssertFalse(runtime.isCurrent(route))
+        case .failure(let error): XCTFail("Declared floor fixture did not route: \(error)")
+        }
+        await discard(runtime)
+    }
+    func testIdenticalUpwardObstaclePlaneIsNotPromotedToFloor() async throws {
+        let runtime = try makeRuntime(sessionID: "classified-obstacle", supportPolicy: .classifiedFloorOnly)
+        XCTAssertTrue(runtime.offer(event(session: "classified-obstacle", support: [.obstacle, .obstacle])))
+        let result = try await query(runtime)
+        if case .success = result { XCTFail("Slope-only promotion turned an obstacle surface into support") }
+        await discard(runtime)
+    }
+    func testMissingAndMismatchedSupportAreRejectedAtIngress() async throws {
+        let runtime = try makeRuntime(sessionID: "strict", supportPolicy: .classifiedFloorOnly)
+        XCTAssertFalse(runtime.offer(event(session: "strict", support: nil)))
+        XCTAssertFalse(runtime.offer(event(session: "strict", support: [.floor])))
+        XCTAssertTrue(runtime.offer(event(session: "strict", support: [.floor, .floor])))
+        let result = try await query(runtime)
+        if case .success(let route) = result {
+            XCTAssertFalse(route.sourceDeliveryComplete)
+            XCTAssertTrue(route.unknownCoverage.contains("ingress-or-lifecycle-gap"))
+        } else { XCTFail("Valid classified floor should remain queryable but incomplete after ingress loss") }
+        await discard(runtime)
+    }
+    func testLegacyUnclassifiedAPIStillRoutesAndDoesNotIgnoreExplicitLabels() async throws {
+        let runtime = try makeRuntime(sessionID: "legacy")
+        XCTAssertFalse(runtime.offer(event(session: "legacy", support: [.floor, .floor])))
+        try runtime.reset(sessionID: "legacy-next", generation: 0)
+        XCTAssertTrue(runtime.offer(event(session: "legacy-next", support: nil)))
+        let result = try await query(runtime)
+        if case .success(let route) = result { XCTAssertTrue(route.complete) }
+        else { XCTFail("The unchanged legacy slope-mode API regressed") }
+        await discard(runtime)
+    }
+    func testFloorTouchingBedAndLowObjectNeverGainSupportUnderTriangleOrderPermutations() async throws {
+        for height in [0.025, 0.65] {
+            let boxVertices: [Double] = [-1,0,-1, 1,0,-1, 1,0,1, -1,0,1,
+                                        -1,height,-1, 1,height,-1, 1,height,1, -1,height,1]
+            let faces: [[Int32]] = [[4,6,5],[4,7,6], [0,1,2],[0,2,3],
+                                   [0,4,5],[0,5,1], [1,5,6],[1,6,2],
+                                   [2,6,7],[2,7,3], [3,7,4],[3,4,0]]
+            let obstacleFaces = faces.map { $0.map { $0 + 4 } }
+            let floorFaces: [[Int32]] = [[0,1,2],[0,2,3]]
+            let labelled = floorFaces.map { ($0,MeshTriangleSupport.floor) } + obstacleFaces.map { ($0,MeshTriangleSupport.obstacle) }
+            let orders = [labelled, Array(labelled.reversed()), Array(labelled.dropFirst(2)) + Array(labelled.prefix(2))]
+            for (index, order) in orders.enumerated() {
+                let session = "touching-\(height)-\(index)"
+                let runtime = try makeRuntime(sessionID:session,supportPolicy:.classifiedFloorOnly)
+                XCTAssertTrue(runtime.offer(.init(sessionID:session,generation:0,anchorID:"floor-and-solid",revision:1,
+                    timestamp:1,vertices:vertices+boxVertices,triangles:order.flatMap { $0.0 },columnMajorTransform:identity,
+                    complete:true,triangleSupport:order.map { $0.1 })))
+                let result = try await query(runtime,start:[-0.4,Float(height),0],goal:[0.4,Float(height),0])
+                if case .success = result { XCTFail("Obstacle top gained floor support at height \(height), permutation \(index)") }
+                await discard(runtime)
+            }
+        }
+    }
+}
+

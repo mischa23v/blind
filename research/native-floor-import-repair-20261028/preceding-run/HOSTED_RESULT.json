@@ -1,0 +1,139 @@
+{
+  "source": "fa43366dced02c8e578baf4d38d69caa10614718",
+  "hosted_counts": {
+    "Passed": 224,
+    "Failed": 16,
+    "Skipped": 2,
+    "Expected Failure": 0
+  },
+  "case_count": 242,
+  "aggregate_counts_match": true,
+  "source_verified": true,
+  "failures": [
+    {
+      "identifier": "ClassificationIngressTests/testClassifiedFloorUsesRealRuntimeAndTransformOnceWithoutPhysicalAuthority()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "ConversationTests/remembersNameWithoutRecitingHistory()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "TextChatScenarioTests/followsConversation(_:)",
+      "result": "Failed"
+    },
+    {
+      "identifier": "TextChatScenarioTests/doesNotInventFloorClearance()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+      "result": "Failed"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomHistoricalSupportTests/testRawSlabSidesUndersideAndRimCannotBecomeRoutingSupport()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomHistoricalSupportTests/testSourcePlaneOffsetAndMetricTransformAppliedOnce()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomHistoricalSupportTests/testZeroExtrusionHasOnlyOriginalPlaneSupportForBothSourceWindings()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testAppleWallMeshHasRealDoorAndWindowCutoutsWithClosedDoorBarrierSeparate()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportInventoryPreservesFeatureIdentityAndHistoricalDoorState()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testRealFloorTriangulationPreservesOriginalConcavityAreaAndWorldCorners()",
+      "result": "Failed"
+    }
+  ],
+  "route_reports": [
+    {
+      "attachmentName": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "testResult": "Failed",
+      "status": "collected",
+      "sha256": "0b35a1d75285d8d83189a47da2a11d161be38fc702626644ab5150623fe8e840",
+      "outcome_count": 12,
+      "errors": [
+        "Bedroom3: invalidMesh",
+        "Hallway2: invalidMesh"
+      ]
+    },
+    {
+      "attachmentName": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "testResult": "Failed",
+      "status": "collected",
+      "sha256": "3bea98aba5b528d49cf95502b78d668c468f8b027f237860db7aa7eca61bab29",
+      "outcome_count": 6,
+      "errors": [
+        "Bedroom3: invalidMesh",
+        "Hallway2: invalidMesh"
+      ]
+    },
+    {
+      "attachmentName": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "testResult": "Failed",
+      "status": "collected",
+      "sha256": "188dbe88b7a1428840c9831f1ac816b5790e182af2582190e601fcbbd340f29d",
+      "outcome_count": 16,
+      "errors": [
+        "Bedroom3: invalidMesh",
+        "Hallway2: invalidMesh"
+      ]
+    },
+    {
+      "attachmentName": "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "testResult": "Failed",
+      "status": "collected",
+      "sha256": "44e0df6c5b08663a0257b81afcfa6457a9a7a248050b75e6ab119e2e82f7b3b7",
+      "outcome_count": 0,
+      "errors": []
+    },
+    {
+      "attachmentName": "SavedRoomCollisionBackendMatrix-v1.json",
+      "testResult": "Passed",
+      "status": "collected",
+      "sha256": "86419e0783f75edce22cb9cbfa358066c8a4a0a690bb793a7078d6d4411f697d",
+      "outcome_count": 0,
+      "errors": []
+    },
+    {
+      "attachmentName": "SavedRoomCollisionMixedScene-v1.json",
+      "testResult": "Passed",
+      "status": "collected",
+      "sha256": "bcb22fcc3662ff31b389a7e352928eb4b9036a5e3e5a37d96fc11ebb7cad5d53",
+      "outcome_count": 0,
+      "errors": []
+    }
+  ],
+  "ui_status": "still running at20:58UTC",
+  "limits": "No successful real-room route/movement; synthetic collision controls only"
+}

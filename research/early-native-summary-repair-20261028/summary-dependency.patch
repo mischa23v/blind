@@ -1,0 +1,31 @@
+--- a/.github/workflows/native-apple.yml
++++ b/.github/workflows/native-apple.yml
+@@ -68,7 +68,16 @@
+       - name: Extract bounded hosted-unit case statuses before UI tests
+         if: always()
+         timeout-minutes: 3
+-        run: python3 tools/ci/export-native-unit-statuses.py "$RUNNER_TEMP/blind-native-ci/unit.xcresult" "$RUNNER_TEMP/blind-native-ci/unit.log" "$RUNNER_TEMP/blind-native-ci/unit-case-statuses.json" || true
++        run: |
++          out="$RUNNER_TEMP/blind-native-ci"
++          if [[ -d "$out/unit.xcresult" ]]; then
++            if python3 tools/ci/export-native-unit-statuses.py --summary "$out/unit.xcresult" "$out/unit-summary.json"; then
++              :
++            else
++              echo "unit xcresult summary unavailable; consult bounded test output above."
++            fi
++          fi
++          python3 tools/ci/export-native-unit-statuses.py "$out/unit.xcresult" "$out/unit.log" "$out/unit-case-statuses.json" || true
+       - name: Preserve bounded hosted-unit case statuses
+         if: always()
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+--- a/research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json
++++ b/research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json
+@@ -13,7 +13,7 @@
+     "ios/BlindAssist.xcodeproj/project.pbxproj": "d65a2d9eaa66fdb5a46e89ac27438cf1340cc31f096423d16abaa6adbc37c543",
+     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
+     "tools/ci/native-apple.sh": "d798efeed160cb0a0513991ee7d291bffe88b30844ba112121662e0d79add32a",
+-    ".github/workflows/native-apple.yml": "faafd69a05f4d6e65a21e5317d105b74c61d0779d00a0099cab2fa0c740aba81",
++    ".github/workflows/native-apple.yml": "ba74cd55736aa76248b885cf3c2454ba7ce2d082b0f7f040cd87ad8389e37a8e",
+     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
+     "research/native-candidate-app-integration-85/integrated/check.py": "6b47a8ccdbdadbc3b81f50994a8a0eacb44b2c4ccb692e913a06341d0b067159",
+     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",

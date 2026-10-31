@@ -41,6 +41,16 @@ public struct ConnectedJourneyCoordinator: Sendable {
     public private(set) var persistenceBlocked = false
     public private(set) var ordinarySpeechMuted = false
     public var currentLeg: JourneyLeg? { itinerary.indices.contains(legIndex) ? itinerary[legIndex] : nil }
+    /// Pure diagnostic projection of the route already owned here. No next(),
+    /// replanning, acceptance, output lease or source-frame conversion occurs.
+    public var diagnosticOwnedRoute: NavigationTestRecording.OwnedRoute? {
+        guard snapshot.goal?.status == .active, !snapshot.returnClarificationPending,
+              case .local? = currentLeg, let owner, let installation = owner.installation,
+              let goal = owner.goalRevision, owner.route.count >= 2 else { return nil }
+        return .init(map: installation.binding, routeRevision: owner.routeID, goalRevision: goal,
+            bodyRevision: owner.bodyRevision, obstacleRevision: owner.obstacleRevision,
+            artifactSHA256: installation.artifact.sha256, points: owner.route.map(\.position))
+    }
     public var currentQuestion: JourneyReturnQuestion? { question }
     private let body: BodyEnvelope?
     private let limits: SpatialLocalizationLimits?
@@ -121,6 +131,43 @@ public struct ConnectedJourneyCoordinator: Sendable {
         owner?.withholdLocalizationEvidence(); support = nil; armedPortal = nil
         rotateOutput(); return true
     }
+    /// Fresh source endpoint association can request a new localization owner.
+    /// This is destination intent, never an observed crossing or target-floor pose.
+    public func pendingPortalDestination(now:Double) -> JourneyEndpoint? {
+        guard let armedPortal,case .portal(let id,let from,let to)? = currentLeg,
+              id==armedPortal.id,from==armedPortal.from,to==armedPortal.to,
+              snapshot.goal?.revision==armedPortal.goal,snapshot.goal?.status == .active,
+              now.isFinite,now>=armedPortal.armedAt,now-armedPortal.armedAt<=120 else{return nil}
+        return to
+    }
+    /// A missing/expired departure receipt cannot complete a portal. If fresh
+    /// evidence independently establishes a destination-floor endpoint instead,
+    /// drop only the abandoned itinerary and let the existing planner start there.
+    /// Never record an unobserved crossing or recover a historical departure.
+    /// The runtime calls this only after its unique-endpoint association succeeds.
+    @discardableResult
+    public mutating func retireUnassociatedPortal(at endpoint: JourneyEndpoint, now: Double) throws -> Bool {
+        guard case .portal(_, let from, let to)? = currentLeg,
+              activeBinding == endpoint.binding, endpoint.binding == to.binding,
+              endpoint.floorID == to.floorID else { return false }
+        func matches(_ expected: JourneyEndpoint) -> Bool {
+            endpoint.binding == expected.binding && endpoint.floorID == expected.floorID &&
+                endpoint.nodeID == expected.nodeID &&
+                (expected.roomID == nil || endpoint.roomID == expected.roomID)
+        }
+        // Fresh source evidence still follows the existing source/rearm path.
+        // Same map IDs or floor numbers alone never imply the destination side.
+        guard !matches(from) else { return false }
+        _ = try requireEndpoint(endpoint, now: now)
+        if matches(to), pendingPortalDestination(now: now) != nil { return false }
+        // Also handles an independently localized, different destination node:
+        // reaching it cannot retroactively manufacture the missing portal endpoint.
+        retirePlan()
+        return true
+    }
+    /// Reuses the existing planner after a NEW supported unique mapped endpoint.
+    /// Never snap the current pose onto a route or silently bridge a blocked leg.
+    public mutating func requireRouteReassociation() {retirePlan()}
     public var expectedSessionID: UUID? { owner?.sessionID }
     public func currentPose(now: Double) -> SpatialLocalizationCapture? { owner?.currentPose(now: now) }
     public mutating func accept(_ capture: SpatialLocalizationCapture, support: SpatialFloorSupport, now: Double) throws {

@@ -1,0 +1,457 @@
+{
+  "schema": 1,
+  "source": "fb879d235f38a3f0121b69b023e8ee14c0ded61c",
+  "requestedRuntime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+  "requestedDevice": "iPhone 18 Pro Max",
+  "runnerBudgetSeconds": 2400,
+  "build": "passed",
+  "cleanup": "passed",
+  "commands": {
+    "xcode-version": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 2.093,
+      "exitCode": 0
+    },
+    "sdk-version": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 1.222,
+      "exitCode": 0
+    },
+    "types": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 2.832,
+      "exitCode": 0
+    },
+    "create": {
+      "budgetSeconds": 60,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.395,
+      "exitCode": 0
+    },
+    "boot": {
+      "budgetSeconds": 60,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 4.298,
+      "exitCode": 0
+    },
+    "bootstatus": {
+      "budgetSeconds": 180,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 60.212,
+      "exitCode": 0
+    },
+    "build": {
+      "budgetSeconds": 600,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 417.639,
+      "exitCode": 0
+    },
+    "original-all-set-size": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 3.149,
+      "exitCode": 0
+    },
+    "original-all-get-size": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.346,
+      "exitCode": 0
+    },
+    "original-all": {
+      "budgetSeconds": 300,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 118.696,
+      "exitCode": 65
+    },
+    "original-all-trace-container": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.43,
+      "exitCode": 0
+    },
+    "original-all-export": {
+      "budgetSeconds": 120,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 3.615,
+      "exitCode": 0
+    },
+    "camera-dynamic-type-set-size": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.386,
+      "exitCode": 0
+    },
+    "camera-dynamic-type-get-size": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.44,
+      "exitCode": 0
+    },
+    "camera-dynamic-type": {
+      "budgetSeconds": 300,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 78.194,
+      "exitCode": 65
+    },
+    "camera-dynamic-type-trace-container": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.286,
+      "exitCode": 0
+    },
+    "camera-dynamic-type-export": {
+      "budgetSeconds": 120,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.357,
+      "exitCode": 0
+    },
+    "shutdown": {
+      "budgetSeconds": 30,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 3.4,
+      "exitCode": 0
+    },
+    "delete": {
+      "budgetSeconds": 45,
+      "timedOut": false,
+      "sentSIGTERM": false,
+      "sentSIGKILL": false,
+      "elapsedSeconds": 0.431,
+      "exitCode": 0
+    }
+  },
+  "cases": [
+    {
+      "name": "original-all",
+      "selector": "BlindAssistUITests/LaunchTests/testAccessibilityAuditOfCameraAndAsk",
+      "maxScreenshots": 8,
+      "status": "native_failed",
+      "evidence": "complete",
+      "observedSimulatorCategory": "large",
+      "traceNotBefore": 1793132091.9353821,
+      "nativeExitCode": 65,
+      "logSummary": {
+        "lines": [
+          "Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' started.",
+          "ACCESSIBILITY_AUDIT_READINESS phase=camera titleReady=true controlReady=true",
+          "ACCESSIBILITY_AUDIT_EVIDENCE phase=camera point=before category=UICTContentSizeCategoryL window=(0.0, 0.0, 440.0, 956.0)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=navigation exists=true frame=(0.0, 62.0, 440.0, 106.0) hittable=true enabled=true label=",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=tabs exists=true frame=(0.0, 873.0, 440.0, 83.0) hittable=true enabled=true label=Tab Bar",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=monitor exists=true frame=(20.0, 264.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Start monitoring",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=return exists=true frame=(20.0, 426.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Guide me back to where I started",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=practice exists=true frame=(20.0, 608.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Try practice (2 minutes)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=practice-header exists=true frame=(20.0, 568.3333333333333, 400.0, 40.33333333333337) hittable=true enabled=true label=Practice",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=practice-footer exists=true frame=(20.0, 660.6666666666667, 400.0, 100.33333333333337) hittable=true enabled=true label=Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=local-answer exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=voice-question exists=false",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_BEGIN phase=camera uptime=1623.3944089583335",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=camera uptime=1626.17830075",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),phase:camera,compact:Dynamic Type font sizes are partially unsupported,detailed:User will not be able to change the font size of this SwiftUI.AccessibilityNode,element:Attributes: StaticText, 0x106f64dc0, {{20.0, 568.3}, {400.0, 40.3}}, label: 'Practice' | Element subtree: |  \u2192StaticText, 0x106f64dc0, {{20.0, 568.3}, {400.0, 40.3}}, label: 'Practice' | Path to element: |  \u2192Application, 0x10645e6c0, pid: 44121, label: 'Blind Assist' |   \u21b3Window (Main), 0x10645da40, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10645f840, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10645f980, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10645f700, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10645fac0, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10645fc00, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10645fe80, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10645fd40, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10645c500, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10645c640, {{0.0, 0.0}, {440.0, 956.0}} |             \u21b3Other, 0x10645f480, {{0.0, 0.0}, {440.0, 956.0}} |              \u21b3Other, 0x10645d400, {{0.0, 0.0}, {440.0, 956.0}} |               \u21b3Other, 0x10645d040, {{0.0, 0.0}, {440.0, 956.0}} |                \u21b3Other, 0x10645ee40, {{0.0, 0.0}, {440.0, 956.0}} |                 \u21b3Other, 0x10645f0c0, {{0.0, 0.0}, {440.0, 956.0}} |                  \u21b3Other, 0x10645f340, {{0.0, 0.",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=camera uptime=1627.5352267916667",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),phase:camera,compact:Dynamic Type font sizes are partially unsupported,detailed:User will not be able to change the font size of this SwiftUI.AccessibilityNode,element:Attributes: StaticText, 0x106f65f40, {{20.0, 660.7}, {400.0, 100.3}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Element subtree: |  \u2192StaticText, 0x106f65f40, {{20.0, 660.7}, {400.0, 100.3}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Path to element: |  \u2192Application, 0x10645e6c0, pid: 44121, label: 'Blind Assist' |   \u21b3Window (Main), 0x10645da40, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10645f980, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10645f700, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10645fac0, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10645fc00, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10645fd40, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10645c500, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10645c640, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10645f480, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10645d400, {{0.0, 0.0}, {440.0, 956.0}} |",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=camera uptime=1628.4433962916667",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),phase:camera,compact:Dynamic Type font sizes are partially unsupported,detailed:User will not be able to change the font size of this SwiftUI.AccessibilityNode,element:Attributes: Button, 0x106f657c0, {{20.0, 608.7}, {400.0, 52.0}}, identifier: 'start-simulation', label: 'Try practice (2 minutes)' | Element subtree: |  \u2192Button, 0x106f657c0, {{20.0, 608.7}, {400.0, 52.0}}, identifier: 'start-simulation', label: 'Try practice (2 minutes)' | Path to element: |  \u2192Application, 0x10645e6c0, pid: 44121, label: 'Blind Assist' |   \u21b3Window (Main), 0x10645da40, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10645f700, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10645fac0, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10645fc00, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10645c500, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10645c640, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10645f480, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10645d400, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10645d040, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10645ee40, {{0.0, 0.0}, {440.0, 956.0}} |             \u21b3Other, 0x10645d540, {{0.0, 0.0}, {440.0, 956.0}} |              \u21b3Other, 0x10645c8c0, {{0.0, 0.0}, {440.0, 956.0}} |               \u21b3Other, 0x10645ea80, {{0.0, 0.0}, {440.0, 956.0}} |                \u21b3Other, 0x10645f340, {{0.0, 0.0}, {440.0, 956.0}} |                 \u21b3Other, 0",
+          "ACCESSIBILITY_AUDIT_CAPTURE_OMITTED phase=camera index=3 limit=2",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_END phase=camera termination=returned uptime=1628.99724025",
+          "ACCESSIBILITY_AUDIT_EVIDENCE phase=camera point=after category=UICTContentSizeCategoryL window=(0.0, 0.0, 440.0, 956.0)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=navigation exists=true frame=(0.0, 62.0, 440.0, 106.0) hittable=true enabled=true label=",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=tabs exists=true frame=(0.0, 873.0, 440.0, 83.0) hittable=true enabled=true label=Tab Bar",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=monitor exists=true frame=(20.0, 264.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Start monitoring",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=return exists=true frame=(20.0, 426.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Guide me back to where I started",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=practice exists=true frame=(20.0, 608.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Try practice (2 minutes)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=practice-header exists=true frame=(20.0, 568.3333333333333, 400.0, 40.33333333333337) hittable=true enabled=true label=Practice",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=practice-footer exists=true frame=(20.0, 660.6666666666667, 400.0, 100.33333333333337) hittable=true enabled=true label=Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=local-answer exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=voice-question exists=false",
+          "ACCESSIBILITY_AUDIT_READINESS phase=ask titleReady=true controlReady=true",
+          "ACCESSIBILITY_AUDIT_EVIDENCE phase=ask point=before category=UICTContentSizeCategoryL window=(0.0, 0.0, 440.0, 956.0)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=navigation exists=true frame=(0.0, 62.0, 440.0, 106.0) hittable=true enabled=true label=",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=tabs exists=true frame=(0.0, 873.0, 440.0, 83.0) hittable=true enabled=true label=Tab Bar",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=monitor exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=return exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=practice exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=practice-header exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=practice-footer exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=local-answer exists=true frame=(20.0, 312.33333333333337, 400.0, 51.99999999999994) hittable=true enabled=false label=Ask about the camera view",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=before role=voice-question exists=true frame=(20.0, 364.3333333333333, 400.0, 52.0) hittable=true enabled=true label=Talk",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_BEGIN phase=ask uptime=1638.4100542083333",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=ask uptime=1641.6031322083334",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 1),phase:ask,compact:Contrast failed,detailed:Contrast failed for SwiftUI.AccessibilityNode,element:unidentified",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Contrast failed",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=ask uptime=1641.8260990416668",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 1),phase:ask,compact:Contrast failed,detailed:Contrast failed for SwiftUI.AccessibilityNode,element:unidentified",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Contrast failed",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=ask uptime=1642.0429575833334",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 1),phase:ask,compact:Contrast failed,detailed:Contrast failed for SwiftUI.AccessibilityNode,element:unidentified",
+          "ACCESSIBILITY_AUDIT_CAPTURE_OMITTED phase=ask index=3 limit=2",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Contrast failed",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=ask uptime=1642.0439909166669",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 1),phase:ask,compact:Contrast failed,detailed:Contrast failed for SwiftUI.AccessibilityNode,element:Attributes: StaticText, 0x10f84f840, {{40.0, 911.8}, {198.3, 20.3}}, label: 'Explore a picture by touch' | Element subtree: |  \u2192StaticText, 0x10f84f840, {{40.0, 911.8}, {198.3, 20.3}}, label: 'Explore a picture by touch' | Path to element: |  \u2192Application, 0x10645cf00, pid: 44121, label: 'Blind Assist' |   \u21b3Window (Main), 0x10645e6c0, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10645f700, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10645fac0, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10645fc00, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10645c500, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10645f980, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10645f0c0, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10645cdc0, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10645e940, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10645f340, {{0.0, 0.0}, {440.0, 956.0}} |             \u21b3Other, 0x106ce5e00, {{0.0, 0.0}, {440.0, 956.0}} |              \u21b3Other, 0x106ce5900, {{0.0, 0.0}, {440.0, 956.0}} |               \u21b3Other, 0x106ce7980, {{0.0, 0.0}, {440.0, 956.0}} |                \u21b3Other, 0x106ce7ac0, {{0.0, 0.0}, {440.0, 956.0}} |                 \u21b3Other, 0x106ce7c00, {{0.0, 0.0}, {440.0, 956.0}} |",
+          "ACCESSIBILITY_AUDIT_CAPTURE_OMITTED phase=ask index=4 limit=2",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Contrast failed",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=ask uptime=1644.2613522083334",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 131072),phase:ask,compact:Text clipped,detailed:Text of this UILabel may be clipped at larger Dynamic Type sizes.,element:Attributes: StaticText, 0x106f64280, {{246.0, 276.3}, {137.7, 20.3}}, label: 'Everything in view' | Element subtree: |  \u2192StaticText, 0x106f64280, {{246.0, 276.3}, {137.7, 20.3}}, label: 'Everything in view' | Path to element: |  \u2192Application, 0x10645cf00, pid: 44121, label: 'Blind Assist' |   \u21b3Window (Main), 0x10645e6c0, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10645fac0, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10645fc00, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10645c500, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10645f980, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10645f0c0, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10645cdc0, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10645e940, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10645f340, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10645da40, {{0.0, 0.0}, {440.0, 956.0}} |             \u21b3Other, 0x103647d40, {{0.0, 0.0}, {440.0, 956.0}} |              \u21b3Other, 0x103647ac0, {{0.0, 0.0}, {440.0, 956.0}} |               \u21b3Other, 0x1036475c0, {{0.0, 0.0}, {440.0, 956.0}} |                \u21b3Other, 0x103647c00, {{0.0, 0.0}, {440.0, 956.0}} |                 \u21b3Other, 0x103645540, {{0.0, 0.0}, {440.0, 956.0}} |                  \u21b3Other,",
+          "ACCESSIBILITY_AUDIT_CAPTURE_OMITTED phase=ask index=5 limit=2",
+          "<workspace>/ios/BlindAssistUITests/LaunchTests.swift:361: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Text clipped",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_END phase=ask termination=returned uptime=1645.8683110000002",
+          "ACCESSIBILITY_AUDIT_EVIDENCE phase=ask point=after category=UICTContentSizeCategoryL window=(0.0, 0.0, 440.0, 956.0)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=navigation exists=true frame=(0.0, 62.0, 440.0, 106.0) hittable=true enabled=true label=",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=tabs exists=true frame=(0.0, 873.0, 440.0, 83.0) hittable=true enabled=true label=Tab Bar",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=monitor exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=return exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=practice exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=practice-header exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=practice-footer exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=local-answer exists=true frame=(20.0, 312.33333333333337, 400.0, 51.99999999999994) hittable=true enabled=false label=Ask about the camera view",
+          "ACCESSIBILITY_AUDIT_FRAME phase=ask point=after role=voice-question exists=true frame=(20.0, 364.3333333333333, 400.0, 52.0) hittable=true enabled=true label=Talk",
+          "Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (52.831 seconds)."
+        ],
+        "omittedMatchedLines": 0,
+        "truncatedLines": 0
+      },
+      "geometryTypeTrace": {
+        "status": "failed",
+        "error": "Incomplete/overflow/unknown trace preserved"
+      },
+      "exportExitCode": 0,
+      "issueMetadata": [
+        "full-audit-ask-issue-1-metadata.json",
+        "full-audit-ask-issue-2-metadata.json",
+        "full-audit-camera-issue-1-metadata.json",
+        "full-audit-camera-issue-2-metadata.json"
+      ],
+      "screenshots": [
+        "full-audit-ask-after.png",
+        "full-audit-ask-before.png",
+        "full-audit-ask-issue-1-screen.png",
+        "full-audit-ask-issue-2-screen.png",
+        "full-audit-camera-after.png",
+        "full-audit-camera-before.png",
+        "full-audit-camera-issue-1-screen.png",
+        "full-audit-camera-issue-2-screen.png"
+      ]
+    },
+    {
+      "name": "camera-dynamic-type",
+      "selector": "BlindAssistUITests/CameraAuditScopeTests/testCameraDynamicTypeOnly",
+      "maxScreenshots": 4,
+      "status": "native_failed",
+      "evidence": "complete",
+      "observedSimulatorCategory": "large",
+      "traceNotBefore": 1793132215.5944252,
+      "nativeExitCode": 65,
+      "logSummary": {
+        "lines": [
+          "Test Case '-[BlindAssistUITests.CameraAuditScopeTests testCameraDynamicTypeOnly]' started.",
+          "ACCESSIBILITY_AUDIT_READINESS phase=camera titleReady=true controlReady=true",
+          "ACCESSIBILITY_AUDIT_EVIDENCE phase=camera point=before category=UICTContentSizeCategoryL window=(0.0, 0.0, 440.0, 956.0)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=navigation exists=true frame=(0.0, 62.0, 440.0, 106.0) hittable=true enabled=true label=",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=tabs exists=true frame=(0.0, 873.0, 440.0, 83.0) hittable=true enabled=true label=Tab Bar",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=monitor exists=true frame=(20.0, 264.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Start monitoring",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=return exists=true frame=(20.0, 426.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Guide me back to where I started",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=practice exists=true frame=(20.0, 608.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Try practice (2 minutes)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=practice-header exists=true frame=(20.0, 568.3333333333333, 400.0, 40.33333333333337) hittable=true enabled=true label=Practice",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=practice-footer exists=true frame=(20.0, 660.6666666666667, 400.0, 100.33333333333337) hittable=true enabled=true label=Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=local-answer exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=before role=voice-question exists=false",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_BEGIN phase=camera uptime=1729.0960345833334",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=camera uptime=1731.3368959166667",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),phase:camera,compact:Dynamic Type font sizes are partially unsupported,detailed:User will not be able to change the font size of this SwiftUI.AccessibilityNode,element:Attributes: StaticText, 0x110eccdc0, {{20.0, 568.3}, {400.0, 40.3}}, label: 'Practice' | Element subtree: |  \u2192StaticText, 0x110eccdc0, {{20.0, 568.3}, {400.0, 40.3}}, label: 'Practice' | Path to element: |  \u2192Application, 0x10787d540, pid: 48604, label: 'Blind Assist' |   \u21b3Window (Main), 0x10787da40, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10787de00, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10787d2c0, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10787ef80, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10787f0c0, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10787f480, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10787e440, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10787cdc0, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10787db80, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x104a57700, {{0.0, 0.0}, {440.0, 956.0}} |             \u21b3Other, 0x104a570c0, {{0.0, 0.0}, {440.0, 956.0}} |              \u21b3Other, 0x104a57480, {{0.0, 0.0}, {440.0, 956.0}} |               \u21b3Other, 0x104a57c00, {{0.0, 0.0}, {440.0, 956.0}} |                \u21b3Other, 0x104a57d40, {{0.0, 0.0}, {440.0, 956.0}} |                 \u21b3Other, 0x104a57ac0, {{0.0, 0.0}, {440.0, 956.0}} |                  \u21b3Other, 0x104a55400, {{0.0, 0.",
+          "<workspace>/ios/BlindAssistUITests/CameraAuditScopeTests.swift:157: error: -[BlindAssistUITests.CameraAuditScopeTests testCameraDynamicTypeOnly] : Dynamic Type font sizes are partially unsupported",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=camera uptime=1732.5369653333335",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),phase:camera,compact:Dynamic Type font sizes are partially unsupported,detailed:User will not be able to change the font size of this SwiftUI.AccessibilityNode,element:Attributes: StaticText, 0x110ecdf40, {{20.0, 660.7}, {400.0, 100.3}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Element subtree: |  \u2192StaticText, 0x110ecdf40, {{20.0, 660.7}, {400.0, 100.3}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Path to element: |  \u2192Application, 0x10787ea80, pid: 48604, label: 'Blind Assist' |   \u21b3Window (Main), 0x10787e6c0, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10787ed00, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10787ee40, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10787e1c0, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10787e580, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10787f340, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10787f200, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10787f5c0, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10787d540, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10787da40, {{0.0, 0.0}, {440.0, 956.0}} |",
+          "<workspace>/ios/BlindAssistUITests/CameraAuditScopeTests.swift:157: error: -[BlindAssistUITests.CameraAuditScopeTests testCameraDynamicTypeOnly] : Dynamic Type font sizes are partially unsupported",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_ISSUE phase=camera uptime=1733.5264307083335",
+          "ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),phase:camera,compact:Dynamic Type font sizes are partially unsupported,detailed:User will not be able to change the font size of this SwiftUI.AccessibilityNode,element:Attributes: Button, 0x110ecd7c0, {{20.0, 608.7}, {400.0, 52.0}}, identifier: 'start-simulation', label: 'Try practice (2 minutes)' | Element subtree: |  \u2192Button, 0x110ecd7c0, {{20.0, 608.7}, {400.0, 52.0}}, identifier: 'start-simulation', label: 'Try practice (2 minutes)' | Path to element: |  \u2192Application, 0x10787ea80, pid: 48604, label: 'Blind Assist' |   \u21b3Window (Main), 0x10787e6c0, {{0.0, 0.0}, {440.0, 956.0}} |    \u21b3Other, 0x10787ee40, {{0.0, 0.0}, {440.0, 956.0}} |     \u21b3Other, 0x10787e1c0, {{0.0, 0.0}, {440.0, 956.0}} |      \u21b3Other, 0x10787e580, {{0.0, 0.0}, {440.0, 956.0}} |       \u21b3Other, 0x10787f340, {{0.0, 0.0}, {440.0, 956.0}} |        \u21b3Other, 0x10787f200, {{0.0, 0.0}, {440.0, 956.0}} |         \u21b3Other, 0x10787d540, {{0.0, 0.0}, {440.0, 956.0}} |          \u21b3Other, 0x10787da40, {{0.0, 0.0}, {440.0, 956.0}} |           \u21b3Other, 0x10787de00, {{0.0, 0.0}, {440.0, 956.0}} |            \u21b3Other, 0x10787d2c0, {{0.0, 0.0}, {440.0, 956.0}} |             \u21b3Other, 0x10787e440, {{0.0, 0.0}, {440.0, 956.0}} |              \u21b3Other, 0x10787cdc0, {{0.0, 0.0}, {440.0, 956.0}} |               \u21b3Other, 0x10787f480, {{0.0, 0.0}, {440.0, 956.0}} |                \u21b3Other, 0x10787f0c0, {{0.0, 0.0}, {440.0, 956.0}} |                 \u21b3Other, 0",
+          "ACCESSIBILITY_AUDIT_CAPTURE_OMITTED phase=camera index=3 limit=2",
+          "<workspace>/ios/BlindAssistUITests/CameraAuditScopeTests.swift:157: error: -[BlindAssistUITests.CameraAuditScopeTests testCameraDynamicTypeOnly] : Dynamic Type font sizes are partially unsupported",
+          "ACCESSIBILITY_AUDIT_GEOMETRY_END phase=camera termination=returned uptime=1734.1643165",
+          "ACCESSIBILITY_AUDIT_EVIDENCE phase=camera point=after category=UICTContentSizeCategoryL window=(0.0, 0.0, 440.0, 956.0)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=navigation exists=true frame=(0.0, 62.0, 440.0, 106.0) hittable=true enabled=true label=",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=tabs exists=true frame=(0.0, 873.0, 440.0, 83.0) hittable=true enabled=true label=Tab Bar",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=monitor exists=true frame=(20.0, 264.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Start monitoring",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=return exists=true frame=(20.0, 426.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Guide me back to where I started",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=practice exists=true frame=(20.0, 608.6666666666667, 400.0, 52.0) hittable=true enabled=true label=Try practice (2 minutes)",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=practice-header exists=true frame=(20.0, 568.3333333333333, 400.0, 40.33333333333337) hittable=true enabled=true label=Practice",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=practice-footer exists=true frame=(20.0, 660.6666666666667, 400.0, 100.33333333333337) hittable=true enabled=true label=Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=local-answer exists=false",
+          "ACCESSIBILITY_AUDIT_FRAME phase=camera point=after role=voice-question exists=false",
+          "Test Case '-[BlindAssistUITests.CameraAuditScopeTests testCameraDynamicTypeOnly]' failed (36.138 seconds)."
+        ],
+        "omittedMatchedLines": 0,
+        "truncatedLines": 0
+      },
+      "geometryTypeTrace": {
+        "status": "failed",
+        "error": "Incomplete/overflow/unknown trace preserved"
+      },
+      "exportExitCode": 0,
+      "issueMetadata": [
+        "full-audit-camera-issue-1-metadata.json",
+        "full-audit-camera-issue-2-metadata.json"
+      ],
+      "screenshots": [
+        "full-audit-camera-after.png",
+        "full-audit-camera-before.png",
+        "full-audit-camera-issue-1-screen.png",
+        "full-audit-camera-issue-2-screen.png"
+      ]
+    }
+  ],
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "simulatorSDKVersion": "27.0",
+  "buildExitCode": 0,
+  "buildSummary": {
+    "lines": [
+      "2026-10-27 20:14:43.827 appintentsnltrainingprocessor[41723:108000] error: Could not archive SSU artifacts. Check build log."
+    ],
+    "omittedMatchedLines": 0,
+    "truncatedLines": 0
+  },
+  "buildProgressTail": {
+    "lines": [
+      "SwiftDriver\\ Compilation BlindAssist normal arm64 com.apple.xcode.tools.swift.compiler (in target 'BlindAssist' from project 'BlindAssist')",
+      "SwiftEmitModule normal arm64 Emitting\\ module\\ for\\ BlindAssistUITests (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Ld <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/BlindAssist.debug.dylib normal (in target 'BlindAssist' from project 'BlindAssist')",
+      "SwiftEmitModule normal arm64 Emitting\\ module\\ for\\ BlindAssistTests (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Emitting module for BlindAssistUITests (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftDriver\\ Compilation\\ Requirements BlindAssistUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "note: Using stub executor library with Swift entry point. (in target 'BlindAssist' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Emitting module for BlindAssistTests (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests.swiftmodule/arm64-apple-ios-simulator.swiftmodule <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistUITests.build/Objects-normal/arm64/BlindAssistUITests.swiftmodule (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests.swiftmodule/arm64-apple-ios-simulator.swiftdoc <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistUITests.build/Objects-normal/arm64/BlindAssistUITests.swiftdoc (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests.swiftmodule/arm64-apple-ios-simulator.abi.json <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistUITests.build/Objects-normal/arm64/BlindAssistUITests.abi.json (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistUITests.build/Objects-normal/arm64/BlindAssistUITests.swiftsourceinfo (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftDriver\\ Compilation\\ Requirements BlindAssistTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Ld <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/BlindAssist normal (in target 'BlindAssist' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 Compiling\\ CameraAuditScopeTests.swift <workspace>/ios/BlindAssistUITests/CameraAuditScopeTests.swift (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistUITests/CameraAuditScopeTests.swift (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistTests.build/Objects-normal/arm64/BlindAssistTests.swiftmodule (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistTests.swiftmodule/arm64-apple-ios-simulator.swiftdoc <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistTests.build/Objects-normal/arm64/BlindAssistTests.swiftdoc (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistTests.swiftmodule/arm64-apple-ios-simulator.abi.json <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistTests.build/Objects-normal/arm64/BlindAssistTests.abi.json (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistTests.build/Objects-normal/arm64/BlindAssistTests.swiftsourceinfo (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 Compiling\\ LaunchTests.swift <workspace>/ios/BlindAssistUITests/LaunchTests.swift (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistUITests/LaunchTests.swift (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 Compiling\\ ConnectedJourneyRuntimeTests.swift,\\ ObservedSceneRuntimeTests.swift,\\ SelectedDocumentPDFTests.swift <workspace>/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift <workspace>/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift <workspace>/ios/BlindAssistTests/SelectedDocumentPDFTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/SelectedDocumentPDFTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Compiling CameraAuditScopeTests.swift (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Compiling LaunchTests.swift (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 Compiling\\ SpatialRouteOutputControllerTests.swift,\\ SpatialMapIOTests.swift,\\ IndoorNavigatorAsyncTests.swift,\\ ConnectedJourneyFixture.swift <workspace>/ios/BlindAssistTests/SpatialRouteOutputControllerTests.swift <workspace>/ios/BlindAssistTests/SpatialMapIOTests.swift <workspace>/ios/BlindAssistTests/IndoorNavigatorAsyncTests.swift <workspace>/ios/BlindAssistTests/ConnectedJourneyFixture.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/SpatialRouteOutputControllerTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/SpatialMapIOTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/IndoorNavigatorAsyncTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/ConnectedJourneyFixture.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftDriver\\ Compilation BlindAssistUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Compiling SpatialRouteOutputControllerTests.swift, SpatialMapIOTests.swift, IndoorNavigatorAsyncTests.swift, ConnectedJourneyFixture.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 Compiling\\ CommunityTests.swift,\\ CompanionNativeReplayTests.swift,\\ SpatialIntegrationFixture.swift,\\ RegisteredIndoorNavigationTests.swift <workspace>/ios/BlindAssistTests/CommunityTests.swift <workspace>/ios/BlindAssistTests/CompanionNativeReplayTests.swift <workspace>/ios/BlindAssistTests/SpatialIntegrationFixture.swift <workspace>/ios/BlindAssistTests/RegisteredIndoorNavigationTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/CommunityTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/CompanionNativeReplayTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/SpatialIntegrationFixture.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftCompile normal arm64 <workspace>/ios/BlindAssistTests/RegisteredIndoorNavigationTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Compiling ConnectedJourneyRuntimeTests.swift, ObservedSceneRuntimeTests.swift, SelectedDocumentPDFTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftDriverJobDiscovery normal arm64 Compiling CommunityTests.swift, CompanionNativeReplayTests.swift, SpatialIntegrationFixture.swift, RegisteredIndoorNavigationTests.swift (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "SwiftDriver\\ Compilation BlindAssistTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest/GRDB_GRDB.bundle <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/GRDB_GRDB.bundle (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Ld <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest/BlindAssistTests normal (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest/Frameworks/BlindCore_F7FF1BB6BA3937B_PackageProduct.framework <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks/BlindCore_F7FF1BB6BA3937B_PackageProduct.framework (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest/BlindMemory_BlindMemory.bundle <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindMemory_BlindMemory.bundle (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest/BlindCore_BlindCore.bundle <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindCore_BlindCore.bundle (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "ProcessInfoPlistFile <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest/Info.plist <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistTests.build/empty-BlindAssistTests.plist (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Touch <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app/PlugIns/BlindAssistTests.xctest (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "Touch <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssist.app (in target 'BlindAssist' from project 'BlindAssist')",
+      "ProcessInfoPlistFile <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests-Runner.app/PlugIns/BlindAssistUITests.xctest/Info.plist <runner-temp>/DerivedData/Build/Intermediates.noindex/BlindAssist.build/Debug-iphonesimulator/BlindAssistUITests.build/empty-BlindAssistUITests.plist (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Ld <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests-Runner.app/PlugIns/BlindAssistUITests.xctest/BlindAssistUITests normal (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Copy <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests-Runner.app/PkgInfo /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/PkgInfo (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "Touch <runner-temp>/DerivedData/Build/Products/Debug-iphonesimulator/BlindAssistUITests-Runner.app/PlugIns/BlindAssistUITests.xctest (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "warning: Traditional headermap style is no longer supported; please migrate to using separate headermaps and set 'ALWAYS_SEARCH_USER_PATHS' to NO. (in target 'BlindAssistUITests' from project 'BlindAssist')",
+      "warning: Traditional headermap style is no longer supported; please migrate to using separate headermaps and set 'ALWAYS_SEARCH_USER_PATHS' to NO. (in target 'BlindAssistTests' from project 'BlindAssist')",
+      "warning: Traditional headermap style is no longer supported; please migrate to using separate headermaps and set 'ALWAYS_SEARCH_USER_PATHS' to NO. (in target 'BlindAssist' from project 'BlindAssist')"
+    ],
+    "omittedMatchedLines": 490,
+    "truncatedLines": 17,
+    "logByteCount": 560134
+  },
+  "beforeCameraComparison": {
+    "status": "matched",
+    "reason": "both ready at Large with identical logged window/button/header/footer frames",
+    "interpretation": "Comparability check only, not proof of an audit-scope effect",
+    "cases": {
+      "original-all": {
+        "completeLargeBeforeGeometry": true,
+        "values": {
+          "readiness": true,
+          "environment": {
+            "category": "UICTContentSizeCategoryL",
+            "window": "(0.0, 0.0, 440.0, 956.0)"
+          },
+          "practice": "(20.0, 608.6666666666667, 400.0, 52.0)",
+          "practice-header": "(20.0, 568.3333333333333, 400.0, 40.33333333333337)",
+          "practice-footer": "(20.0, 660.6666666666667, 400.0, 100.33333333333337)"
+        }
+      },
+      "camera-dynamic-type": {
+        "completeLargeBeforeGeometry": true,
+        "values": {
+          "readiness": true,
+          "environment": {
+            "category": "UICTContentSizeCategoryL",
+            "window": "(0.0, 0.0, 440.0, 956.0)"
+          },
+          "practice": "(20.0, 608.6666666666667, 400.0, 52.0)",
+          "practice-header": "(20.0, 568.3333333333333, 400.0, 40.33333333333337)",
+          "practice-footer": "(20.0, 660.6666666666667, 400.0, 100.33333333333337)"
+        }
+      }
+    }
+  },
+  "shutdownExitCode": 0,
+  "screenshotCount": 12,
+  "result": "failed"
+}

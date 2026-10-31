@@ -1,0 +1,48 @@
+{
+  "repo": "mischa23v/blind",
+  "run_id": 40542574937,
+  "commit": "a2423071aa8804e31b881585d28dca04dc319d1b",
+  "artifact_id": 12752130043,
+  "bytes": 4399,
+  "sha256": "2a6200c988b5066c8c6fe5b394e876e616db92c62e0cd91ce0ecffe25bf58b69",
+  "expected_sha256_match": true,
+  "all_zip_crc_pass": true,
+  "members": [
+    {
+      "path": "RESULT.json",
+      "bytes": 478,
+      "crc32": "2193cfa4"
+    },
+    {
+      "path": "host-fixtures-compile-receipt.json",
+      "bytes": 1116,
+      "crc32": "9b483537"
+    },
+    {
+      "path": "host-fixtures-run-receipt.json",
+      "bytes": 2196,
+      "crc32": "a0f9da34"
+    },
+    {
+      "path": "host-module-receipt.json",
+      "bytes": 1080,
+      "crc32": "e765ee41"
+    },
+    {
+      "path": "public-initializer-negative-receipt.json",
+      "bytes": 2053,
+      "crc32": "0915e997"
+    },
+    {
+      "path": "simulator-compile-only-receipt.json",
+      "bytes": 1177,
+      "crc32": "ff6f11a2"
+    }
+  ],
+  "verified_utc": "2026-10-27T16:37:43Z",
+  "method": "GitHub download_workflow_artifact and tool-provided URL; local SHA-256, ZIP CRC and JSON parsing",
+  "actual_host_pass_lines": 51,
+  "unique_host_pass_labels": 49,
+  "fixture_count_note": "51 executed check pass lines; 49 unique labels because three nonfinite-vertex checks share a label; this is fresh run evidence, not the previous 49-check result",
+  "all_json_parse": true
+}

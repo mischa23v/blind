@@ -1,0 +1,525 @@
+--- a/ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift
++++ b/ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift
+@@ -119,3 +119,91 @@
+         await discard(legacy); await discard(strict)
+     }
+ }
++
++/// Authored candidate integration tests. No speech, camera, haptics or movement.
++/// Add only to an explicitly admitted native validation target; unrun at staging.
++@MainActor final class SeedRadiusVetoAppleTests: XCTestCase {
++    private let identity:[Double]=[1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
++    private let plane:[Double]=[-2,0,-2, -2,0,2, 2,0,2, 2,0,-2]
++    private final class Box:@unchecked Sendable {
++        private let lock=NSLock()
++        private var value:Result<MeshCandidateRoute,MeshCandidateError>?
++        func set(_ v:Result<MeshCandidateRoute,MeshCandidateError>){lock.lock();value=v;lock.unlock()}
++        func get()->Result<MeshCandidateRoute,MeshCandidateError>?{lock.lock();defer{lock.unlock()};return value}
++    }
++    private func owner(policy:MeshSeedRadiusPolicy = .stock,vertices:[Double]?=nil,
++                       triangles:[Int32]=[0,1,2,0,2,3],support:[MeshTriangleSupport]=[.floor,.floor])throws->RoomMeshCandidateRuntime {
++        let session=UUID().uuidString
++        let runtime=try RoomMeshCandidateRuntime(sessionID:session,supportPolicy:.classifiedFloorOnly,
++            endpointPolicy:.requireSuppliedXZOverPolygon,seedRadiusPolicy:policy)
++        XCTAssertTrue(runtime.offer(.init(sessionID:session,generation:0,anchorID:"authored-seed-veto-plane",
++            revision:1,timestamp:1,vertices:vertices ?? plane,triangles:triangles,columnMajorTransform:identity,
++            complete:true,triangleSupport:support)))
++        return runtime
++    }
++    private func query(_ runtime:RoomMeshCandidateRuntime)async throws->Result<MeshCandidateRoute,MeshCandidateError>{
++        let done=expectation(description:"actual seed-radius C ABI build/query completion"),box=Box()
++        runtime.request(start:[-1,0,0],goal:[1,0,0],body:try .init(radius:0.225,height:1.75)){
++            box.set($0);done.fulfill()
++        }
++        await fulfillment(of:[done],timeout:10)
++        return try XCTUnwrap(box.get())
++    }
++    private func discard(_ runtime:RoomMeshCandidateRuntime)async{
++        let done=expectation(description:"terminal release")
++        runtime.stopAndDiscard{done.fulfill()};await fulfillment(of:[done],timeout:10)
++    }
++    func testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget()throws{
++        let policy=MeshSeedRadiusPolicy.exactFlatLayer(maximumSeedTests:10_000_000)
++        XCTAssertThrowsError(try RoomMeshCandidateRuntime(sessionID:"legacy",seedRadiusPolicy:policy))
++        XCTAssertThrowsError(try RoomMeshCandidateRuntime(sessionID:"projection",supportPolicy:.classifiedFloorOnly,seedRadiusPolicy:policy))
++        for limit in [UInt64(0),10_000_001] {
++            XCTAssertThrowsError(try RoomMeshCandidateRuntime(sessionID:"budget",supportPolicy:.classifiedFloorOnly,
++                endpointPolicy:.requireSuppliedXZOverPolygon,seedRadiusPolicy:.exactFlatLayer(maximumSeedTests:limit)))
++        }
++    }
++    func testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance()async throws{
++        let stock=try owner(),exact=try owner(policy:.exactFlatLayer(maximumSeedTests:10_000_000))
++        defer{stock.stopAndDiscard{};exact.stopAndDiscard{}}
++        let a=try await query(stock).get(),b=try await query(exact).get()
++        XCTAssertNil(a.seedRadiusReceipt);XCTAssertTrue(a.complete);XCTAssertTrue(b.complete)
++        XCTAssertEqual(a.points.flatMap{$0}.map(\.bitPattern),b.points.flatMap{$0}.map(\.bitPattern))
++        let r=try XCTUnwrap(b.seedRadiusReceipt)
++        XCTAssertEqual(r.schema,1);XCTAssertEqual(r.status,.applied);XCTAssertTrue(r.buildSucceeded)
++        XCTAssertLessThanOrEqual(r.exactKeepCount,r.stockKeepCount)
++        XCTAssertEqual(r.additionalRejectedCount,r.stockKeepCount-r.exactKeepCount)
++        XCTAssertLessThanOrEqual(r.workPerformed,r.workBound);XCTAssertLessThanOrEqual(r.workBound,r.workLimit)
++        XCTAssertFalse(r.authorizesPhysicalGuidance);XCTAssertFalse(r.continuousSourceClearanceVerified)
++        XCTAssertFalse(r.fullFootprintSupportVerified);XCTAssertFalse(b.authorizesPhysicalGuidance)
++        XCTAssertEqual(b.endpointPolicy,.requireSuppliedXZOverPolygon)
++        XCTAssertTrue(try XCTUnwrap(b.endpointAdmission).start.isOverPolygon)
++        await discard(stock);await discard(exact)
++    }
++    func testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute()async throws{
++        let runtime=try owner(policy:.exactFlatLayer(maximumSeedTests:1));defer{runtime.stopAndDiscard{}}
++        let result=try await query(runtime)
++        guard case .failure(.seedRadiusUnavailable(let r))=result else{return XCTFail("No legacy route fallback")}
++        XCTAssertEqual(r.status,.workLimit);XCTAssertFalse(r.buildSucceeded)
++        XCTAssertGreaterThan(r.workBound,r.workLimit);XCTAssertEqual(r.workPerformed,0)
++        await discard(runtime)
++    }
++    func testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne()async throws{
++        let vertices:[Double]=[-3,0,-3,-3,0,3,-0.5,0,3,-0.5,0,-3,
++                              0.5,1,-3,0.5,1,3,3,1,3,3,1,-3]
++        let runtime=try owner(policy:.exactFlatLayer(maximumSeedTests:10_000_000),vertices:vertices,
++            triangles:[0,1,2,0,2,3,4,5,6,4,6,7],support:[.floor,.floor,.floor,.floor])
++        defer{runtime.stopAndDiscard{}}
++        let result=try await query(runtime)
++        guard case .failure(.seedRadiusUnavailable(let r))=result else{return XCTFail("Unsupported layer must not emit a path")}
++        XCTAssertEqual(r.status,.unsupportedLayer);XCTAssertFalse(r.buildSucceeded)
++        await discard(runtime)
++    }
++    func testAllObstacleClassificationCannotBorrowSlopeSupport()async throws{
++        let runtime=try owner(policy:.exactFlatLayer(maximumSeedTests:10_000_000),support:[.obstacle,.obstacle])
++        defer{runtime.stopAndDiscard{}}
++        let result=try await query(runtime)
++        guard case .failure(.seedRadiusUnavailable(let r))=result else{return XCTFail("No support means no exact-policy handle")}
++        XCTAssertFalse(r.buildSucceeded);XCTAssertFalse(r.authorizesPhysicalGuidance)
++        await discard(runtime)
++    }
++}
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift
+@@ -136,19 +136,46 @@
+ }
+ final class Native {
+  let handle:UnsafeMutableRawPointer
+- init(_ vertices:[Double],_ triangles:[Int32],exclusion:Exclusion?=nil,radius:Float=0.225,height:Float=1.75,triangleSupport:[MeshTriangleSupport]?=nil)throws {
++ let seedRadiusReceipt:MeshSeedRadiusVetoReceipt?
++ init(_ vertices:[Double],_ triangles:[Int32],exclusion:Exclusion?=nil,radius:Float=0.225,height:Float=1.75,triangleSupport:[MeshTriangleSupport]?=nil,seedRadiusPolicy:MeshSeedRadiusPolicy = .stock)throws {
+   guard vertices.count%3==0,triangles.count%3==0,vertices.count/3<=200000,triangles.count/3<=100000,vertices.allSatisfy({$0.isFinite && Float($0).isFinite}),triangles.allSatisfy({$0>=0 && Int($0)<vertices.count/3}) else {throw Failure.invalid("native input")}
+   let packed:[Float]=vertices.map(Float.init)
+   guard triangleSupport == nil || (exclusion == nil && triangleSupport!.count==triangles.count/3) else{throw Failure.invalid("native triangle support")}
++  guard seedRadiusPolicy.valid, seedRadiusPolicy == .stock || (triangleSupport != nil && exclusion == nil) else {throw MeshCandidateError.invalidInput}
+   let supportBytes=triangleSupport?.map(\.rawValue)
++  var seedReceipt=BNSeedRadiusVetoReceipt()
+   var c=BNConfig(radius:radius,height:height,cell_size:0.025,cell_height:0.025,max_climb:0.025,max_slope:15,max_cells:250000,max_nodes:4096)
+   let polygon=try exclusion?.validatedPolygon(expectedFrame:"phone-corrected-level-game-yup-v1")
+   let h=packed.withUnsafeBufferPointer{v in triangles.withUnsafeBufferPointer{t -> UnsafeMutableRawPointer? in
+-   if let supportBytes=supportBytes{return supportBytes.withUnsafeBufferPointer{s in bn_build_classified(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress)}}
++   if let supportBytes=supportBytes{return supportBytes.withUnsafeBufferPointer{s in
++    if let limit=seedRadiusPolicy.maximumSeedTests {
++     return bn_build_classified_seed_radius(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress,limit,&seedReceipt)
++    }
++    return bn_build_classified(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress)
++   }}
+    if let e=exclusion,let polygon=polygon{return polygon.withUnsafeBufferPointer{p in bn_build_excluded(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,p.baseAddress,Int32(polygon.count/3),Float(e.observedTopHeightRange[0]),Float(e.observedTopHeightRange[1]))}}
+    return bn_build(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c)
+   }}
+-  guard let h else {throw Failure.invalid("native build")};handle=h
++  if seedRadiusPolicy.maximumSeedTests != nil {
++   let receipt=MeshSeedRadiusVetoReceipt(schema:Int(seedReceipt.schema),
++    status:MeshSeedRadiusVetoStatus(rawValue:Int(seedReceipt.status)) ?? .invalidInput,
++    width:Int(seedReceipt.width),height:Int(seedReceipt.height),spanCount:Int(seedReceipt.span_count),
++    radiusCells:Int(seedReceipt.radius_cells),commonYVoxel:Int(seedReceipt.common_y_voxel),
++    realSeedCount:Int(seedReceipt.real_seed_count),exteriorSeedCount:Int(seedReceipt.exterior_seed_count),
++    stockKeepCount:Int(seedReceipt.stock_keep_count),exactKeepCount:Int(seedReceipt.exact_keep_count),
++    additionalRejectedCount:Int(seedReceipt.additional_rejected_count),buildSucceeded:seedReceipt.build_succeeded != 0,
++    workLimit:seedReceipt.work_limit,workBound:seedReceipt.work_bound,workPerformed:seedReceipt.work_performed)
++   seedRadiusReceipt=receipt
++   guard let h else {throw MeshCandidateError.seedRadiusUnavailable(receipt)}
++   guard receipt.schema==1,receipt.status == .applied,receipt.buildSucceeded,
++    receipt.workPerformed<=receipt.workBound,receipt.workBound<=receipt.workLimit else {
++    bn_destroy(h);throw MeshCandidateError.seedRadiusUnavailable(receipt)
++   }
++   handle=h
++  } else {
++   seedRadiusReceipt=nil
++   guard let h else {throw Failure.invalid("native build")};handle=h
++  }
+  }
+  var markedSpans:Int{Int(bn_excluded_span_count(handle))}
+  deinit{bn_destroy(handle)}
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -8,6 +8,32 @@
+ public enum MeshCandidateError: Error {
+  case invalidInput, unavailable, stale, nativeFailure
+  case endpointAssociationRejected(MeshEndpointAdmissionReceipt)
++ case seedRadiusUnavailable(MeshSeedRadiusVetoReceipt)
++}
++/// Opt-in additional discrete-mask exclusion. Stock diagnostics stay unchanged.
++/// Exact policy requires classified support + strict requested-XZ admission.
++public enum MeshSeedRadiusPolicy: Equatable, Sendable {
++ case stock
++ case exactFlatLayer(maximumSeedTests: UInt64)
++ var maximumSeedTests: UInt64? { if case .exactFlatLayer(let value) = self { return value }; return nil }
++ var valid: Bool { maximumSeedTests.map { (1...10_000_000).contains($0) } ?? true }
++}
++public enum MeshSeedRadiusVetoStatus: Int, Codable, Sendable {
++ case notRequested = 0, prepared = 1, applied = 2
++ case invalidInput = -1, unsupportedLayer = -2, invalidTopology = -3
++ case workLimit = -4, allocationFailed = -5, buildFailed = -6
++}
++/// Bounded mask/build bookkeeping, never source-surface or physical clearance.
++/// applied + buildSucceeded=false may represent a valid empty keep mask.
++public struct MeshSeedRadiusVetoReceipt: Codable, Sendable {
++ public let schema: Int, status: MeshSeedRadiusVetoStatus
++ public let width: Int, height: Int, spanCount: Int, radiusCells: Int, commonYVoxel: Int
++ public let realSeedCount: Int, exteriorSeedCount: Int, stockKeepCount: Int, exactKeepCount: Int
++ public let additionalRejectedCount: Int, buildSucceeded: Bool
++ public let workLimit: UInt64, workBound: UInt64, workPerformed: UInt64
++ public var authorizesPhysicalGuidance: Bool { false }
++ public var continuousSourceClearanceVerified: Bool { false }
++ public var fullFootprintSupportVerified: Bool { false }
+ }
+ /// Default remains the original diagnostic comparator. Strict mode only checks
+ /// requested XZ membership; it does not establish physical support or clearance.
+@@ -67,6 +93,7 @@
+  public let unknownCoverage: [String]
+  public let endpointPolicy: MeshEndpointPolicy
+  public let endpointAdmission: MeshEndpointAdmissionReceipt?
++ public let seedRadiusReceipt: MeshSeedRadiusVetoReceipt?
+  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
+ }
+ /// Opt-in delivery bookkeeping only. Legacy callers retain their sticky losses.
+@@ -146,6 +173,7 @@
+  private let maxPending=8, maxPendingScalars=900000
+  private let supportPolicy: MeshSupportPolicy
+  private let endpointPolicy: MeshEndpointPolicy
++ private let seedRadiusPolicy: MeshSeedRadiusPolicy
+  private let deliveryPolicy: MeshDeliveryRecoveryPolicy
+  private struct AnchorDeliveryState {
+   var required:Int,installed:Int?,blockedThrough:Int?,time:Double,issue:MeshAnchorDeliveryIssue?,removed:Bool
+@@ -245,9 +273,13 @@
+  private var owner: Replay?
+  public init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
+              endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+-             deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap)throws {
+-  guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0 else{throw MeshCandidateError.invalidInput}
++             deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap,
++             seedRadiusPolicy:MeshSeedRadiusPolicy = .stock)throws {
++  guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0,seedRadiusPolicy.valid,
++    seedRadiusPolicy == .stock || (supportPolicy == .classifiedFloorOnly && endpointPolicy == .requireSuppliedXZOverPolygon)
++    else{throw MeshCandidateError.invalidInput}
+   session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy;self.endpointPolicy=endpointPolicy;self.deliveryPolicy=deliveryRecoveryPolicy
++  self.seedRadiusPolicy=seedRadiusPolicy
+  }
+ #if DEBUG
+  /// Explicit synthetic-test opt-in. Release builds contain no receipt storage,
+@@ -289,9 +321,10 @@
+  public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
+                          endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+                          deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap,
++                         seedRadiusPolicy:MeshSeedRadiusPolicy = .stock,
+                          captureSyntheticTestTiming: Bool,
+                          syntheticTimingCompletion: ((UUID,[DiagnosticStageReceipt])->Void)? = nil)throws {
+-  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy,deliveryRecoveryPolicy:deliveryRecoveryPolicy)
++  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy,deliveryRecoveryPolicy:deliveryRecoveryPolicy,seedRadiusPolicy:seedRadiusPolicy)
+   // Assigned before this owner escapes; never enabled/disabled during work.
+   if captureSyntheticTestTiming {
+    diagnosticCompletion=syntheticTimingCompletion
+@@ -577,7 +610,7 @@
+ #if DEBUG
+     recordDiagnosticStage(.nativeBuildBegin,workerCPU:true)
+ #endif
+-    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport(excluding:excluded))
++    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport(excluding:excluded),seedRadiusPolicy:seedRadiusPolicy)
+ #if DEBUG
+     recordDiagnosticStage(.nativeBuildEnd,workerCPU:true)
+     recordDiagnosticStage(.routeBegin,workerCPU:true)
+@@ -593,7 +626,18 @@
+ #endif
+     finish(.failure(.stale));return}
+     var unknown=Array(owner.unknown.union(view.unknown)).sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
+-    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
++    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission,seedRadiusReceipt:native.seedRadiusReceipt)))
++   } catch MeshCandidateError.seedRadiusUnavailable(let receipt) {
++#if DEBUG
++    recordDiagnosticStage(.nativeFailure,workerCPU:true)
++#endif
++    guard locked({matches(s,g,r)}) else {
++#if DEBUG
++     recordDiagnosticStage(.requestRetired,workerCPU:true)
++#endif
++     finish(.failure(.stale));return
++    }
++    finish(.failure(.seedRadiusUnavailable(receipt)))
+    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
+ #if DEBUG
+     recordDiagnosticStage(.nativeFailure,workerCPU:true)
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp
+@@ -2,6 +2,7 @@
+ // NOT a replacement SLAM/search algorithm or a validated human controller.
+ #include "include/blind_detour.h"
+ #include "Recast.h"
++#include "exact_seed_radius_veto.h"
+ #include "DetourNavMesh.h"
+ #include "DetourNavMeshBuilder.h"
+ #include "DetourNavMeshQuery.h"
+@@ -39,8 +40,10 @@
+ };
+ extern "C" const char* bn_last_error() { return error_message; }
+ extern "C" void bn_destroy(void* handle) { delete static_cast<BNHandle*>(handle); }
+-static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly) {
++static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly,
++                        unsigned long long maximumSeedTests = 0, BNSeedRadiusVetoReceipt* seedReceipt = 0) {
+     error_message[0] = 0;
++    if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_INVALID_INPUT;
+     if (!v || !t || !c || nv < 3 || nv > 250000 || nt < 1 || nt > 500000) { fail("invalid/count-limited mesh input"); return 0; }
+     if (classifiedFloorOnly && !triangleSupport) { fail("missing triangle support"); return 0; }
+     if (classifiedFloorOnly) for (int i=0; i<nt; ++i) if (triangleSupport[i]>1) { fail("invalid triangle support"); return 0; }
+@@ -81,6 +84,7 @@
+     }
+     for (int i=0; i<nv*3; ++i) if (!std::isfinite(v[i]) || std::fabs(v[i]) > 10000.f) { fail("invalid vertex"); return 0; }
+     for (int i=0; i<nt*3; ++i) if (t[i] < 0 || t[i] >= nv) { fail("invalid triangle index"); return 0; }
++    if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
+     rcContext context(false);
+     rcConfig config; std::memset(&config, 0, sizeof(config));
+     config.cs = c->cell_size; config.ch = c->cell_height;
+@@ -142,8 +146,20 @@
+         for (int i=0; i<b.compact->spanCount; ++i) after += b.compact->areas[i]!=RC_NULL_AREA;
+         excludedSpanCount=before-after;
+     }
+-    if (!rcErodeWalkableArea(&context, config.walkableRadius, *b.compact) ||
+-        !rcBuildDistanceField(&context, *b.compact) ||
++    BNSeedRadiusVeto seedVeto;
++    // Capture only the original pre-erosion seeds. Stock erosion stays intact.
++    // The opt-in policy can remove additional spans; it cannot promote support.
++    if (seedReceipt && !seedVeto.prepare(*b.compact, config.walkableRadius, maximumSeedTests, *seedReceipt)) {
++        fail("seed-radius preparation refused"); return 0;
++    }
++    if (!rcErodeWalkableArea(&context, config.walkableRadius, *b.compact)) {
++        if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
++        fail("Recast build stage"); return 0;
++    }
++    if (seedReceipt && !seedVeto.apply(*b.compact, *seedReceipt)) {
++        fail("seed-radius work or topology refused"); return 0;
++    }
++    if (!rcBuildDistanceField(&context, *b.compact) ||
+         !rcBuildRegions(&context, *b.compact, 0, config.minRegionArea, config.mergeRegionArea) ||
+         !rcBuildContours(&context, *b.compact, config.maxSimplificationError, config.maxEdgeLen, *b.contours) ||
+         !rcBuildPolyMesh(&context, *b.contours, config.maxVertsPerPoly, *b.mesh) ||
+@@ -170,6 +186,10 @@
+     if (dtStatusFailed(h->mesh->init(data,bytes,DT_TILE_FREE_DATA))) { dtFree(data); delete h; fail("Detour mesh init"); return 0; }
+     if (dtStatusFailed(h->query->init(h->mesh,c->max_nodes))) { delete h; fail("Detour query init"); return 0; }
+     h->excludedSpanCount=excludedSpanCount;
++    if (seedReceipt) {
++        if (seedReceipt->status != BN_SEED_RADIUS_APPLIED) { delete h; fail("seed-radius receipt incomplete"); return 0; }
++        seedReceipt->build_succeeded = 1;
++    }
+     return h;
+ }
+ extern "C" int bn_path(void* handle,const float* start,const float* goal,const float* ext,float* points,int cap,
+@@ -253,6 +273,18 @@
+ extern "C" void* bn_build_classified(const float* v, int nv, const int* t, int nt, const BNConfig* c, const unsigned char* triangleSupport) {
+     return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true);
+ }
++extern "C" void* bn_build_classified_seed_radius(const float* v, int nv, const int* t, int nt,
++    const BNConfig* c, const unsigned char* triangleSupport, unsigned long long maximumSeedTests,
++    BNSeedRadiusVetoReceipt* receipt) {
++    error_message[0] = 0;
++    if (!receipt) { fail("missing seed-radius receipt"); return 0; }
++    std::memset(receipt, 0, sizeof(*receipt)); receipt->schema = 1;
++    receipt->work_limit = maximumSeedTests;
++    if (!maximumSeedTests || maximumSeedTests > 10000000ULL) {
++        receipt->status = BN_SEED_RADIUS_WORK_LIMIT; fail("invalid seed-radius work budget"); return 0;
++    }
++    return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true,maximumSeedTests,receipt);
++}
+ extern "C" void* bn_build(const float* v, int nv, const int* t, int nt, const BNConfig* c) {
+     return bn_build_excluded(v,nv,t,nt,c,0,0,0.f,0.f);
+ }
+--- /dev/null
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h
+@@ -0,0 +1,152 @@
++#ifndef BLIND_EXACT_SEED_RADIUS_VETO_H
++#define BLIND_EXACT_SEED_RADIUS_VETO_H
++#include "include/blind_detour.h"
++#include "Recast.h"
++#include "RecastAlloc.h"
++#include <cmath>
++#include <cstring>
++
++// Additional exclusion only, over unmodified Recast's frozen boundary seeds.
++// Direct bounded integer predicate; no nearest-label inference, EDT, new search
++// algorithm, source geometry inflation, or continuous-clearance claim.
++// This helper is private to one synchronous build. No global mutable state.
++class BNSeedRadiusVeto {
++    struct Offset { int x, z; };
++    unsigned char* seeds_ = 0;
++    unsigned char* originalAreas_ = 0;
++    unsigned char* keep_ = 0;
++    Offset* offsets_ = 0;
++    int width_ = 0, height_ = 0, spans_ = 0, radius_ = 0, offsetCount_ = 0;
++    bool prepared_ = false;
++    const rcCompactCell* cells_ = 0;
++    const rcCompactSpan* spanData_ = 0;
++    static bool refuse(BNSeedRadiusVetoReceipt& r, int status) { r.status = status; return false; }
++public:
++    BNSeedRadiusVeto() = default;
++    BNSeedRadiusVeto(const BNSeedRadiusVeto&) = delete;
++    BNSeedRadiusVeto& operator=(const BNSeedRadiusVeto&) = delete;
++    ~BNSeedRadiusVeto() { rcFree(seeds_); rcFree(originalAreas_); rcFree(keep_); rcFree(offsets_); }
++
++    bool prepare(const rcCompactHeightfield& c, int radius, unsigned long long maxWork,
++                 BNSeedRadiusVetoReceipt& r) {
++        r.schema = 1; r.work_limit = maxWork;
++        if (prepared_ || seeds_ || !c.cells || !c.spans || !c.areas ||
++            c.width < 1 || c.height < 1 || c.spanCount < 1 || c.spanCount > 65536 ||
++            static_cast<unsigned long long>(c.width) * c.height > 250000 ||
++            radius < 1 || radius > 80 || !std::isfinite(c.cs) || !std::isfinite(c.ch) ||
++            c.cs <= 0 || c.ch <= 0 || !std::isfinite(c.bmin[0]) ||
++            !std::isfinite(c.bmin[1]) || !std::isfinite(c.bmin[2]))
++            return refuse(r, BN_SEED_RADIUS_INVALID_INPUT);
++        if (!maxWork || maxWork > 10000000ULL) return refuse(r, BN_SEED_RADIUS_WORK_LIMIT);
++        width_ = c.width; height_ = c.height; spans_ = c.spanCount; radius_ = radius;
++        r.width = width_; r.height = height_; r.span_count = spans_; r.radius_cells = radius_;
++        int cursor = 0, commonY = -1;
++        // Match the captured domain exactly. Do not flatten stacked spans,
++        // choose a convenient floor, repair connectivity, or invent support.
++        for (int z = 0; z < height_; ++z) for (int x = 0; x < width_; ++x) {
++            const rcCompactCell& cell = c.cells[x + z * width_];
++            if (cell.count > 1) return refuse(r, BN_SEED_RADIUS_UNSUPPORTED_LAYER);
++            if (static_cast<unsigned long long>(cell.index) + cell.count > static_cast<unsigned>(spans_))
++                return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            if (!cell.count) continue; // Absent columns are NOT independent seeds.
++            const int i = static_cast<int>(cell.index);
++            if (i != cursor++ || c.areas[i] > RC_WALKABLE_AREA)
++                return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            const rcCompactSpan& span = c.spans[i];
++            if (commonY < 0) commonY = span.y;
++            if (commonY != span.y) return refuse(r, BN_SEED_RADIUS_UNSUPPORTED_LAYER);
++            for (int d = 0; d < 4; ++d) {
++                const int connection = rcGetCon(span, d);
++                if (connection == RC_NOT_CONNECTED) continue;
++                const int nx = x + rcGetDirOffsetX(d), nz = z + rcGetDirOffsetY(d);
++                if (nx < 0 || nx >= width_ || nz < 0 || nz >= height_)
++                    return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++                const rcCompactCell& neighbor = c.cells[nx + nz * width_];
++                if (neighbor.count != 1 || connection != 0 || neighbor.index >= static_cast<unsigned>(spans_))
++                    return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++                const rcCompactSpan& next = c.spans[neighbor.index];
++                if (next.y != span.y) return refuse(r, BN_SEED_RADIUS_UNSUPPORTED_LAYER);
++                if (rcGetCon(next, (d + 2) % 4) != 0)
++                    return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++            }
++        }
++        if (cursor != spans_) return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++        r.common_y_voxel = commonY;
++        // R<=80 and dimensions<=250000 make all following integer products
++        // representable. Still form byte/work products in wide unsigned types.
++        for (int z = -radius_; z <= radius_; ++z) for (int x = -radius_; x <= radius_; ++x)
++            if (x*x + z*z < radius_*radius_) ++offsetCount_;
++        const unsigned long long padded = static_cast<unsigned long long>(width_ + 2) * (height_ + 2);
++        const unsigned long long bytes = padded + 2ULL * spans_ +
++            static_cast<unsigned long long>(offsetCount_) * sizeof(Offset);
++        if (bytes > 2ULL * 1024 * 1024) return refuse(r, BN_SEED_RADIUS_WORK_LIMIT);
++        seeds_ = static_cast<unsigned char*>(rcAlloc(static_cast<size_t>(padded), RC_ALLOC_TEMP));
++        originalAreas_ = static_cast<unsigned char*>(rcAlloc(spans_, RC_ALLOC_TEMP));
++        keep_ = static_cast<unsigned char*>(rcAlloc(spans_, RC_ALLOC_TEMP));
++        offsets_ = static_cast<Offset*>(rcAlloc(static_cast<size_t>(offsetCount_) * sizeof(Offset), RC_ALLOC_TEMP));
++        if (!seeds_ || !originalAreas_ || !keep_ || !offsets_)
++            return refuse(r, BN_SEED_RADIUS_ALLOCATION_FAILED);
++        std::memset(seeds_, 0, static_cast<size_t>(padded));
++        std::memcpy(originalAreas_, c.areas, spans_);
++        int n = 0;
++        for (int z = -radius_; z <= radius_; ++z) for (int x = -radius_; x <= radius_; ++x)
++            if (x*x + z*z < radius_*radius_) offsets_[n++] = Offset{x, z};
++        const int stride = width_ + 2;
++        for (int z = 0; z < height_ + 2; ++z) for (int x = 0; x < width_ + 2; ++x)
++            if (x == 0 || z == 0 || x == width_ + 1 || z == height_ + 1) {
++                seeds_[x + z * stride] = 1; ++r.exterior_seed_count;
++            }
++        for (int z = 0; z < height_; ++z) for (int x = 0; x < width_; ++x) {
++            const rcCompactCell& cell = c.cells[x + z * width_];
++            if (!cell.count) continue;
++            const int i = static_cast<int>(cell.index);
++            bool seed = c.areas[i] == RC_NULL_AREA;
++            for (int d = 0; d < 4; ++d) {
++                if (rcGetCon(c.spans[i], d) == RC_NOT_CONNECTED) { seed = true; continue; }
++                const int nx = x + rcGetDirOffsetX(d), nz = z + rcGetDirOffsetY(d);
++                if (c.areas[c.cells[nx + nz * width_].index] == RC_NULL_AREA) seed = true;
++            }
++            if (seed) { seeds_[(x + 1) + (z + 1) * stride] = 1; ++r.real_seed_count; }
++        }
++        cells_ = c.cells; spanData_ = c.spans; prepared_ = true;
++        r.status = BN_SEED_RADIUS_PREPARED;
++        return true;
++    }
++
++    // Call only immediately after stock rcErodeWalkableArea on this private
++    // compact field. Stock erosion changes areas, not cells/spans/topology.
++    bool apply(rcCompactHeightfield& c, BNSeedRadiusVetoReceipt& r) {
++        if (!prepared_ || r.status != BN_SEED_RADIUS_PREPARED || c.width != width_ ||
++            c.height != height_ || c.spanCount != spans_ || c.cells != cells_ || c.spans != spanData_ || !c.areas)
++            return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY);
++        for (int i = 0; i < spans_; ++i) {
++            if (c.areas[i] != RC_NULL_AREA && c.areas[i] != originalAreas_[i])
++                return refuse(r, BN_SEED_RADIUS_INVALID_TOPOLOGY); // No stock promotion/change.
++            if (c.areas[i] != RC_NULL_AREA) ++r.stock_keep_count;
++            keep_[i] = 0;
++        }
++        r.work_bound = static_cast<unsigned long long>(r.stock_keep_count) * offsetCount_;
++        if (r.work_bound > r.work_limit) return refuse(r, BN_SEED_RADIUS_WORK_LIMIT);
++        const int stride = width_ + 2;
++        for (int z = 0; z < height_; ++z) for (int x = 0; x < width_; ++x) {
++            const rcCompactCell& cell = c.cells[x + z * width_];
++            if (!cell.count || c.areas[cell.index] == RC_NULL_AREA) continue;
++            bool keep = true;
++            for (int k = 0; k < offsetCount_; ++k) {
++                ++r.work_performed; // Counts bounded tests even if outside the padded bitmap.
++                const int nx = x + 1 + offsets_[k].x, nz = z + 1 + offsets_[k].z;
++                if (nx < 0 || nx >= width_ + 2 || nz < 0 || nz >= height_ + 2) continue;
++                if (seeds_[nx + nz * stride]) { keep = false; break; }
++            }
++            keep_[cell.index] = keep ? 1 : 0;
++            if (keep) ++r.exact_keep_count;
++        }
++        // Commit only after the entire bounded predicate is complete. Never
++        // resurrect a stock-null span; equality at R^2 was never in the kernel.
++        for (int i = 0; i < spans_; ++i) if (!keep_[i]) c.areas[i] = RC_NULL_AREA;
++        r.additional_rejected_count = r.stock_keep_count - r.exact_keep_count;
++        r.status = BN_SEED_RADIUS_APPLIED; prepared_ = false;
++        return true;
++    }
++};
++#endif
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h
+@@ -16,6 +16,30 @@
+ void* bn_build_classified(const float* vertices, int vertex_count, const int* triangles,
+                          int triangle_count, const BNConfig* config,
+                          const unsigned char* triangle_support);
++/* Opt-in flat-layer discrete seed-radius exclusion. Not source-wall clearance,
++   continuous motion validity, floor support or physical output authority.
++   Stock APIs/defaults remain unchanged. R = ceil(original radius/cell size).
++   Threshold is strict: remove iff squared integer seed distance < R*R. */
++enum BNSeedRadiusStatus {
++    BN_SEED_RADIUS_NOT_REQUESTED = 0, BN_SEED_RADIUS_PREPARED = 1,
++    BN_SEED_RADIUS_APPLIED = 2, BN_SEED_RADIUS_INVALID_INPUT = -1,
++    BN_SEED_RADIUS_UNSUPPORTED_LAYER = -2, BN_SEED_RADIUS_INVALID_TOPOLOGY = -3,
++    BN_SEED_RADIUS_WORK_LIMIT = -4, BN_SEED_RADIUS_ALLOCATION_FAILED = -5,
++    BN_SEED_RADIUS_BUILD_FAILED = -6
++};
++typedef struct BNSeedRadiusVetoReceipt {
++    int schema, status, width, height, span_count, radius_cells, common_y_voxel;
++    int real_seed_count, exterior_seed_count, stock_keep_count, exact_keep_count;
++    int additional_rejected_count, build_succeeded;
++    unsigned long long work_limit, work_bound, work_performed;
++} BNSeedRadiusVetoReceipt;
++/* maximum_seed_tests must be 1...10,000,000. Budget refusal emits no handle;
++   no stock-policy fallback. On later build failure status may still be APPLIED
++   with build_succeeded=0, including a valid empty keep mask. */
++void* bn_build_classified_seed_radius(const float* vertices, int vertex_count,
++    const int* triangles, int triangle_count, const BNConfig* config,
++    const unsigned char* triangle_support, unsigned long long maximum_seed_tests,
++    BNSeedRadiusVetoReceipt* receipt);
+ void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
+ int bn_excluded_span_count(void* handle);
+ void bn_destroy(void* handle);

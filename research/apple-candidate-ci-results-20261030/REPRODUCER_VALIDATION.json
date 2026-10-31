@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "scope": "bounded stdlib report parser controls and existing-log reproduction only",
+  "native_executed": false,
+  "ci_dispatched": false,
+  "source_published": false,
+  "regression_tests": 13,
+  "regression_result": "passed",
+  "reproduction": {
+    "inputs": 6,
+    "input_root_used": "coordination (outside repository)",
+    "output_bytes": 65668,
+    "output_sha256": "2cdb62cb71d29bdbace26d45bb782dd555aa2e288536a7718c830ffe33063963",
+    "matches_original_receipt_byte_for_byte": true
+  },
+  "failure_controls": [
+    "each of six inputs missing",
+    "each of six inputs same-size hash mismatch",
+    "all missing creates no output",
+    "extra log",
+    "changed size",
+    "symlink log",
+    "input/output caps",
+    "malformed pinned JSON",
+    "output/input alias",
+    "symlink output",
+    "explicit required arguments"
+  ],
+  "raw_logs_included": false
+}

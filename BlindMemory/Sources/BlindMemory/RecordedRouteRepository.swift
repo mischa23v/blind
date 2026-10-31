@@ -54,6 +54,19 @@ public struct RecordedRouteAppendReceipt: Sendable, Equatable {
     public let evictedCount: Int
 }
 
+/// Metadata for a private diagnostic archive; recording status is historical on reopen.
+public struct NavigationTestSessionState: Sendable, Equatable {
+    public let id, epoch: String
+    public let startedAt, createdAt: Double
+    public let nextSequence, retainedBytes: Int64
+    public let status: String
+}
+public struct NavigationTestEventRow: Sendable, Equatable {
+    public let sequence: Int64
+    public let payload: Data
+    public init(sequence: Int64, payload: Data) { self.sequence = sequence; self.payload = payload }
+}
+
 /// Small GRDB repository: bounded INSERTs, indexed keyset pages, pinned observed anchors.
 /// There is ONE active trip per profile, independent of AR session/goal. Clear explicitly
 /// creates a new erase epoch. No terminal 20k ring and no load-all-payload operation.
@@ -78,6 +91,9 @@ public final class RecordedRouteRepository: Sendable {
         db = try DatabaseQueue(path: path, configuration: configuration)
         var migrator = DatabaseMigrator()
         migrator.registerMigration("private-recorded-route-v1") { database in try database.execute(sql: MemoryStore.sql("recorded_routes")) }
+        migrator.registerMigration("private-navigation-test-v1") { database in
+            try database.execute(sql: MemoryStore.sql("navigation_test_recordings"))
+        }
         try migrator.migrate(db)
         try db.write { database in
             try database.execute(sql: "INSERT OR IGNORE INTO recordedTrip(profile,id,epoch) VALUES (?,?,?)", arguments: [profile, UUID().uuidString, UUID().uuidString])
@@ -263,5 +279,120 @@ public final class RecordedRouteRepository: Sendable {
               !row.sourceFrameID.isEmpty, row.sourceFrameID.utf8.count <= 256,
               row.capturedAt.isFinite, row.capturedAt >= 0,
               (1...Self.maximumSampleBytes).contains(row.payload.count) else { throw RecordedRouteRepositoryError.invalid }
+    }
+}
+
+
+extension RecordedRouteRepository {
+    public static let maximumNavigationTestSessions = 3
+    public static let maximumNavigationTestEventBytes = 262_144
+    public static let maximumNavigationTestEvents = 3_257
+    public static let navigationTestSessionQuota = 16 * 1024 * 1024
+    public static let navigationTestTotalQuota = 32 * 1024 * 1024
+
+    public func createNavigationTest(id: String, startedAt: Double, createdAt: Double,
+                                     trip: RecordedTripState) throws -> NavigationTestSessionState {
+        guard UUID(uuidString: id) != nil, startedAt.isFinite, startedAt >= 0,
+              createdAt.isFinite, createdAt >= 0 else { throw RecordedRouteRepositoryError.invalid }
+        return try db.write { database in
+            let current = try state(database)
+            guard current.id == trip.id, current.epoch == trip.epoch else { throw RecordedRouteRepositoryError.staleCursor }
+            if let existing = try navigationTestState(database, id: id) {
+                guard existing.epoch == current.epoch, existing.startedAt == startedAt, existing.createdAt == createdAt else { throw RecordedRouteRepositoryError.conflict }
+                return existing
+            }
+            guard (try Int.fetchOne(database, sql: "SELECT COUNT(*) FROM navigationTestSession WHERE profile=?", arguments: [profile]) ?? 0) < Self.maximumNavigationTestSessions else { throw RecordedRouteRepositoryError.quota }
+            try database.execute(sql: "INSERT INTO navigationTestSession(profile,id,epoch,startedAt,createdAt) VALUES (?,?,?,?,?)", arguments: [profile,id,current.epoch,startedAt,createdAt])
+            guard let result = try navigationTestState(database, id: id) else { throw RecordedRouteRepositoryError.invalid }; return result
+        }
+    }
+    public func appendNavigationTest(rows: [NavigationTestEventRow], session: NavigationTestSessionState,
+                                     status: String) throws -> NavigationTestSessionState {
+        guard rows.count <= Self.maximumBatchCount, ["recording","stopped","capacityReached"].contains(status),
+              rows.allSatisfy({ $0.sequence >= 0 && $0.sequence < Int64(Self.maximumNavigationTestEvents) &&
+                  (1...Self.maximumNavigationTestEventBytes).contains($0.payload.count) }),
+              zip(rows, rows.dropFirst()).allSatisfy({ $0.0.sequence + 1 == $0.1.sequence }) else { throw RecordedRouteRepositoryError.invalid }
+        return try db.write { database in
+            var current = try requireNavigationTest(database, session: session)
+            var next = current.nextSequence, bytes = current.retainedBytes
+            let total = try navigationTestStates(database).reduce(Int64(0)) { $0 + $1.retainedBytes }
+            for event in rows {
+                if event.sequence < next {
+                    guard try navigationTestEvent(database, id: session.id, sequence: event.sequence) == event else { throw RecordedRouteRepositoryError.conflict }
+                    continue
+                }
+                guard current.status == "recording", event.sequence == next else { throw RecordedRouteRepositoryError.conflict }
+                let charged = Int64(max(event.payload.count, Self.minimumAccountedBytes))
+                guard bytes + charged <= Int64(Self.navigationTestSessionQuota),
+                      total + bytes - current.retainedBytes + charged <= Int64(Self.navigationTestTotalQuota) else { throw RecordedRouteRepositoryError.quota }
+                try database.execute(sql: "INSERT INTO navigationTestEvent(profile,sessionID,sequence,payload,encodedBytes,chargedBytes) VALUES (?,?,?,?,?,?)",
+                    arguments: [profile,session.id,event.sequence,event.payload,event.payload.count,charged])
+                next += 1; bytes += charged
+            }
+            // A stale retry cannot reopen a terminal session.
+            let nextStatus = current.status == "recording" ? status : current.status
+            try database.execute(sql: "UPDATE navigationTestSession SET nextSequence=?,retainedBytes=?,status=? WHERE profile=? AND id=?",
+                arguments: [next,bytes,nextStatus,profile,session.id])
+            guard let updated = try navigationTestState(database, id: session.id) else { throw RecordedRouteRepositoryError.invalid }
+            current = updated; return current
+        }
+    }
+    public func listNavigationTests() throws -> [NavigationTestSessionState] {
+        try db.read { try navigationTestStates($0) }
+    }
+    private func navigationTestStates(_ database: Database) throws -> [NavigationTestSessionState] {
+        let ids = try String.fetchAll(database, sql: "SELECT CASE WHEN length(id)=36 THEN id END FROM navigationTestSession WHERE profile=? ORDER BY createdAt DESC,id LIMIT 4", arguments: [profile])
+        guard ids.count <= Self.maximumNavigationTestSessions else { throw RecordedRouteRepositoryError.invalid }
+        let trip = try state(database)
+        let values = try ids.map { id -> NavigationTestSessionState in
+            guard let value = try navigationTestState(database, id: id), value.epoch == trip.epoch else { throw RecordedRouteRepositoryError.invalid }
+            return value
+        }
+        guard values.reduce(Int64(0), { $0 + $1.retainedBytes }) <= Int64(Self.navigationTestTotalQuota) else { throw RecordedRouteRepositoryError.invalid }
+        return values
+    }
+    public func navigationTestEvents(session: NavigationTestSessionState, after: Int64? = nil,
+                                     limit: Int = 64) throws -> [NavigationTestEventRow] {
+        guard (1...Self.maximumPageCount).contains(limit), after.map({ $0 >= -1 && $0 < Int64(Self.maximumNavigationTestEvents) }) ?? true else { throw RecordedRouteRepositoryError.invalid }
+        return try db.read { database in
+            _ = try requireNavigationTest(database, session: session)
+            let sequences = try Int64.fetchAll(database, sql: "SELECT sequence FROM navigationTestEvent WHERE profile=? AND sessionID=? AND sequence>? ORDER BY sequence LIMIT ?", arguments: [profile,session.id,after ?? -1,limit])
+            return try sequences.map { try navigationTestEvent(database, id: session.id, sequence: $0) }
+        }
+    }
+    /// The app must fence pending create operations before deletion. Individual IDs
+    /// must never be reused; full-history clear additionally rotates the trip epoch.
+    public func deleteNavigationTest(session: NavigationTestSessionState) throws {
+        try db.write { database in
+            _ = try requireNavigationTest(database, session: session)
+            try database.execute(sql: "DELETE FROM navigationTestSession WHERE profile=? AND id=?", arguments: [profile,session.id])
+        }
+    }
+    private func requireNavigationTest(_ database: Database, session: NavigationTestSessionState) throws -> NavigationTestSessionState {
+        let trip = try state(database)
+        guard trip.epoch == session.epoch, let current = try navigationTestState(database, id: session.id), current.epoch == session.epoch else { throw RecordedRouteRepositoryError.staleCursor }
+        return current
+    }
+    private func navigationTestState(_ database: Database, id: String) throws -> NavigationTestSessionState? {
+        guard UUID(uuidString: id) != nil else { throw RecordedRouteRepositoryError.invalid }
+        guard let row = try Row.fetchOne(database, sql: "SELECT schemaVersion,epoch,startedAt,createdAt,nextSequence,retainedBytes,status FROM navigationTestSession WHERE profile=? AND id=?", arguments: [profile,id]) else { return nil }
+        guard Int.fromDatabaseValue(row["schemaVersion"]) == 1,
+              let epoch = String.fromDatabaseValue(row["epoch"]), UUID(uuidString: epoch) != nil,
+              let started = Double.fromDatabaseValue(row["startedAt"]), started.isFinite, started >= 0,
+              let created = Double.fromDatabaseValue(row["createdAt"]), created.isFinite, created >= 0,
+              let count = Int64.fromDatabaseValue(row["nextSequence"]), (0...Int64(Self.maximumNavigationTestEvents)).contains(count),
+              let bytes = Int64.fromDatabaseValue(row["retainedBytes"]), (0...Int64(Self.navigationTestSessionQuota)).contains(bytes),
+              let status = String.fromDatabaseValue(row["status"]), ["recording","stopped","capacityReached"].contains(status),
+              let summary = try Row.fetchOne(database, sql: "SELECT COUNT(*) AS count,COALESCE(SUM(chargedBytes),0) AS bytes,COALESCE(MAX(sequence),-1) AS last,COALESCE(MIN(sequence),0) AS first,COALESCE(SUM(CASE WHEN typeof(sequence)!='integer' THEN 1 ELSE 0 END),0) AS invalidSequence FROM navigationTestEvent WHERE profile=? AND sessionID=?", arguments: [profile,id]),
+              summary["count"] as Int64 == count, summary["bytes"] as Int64 == bytes,
+              summary["last"] as Int64 == count - 1, summary["first"] as Int64 == 0,
+              summary["invalidSequence"] as Int64 == 0 else { throw RecordedRouteRepositoryError.invalid }
+        return .init(id: id, epoch: epoch, startedAt: started, createdAt: created, nextSequence: count, retainedBytes: bytes, status: status)
+    }
+    private func navigationTestEvent(_ database: Database, id: String, sequence: Int64) throws -> NavigationTestEventRow {
+        guard let row = try Row.fetchOne(database, sql: "SELECT CASE WHEN typeof(payload)='blob' AND length(payload) BETWEEN 1 AND 262144 THEN payload END AS payload,encodedBytes,chargedBytes FROM navigationTestEvent WHERE profile=? AND sessionID=? AND sequence=?", arguments: [profile,id,sequence]),
+              let payload = Data.fromDatabaseValue(row["payload"]), let bytes = Int.fromDatabaseValue(row["encodedBytes"]), bytes == payload.count,
+              let charged = Int.fromDatabaseValue(row["chargedBytes"]), charged == max(bytes,Self.minimumAccountedBytes) else { throw RecordedRouteRepositoryError.invalid }
+        return .init(sequence: sequence, payload: payload)
     }
 }

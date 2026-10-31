@@ -1,0 +1,125 @@
+{
+  "command": [
+    "python",
+    "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/compare.py",
+    "--inputs",
+    "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_COMMON_LAUNCH.json",
+    "--out",
+    "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface",
+    "--expected-freeze",
+    "3c79015256f98811c15ab6c61a32ddf7a643a9ecc13f721a9502a7721113b082"
+  ],
+  "cpuAffinity": [
+    0
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "peakSampledTreeRSS": 2261356544,
+  "elapsedSeconds": 36.277647495269775,
+  "childCPUSeconds": 35.313778,
+  "priorStageCPUSeconds": 1373.8550360000002,
+  "samples": [
+    {
+      "elapsed": 0.13771581649780273,
+      "rss": 0,
+      "aggregateDisk": 1933600510,
+      "processGroupCPUSecondsIncludingReaped": 0.0
+    },
+    {
+      "elapsed": 2.261622905731201,
+      "rss": 260620288,
+      "aggregateDisk": 1933600599,
+      "processGroupCPUSecondsIncludingReaped": 2.04
+    },
+    {
+      "elapsed": 4.421834945678711,
+      "rss": 289140736,
+      "aggregateDisk": 1941419223,
+      "processGroupCPUSecondsIncludingReaped": 4.11
+    },
+    {
+      "elapsed": 6.565688371658325,
+      "rss": 796164096,
+      "aggregateDisk": 1944485927,
+      "processGroupCPUSecondsIncludingReaped": 6.19
+    },
+    {
+      "elapsed": 8.694249391555786,
+      "rss": 1184399360,
+      "aggregateDisk": 1944485927,
+      "processGroupCPUSecondsIncludingReaped": 8.26
+    },
+    {
+      "elapsed": 10.83109164237976,
+      "rss": 2261225472,
+      "aggregateDisk": 1944486014,
+      "processGroupCPUSecondsIncludingReaped": 10.33
+    },
+    {
+      "elapsed": 12.97383737564087,
+      "rss": 2261225472,
+      "aggregateDisk": 1944486385,
+      "processGroupCPUSecondsIncludingReaped": 12.39
+    },
+    {
+      "elapsed": 15.101601362228394,
+      "rss": 2261225472,
+      "aggregateDisk": 1944486703,
+      "processGroupCPUSecondsIncludingReaped": 14.47
+    },
+    {
+      "elapsed": 17.22233009338379,
+      "rss": 2261225472,
+      "aggregateDisk": 1944487021,
+      "processGroupCPUSecondsIncludingReaped": 16.53
+    },
+    {
+      "elapsed": 19.351816654205322,
+      "rss": 2261225472,
+      "aggregateDisk": 1944487392,
+      "processGroupCPUSecondsIncludingReaped": 18.59
+    },
+    {
+      "elapsed": 21.48975133895874,
+      "rss": 2261225472,
+      "aggregateDisk": 1944487661,
+      "processGroupCPUSecondsIncludingReaped": 20.65
+    },
+    {
+      "elapsed": 23.62562584877014,
+      "rss": 2261225472,
+      "aggregateDisk": 1944487985,
+      "processGroupCPUSecondsIncludingReaped": 22.72
+    },
+    {
+      "elapsed": 25.754470586776733,
+      "rss": 2261225472,
+      "aggregateDisk": 1944488309,
+      "processGroupCPUSecondsIncludingReaped": 24.79
+    },
+    {
+      "elapsed": 27.882884979248047,
+      "rss": 2261225472,
+      "aggregateDisk": 1944488525,
+      "processGroupCPUSecondsIncludingReaped": 26.85
+    },
+    {
+      "elapsed": 30.01056933403015,
+      "rss": 2261225472,
+      "aggregateDisk": 1944488903,
+      "processGroupCPUSecondsIncludingReaped": 28.91
+    },
+    {
+      "elapsed": 32.13762903213501,
+      "rss": 2261225472,
+      "aggregateDisk": 1944489119,
+      "processGroupCPUSecondsIncludingReaped": 30.98
+    },
+    {
+      "elapsed": 34.27733302116394,
+      "rss": 2261356544,
+      "aggregateDisk": 1944489389,
+      "processGroupCPUSecondsIncludingReaped": 33.04
+    }
+  ]
+}

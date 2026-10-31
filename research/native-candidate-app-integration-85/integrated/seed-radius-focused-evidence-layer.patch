@@ -1,0 +1,210 @@
+--- a/.github/workflows/native-apple.yml
++++ b/.github/workflows/native-apple.yml
+@@ -103,6 +103,31 @@
+             ${{ runner.temp }}/blind-native-ci/public-apple-same-export/receipt.json
+           if-no-files-found: error
+           retention-days: 3
++      - name: Run exact optional seed-radius policy and existing strict controls
++        id: seed-radius
++        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
++        timeout-minutes: 10
++        run: bash tools/ci/native-apple.sh seed-radius-unit
++      - name: Export bounded focused identities and assertion failures before strict validation
++        if: always()
++        timeout-minutes: 3
++        run: python3 tools/ci/export-seed-radius-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
++      - name: Verify exact eight seed-radius hosted cases and source identity
++        if: always()
++        timeout-minutes: 3
++        run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
++      - name: Preserve bounded optional-policy hosted receipt
++        if: always()
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: seed-radius-${{ github.run_id }}-${{ github.run_attempt }}
++          path: |
++            ${{ runner.temp }}/blind-native-ci/seed-radius-results.json
++            ${{ runner.temp }}/blind-native-ci/seed-radius-unit-exit.json
++            ${{ runner.temp }}/blind-native-ci/seed-radius-diagnostics.json
++          if-no-files-found: error
++          retention-days: 3
++
+       - name: iOS UI and accessibility audit tests
+         id: ui
+         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+@@ -200,23 +225,6 @@
+           if-no-files-found: error
+           retention-days: 3
+ 
+-      - name: Run exact optional seed-radius policy and existing strict controls
+-        timeout-minutes: 10
+-        run: bash tools/ci/native-apple.sh seed-radius-unit
+-      - name: Verify exact eight seed-radius hosted cases and source identity
+-        if: always()
+-        timeout-minutes: 3
+-        run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
+-      - name: Preserve bounded optional-policy hosted receipt
+-        if: always()
+-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+-        with:
+-          name: seed-radius-${{ github.run_id }}-${{ github.run_attempt }}
+-          path: |
+-            ${{ runner.temp }}/blind-native-ci/seed-radius-results.json
+-            ${{ runner.temp }}/blind-native-ci/seed-radius-unit-exit.json
+-          if-no-files-found: error
+-          retention-days: 3
+ 
+   classified-mesh-bench:
+     # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.
+--- /dev/null
++++ b/tools/ci/export-seed-radius-diagnostics.py
+@@ -0,0 +1,93 @@
++"""Bounded failure-preserving evidence for eight fixed public synthetic tests only."""
++import hashlib,importlib.util,json,os,re,sys
++from pathlib import Path
++sys.dont_write_bytecode=True
++H=Path(__file__).resolve().parent;ROOT=H.parents[1]
++s=importlib.util.spec_from_file_location('seed_collector',H/'collect-seed-radius.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
++EXPECTED=set(m.EXPECTED)
++FIXTURE_SHA='f3a87f124829c3316a457bd511566a195448a004067829812195cfcfcaf23149'
++
++def identity(raw):
++ if type(raw) is not str:return None
++ raw=raw.removesuffix('()').removeprefix('BlindAssistTests/')
++ if raw in EXPECTED:return raw
++ match=re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) (test\w+)\]',raw)
++ if match and '/'.join(match.groups()) in EXPECTED:return '/'.join(match.groups())
++ return None
++
++def message(raw):
++ if type(raw) is not str:return None
++ # Public synthetic assertion text only; arrays and arbitrary paths are not needed.
++ value=re.sub(r'\[[^\]\n]*\]','[values omitted]',raw)
++ value=re.sub(r'(?:/[A-Za-z0-9_.-]+){2,}', '[path omitted]',value)
++ value=''.join(c if 32<=ord(c)<=126 else ' ' for c in value)
++ return {'message':value[:768],'truncated':len(value)>768}
++
++def summarize(cases,summary,log,command):
++ result={'expectedIdentities':sorted(EXPECTED),'commandExit':command.get('exit_code') if type(command.get('exit_code')) is int else None,'cases':[],'unexpectedCaseCount':0,'assertionFailures':[],'unparsedFailureRecordCount':0,'scope':'fixed public synthetic tests only; diagnostic receipt never authorizes pass'}
++ if cases is not None:
++  for row in cases[:64]:
++   name=identity(row.get('identifier'))
++   if name:result['cases'].append({'identifier':name,'result':row['result']})
++   else:result['unexpectedCaseCount']+=1
++  result['casesTruncated']=len(cases)>64
++ result['summarySchemaUnavailable']=not isinstance(summary,dict)
++ if isinstance(summary,dict):
++  result['aggregateCounts']={k:summary[k] for k in ['totalTestCount','passedTests','failedTests','skippedTests','expectedFailures'] if type(summary.get(k)) is int and summary[k]>=0}
++  failures=summary.get('testFailures')
++  if isinstance(failures,list):
++   for row in failures[:32]:
++    if not isinstance(row,dict):result['unparsedFailureRecordCount']+=1;continue
++    name=identity(row.get('testIdentifier')) or identity(row.get('testName'))
++    text=message(row.get('failureText',row.get('message')))
++    if name and text:result['assertionFailures'].append({'identifier':name,'origin':'xcresult-summary',**text})
++    else:result['unparsedFailureRecordCount']+=1
++   result['summaryFailuresTruncated']=len(failures)>32
++  else:result['failureSchemaUnavailable']=True
++ # Only fixed fixture filename and exact test identity; never general compiler/app logs.
++ if log is not None:
++  pattern=r'.*\bSavedRoomStrictEndpointTests\.swift:(\d{1,9}): error: (-\[(?:BlindAssistTests\.)?(?:SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) test\w+\]) : (.*)'
++  for line in log.splitlines():
++   if len(line)>4096:continue
++   match=re.fullmatch(pattern,line)
++   if not match:continue
++   line_no,raw,text=match.groups();name=identity(raw)
++   if name and len(result['assertionFailures'])<32:result['assertionFailures'].append({'identifier':name,'origin':'fixed-fixture-log','line':int(line_no),**message(text)})
++ result['assertionFailures']=result['assertionFailures'][:32]
++ return result
++
++def main():
++ out=Path(sys.argv[1]);out.mkdir(parents=True,exist_ok=True)
++ result={'status':'unavailable','sourceVerified':False,'expectedCommit':os.environ.get('GITHUB_SHA'),'errors':{}}
++ command={};cases=summary=log=None
++ try:
++  command=json.loads((out/'seed-radius-unit-exit.json').read_text())
++  if type(command) is not dict:raise ValueError('unsupported command receipt schema')
++ except (OSError,ValueError) as e:command={};result['errors']['command']=type(e).__name__
++ result['commandExit']=command.get('exit_code') if type(command.get('exit_code')) is int else None
++ try:
++  before=m.native.provenance(ROOT,os.environ.get('GITHUB_SHA'))
++  fixture=ROOT/'ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift'
++  if hashlib.sha256(fixture.read_bytes()).hexdigest()!=FIXTURE_SHA:raise ValueError('fixture identity changed')
++  bundle=out/'seed-radius-unit.xcresult'
++  for label,kind in [('cases','tests'),('summary','summary')]:
++   try:
++    value=json.loads(m.native.query(['xcrun','xcresulttool','get','test-results',kind,'--path',str(bundle),'--compact']))
++    if label=='cases':cases=m.native.cases_from(value)
++    else:summary=value
++   except (OSError,ValueError,RecursionError,__import__('subprocess').SubprocessError) as e:result['errors'][label]=type(e).__name__
++  try:
++   p=out/'seed-radius-unit.log'
++   if p.stat().st_size>64*1024*1024:raise ValueError('log bound')
++   log=p.read_text(errors='replace')
++  except (OSError,ValueError) as e:result['errors']['log']=type(e).__name__
++  after=m.native.provenance(ROOT,os.environ.get('GITHUB_SHA'))
++  if before!=after:raise ValueError('source changed')
++  result.update(summarize(cases,summary,log,command));result.update(status='diagnostic-only',sourceVerified=True,sourceCommit=before['actual_head'],fixtureSHA256=FIXTURE_SHA)
++ except (OSError,ValueError,RecursionError,__import__('subprocess').SubprocessError) as e:result['errors']['source']=type(e).__name__
++ encoded=json.dumps(result,indent=2)+'\n'
++ if len(encoded.encode())>65536:raise ValueError('bounded diagnostic output exceeded')
++ (out/'seed-radius-diagnostics.json').write_text(encoded)
++ print('SEED_RADIUS_DIAGNOSTICS='+json.dumps(result,separators=(',',':')))
++ return 0 # Evidence only: original native step and strict collector retain failure.
++if __name__=='__main__':raise SystemExit(main())
+--- /dev/null
++++ b/tools/ci/test-export-seed-radius-diagnostics.py
+@@ -0,0 +1,53 @@
++"""Pure fixtures only; no xcodebuild/xcresult execution."""
++from pathlib import Path
++import importlib.util,unittest,json,tempfile,io,contextlib
++from unittest.mock import patch
++H=Path(__file__).parent;s=importlib.util.spec_from_file_location('diag',H/'export-seed-radius-diagnostics.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
++NAME='SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute'
++CASES=[{'identifier':x+'()','result':'Passed'} for x in sorted(m.EXPECTED)]
++class Tests(unittest.TestCase):
++ def test_all8(self):self.assertEqual(len(m.summarize(CASES,{},None,{'exit_code':0})['cases']),8)
++ def test_failed_preserved(self):self.assertEqual(m.summarize([{'identifier':NAME,'result':'Failed'}],{},None,{'exit_code':65})['cases'][0]['result'],'Failed')
++ def test_exit65_preserved(self):self.assertEqual(m.summarize(None,None,None,{'exit_code':65})['commandExit'],65)
++ def test_missing_exit_unknown(self):self.assertIsNone(m.summarize(None,None,None,{})['commandExit'])
++ def test_bool_exit_unknown(self):self.assertIsNone(m.summarize(None,None,None,{'exit_code':True})['commandExit'])
++ def test_unknown_identity_not_exported(self):self.assertEqual(m.summarize([{'identifier':'Private/name','result':'Failed'}],{},None,{})['unexpectedCaseCount'],1)
++ def test_failure_text(self):self.assertEqual(m.summarize(None,{'testFailures':[{'testIdentifier':NAME,'failureText':'XCTAssertTrue failed'}]},None,{})['assertionFailures'][0]['message'],'XCTAssertTrue failed')
++ def test_message_shape(self):self.assertEqual(len(m.summarize(None,{'testFailures':[{'testName':NAME,'message':'failed'}]},None,{})['assertionFailures']),1)
++ def test_module_prefix(self):self.assertEqual(m.identity('BlindAssistTests/'+NAME+'()'),NAME)
++ def test_objc_identity(self):self.assertEqual(m.identity('-[BlindAssistTests.SeedRadiusVetoAppleTests '+NAME.split('/')[1]+']'),NAME)
++ def test_unknown_failure_withheld(self):
++  x=m.summarize(None,{'testFailures':[{'testName':'Private/name','message':'PRIVATE'}]},None,{})
++  self.assertEqual(x['unparsedFailureRecordCount'],1);self.assertEqual(x['assertionFailures'],[])
++ def test_unknown_schema_counted(self):self.assertEqual(m.summarize(None,{'testFailures':['PRIVATE']},None,{})['unparsedFailureRecordCount'],1)
++ def test_failure_cap(self):self.assertEqual(len(m.summarize(None,{'testFailures':[{'testIdentifier':NAME,'message':'failed'}]*50},None,{})['assertionFailures']),32)
++ def test_message_bound(self):self.assertEqual(len(m.message('x'*2000)['message']),768);self.assertTrue(m.message('x'*2000)['truncated'])
++ def test_arrays_removed(self):self.assertEqual(m.message('expected [1,2,3]')['message'],'expected [values omitted]')
++ def test_paths_removed(self):self.assertNotIn('/Users/runner',m.message('/Users/runner/file failed')['message'])
++ def test_control_chars_removed(self):self.assertNotIn('\n',m.message('a\nb')['message'])
++ def test_fixed_log_assertion(self):
++  log='/Users/runner/SavedRoomStrictEndpointTests.swift:182: error: -[BlindAssistTests.SeedRadiusVetoAppleTests '+NAME.split('/')[1]+'] : XCTAssertTrue failed'
++  x=m.summarize(None,None,log,{'exit_code':65});self.assertEqual(x['assertionFailures'][0]['line'],182)
++ def test_other_file_log_withheld(self):self.assertEqual(m.summarize(None,None,'Other.swift:1: error: PRIVATE',{})['assertionFailures'],[])
++ def test_other_test_log_withheld(self):self.assertEqual(m.summarize(None,None,'SavedRoomStrictEndpointTests.swift:1: error: -[Other testPrivate] : PRIVATE',{})['assertionFailures'],[])
++ def test_no_success_authority(self):self.assertIn('never authorizes pass',m.summarize(CASES,{},None,{'exit_code':0})['scope'])
++class MainPathTests(unittest.TestCase):
++ def run_main(self,command,summary):
++  with tempfile.TemporaryDirectory() as directory:
++   root=Path(directory);out=root/'output';out.mkdir();fixture=root/'ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift';fixture.parent.mkdir(parents=True)
++   fixture.write_bytes((H.parents[1]/'ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift').read_bytes())
++   (out/'seed-radius-unit-exit.json').write_text(json.dumps(command))
++   (out/'seed-radius-unit.log').write_text('')
++   def query(args):return json.dumps(summary if 'summary' in args else {'testNodes':[]}).encode()
++   with patch.object(m,'ROOT',root),patch.object(m.sys,'argv',['exporter',str(out)]),patch.object(m.m.native,'provenance',return_value={'actual_head':'a'*40}),patch.object(m.m.native,'query',side_effect=query),patch.object(m.m.native,'cases_from',return_value=CASES),contextlib.redirect_stdout(io.StringIO()):
++    self.assertEqual(m.main(),0)
++   return json.loads((out/'seed-radius-diagnostics.json').read_text())
++ def test_null_command(self):self.assertIsNone(self.run_main(None,{})['commandExit'])
++ def test_list_command(self):self.assertEqual(self.run_main([],{})['errors']['command'],'ValueError')
++ def test_scalar_command(self):self.assertEqual(self.run_main(65,{})['errors']['command'],'ValueError')
++ def test_string_command(self):self.assertEqual(self.run_main('PRIVATE',{})['errors']['command'],'ValueError')
++ def test_exit65_survives_unknown_summary(self):self.assertEqual(self.run_main({'exit_code':65},[])['commandExit'],65)
++ def test_null_summary_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},None)['summarySchemaUnavailable'])
++ def test_array_summary_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},[])['summarySchemaUnavailable'])
++ def test_missing_failure_schema_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},{})['failureSchemaUnavailable'])
++if __name__=='__main__':unittest.main()

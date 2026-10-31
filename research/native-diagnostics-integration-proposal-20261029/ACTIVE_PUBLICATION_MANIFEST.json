@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "scope": "exact reviewed diagnostic app/source and current metadata integration only",
+  "patch_sha256": "23c5c16e7986278644f545ff5d15ade18e9fe56b99c4ff11fb3c2859ae6d5088",
+  "files": {
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": {
+      "before_sha256": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4",
+      "after_sha256": "548ad516077006968db733b420248b5bcd978b65aae6435c35f672e43c00971e"
+    },
+    "ios/BlindAssistTests/ClassificationIngressTests.swift": {
+      "before_sha256": "00efadb2602cbcb6dae7cdb9c7c21a7d35f98aaeb6791dc0d10a75dce3fa173a",
+      "after_sha256": "3c544fbb35d55a319fe025969e439d7724774ddc7e592dc6b3ee56bdb5864309"
+    },
+    "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift": {
+      "before_sha256": "4032fa8a950e246f25a60ba136ea4ee6ec4a2948d4509bd2ed112545a39835e9",
+      "after_sha256": "f366639e6c0818a68dc307061320a85470c1d39a8b49bc66ee90caedd9de14f2"
+    },
+    "tools/ci/extract-ask-layout-trace.py": {
+      "before_sha256": null,
+      "after_sha256": "3852547733a537cf31cd7bf65d62ebf2ba3fe2fffa880c47b7b284d5108c3c6f"
+    },
+    "tools/ci/native-apple.sh": {
+      "before_sha256": "c8d4e5aae8f33f88d46c204f5b3360f453df189d98a5b35a966630c07011f4b4",
+      "after_sha256": "fd0b9d06cc98647dffd693b007795e5f5dd260810051f154675b4f990c1cc650"
+    },
+    "research/native-candidate-app-integration-85/integrated/synthetic-diagnostics-layer.patch": {
+      "before_sha256": null,
+      "after_sha256": "a2e1196ff0d96b288069b075acb09c729bf102e8ca1d525ac2a6c2b05f480c0a"
+    },
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": {
+      "before_sha256": "0e3d03c681912e58aef1c9c55086fb8acba2e003d4aa3e3aea2761c32386b749",
+      "after_sha256": "f92a7c84a0f90f16aa0dab43d293f02edbf7ea42421f0dcd11c97cfa429c005a"
+    },
+    "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": {
+      "before_sha256": "422cedceb07da811737dbd82e189771c5ee3d5e4656c8cc523a1921e61c6411d",
+      "after_sha256": "a232849250c51fc936b1c135be6bdf083a65c3668911ba98190009005e5a8744"
+    },
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": {
+      "before_sha256": "35ecc7f6575a5c6025821b32f5c666a57edce6c23cfb1b71bf95a0c6003e3875",
+      "after_sha256": "fb45495a6c7045d52ef653baf88b2e2f5092210e93603a352e1e20f87ba7843e"
+    },
+    "research/native-candidate-app-integration-85/integrated/check.py": {
+      "before_sha256": "813f8693ced8cd45953046d290513d6084f83a10024158fa2dc39182b78db970",
+      "after_sha256": "5c099428d1f6ee8ea0ebd9f84175561a1240e24d9df141dc99d3906a0b610344"
+    },
+    "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json": {
+      "before_sha256": "b9c18d0b2aaaa4fab8645ad3949a598b4ebb6cdcfc5a875303216123199b056f",
+      "after_sha256": "4f9f8cbde9b048f1e1c06025ac0de844fb4f3ee454d8d58e88b338b3f00e3b18"
+    }
+  },
+  "native_execution": false,
+  "actual_ask_native_format": "unverified",
+  "physical_authority": false,
+  "default_caller_activation": false
+}

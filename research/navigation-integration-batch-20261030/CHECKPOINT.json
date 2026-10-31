@@ -1,0 +1,78 @@
+{
+  "actualBase": "79951a34966f0881cd942fc27c833e020aacde2b",
+  "priorMapLayerManifest": "f7861dd0ae098224e3345e57086f623895a3eb02e0c66668c2b271889ba67b6f",
+  "sourceManifestHashes": {
+    "n00-same-owner-recovery-20261030": "634aa56e03b0f13b747329d2770fa025a781e048bf81b2441b212a757a9771e6",
+    "n04-route-reassociation-20261030": "62255fc6cf7fa462ed75557fd2cc27958a0a6be712c1789e720a7b84aff41d47"
+  },
+  "independentReview": {
+    "schema": 1,
+    "verdict": "No blocking source issue found; native and physical validation pending",
+    "packets": {
+      "n00-same-owner-recovery-20261030": {
+        "manifestSHA256": "634aa56e03b0f13b747329d2770fa025a781e048bf81b2441b212a757a9771e6",
+        "verifiedFiles": 8,
+        "portableChecksPassed": 22
+      },
+      "n04-route-reassociation-20261030": {
+        "manifestSHA256": "62255fc6cf7fa462ed75557fd2cc27958a0a6be712c1789e720a7b84aff41d47",
+        "verifiedFiles": 3,
+        "portableChecksPassed": 13
+      }
+    },
+    "findings": [
+      "Exact paired hashes precede secure saved-world decode; initialWorldMap precedes actual session activation",
+      "Optional restoration defaults off and respects camera handoff confirmation",
+      "Same-owner production recovery observes actual delegate frames through existing relocalization gate; no guessed transform",
+      "Deletion, selection change, stop and pending loader disposal fenced before activation and full drain",
+      "Mapped fixture now reuses production recovery currentness",
+      "Off-route and blocked-leg outputs retire rather than snap; fresh supported unique endpoint required to replan",
+      "Portal destination requests new owner context only; fresh target evidence still required, no crossing authority",
+      "Existing controls, original source tests and hazards are retained"
+    ],
+    "limitations": [
+      "Swift, ARKit and device tests unexecuted",
+      "Encoded archive caps do not bound decoded ARWorldMap memory",
+      "Positive real saved-world archive decode/relocalization remains pending",
+      "Target context selection is not target-map localization producer or crossing guidance",
+      "CI companion and batch provenance require separate integration review"
+    ],
+    "nativeExecuted": false,
+    "sharedEdits": false
+  },
+  "composition": {
+    "scope": "isolated source composition only; no native execution",
+    "order": [
+      "n03-active-hazard-evidence-20261030",
+      "n00-same-owner-recovery-20261030",
+      "n04-route-reassociation-20261030"
+    ],
+    "publicationStatus": "requires reviewed map17 worktree layer; no map commit claimed",
+    "files": {
+      "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift": "60ccdb7df639026dd315d2c8e563ed64a219b1f40e4008b4d919bcbf8bce2944",
+      "BlindCore/Sources/BlindCore/CurrentNavigationHazards.swift": "7ad37907f0fb752f9a7a328d9f13fff315a7c72221865fec148d8815bd1b2c5d",
+      "BlindCore/Tests/BlindCoreTests/CurrentNavigationHazardsTests.swift": "268b7b2f7c3d3ac18e47d6cc4bcb083bd7be81fdd9d843c7aac0b093e0ac60cc",
+      "ios/BlindAssist/ConnectedJourneyRuntime.swift": "5abf0b68a79afafb5d08b5ee7b3f2e80764df3b35dcd60a8e95725bedf382fc6",
+      "ios/BlindAssist/NavigationModel.swift": "99cea838c37bc85c01b1686ecf4d0b29be63e733ee88b67a4fd52144046ceab1",
+      "ios/BlindAssist/SeatedMeshDiagnosticController.swift": "bb6527ad5e018e6316db2f4f103c16faf53cd4e5e142a8e513506c253a505565",
+      "ios/BlindAssist/SeatedMeshDiagnosticView.swift": "61981c8f5447b8b4b3dc8852e2ad8d7aa8442f217a34e9df896f7c02b68ac57f",
+      "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift": "bc6d2d4dac8f961b998401b7c410149f5ad1d5045b0f04a7932b82f44c7e8dd5",
+      "ios/BlindAssistTests/SeatedMeshProjectionTests.swift": "c0633d4c8b580ba749e0d51ea98b8b4584e2a99d7fec9dcae07f685286f4d51b",
+      "research/live-mesh-classified-bench-20261028/Package.swift": "b74efac5a48710a6b98b9ab70b767f7d0ea751bc06bf56ccf9605b2a78d3aba1",
+      "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift": "db8fcf844c97b92e66068fa1dbf10c9dbaeedea96abd666c3c1edfad5cb11b24",
+      "research/live-mesh-classified-bench-20261028/Sources/MeshBenchSavedWorldRecovery.swift": "638b4266dde54dc0747c2a9141f867d70420669e079c297a836f1edefceca656",
+      "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift": "8ab39b3c8da0b686cc86b3f90e258294b16c78561b7eb7cc3408eb6155d5aa30"
+    },
+    "orderedApplyAndExactReverse": true
+  },
+  "nativeExecuted": false,
+  "physicalGuidanceGranted": false,
+  "classifiedCICompanionPending": false,
+  "batchSourcePinsPending": true,
+  "classifiedCICompanion": {
+    "manifestSHA256": "3c72acb24029f539d1aff8483c989e6ac13b3a2339c417f6bda9313477a5035c",
+    "sourcePaths": 3,
+    "portableParserTestsPassed": 62,
+    "independentHashAndWorkflowLabelReview": true
+  }
+}

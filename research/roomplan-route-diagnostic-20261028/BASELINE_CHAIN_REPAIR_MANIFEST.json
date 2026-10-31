@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "purpose": "Exact continuous baseline collision-scoring chain bookkeeping repair; no floor-support proof",
+  "baseSourceManifestSHA256": "e002c883b043363637405ac51f1ec13adef6f613d2d951e37e63a70c551635e2",
+  "baseNativeRun": "40674598074 / 4182e995",
+  "baseNativeExecution": "test compilation failed; zero route or journey schedules executed",
+  "repairNativeExecuted": false,
+  "physicalAuthority": false,
+  "baselineSchedulesUnchanged": 18,
+  "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+  "width28ProfileSHA256": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+  "journeyAddendumSHA256": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+  "fullFootprintSupportVerified": false,
+  "files": [
+    {
+      "path": "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift",
+      "beforeSHA256": "6ff3bfe5595acaf09aefac1afbdd8944b108899c4cb5fc9a5d924ab3daee5fb7",
+      "sha256": "30385ac82baf712393cc479e802db2c49b0ddf0d798c173a36f024b801f403b0"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift",
+      "beforeSHA256": "ab5e43c76937f6699c15f8e6942935d1db35b7ea091ecafd03c4281439a4d127",
+      "sha256": "94e8e2ea83e212d3557b1f974d935404b0a79fa6e6f7d62d7a1dc16ad85e8b73"
+    },
+    {
+      "path": "tools/test/roomplan-route-diagnostic.test.mjs",
+      "beforeSHA256": "37e01b4a22bfe1c780d6a8e5fe115094d8dc58729fef613ccea5f977708997ef",
+      "sha256": "0375ca0b6c0566d45807c46a9b910c39520040cbf887af231369724979bf9bea"
+    }
+  ],
+  "separateRootOwnedOracleCompilerHotfix": {
+    "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
+    "sha256": "e8a5fd35062f2282006a48524b6dd83ccd75c2b7f5af44457b8fa0c9d06d5631",
+    "change": "Explicit Float matrix-column and rotation intermediates; no collision behavior intended"
+  },
+  "sourceChecks": {
+    "path": "research/roomplan-route-diagnostic-20261028/baseline-chain-repair-source-checks.tap",
+    "sha256": "3b7c5668d480ae741d2eb7df4403b379ff424482eef1507a0ffd4c16346624f6",
+    "passed": 9,
+    "failed": 0
+  },
+  "review": {
+    "reviewer": "/root/review_recorded_route_preview",
+    "disposition": "Source-only approved; exact chain and typed coordinate loop splits reviewed with no remaining semantic blocker.",
+    "independentSourceChecksPassed": 9,
+    "nativeExecuted": false,
+    "rootOwnedOracleHotfixReviewedByThisSlice": false,
+    "integrationDependency": "Matching strict exporter/renderer schema acceptance must be reviewed and published together",
+    "exporterAlignment": "Producer/schema read confirms new baseline keys and exact chain match current strict exporter; exporter owner/reviewer owns its separate freeze."
+  },
+  "documentation": {
+    "path": "research/roomplan-route-diagnostic-20261028/README.md",
+    "sha256": "c8311dc2b677d93d18ebff22cef52d2c6137e6650e24cfd36c43a5026e66b03c"
+  },
+  "additionalCompilerBudgetChange": "Baseline point/journey world nested SIMD-map transform expressions split into typed Double intermediates with identical indices/arithmetic order and one Float cast per coordinate.",
+  "regressionChecks": {
+    "path": "research/roomplan-route-diagnostic-20261028/baseline-chain-repair-regression-checks.tap",
+    "sha256": "b8a57acc05945845bd78c7c04e838b94e0df638294657192114dc1e8654fecdf",
+    "passed": 20,
+    "failed": 0
+  }
+}

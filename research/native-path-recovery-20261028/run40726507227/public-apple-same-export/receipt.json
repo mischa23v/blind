@@ -1,0 +1,86 @@
+{
+  "schema": "blind.public-apple-same-export-receipt.v1",
+  "status": "complete",
+  "physicalAuthority": false,
+  "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleSameExportForOpenUSDComparison",
+  "exportRole": "diagnostic-export",
+  "productionAdapterExport": "separate-unretained",
+  "files": [
+    {
+      "name": "APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT_METADATA.bin",
+      "bytes": 608,
+      "sha256": "2c87670fed01165ec90e74d2b70e7f25c4fdbf6bfe4ee05fbd05dbedf3ec3236"
+    },
+    {
+      "name": "APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT.usdz",
+      "bytes": 46080,
+      "sha256": "f808de2e0283b8b2aaea07ecc16e694222877c1452dd7203a321d84186345a67"
+    },
+    {
+      "name": "APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT_METADATA.bin",
+      "bytes": 707,
+      "sha256": "0fbb1daaa7fb13a7ac76c7e428046876a614a8287248318f8f023561d143672c"
+    },
+    {
+      "name": "APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT.usdz",
+      "bytes": 57294,
+      "sha256": "0c47630270348ded24ce0a4fe6a18f5defce5d445d8c7e109c932b56d812d232"
+    },
+    {
+      "name": "APPLE_ROOM_ROUTE_SAME_EXPORT_MANIFEST.json",
+      "bytes": 1423,
+      "sha256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2"
+    },
+    {
+      "name": "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "bytes": 25150,
+      "sha256": "e0418b9919e73ce518580206105707c91a9d3e33307b0e076a035e60810e52fa"
+    }
+  ],
+  "limits": {
+    "assetBytesEach": 4194304,
+    "metadataBytesEach": 65536,
+    "inventoryBytes": 131072,
+    "manifestBytes": 16384,
+    "temporaryExportBytes": 9437184,
+    "exportSeconds": 15
+  },
+  "sourceCommit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "testResult": "Passed",
+  "sourceSHA256": {
+    "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROTOCOL.json": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+    "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+    "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/JOURNEY_ADDENDUM.json": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+    "ios/BlindAssistTests/Fixtures/RoomPlanApple/Hallway2.capturedRoom.json": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+    "ios/BlindAssistTests/Fixtures/RoomPlanApple/Bedroom3.capturedRoom.json": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+    "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift": "30385ac82baf712393cc479e802db2c49b0ddf0d798c173a36f024b801f403b0",
+    "ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift": "94e8e2ea83e212d3557b1f974d935404b0a79fa6e6f7d62d7a1dc16ad85e8b73",
+    "ios/BlindAssistTests/SavedRoomRouteMeshAppleFixtureTests.swift": "c689d522d07dbcbbb55f9a13a5f994ebd2c6dc3b46f2e02a7c481e22c4e0083e",
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift": "139de1ae5309296c6efa96225040b816b08b40f75e1f0c5c7c118194bc3a2256",
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
+    "ios/BlindAssist/SavedRoomRouteMeshAdapter.swift": "00607603fa3725182a1bfa809eeb880b9930b6654fd29ca92c96f59951789983",
+    "BlindCore/Sources/BlindCore/SpatialFacts.swift": "c99d1ffa433ca6b6688c09c7e995667b04a44b80fb8ed62a6b5f94d7e25e96c3",
+    "BlindCore/Sources/BlindCore/GuidanceCadence.swift": "b9c93fdda0216862ad06f1c0a46755894e07fc2ddaea4b1976edca68965baf2f"
+  },
+  "fixtures": [
+    {
+      "fixtureID": "Hallway2",
+      "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "archive": {
+        "geometryLayerCount": 14,
+        "archiveEntryCount": 14,
+        "uncompressedBytes": 54300
+      }
+    },
+    {
+      "fixtureID": "Bedroom3",
+      "sourceSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "archive": {
+        "geometryLayerCount": 12,
+        "archiveEntryCount": 12,
+        "uncompressedBytes": 43696
+      }
+    }
+  ],
+  "sourceVerified": true
+}

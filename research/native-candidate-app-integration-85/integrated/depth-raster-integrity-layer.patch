@@ -1,0 +1,213 @@
+diff --git a/BlindCore/Sources/BlindCore/NativeObservation.swift b/BlindCore/Sources/BlindCore/NativeObservation.swift
+--- a/BlindCore/Sources/BlindCore/NativeObservation.swift
++++ b/BlindCore/Sources/BlindCore/NativeObservation.swift
+@@ -95,8 +95,13 @@
+     }
+     public func validate() throws {
+         guard (1...16384).contains(width), (1...16384).contains(height), (1...16384).contains(samplingStride),
+-              sampledPixelCount >= 0, invalidPixelCount >= 0,
+-              sampledPixelCount == pixels.count + invalidPixelCount, sampledPixelCount <= 4096,
++              (0...4096).contains(sampledPixelCount),
++              (0...sampledPixelCount).contains(invalidPixelCount),
++              pixels.count == sampledPixelCount - invalidPixelCount,
++              // Sparse subsets remain valid, but accounting cannot exceed the stride lattice.
++              // Dimensions/stride are bounded above before this multiplication.
++              sampledPixelCount <= ((width + samplingStride - 1) / samplingStride) *
++                  ((height + samplingStride - 1) / samplingStride),
+               pixels.allSatisfy({ (0..<width).contains($0.column) && (0..<height).contains($0.row) &&
+                   $0.column % samplingStride == 0 && $0.row % samplingStride == 0 &&
+                   $0.metres.isFinite && $0.metres > 0 && $0.metres <= 100 &&
+diff --git a/BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift b/BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift
+--- a/BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift
++++ b/BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift
+@@ -162,4 +162,41 @@
+         XCTAssertEqual(capped, prior)
+     }
+
++    func testDepthAccountingRejectsHugeInvalidCountWithoutOverflow() {
++        let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 1, height: 1,
++            samplingStride: 1, sampledPixelCount: 1, invalidPixelCount: Int.max,
++            confidenceAvailable: false,
++            pixels: [NativeDepthPixel(column: 0, row: 0, metres: 1, confidence: nil)])
++        XCTAssertThrowsError(try observation.validate()) { error in
++            XCTAssertEqual(error as? NativeObservationError, .invalidDepth)
++        }
++    }
++    func testDepthAccountingRejectsImpossibleInvalidRasterCoverage() {
++        let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 1, height: 1,
++            samplingStride: 1, sampledPixelCount: 2, invalidPixelCount: 2,
++            confidenceAvailable: false, pixels: [])
++        XCTAssertThrowsError(try observation.validate())
++    }
++    func testDepthAccountingUsesCeilingStrideCapacityAndAllowsSparseSubsets() throws {
++        // 5 by 3 at stride 2 contains six lattice sites, not floor(5/2)*floor(3/2).
++        for count in [0, 1, 6] {
++            let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 5, height: 3,
++                samplingStride: 2, sampledPixelCount: count, invalidPixelCount: count,
++                confidenceAvailable: false, pixels: [])
++            XCTAssertNoThrow(try observation.validate())
++        }
++        let impossible = NativeDepthObservation(source: .arkitSceneDepth, width: 5, height: 3,
++            samplingStride: 2, sampledPixelCount: 7, invalidPixelCount: 7,
++            confidenceAvailable: false, pixels: [])
++        XCTAssertThrowsError(try impossible.validate())
++    }
++    func testDepthAccountingRejectsNegativeAndOverBudgetCounts() {
++        for (sampled, invalid) in [(-1, 0), (0, -1), (0, 1), (4097, 4097), (Int.max, Int.max)] {
++            let observation = NativeDepthObservation(source: .arkitSceneDepth, width: 128, height: 128,
++                samplingStride: 1, sampledPixelCount: sampled, invalidPixelCount: invalid,
++                confidenceAvailable: false, pixels: [])
++            XCTAssertThrowsError(try observation.validate())
++        }
++    }
++
+ }
+diff --git a/research/depth-raster-integrity-20261030/README.md b/research/depth-raster-integrity-20261030/README.md
+new file mode 100644
+--- /dev/null
++++ b/research/depth-raster-integrity-20261030/README.md
+@@ -0,0 +1,17 @@
++# Raw depth raster accounting repair
++
++This isolated repair tightens raw observation validation. It does not implement temporal floor support, localization, calibration, or physical guidance.
++
++## Reproduced source defects
++
++The previous `NativeDepthObservation.validate` added the unbounded decoded `invalidPixelCount` to the pixel-array count before checking the sample budget. `Int.max` invalid samples plus one pixel therefore reaches overflowing Swift integer arithmetic instead of a throwing rejection. It also accepted a 1 × 1 raster claiming two invalid sampled sites.
++
++The repair first bounds sampled count to 0...4096, then bounds invalid count to 0...sampled count, compares using subtraction, and checks the maximum stride-lattice capacity using ceiling division. Width/height/stride are validated before arithmetic. Sparse subsets and missing/low confidence remain permitted history; no missing cell becomes observed or clear. Existing native adapter uses an 1,024-site budget and is unchanged.
++
++Four XCTest methods cover overflow, impossible raster counts, ceiling-stride capacity/sparse subsets, and negative/oversized counts. `source_check.py` executes pinned source-order and independent arithmetic controls only. There is no Swift toolchain here; XCTest and Apple build remain **unrun**. Required native command: `swift test --package-path BlindCore --filter NativeObservationTests`.
++
++## Remaining true floor-support integration requirements
++
++The existing source audit and independent review remain authoritative for this distinction. Production calibration is `unconfigured`; no concrete validated `NativeLocalizationMeasurements` producer exists. Needed real inputs are measured camera-to-body reference/revision, measured depth/pose/time/mount error envelopes for the hardware/domain, actual original-frame depth/confidence/pose/intrinsics and recovery epochs, support-query body geometry, independently validated observed-versus-unknown coverage and contradiction handling, and validated temporal persistence/expiry policy. Original acquisition time must remain separate from current evaluation time. No numerical uncertainty/expiry values are guessed here.
++
++Current map floor labels, retained height, tracking-normal and ordinal confidence do not supply those missing measurements. Production issuer and physical-output gates remain withheld. This repair fixes a recoverable input-integrity defect; it does not close the hardware/domain measurement or upstream-backed temporal-producer gap.
+diff --git a/research/depth-raster-integrity-20261030/RESULTS.json b/research/depth-raster-integrity-20261030/RESULTS.json
+new file mode 100644
+--- /dev/null
++++ b/research/depth-raster-integrity-20261030/RESULTS.json
+@@ -0,0 +1,26 @@
++{
++  "scope": "source inspection and independent arithmetic controls",
++  "passed": 17,
++  "checks": [
++    "bounds precede subtraction and lattice arithmetic",
++    "unbounded count addition removed",
++    "ceiling capacity includes height",
++    "existing duplicate/confidence checks preserved",
++    "four native regression methods prepared",
++    "huge invalid",
++    "impossible invalid lattice",
++    "ceiling capacity",
++    "beyond ceiling",
++    "sparse subset",
++    "empty subset",
++    "negative sampled",
++    "negative invalid",
++    "invalid exceeds sampled",
++    "sample budget",
++    "huge sampled",
++    "stride exceeds dimensions"
++  ],
++  "swiftExecuted": false,
++  "deviceExecuted": false,
++  "physicalAuthority": false
++}
+diff --git a/research/depth-raster-integrity-20261030/source_check.py b/research/depth-raster-integrity-20261030/source_check.py
+new file mode 100644
+--- /dev/null
++++ b/research/depth-raster-integrity-20261030/source_check.py
+@@ -0,0 +1,31 @@
++#!/usr/bin/env python3
++"""Source/arithmetic controls only. Does not execute Swift or prove sensor validity."""
++import json
++from pathlib import Path
++import sys
++root = Path(sys.argv[1])
++s = (root / "BlindCore/Sources/BlindCore/NativeObservation.swift").read_text()
++t = (root / "BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift").read_text()
++body = s[s.index("public struct NativeDepthObservation:"):s.index("public struct NativeSurfaceObservation:")]
++checks = []
++def check(name, result):
++    assert result, name
++    checks.append(name)
++parts = ["(1...16384).contains(width)", "(0...4096).contains(sampledPixelCount)", "(0...sampledPixelCount).contains(invalidPixelCount)", "pixels.count == sampledPixelCount - invalidPixelCount", "sampledPixelCount <= ((width + samplingStride - 1) / samplingStride)"]
++check("bounds precede subtraction and lattice arithmetic", [body.index(x) for x in parts] == sorted(body.index(x) for x in parts))
++check("unbounded count addition removed", "pixels.count + invalidPixelCount" not in body)
++check("ceiling capacity includes height", "((height + samplingStride - 1) / samplingStride)" in body)
++check("existing duplicate/confidence checks preserved", "Set(pixels.map" in body and "confidenceAvailable ?" in body)
++check("four native regression methods prepared", all(x in t for x in ["testDepthAccountingRejectsHugeInvalidCountWithoutOverflow", "testDepthAccountingRejectsImpossibleInvalidRasterCoverage", "testDepthAccountingUsesCeilingStrideCapacityAndAllowsSparseSubsets", "testDepthAccountingRejectsNegativeAndOverBudgetCounts"]))
++def valid(w,h,stride,n,bad,good):
++    return (1 <= w <= 16384 and 1 <= h <= 16384 and 1 <= stride <= 16384 and
++            0 <= n <= 4096 and 0 <= bad <= n and good == n-bad and
++            n <= ((w+stride-1)//stride)*((h+stride-1)//stride))
++cases = [("huge invalid",1,1,1,1,2**63-1,1,False), ("impossible invalid lattice",1,1,1,2,2,0,False),
++ ("ceiling capacity",5,3,2,6,6,0,True), ("beyond ceiling",5,3,2,7,7,0,False),
++ ("sparse subset",4,4,1,1,0,1,True), ("empty subset",5,3,2,0,0,0,True),
++ ("negative sampled",1,1,1,-1,0,0,False), ("negative invalid",1,1,1,0,-1,0,False),
++ ("invalid exceeds sampled",1,1,1,0,1,0,False), ("sample budget",128,128,1,4097,4097,0,False),
++ ("huge sampled",128,128,1,2**63-1,2**63-1,0,False), ("stride exceeds dimensions",1,1,16384,1,1,0,True)]
++for name,w,h,stride,n,bad,good,expected in cases: check(name,valid(w,h,stride,n,bad,good)==expected)
++print(json.dumps({"scope":"source inspection and independent arithmetic controls", "passed":len(checks),"checks":checks,"swiftExecuted":False,"deviceExecuted":False,"physicalAuthority":False},indent=2))
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -490,8 +490,8 @@
+     },
+     {
+       "path": "BlindCore/Sources/BlindCore/NativeObservation.swift",
+-      "bytes": 20157,
+-      "sha256": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45"
++      "bytes": 20518,
++      "sha256": "ec92693545086adc5236ab93fb06e90e8ecc80f58f8736a9e4af3ddf3067fadd"
+     },
+     {
+       "path": "BlindCore/Sources/BlindCore/NativeObservationDurabilityBudget.swift",
+@@ -829,6 +829,11 @@
+       "sha256": "ff19a650989b15806fc3369818a1d09225e260be33e450503d106b56be0f48ae"
+     },
+     {
++      "path": "BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift",
++      "bytes": 13231,
++      "sha256": "bd9fbe493ae7edd1ab83e11b1de06b2bd45396ca65af3de824f954e4c97e9965"
++    },
++    {
+       "path": "BlindCore/Tests/BlindCoreTests/SceneFrameProvenanceTests.swift",
+       "bytes": 2519,
+       "sha256": "4eba63c00c46159fc6ed35e8dc3849c64ac748931b638dc6dfe52d595d4f2286"
+@@ -1062,6 +1067,21 @@
+       "path": "research/arkit-mesh-adapter-82/Sources/MeshSnapshot.swift",
+       "bytes": 7626,
+       "sha256": "d7318f9a2564c62677abaf53934ea7721a25fe13a1d59ffab9ecd717762b4fdc"
++    },
++    {
++      "path": "research/depth-raster-integrity-20261030/README.md",
++      "bytes": 2512,
++      "sha256": "7afba98b05c5b24a01c70c983e1f455aff972b81d19618cbfa57f2056f9a9e4f"
++    },
++    {
++      "path": "research/depth-raster-integrity-20261030/RESULTS.json",
++      "bytes": 720,
++      "sha256": "011664e839c2be82d0bd6967ee719bf7f859cc7d5ec67843efd715c6c547f4c0"
++    },
++    {
++      "path": "research/depth-raster-integrity-20261030/source_check.py",
++      "bytes": 2653,
++      "sha256": "f0aee87f530aba57d87e147b6f0679c1775a71d8579311bdeca464a4761fcf73"
+     },
+     {
+       "path": "research/ingress-fixture-owned-drain-20261030/OBSERVATIONS.json",
+@@ -2320,5 +2340,11 @@
+     "productionAttestationPolicyChanged": false,
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "depthRasterIntegrity": {
++    "scope": "Raw depth accounting only; no calibrated floor producer",
++    "newNativeMethodsUnrun": 4,
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }

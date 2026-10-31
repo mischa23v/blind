@@ -1,0 +1,108 @@
+{
+  "run": 40659479406,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40659479406",
+  "commit": "2aded1605b11f8da273e01fe6677a0b3aafc8e73",
+  "conclusion": "failure",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1422,
+    "skipped": 1,
+    "failed": 0,
+    "individualNewCoreCaseStatusesExported": false
+  },
+  "memory": {
+    "executed": 58,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 181,
+    "passed": 171,
+    "failed": 8,
+    "skipped": 2,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true,
+    "recordedRouteStore": {
+      "cases": 21,
+      "passed": 19,
+      "failed": 2,
+      "allTenDiagnosticDurableFixtures": "passed"
+    },
+    "connectedBench": {
+      "cases": 3,
+      "passed": 3
+    },
+    "connectedJourneyAllPassed": true,
+    "failedCases": [
+      "ConversationTests/remembersNameWithoutRecitingHistory()",
+      "TextChatScenarioTests/followsConversation(_:)",
+      "TextChatScenarioTests/doesNotInventFloorClearance()",
+      "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+      "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+      "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()",
+      "RecordedRouteStoreTests/testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages()",
+      "RecordedRouteStoreTests/testClearRetiresQueuedReadAndStaleAnchorCannotResurrect()"
+    ],
+    "modelFailures": "Five text-model cases returned could-not-finish app status; not verified hallucinated responses."
+  },
+  "sceneFence": {
+    "functionalCompletion": true,
+    "latencySeconds": 3.0900549583334396,
+    "unchangedBudgetSeconds": 1.2,
+    "latencyAssertion": "failed",
+    "goal": {
+      "queueAdmission": 0.2420282916668839,
+      "workerWall": 1.6000885833332177,
+      "mainHandoff": 0.7510550833330853
+    },
+    "body": {
+      "queueAdmission": 0.001576208333062823,
+      "workerWall": 0.4539114583335504,
+      "mainHandoff": 7.191666645667283e-05
+    },
+    "fresh": {
+      "queueAdmission": 0.01138529166655644,
+      "workerWall": 0.00244612500000585,
+      "mainHandoff": 6.462500005000038e-05
+    },
+    "wallTimesAreNotCPUOrPhysicalGuidanceLatency": true
+  },
+  "ui": {
+    "total": 18,
+    "passed": 14,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "Ask Contrast failed",
+    "cameraPhase": "before and after captured; proceeded to Ask",
+    "askPhase": "contrast failure, after missing",
+    "fullAccessibilityAcceptance": false
+  },
+  "practiceCancellation": {
+    "status": "passed",
+    "caseSeconds": 29.902,
+    "elapsedUpperBoundSeconds": 6.318389458333513,
+    "limitSeconds": 90,
+    "explicitEndTapObserved": true,
+    "positive90SecondWitness": true
+  },
+  "unitArtifact": {
+    "id": 12805045567,
+    "bytes": 6090,
+    "sha256": "64148130c245557f22e823f69406d02941360a8c841b7870809b61cce8bc05f4",
+    "zipCRCVerified": true
+  },
+  "uiArtifact": {
+    "id": 12804307338,
+    "bytes": 832452,
+    "sha256": "894b3b619c1f5fdce1a5b94a99242c128920e05687abf7071ea6d409cf188112",
+    "zipCRCVerified": true,
+    "downloaded": true,
+    "publishedMembers": [
+      "evidence.json",
+      "full-audit-ask-issue-1-metadata.json"
+    ],
+    "screenshotsNotPublished": true
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false
+}

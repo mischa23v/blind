@@ -1,3 +1,70 @@
+## Current navigation dependency — 2026-10-28 13:26 UTC
+
+The immediate dependency is a working, independently checked room-geometry and collision pipeline. Native run40677832625 on dc32a9 compiles but admits zero Apple route cases because the metadata adapter fails; collision controls also fail. Resolve these implementation failures before treating route counts as evidence, then connect and test the live unfamiliar-place pipeline. Do not replace current sensing with historical maps or LLM directions. See [TASKS](TASKS.md), [next actions](TODO.md), and [native evidence](research/native-path-recovery-20261028/native-run-40677832625-evidence.json).
+
+---
+
+## Native recorder checkpoint result — 2026-10-28 08:37 UTC
+
+Native run 40653113122 at `26bfa69` is terminal: both builds passed; Core 1,411 executed, zero failures, one skip; Memory 51 passed. Hosted 175: 168 passed, one failed, six skipped. All fifteen RecordedRouteStore tests and all three connected-navigation bench fixtures passed; all ConnectedJourney tests passed. The remaining hosted failure is ObservedScene actual-accumulator/abandoned-completion on the source before the later `adb8fd8` completion-fence changes.
+
+UI 18: thirteen passed, two failed, three skipped. Practice explicit End upper bound 8.086 seconds passed. The Camera audit now completes and reaches Ask; Ask then fails contrast without an identified element. A separate DescribeFocusAndStopControl test times out on an element snapshot before Stop interaction. Do not call all accessibility green or attribute the timeout to Stop. [Exact native evidence](research/native-candidate-app-integration-85/integrated/evidence/run40653113122/).
+
+This validates the volatile recorder checkpoint, not the later private-durability or saved-frame association increments. Latest published `adb8fd8` includes those later increments and is running in existing native CI. A further reviewed DEBUG timing receipt distinguishes queue admission, worker wall time and main handoff while retaining the original 1.2-second latency assertion; it does not improve speed or change release policy. Original whole-room geometry plus same-frame historical camera overlay is still being implemented and reviewed.
+
+---
+
+## Published recording and camera-frame checkpoints — 2026-10-28 08:31 UTC
+
+Verified remote head `adb8fd8f4fa16f0563bdd708635a12ba7888bcf3` on `codex/recovery-hazard-order-20261027`; draft PR remains unmerged. Checkpoints:
+
+- `26bfa69`: reachable explicit path recorder, existing camera feed, code-owned route snapshot, canonical test membership. No snapping or fabricated map registration.
+- `4cd2540`: exact-capture same-saved-frame CAMERA association receipt and loss/session fencing; Rooms entry does not require a previously saved room. This receipt is not body/support guidance authority; no geometry overlay consumer was included.
+- `efdc2c1`: private incremental GRDB diagnostic persistence, bounded retention, explicit save/retry/delete and stopped/interrupted reopen. Nine SQLite checks actually passed; twelve Core, ten hosted diagnostic and seven repository tests were authored, not yet natively executed on this revision. No automatic sharing or quiet eviction.
+- `adb8fd8`: actual DEBUG scene-job completion fences for functional tests, one post-release journey waiter correction, and helper-aware hazard source contracts. Original 1.2-second latency assertion remains. No speed improvement claimed.
+
+Completed native result at `3aef695`: both builds passed; Core 1,402 executed, zero failures, one skipped; Memory 51 passed. Hosted 160: 149 passed, five failed, six skipped. All three connected-navigation bench fixtures passed. One delayed restore case and four scene tests failed. UI 18: 14 passed, one Dynamic Type failure, three skipped; practice explicit End upper bound 5.316 seconds. That revision did not contain the eager Camera layout or recorder. [Exact evidence](research/native-candidate-app-integration-85/integrated/evidence/run40652145912/).
+
+At this checkpoint `26bfa69` native run 40653113122 has passed both build modes and Core/Memory steps; hosted step failed and UI remains running. Individual recorder results await terminal export. Intermediate queued `64709e5`, `4cd2540` and `efdc2c1` runs were replaced by GitHub concurrency before validation; this is not a passing result. `adb8fd8` run 40657202187 is pending. Do not transfer results across revisions.
+
+Current work: original whole-document CapturedRoom geometry and exact saved-frame camera-track overlay, without the registration matcher's feature cap or rendering-inflated wall thickness; bounded archive compatibility; native remaining failures and phase timing evidence. Geometry is historical RoomPlan measurement, camera path is not feet/body ground truth, and missing objects remain unknown. The full live localization/obstacle/routing loop, doorway return/deviation/recovery device validation, 400 complete user journeys and final reproducible package remain open. No child trial or live physical release is established.
+
+---
+
+## Preview compiler repair — 2026-10-28 07:47 UTC
+
+Checkpoint `3aef69509a2d287204f16f52e9c5e819e63046ad` was pushed and remote-verified. It fixes the preview reload handler's caught `error` shadowing the Boolean property by explicitly assigning `self.error`. Native run `40651360959` at the earlier preview source failed both app builds on that line; Core passed 1,402 executed with zero failures and one skip, and Memory 51 passed. Hosted/UI did not execute. This repair is not yet native-verified. The intervening fence source still contains that compile error; do not conflate source revisions.
+
+The next recorder checkpoint has a reachable local screen and read-only actual code-owned plan feed, independently source-reviewed. Raw camera positions remain unchanged and registration is nil until a measured producer exists. This is a temporary in-memory diagnostic, not saved/exportable evidence or a collision guarantee. Canonical membership and existing package linkage for its hosted storage tests are being completed before publication.
+
+---
+
+## Published navigation checkpoints — 2026-10-28 07:42 UTC
+
+Remote branch `codex/recovery-hazard-order-20261027` verified at `8767fa0e4696ce8b7d5562fe623783cd137c55ee`. Prior checkpoint `0e7fc50992bd538864365782242e65b2718b3e4e` publishes the bounded recorded-route preview, canonical native membership, actual-owner hosted bench fixtures and both native evidence packages. The preview is diagnostic archived geometry, not current-room localization or physical guidance.
+
+Latest completed native validation at `2636519`: both builds passed; Core 1,395 executed, zero failures, one skip; Memory 51 passed. Hosted 157: 145 passed, six failed, six skipped. UI 18: 14 passed, one Dynamic Type failure, three skipped. Practice explicit End passed with 5.534 seconds elapsed upper bound. Five journey publication waits and the queued-scene-fence regression remain pre-fix failures. [Exact source-bound evidence](research/native-candidate-app-integration-85/integrated/evidence/run40645432883/).
+
+Checkpoint `8767fa0` adds a DEBUG actual-task completion fence for functional test setup, retaining original responsiveness limits and release behavior. Nineteen source/provenance checks and twelve Node checks passed; native validation has not yet accepted this fix. Preview run `40651360959` is active; fence run `40651563267` is pending behind it at this checkpoint. These are separate source revisions, not interchangeable results.
+
+Next: finish reachable opt-in trajectory recording controls and a read-only code-owned plan feed, preserving raw phone samples without snapping or fabricated registration; finish native failure diagnosis and validate exact source. The source-level recorder remains local and uncompiled until its separate checkpoint. No automatic private upload, workflow activation, merge, deployment or child trial is authorized by these changes.
+
+---
+
+## Connected navigation handoff priority — 2026-10-28 06:34 UTC
+
+The user requires a connected usable build before walking-test handoff: place/building map → floor/room → established pose/direction → code planner → current support/hazard validation → code-owned output. Do not substitute an LLM path or ask the user to discover missing basic integration during a walk. **N00 connected recorded replay is the next integration slice**, using existing owners and a nonphysical replay sink; supplied replay poses/support are not live calibration. See the [dependency-linked reconciliation](research/tracker-reconciliation-20261028/README.md).
+
+The final100-schedule package is published at4eb51bd. Historical separately assisted one-/three-lap records do exist; the final100 matrix is not a lap test and neither establishes live phone-only navigation. The practice-presentation fix is published atfee8c7d; existing native run40644081432 is in progress, not a passing UI result. New photo-retention and localization-test checkpoints are locally reviewed but await publication/native validation. New workflow activation and raw archive approval remain separate. Jev/similar verifier implementation stays deferred; the user requested deeper decision-model research only, preserved in the [review](research/JEV_IMAGE_VERIFICATION_REVIEW.md).
+
+---
+
+## Current navigation evidence priority — 2026-10-27 23:19 UTC
+
+Navigation is the current engineering priority within the broader local companion product. The reference-assisted frozen room matrix, native regression repairs and offline deviation evaluator are development evidence, not physical readiness. Current status and evidence are in [TASKS.md](TASKS.md) and [PROGRESS.md](PROGRESS.md). Next acceptance must establish independently estimated map-relative position, camera versus body orientation, calibrated phone mounting, path deviation, current support/clearance and recovery. A supplied-pose route or a passing arithmetic fixture cannot substitute for these. Pending workflow/upload approvals and the default-off/no-copy bridge remain unchanged; no release or master merge is authorized by this checkpoint.
+
+---
+
 ## Current everyday-companion plan — 2026-10-23
 
 The goal is a free, local, continuously available general companion whose memory and tools reduce the work needed to obtain visual information. Navigation is only one tool, not the product definition. Current implementation and remaining gaps are tracked in [EVERYDAY_COMPANION_ACCEPTANCE.md](EVERYDAY_COMPANION_ACCEPTANCE.md), [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md), and the reconciled [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). Successful source tests do not establish parity with a sighted helper, all-day reliability or safe unsupervised use.

@@ -95,8 +95,13 @@ public struct NativeDepthObservation: Codable, Equatable, Sendable {
     }
     public func validate() throws {
         guard (1...16384).contains(width), (1...16384).contains(height), (1...16384).contains(samplingStride),
-              sampledPixelCount >= 0, invalidPixelCount >= 0,
-              sampledPixelCount == pixels.count + invalidPixelCount, sampledPixelCount <= 4096,
+              (0...4096).contains(sampledPixelCount),
+              (0...sampledPixelCount).contains(invalidPixelCount),
+              pixels.count == sampledPixelCount - invalidPixelCount,
+              // Sparse subsets remain valid, but accounting cannot exceed the stride lattice.
+              // Dimensions/stride are bounded above before this multiplication.
+              sampledPixelCount <= ((width + samplingStride - 1) / samplingStride) *
+                  ((height + samplingStride - 1) / samplingStride),
               pixels.allSatisfy({ (0..<width).contains($0.column) && (0..<height).contains($0.row) &&
                   $0.column % samplingStride == 0 && $0.row % samplingStride == 0 &&
                   $0.metres.isFinite && $0.metres > 0 && $0.metres <= 100 &&

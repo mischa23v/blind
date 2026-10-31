@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "reviewDateUTC": "2026-10-29",
+  "sourceCommitRootReportedVerified": "1837cc23231881b7225ec2025568d02cd52ea0c1",
+  "sourceManifestSHA256": "7e1f175529b8942704c124e9602a17be8c986261e5e95b69f302d4397929957f",
+  "resultReceiptSHA256": "395321fd55785aa3a81d4edb31065ed50fa5dc0f7bcbd6f2ff6ce7fdc3fb9659",
+  "actualExitCode": 0,
+  "actualStatus": "completed-observation-not-validation",
+  "checksPassed": true,
+  "reviewMethod": "Existing receipt, source, input and saved-map byte verification only; no native/library load or mapper rerun",
+  "sourceFilesStillMatchPreExecutionReview": true,
+  "retainedInputHashesReverified": true,
+  "receiptPoseIntrinsicsAndOriginMatchOriginalMetadata": true,
+  "historyBeforeMatchesPreviousAfter": true,
+  "nativeEvidenceTotalsMatchExport": true,
+  "allUnknownControlsReportedUnknown": true,
+  "frames": [
+    {
+      "scanID": 0,
+      "frame": "frame_00290",
+      "acceptedPoints": 623396,
+      "excludedDepthPixels": 110176,
+      "distinctEndpointKeys": 9304,
+      "tableInsetPixels": 5000,
+      "distinctTableInsetKeys": 31,
+      "freeKeysThisScan": 77453,
+      "treeNodes": 102015,
+      "cumulativeConflictKeys": 0,
+      "float32MaximumAbsoluteConversionMetres": 2.3841672813773584e-07,
+      "finalEndpointSummary": {
+        "keys": 9304,
+        "known": 9304,
+        "occupied": 9304,
+        "knownNotOccupied": 0,
+        "unknown": 0,
+        "hitAndFreeConflictKeys": 0,
+        "hitScanMaximum": 1,
+        "freeScanMaximum": 0,
+        "probabilityMin": 0.69999999724559,
+        "probabilityMax": 0.69999999724559
+      },
+      "finalTableInsetSummary": {
+        "keys": 31,
+        "known": 31,
+        "occupied": 31,
+        "knownNotOccupied": 0,
+        "unknown": 0,
+        "hitAndFreeConflictKeys": 0,
+        "hitScanMaximum": 1,
+        "freeScanMaximum": 0,
+        "probabilityMin": 0.69999999724559,
+        "probabilityMax": 0.69999999724559
+      }
+    },
+    {
+      "scanID": 1,
+      "frame": "frame_00357",
+      "acceptedPoints": 465044,
+      "excludedDepthPixels": 268528,
+      "distinctEndpointKeys": 7863,
+      "tableInsetPixels": 2100,
+      "distinctTableInsetKeys": 35,
+      "freeKeysThisScan": 51442,
+      "treeNodes": 172583,
+      "cumulativeConflictKeys": 0,
+      "float32MaximumAbsoluteConversionMetres": 1.1920887299510241e-07,
+      "finalEndpointSummary": {
+        "keys": 7863,
+        "known": 7863,
+        "occupied": 7863,
+        "knownNotOccupied": 0,
+        "unknown": 0,
+        "hitAndFreeConflictKeys": 1410,
+        "hitScanMaximum": 2,
+        "freeScanMaximum": 1,
+        "probabilityMin": 0.6086956518777656,
+        "probabilityMax": 0.844827582767978
+      },
+      "finalTableInsetSummary": {
+        "keys": 35,
+        "known": 35,
+        "occupied": 35,
+        "knownNotOccupied": 0,
+        "unknown": 0,
+        "hitAndFreeConflictKeys": 0,
+        "hitScanMaximum": 2,
+        "freeScanMaximum": 0,
+        "probabilityMin": 0.844827582767978,
+        "probabilityMax": 0.844827582767978
+      }
+    },
+    {
+      "scanID": 2,
+      "frame": "frame_00391",
+      "acceptedPoints": 733572,
+      "excludedDepthPixels": 0,
+      "distinctEndpointKeys": 9441,
+      "tableInsetPixels": 4000,
+      "distinctTableInsetKeys": 22,
+      "freeKeysThisScan": 94510,
+      "treeNodes": 271082,
+      "cumulativeConflictKeys": 1774,
+      "float32MaximumAbsoluteConversionMetres": 1.1920694076295035e-07,
+      "finalEndpointSummary": {
+        "keys": 9441,
+        "known": 9441,
+        "occupied": 9441,
+        "knownNotOccupied": 0,
+        "unknown": 0,
+        "hitAndFreeConflictKeys": 364,
+        "hitScanMaximum": 2,
+        "freeScanMaximum": 1,
+        "probabilityMin": 0.6086956518777656,
+        "probabilityMax": 0.844827582767978
+      },
+      "finalTableInsetSummary": {
+        "keys": 22,
+        "known": 22,
+        "occupied": 22,
+        "knownNotOccupied": 0,
+        "unknown": 0,
+        "hitAndFreeConflictKeys": 2,
+        "hitScanMaximum": 2,
+        "freeScanMaximum": 1,
+        "probabilityMin": 0.6086956518777656,
+        "probabilityMax": 0.844827582767978
+      }
+    }
+  ],
+  "mapRecount": {
+    "schema": 1,
+    "method": "Read-only stdlib ZIP/NPY integrity and evidence recount; no NumPy or native library load; no mapper rerun",
+    "resultReceiptSHA256": "395321fd55785aa3a81d4edb31065ed50fa5dc0f7bcbd6f2ff6ce7fdc3fb9659",
+    "mapSHA256": "51ffffb8ffdf8eb1850a148035bc789415d90327ab9e0f6f3c66264116155d10",
+    "mapBytes": 774797,
+    "knownLeaves": 232014,
+    "occupiedLeaves": 24935,
+    "knownNotOccupiedLeaves": 207079,
+    "leavesWithoutHitOrFreeEvidence": 0,
+    "hitAndFreeConflictLeaves": 1774,
+    "evidenceHistogram": [
+      {
+        "hitScans": 0,
+        "freeScans": 1,
+        "leafCount": 192527
+      },
+      {
+        "hitScans": 0,
+        "freeScans": 2,
+        "leafCount": 14552
+      },
+      {
+        "hitScans": 1,
+        "freeScans": 0,
+        "leafCount": 21488
+      },
+      {
+        "hitScans": 1,
+        "freeScans": 1,
+        "leafCount": 1774
+      },
+      {
+        "hitScans": 2,
+        "freeScans": 0,
+        "leafCount": 1673
+      }
+    ],
+    "probabilityMin": 0.30769231275058007,
+    "probabilityMax": 0.844827582767978,
+    "maxProbabilityFromLogOddsAbsoluteError": 5.551115123125783e-17,
+    "maxLogOddsFromEvidenceAbsoluteError": 4.440892098500626e-16,
+    "allLeafSizesMetres": 0.05,
+    "independentMapRecountPassed": true,
+    "wallSeconds": 0.6135986339995725,
+    "reviewerPeakRSSKiB": 32668
+  },
+  "workerReportedResources": {
+    "cpuSeconds": 2.505848,
+    "wallSeconds": 2.4834796039995126,
+    "peakRSSKiB": 161820,
+    "configuredLimits": {
+      "cpuSeconds": 120,
+      "addressSpaceBytes": 536870912,
+      "outerWallSeconds": 180,
+      "cpuAffinityCount": 1,
+      "fileBytes": 33554432
+    }
+  },
+  "outerEvidence": {
+    "retainedExitFile": 0,
+    "retainedStdoutBytes": 0,
+    "retainedStderrBytes": 0,
+    "independentOuterResourceSampleRetained": false,
+    "processCompletion": "Root reports exec session 97664 then write_stdin chunk 1ec08c confirmed exit 0; no independent group sampler retained",
+    "rootReportsSourceManifestCheckedImmediatelyBeforeExecution": true
+  },
+  "reviewLimitations": [
+    "Transformed full-point hashes recorded by worker, not independently reprojected by reviewer",
+    "Selected camera poses are supplied data, not trusted true-world or physical calibration",
+    "Map payload remains local; publication contains text/scalars only",
+    "Three scans do not test posterior de-occupancy of ever-hit keys",
+    "No originalPolycam mesh alignment",
+    "No held-out geometry, coverage, support, localization, route or physical-authority validation"
+  ]
+}

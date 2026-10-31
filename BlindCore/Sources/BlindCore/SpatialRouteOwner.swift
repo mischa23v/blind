@@ -64,6 +64,23 @@ public struct SpatialRouteTicket: Sendable {
     }
 }
 
+/// Immutable code-rendered words for one route ticket. There is deliberately no
+/// initializer accepting caller/model text. This is not a readiness certificate:
+/// the route owner and live sensor gates must revalidate the ticket at delivery.
+/// Imported/authored map labels are not speech authority. Exact-text validation
+/// binds these words to an attempt; it does not sanitize arbitrary metadata.
+public struct SpatialRouteSpeech: Sendable {
+    public let ticket: SpatialRouteTicket
+    public let text: String
+    public init?(ticket: SpatialRouteTicket, arabic: Bool) {
+        guard let cue = ticket.directionalCue() else { return nil }
+        self.ticket = ticket
+        text = arabic
+            ? "نقطة المسار التالية، على بعد نحو \(String(format: "%.1f", cue.distance)) متر."
+            : "Next waypoint, approximately \(String(format: "%.1f", cue.distance)) meters."
+    }
+}
+
 public enum SpatialRouteError: Error, Equatable {
     case invalidBody, staleGoal, noRoute, unsupportedTransition, missingSupport, blockedLeg, staleTicket, offRoute, ambiguousDirection, unpersistedRestrictions
 }
@@ -96,6 +113,7 @@ public struct SpatialRouteOwner: Sendable {
     /// Throwing preserves the complete previous map/pose/route state in memory.
     public mutating func install(_ candidate: SpatialMapInstallation,
                                  persist: (Data) throws -> Void) throws {
+        guard candidate.map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
         if let installation { try candidate.validateReplacement(of: installation) }
         let bytes = try candidate.encoded()
         try persist(bytes)
@@ -115,6 +133,7 @@ public struct SpatialRouteOwner: Sendable {
     /// serial IO worker. No decode, encode, hashing or file IO on the control owner.
     /// This never restores live pose, a route, or a previous localization session.
     public mutating func restoreValidated(_ restored: SpatialMapInstallation) throws {
+        guard restored.map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
         guard installation == nil else { throw SpatialInstallationError.historyRewrite }
         installation = restored
         blocked = Set(restored.currentRestrictions.blocked.map(\.connection)); obstacleZones = restored.currentRestrictions.zones

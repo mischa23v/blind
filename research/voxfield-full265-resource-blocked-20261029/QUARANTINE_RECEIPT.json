@@ -1,0 +1,150 @@
+{
+  "status": "RESOURCE_BLOCKED_ALL_OUTPUTS_QUARANTINED",
+  "arms": {
+    "B": {
+      "completedNativeUpdates": 265,
+      "lastCompleted": {
+        "arm": "B",
+        "frame": "frame_00309",
+        "submitted_this_frame_not_independent_integrated_points": 724296,
+        "cumulative_submitted": 164771607,
+        "integration_seconds": 0.160616851,
+        "state_scan_seconds": 0.020546971,
+        "arm_elapsed_seconds": 80.105701791,
+        "blocks": 1167,
+        "allocated_voxels": 4780032,
+        "observed_weight_positive": 2680260,
+        "unknown_allocated": 2099772,
+        "nonzero_gradient": 0,
+        "invalid_native_voxels": 0,
+        "accuracy_claim": false
+      },
+      "lastAttempt": {
+        "event": "native_submission_attempt",
+        "arm": "B",
+        "frame": "frame_00309",
+        "attempted": 724296,
+        "validated": 724296,
+        "about_to_submit": 724296
+      },
+      "finalMeshRecords": [
+        {
+          "event": "final_mesh",
+          "arm": "B",
+          "frames": 265,
+          "submitted": 164771607,
+          "mesh_vertices": 1304868,
+          "mesh_indices": 1304868,
+          "mesh_seconds": 2.818041406,
+          "accuracy_claim": false
+        }
+      ],
+      "meshExists": true,
+      "meshBytes": 93386326,
+      "meshSHA256": "2a1973f3f651392dcd8a862f00f9795f798dcd604f5136bca03fc6f852879c14"
+    },
+    "C0": {
+      "completedNativeUpdates": 265,
+      "lastCompleted": {
+        "arm": "C0",
+        "frame": "frame_00309",
+        "submitted_this_frame_not_independent_integrated_points": 724296,
+        "cumulative_submitted": 164771607,
+        "integration_seconds": 0.202389766,
+        "state_scan_seconds": 0.023423856,
+        "arm_elapsed_seconds": 82.412537069,
+        "blocks": 1167,
+        "allocated_voxels": 4780032,
+        "observed_weight_positive": 2680258,
+        "unknown_allocated": 2099774,
+        "nonzero_gradient": 0,
+        "invalid_native_voxels": 0,
+        "accuracy_claim": false
+      },
+      "lastAttempt": {
+        "event": "native_submission_attempt",
+        "arm": "C0",
+        "frame": "frame_00309",
+        "attempted": 724296,
+        "validated": 724296,
+        "about_to_submit": 724296
+      },
+      "finalMeshRecords": [
+        {
+          "event": "final_mesh",
+          "arm": "C0",
+          "frames": 265,
+          "submitted": 164771607,
+          "mesh_vertices": 1300602,
+          "mesh_indices": 1300602,
+          "mesh_seconds": 2.828072081,
+          "accuracy_claim": false
+        }
+      ],
+      "meshExists": true,
+      "meshBytes": 92971538,
+      "meshSHA256": "203020bb898a715d75a7006169cec48e43a21acf18cde355a628f3399cef9f9b"
+    },
+    "C1": {
+      "completedNativeUpdates": 245,
+      "lastCompleted": {
+        "arm": "C1",
+        "frame": "frame_00286",
+        "submitted_this_frame_not_independent_integrated_points": 452440,
+        "cumulative_submitted": 152551249,
+        "integration_seconds": 0.175901166,
+        "state_scan_seconds": 0.023583148,
+        "arm_elapsed_seconds": 85.361790164,
+        "blocks": 1162,
+        "allocated_voxels": 4759552,
+        "observed_weight_positive": 2673527,
+        "unknown_allocated": 2086025,
+        "nonzero_gradient": 1613969,
+        "invalid_native_voxels": 0,
+        "accuracy_claim": false
+      },
+      "lastAttempt": {
+        "event": "native_submission_attempt",
+        "arm": "C1",
+        "frame": "frame_00287",
+        "attempted": 506784,
+        "validated": 506784,
+        "about_to_submit": 506784
+      },
+      "finalMeshRecords": [],
+      "meshExists": false,
+      "meshBytes": null,
+      "meshSHA256": null
+    }
+  },
+  "liveRunProcesses": [],
+  "resource": {
+    "exitCode": -15,
+    "stopReason": "cpu_300s",
+    "wallSeconds": 300.8759592799979,
+    "peakSummedRSSBytes": 692690944,
+    "peakCumulativeCPUSeconds": 300.027939,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 300,
+      "wallSeconds": 420,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "All original265 training frames D1+N2 B/C0/C1 fusion and native meshes; no accuracy/reference/GT inputs",
+    "frozenIntegrityPassed": true,
+    "finalActualChildPlusGuardCPUSeconds": 12.63743
+  },
+  "inputIntegrity": {
+    "checked": 943,
+    "changedOrMissing": [],
+    "passed": true
+  },
+  "rawPreflightAll265Passed": true,
+  "outputBytesCurrent": 188251465,
+  "rusageCaveat": "finalActualChildPlusGuardCPUSeconds excludes killed descendants that did not get reaped through parent. It is not total worker CPU and cannot justify continuation budget. Retain sampled300.027939s cap as authoritative stop receipt.",
+  "nextStageRequiresAdmission": true,
+  "resumeFromC1TSDFPossible": false,
+  "scoringAdmitted": false
+}

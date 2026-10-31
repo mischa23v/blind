@@ -1,0 +1,27 @@
+{
+  "createdUTC": "2026-10-28T03:30:34.028198+00:00",
+  "reviewer": "review_final_matrix_summary",
+  "mode": "independent read-only audit; no physics rerun",
+  "passed": true,
+  "accountedSchedules": 100,
+  "completedMovementEpisodes": 94,
+  "arrivals": 90,
+  "supportStops": 3,
+  "predictedUnderbodyRejections": 1,
+  "interruptedUnknown": 5,
+  "cpuLimitedPartials": 1,
+  "verifiedFrozenSourceEntries": 59,
+  "verifiedCacheEntries": 81,
+  "completedDistanceMetres": 551.2441386301244,
+  "completedTicks": 56031,
+  "pairsArrivedAllFiveConditions": 14,
+  "committedBodyContactEvents": 0,
+  "requiredCaveats": [
+    "Reference-assisted collision veto",
+    "Supplied camera poses",
+    "Zero horizontal margin",
+    "Ground contacts unmeasured",
+    "Not phone-only or child safety evidence"
+  ],
+  "reportingFix": "Renamed completedScheduleCount to accountedScheduleCount and explicitly recorded 94 completed episodes."
+}

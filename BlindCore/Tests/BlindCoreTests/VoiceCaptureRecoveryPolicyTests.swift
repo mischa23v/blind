@@ -34,7 +34,11 @@ final class VoiceCaptureRecoveryPolicyTests: XCTestCase {
         policy.privateRouteLost()
         policy.privateRouteLost() // Repeated hardware notifications stay stopped.
         XCTAssertFalse(policy.requested)
-        let next = policy.begin(continuous: true)
+        // Automatic foreground/answer-window startup is not a privacy restart.
+        let held = policy.begin(continuous: true)
+        XCTAssertFalse(policy.requested)
+        XCTAssertFalse(policy.allowsCapture(session: held, inBackground: false, backgroundAllowed: true))
+        let next = policy.begin(continuous: true, explicitlyRequested: true)
         XCTAssertNotEqual(previous, next)
         XCTAssertFalse(policy.allowsCapture(session: previous, inBackground: false, backgroundAllowed: true))
         XCTAssertTrue(policy.allowsCapture(session: next, inBackground: false, backgroundAllowed: false))
@@ -147,4 +151,73 @@ final class VoiceCaptureRecoveryPolicyTests: XCTestCase {
         turn = VoiceUtteranceTracker()
         XCTAssertTrue(turn.observe("توقف", isEcho: false))
     }
+    func testTerminalFailureSurvivesCancelForegroundAndMediaReset() {
+        var policy = VoiceCaptureRecoveryPolicy()
+        let old = policy.begin(continuous: true)
+        policy.requireExplicitRestart()
+        XCTAssertTrue(policy.requiresExplicitRestart)
+        for background in [false, true] {
+            policy.cancel()
+            policy.mediaServicesReset()
+            let held = policy.begin(continuous: true)
+            XCTAssertTrue(policy.requiresExplicitRestart)
+            XCTAssertFalse(policy.requested)
+            XCTAssertFalse(policy.allowsCapture(session: old, inBackground: background, backgroundAllowed: true))
+            XCTAssertFalse(policy.allowsCapture(session: held, inBackground: background, backgroundAllowed: true))
+            XCTAssertNil(policy.nextRetry(inBackground: background, backgroundAllowed: true, now: 100))
+        }
+    }
+
+    func testExplicitRestartReplacesFailedSessionButStillObeysBackgroundPermission() {
+        var policy = VoiceCaptureRecoveryPolicy()
+        let old = policy.begin(continuous: true)
+        policy.requireExplicitRestart()
+        let next = policy.begin(continuous: true, explicitlyRequested: true)
+        XCTAssertFalse(policy.requiresExplicitRestart)
+        XCTAssertTrue(policy.requested)
+        XCTAssertNotEqual(old, next)
+        XCTAssertFalse(policy.allowsCapture(session: old, inBackground: false, backgroundAllowed: true))
+        XCTAssertFalse(policy.allowsCapture(session: next, inBackground: true, backgroundAllowed: false))
+        XCTAssertTrue(policy.allowsCapture(session: next, inBackground: false, backgroundAllowed: false))
+    }
+
+    func testAutomaticManualAnswerWindowCannotClearTerminalHold() {
+        var policy = VoiceCaptureRecoveryPolicy()
+        policy.begin(continuous: true)
+        policy.requireExplicitRestart()
+        policy.begin(continuous: false)
+        XCTAssertTrue(policy.requiresExplicitRestart)
+        XCTAssertFalse(policy.requested)
+        XCTAssertFalse(policy.continuous)
+    }
+
+    func testSystemRefusalToResumeNeedsExplicitRestartNotForegroundRetry() {
+        var policy = VoiceCaptureRecoveryPolicy()
+        policy.begin(continuous: true)
+        policy.interruptionBegan()
+        XCTAssertFalse(policy.interruptionEnded(shouldResume: false))
+        XCTAssertTrue(policy.requiresExplicitRestart)
+        policy.begin(continuous: true)
+        XCTAssertFalse(policy.requested)
+        XCTAssertFalse(policy.interruptionEnded(shouldResume: true))
+        policy.begin(continuous: true, explicitlyRequested: true)
+        XCTAssertTrue(policy.requested)
+    }
+
+    func testExhaustedRetryBudgetCannotBeReplenishedByAutomaticBegin() throws {
+        var policy = VoiceCaptureRecoveryPolicy()
+        policy.begin(continuous: true)
+        for now in [0.0, 1, 2] {
+            let retry = try XCTUnwrap(policy.nextRetry(inBackground: false, backgroundAllowed: false, now: now))
+            XCTAssertTrue(policy.claim(retry, inBackground: false, backgroundAllowed: false))
+        }
+        XCTAssertNil(policy.nextRetry(inBackground: false, backgroundAllowed: false, now: 3))
+        XCTAssertTrue(policy.requiresExplicitRestart)
+        policy.begin(continuous: true)
+        XCTAssertFalse(policy.requested)
+        policy.begin(continuous: true, explicitlyRequested: true)
+        XCTAssertEqual(policy.attempts, 0)
+        XCTAssertEqual(policy.nextRetry(inBackground: false, backgroundAllowed: false, now: 4)?.delay, 1)
+    }
+
 }

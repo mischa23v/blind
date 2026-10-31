@@ -1,0 +1,60 @@
+{
+  "nativeLoaded": false,
+  "upstreamRecastDetourRevision": "9f4ce64458dfae86e1239c525ddc219c4e9e06f1",
+  "currentFiles": [
+    {
+      "path": "coffee-native-replay-prepared-002/blind-tabletop-exclusion-planner-66/libblind_detour.so",
+      "bytes": 327688,
+      "sha256": "a0b6c3d84d20b1396a3239918abfafcc1d6fa613c5c390847cba92502a634c4a"
+    },
+    {
+      "path": "coffee-native-replay-prepared-002/blind-tabletop-exclusion-planner-66/native_exclusion.py",
+      "bytes": 3365,
+      "sha256": "aa1da6fe3f4bc962fafa2bfc597d81675d7da61daab181d8e834e5bd3414d0bd"
+    },
+    {
+      "path": "coffee-native-replay-prepared-002/blind-clearance-centered-loop-55/planner.py",
+      "bytes": 4094,
+      "sha256": "2bab104d9df3e68b6aa8c9ff8b555eff0fd959cf2c9739966c77283fd3754c81"
+    },
+    {
+      "path": "blind/research/clearance-first-coffee-source-20261029/selector.py",
+      "bytes": 5103,
+      "sha256": "0e94911d0244b9f5b11dd55d5f72b3c42d76077f2bcb66f107704ff51da41125"
+    },
+    {
+      "path": "blind/research/clearance-first-coffee-repair-source-20261029/manual_filter.py",
+      "bytes": 3397,
+      "sha256": "0221a4cee8939b188e17e41499ad2914e55de087c4c076df58cfe82972edb864"
+    },
+    {
+      "path": "blind/research/independent-2d-route-validator-20261029/validator.py",
+      "bytes": 6479,
+      "sha256": "7b86a1a5c38bc503d2f673434a158b7312713c0e20c177a03e6ef56c891c9619"
+    },
+    {
+      "path": "blind/research/coffee-room-journey-recovery-20261029/collision-protocol/upstream/blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py",
+      "bytes": 5367,
+      "sha256": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89"
+    },
+    {
+      "path": "blind/research/coffee-room-journey-recovery-20261029/collision-protocol/upstream/blind-split-candidate-game-03/source/oriented_container.py",
+      "bytes": 12118,
+      "sha256": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8"
+    },
+    {
+      "path": "blind/research/coffee-room-journey-recovery-20261029/collision-protocol/upstream/blind-split-candidate-game-03/ground-follow-v2/ground_support.py",
+      "bytes": 8369,
+      "sha256": "095906c4cda9972e46751b511f46d41e2e541e2ebc44ebbb7da6dbe8240acfaf"
+    }
+  ],
+  "historicalStage55Library": {
+    "archive": "research/tools/centered-loop-and-mesh-bridge-v1/code-and-results.zip",
+    "member": "blind-clearance-centered-loop-55/libblind_detour.so",
+    "bytes": 327488,
+    "sha256": "8d57eef42d8ec42c3d67390dd63d3b4fb4a4e48a7522194f3229adbb55ea76b2",
+    "presentAsArchiveBytes": true,
+    "loadedOrRestored": false
+  },
+  "usePolicy": "Prefer current already-built Coffee002 binary with exclusion=False, unchanged graph builder and current SciPy selector. Historical binaries are provenance only; never silently load substitutes."
+}

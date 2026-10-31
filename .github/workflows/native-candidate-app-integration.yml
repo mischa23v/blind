@@ -1,0 +1,40 @@
+name: Historical stage85 pre-integration experiment (retired)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-native-app-integration-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  compile-only:
+    # Historical only: assumes unapplied patch; intentionally never runs on integrated source.
+    if: ${{ false }}
+    runs-on: xcode-27
+    timeout-minutes: 40
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Compare normalized native-app build controls
+        timeout-minutes: 38
+        run: python3 research/native-candidate-app-integration-85/apple/ci.py --build-control
+      - name: Preserve bounded source-only receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-native-app-integration-85-receipts
+          path: |
+            ${{ runner.temp }}/blind-native-app-integration-85/*-receipt.json
+            ${{ runner.temp }}/blind-native-app-integration-85/*-diagnostic.json
+            ${{ runner.temp }}/blind-native-app-integration-85/RESULT.json
+            ${{ runner.temp }}/blind-native-app-integration-85/PLANNING_COMPARISON.json
+            ${{ runner.temp }}/blind-native-app-integration-85/BUILD_CONTROL.json
+            ${{ runner.temp }}/blind-native-app-integration-85/planning-help-bounded.txt
+          if-no-files-found: warn
+          retention-days: 3

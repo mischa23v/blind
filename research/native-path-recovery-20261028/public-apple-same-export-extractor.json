@@ -1,0 +1,107 @@
+{
+  "schema": "blind.public-apple-same-export-extractor-review.v1",
+  "dateUTC": "2026-10-28",
+  "state": "implemented-and-lightweight-tested; independently-reviewed-source-only",
+  "physicalAuthority": false,
+  "publicationAllowlist": [
+    "tools/ci/export-public-apple-same-export.py",
+    "tools/ci/test-export-public-apple-same-export.py",
+    "research/native-path-recovery-20261028/public-apple-same-export-extractor.json"
+  ],
+  "files": [
+    {
+      "path": "tools/ci/export-public-apple-same-export.py",
+      "bytes": 18078,
+      "sha256": "6eb41a0fa2490b9840620fb46b0b93b3b0f75f79d4f94023ade5415e8a4c61f9"
+    },
+    {
+      "path": "tools/ci/test-export-public-apple-same-export.py",
+      "bytes": 20236,
+      "sha256": "979bff7be18ef46651ac3932a92f79959cad39d1795f83d429c6aa320e64559b"
+    }
+  ],
+  "existingCollectorsUnchanged": [
+    {
+      "path": "tools/ci/native-route-diagnostic-evidence.py",
+      "sha256": "eab6db700786caf0099dae97cfb08c10c97a178ec0f62181789bd7c847b75d6e"
+    },
+    {
+      "path": "tools/ci/test-native-route-diagnostic-evidence.py",
+      "sha256": "80efc224c95947f70bbb96cfe2cc5d665c4b8ce382e26d26a79644a92078a3f7"
+    },
+    {
+      "path": "tools/ci/export-native-unit-statuses.py",
+      "sha256": "75b18b4b00b02b7da42453a4decec7ec043fb9672f66f463b5a0f5778f1dedfe"
+    }
+  ],
+  "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleSameExportForOpenUSDComparison",
+  "command": "python3 tools/ci/export-public-apple-same-export.py \"$out/unit.xcresult\" \"$out/unit-case-statuses.json\" \"$out/public-apple-same-export\"",
+  "identityContract": [
+    "Exactly one observed dedicated case, complete source-verified count-reconciled unit status artifact; preserve Passed/Failed/Expected Failure, reject Skipped/missing/duplicate.",
+    "Exactly six allowlisted attachments from that case: inventory, SHA manifest, Hallway2 USDZ+metadata, Bedroom3 USDZ+metadata.",
+    "Manifest binds original public fixture SHA, actual inventory SHA, each binary SHA/byte count and fixed attachment names.",
+    "Producer retains the diagnostic export bytes used for the same invocation ModelIO inventory/probe and rechecks them after traversal; production adapter export is separate and unretained.",
+    "Recheck clean source provenance and exact source hash map before publication; no suite/all-attachments export or binary/base64 in case JSON."
+  ],
+  "limits": {
+    "assetBytesEach": 4194304,
+    "metadataBytesEach": 65536,
+    "inventoryBytes": 131072,
+    "manifestBytes": 16384,
+    "receiptBytes": 16384,
+    "temporaryExportBytes": 9437184,
+    "exportSubprocessSeconds": 15,
+    "archiveEntries": 64,
+    "metadataEntries": 4096
+  },
+  "privacyAndPublication": [
+    "Metadata is a bounded flat map to known original public feature UUIDs and is checked against inventory samples.",
+    "USDZ structure and USD encoding magic are inspected without extraction or external reference resolution. Stored-only bounded geometry-layer archive members; images/textures, paths, symlinks, compression and unknown member types rejected.",
+    "All six payloads and complete receipt are validated and written in a sibling staging directory, then atomically renamed into the empty dedicated upload directory.",
+    "During staged writes or interruption no fixed upload file is visible. Existing output is refused. Validation failure produces only a bounded fixed-code error receipt.",
+    "Workflow owner uses exactly seven explicit upload paths, retention three days, existing workflow/reporting budget; no broader attachment upload."
+  ],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-export-public-apple-same-export.py",
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-native-route-diagnostic-evidence.py",
+      "passed": 70,
+      "failed": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-native-unit-statuses.py",
+      "passed": 31,
+      "failed": 0
+    }
+  ],
+  "integrationTestEvidence": [
+    "Actual current workflow shell invokes real summary writer, real status collector and real new extractor in order. Only git provenance responses, xcresult responses and synthetic payload bytes are controlled stubs; original public fixture bytes and source files are copied into temporary test repository.",
+    "Success requires summary -> test cases -> one exact dedicated attachment export, source_verified status JSON, complete receipt and seven fixed files with exact bytes.",
+    "Negative flows prove missing/incomplete case evidence cannot export binaries; no swallowed missing-script error is accepted as success.",
+    "Mutation controls cover manifest identities/hashes/names/byte caps, raw metadata identities, archive/member restrictions, export paths/types/symlinks, own-process timeout, changed source, staged write failure and interruption."
+  ],
+  "independentReview": [
+    {
+      "reviewer": "prepare_earlier_test_evidence",
+      "result": "15/15 independently passed; actual full-shell and staging/interruption atomicity reviewed without blocker",
+      "sourceSHA256": "6eb41a0fa2490b9840620fb46b0b93b3b0f75f79d4f94023ade5415e8a4c61f9",
+      "testsSHA256": "979bff7be18ef46651ac3932a92f79959cad39d1795f83d429c6aa320e64559b"
+    },
+    {
+      "reviewer": "root",
+      "result": "Read full extractor without source blocker; independently ran 15 extractor tests and 24 workflow source checks, all passed. Exact test/files, verified cases/source/public IDs, bounded ZIP/metadata, atomic payload directory and error-only receipt checked.",
+      "sourceSHA256": "6eb41a0fa2490b9840620fb46b0b93b3b0f75f79d4f94023ade5415e8a4c61f9",
+      "testsSHA256": "979bff7be18ef46651ac3932a92f79959cad39d1795f83d429c6aa320e64559b"
+    }
+  ],
+  "limitsOfEvidence": [
+    "No new native XCTest result or actual RoomPlan retained binary was available for this extractor review; successful local payloads are synthetic format fixtures.",
+    "No OpenUSD parser/comparison has been run by this collector change. Archive checks are not a USD semantics validator or proof of matching geometry.",
+    "No change to production route bounds, epsilon, collision controls, original collector schemas, native test gates or failed test verdicts.",
+    "No claim of production-adapter export identity, byte identity across separate test invocations, device readiness, clearance or safe physical guidance."
+  ]
+}

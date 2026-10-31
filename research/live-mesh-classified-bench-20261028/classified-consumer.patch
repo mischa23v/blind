@@ -1,0 +1,357 @@
+--- a/Package.swift
++++ b/Package.swift
+@@ -3,9 +3,9 @@
+ 
+ // Staged diagnostic package only. No app/product/workflow membership is changed.
+ let package = Package(
+-    name: "LiveMeshBenchProposal",
++    name: "LiveMeshClassifiedBench",
+     platforms: [.iOS(.v17), .macOS(.v13)],
+-    products: [.library(name: "LiveMeshBenchProposal", targets: ["LiveMeshBenchProposal"])],
++    products: [.library(name: "LiveMeshClassifiedBench", targets: ["LiveMeshClassifiedBench"])],
+     dependencies: [
+         .package(path: "../mesh-candidate-ingress-83"),
+         .package(path: "../arkit-mesh-adapter-82"),
+@@ -13,14 +13,14 @@
+         .package(path: "../room-mesh-package-75/BlindRoomMesh")
+     ],
+     targets: [
+-        .target(name: "LiveMeshBenchProposal", dependencies: [
++        .target(name: "LiveMeshClassifiedBench", dependencies: [
+             .product(name: "MeshCandidateIngress83", package: "mesh-candidate-ingress-83"),
+             .product(name: "MeshSnapshot82", package: "arkit-mesh-adapter-82"),
+             .product(name: "MeshBufferDecoder81", package: "native-mesh-decoder-81"),
+             .product(name: "BlindRoomMesh", package: "BlindRoomMesh")
+         ], path: "Sources"),
+-        .testTarget(name: "LiveMeshBenchProposalTests", dependencies: [
+-            "LiveMeshBenchProposal",
++        .testTarget(name: "LiveMeshClassifiedBenchTests", dependencies: [
++            "LiveMeshClassifiedBench",
+             .product(name: "MeshSnapshot82", package: "arkit-mesh-adapter-82"),
+             .product(name: "MeshCandidateIngress83", package: "mesh-candidate-ingress-83"),
+             .product(name: "BlindRoomMesh", package: "BlindRoomMesh")
+--- a/Sources/LiveMeshBenchIngress.swift
++++ b/Sources/LiveMeshBenchIngress.swift
+@@ -29,7 +29,10 @@
+     public let authorizesPhysicalGuidance = false
+ 
+     public init(decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh-bench.decode", qos: .utility)) throws {
+-        ingress = try MeshCandidateIngress83(maxAnchors: 128, maxCopies: 1, decodeQueue: decodeQueue)
++        // Source floor semantics only. Nonfloor/unknown faces remain geometry;
++        // this does not certify support or convert an omitted revision to free space.
++        ingress = try MeshCandidateIngress83(maxAnchors: 128, maxCopies: 1,
++            supportPolicy: .classifiedFloorOnly, decodeQueue: decodeQueue)
+     }
+     private func active(_ generation: UUID) -> Bool {
+         lock.lock(); defer { lock.unlock() }
+@@ -55,15 +58,22 @@
+         guard active(generation) else { completion(.failure(.unavailable)); return }
+         ingress.request(start: start, goal: goal, body: body) { [weak self] result in
+             guard let self, self.active(generation) else { completion(.failure(.stale)); return }
+-            if case .success(let candidate) = result, !self.ingress.isCurrent(candidate) {
+-                completion(.failure(.stale)); return
++            if case .success(let candidate) = result {
++                //83/75 may retain earlier tiles after a rejected/omitted revision.
++                // Never expose that incomplete diagnostic geometry as this preview.
++                guard Self.hasCompleteSource(candidate) else { completion(.failure(.unavailable)); return }
++                guard self.ingress.isCurrent(candidate) else { completion(.failure(.stale)); return }
+             }
+             completion(result)
+         }
+     }
+     /// Recheck at display/use, not only at completion. No physical-output sink exists.
+     public func isCurrent(_ candidate: MeshCandidateIngress83.Candidate, generation: UUID) -> Bool {
+-        active(generation) && ingress.isCurrent(candidate)
++        Self.hasCompleteSource(candidate) && active(generation) && ingress.isCurrent(candidate)
++    }
++    // Completeness is delivery bookkeeping, NOT actual-world coverage or freshness.
++    private static func hasCompleteSource(_ candidate: MeshCandidateIngress83.Candidate) -> Bool {
++        candidate.route.sourceDeliveryComplete && candidate.route.unknownCoverage.isEmpty
+     }
+     public func stop() {
+         lock.lock(); stopped = true; lock.unlock()
+--- a/Sources/LiveMeshBenchSession.swift
++++ b/Sources/LiveMeshBenchSession.swift
+@@ -55,11 +55,10 @@
+         guard session.delegate === producer, session.delegateQueue === producerQueue else { throw Failure.wrongOwner }
+         guard UIApplication.shared.applicationState == .active,
+               AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
+-              ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) else { throw Failure.unavailable }
++              ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification) else { throw Failure.unavailable }
+         let configuration = ARWorldTrackingConfiguration()
+         configuration.worldAlignment = .gravity
+-        configuration.sceneReconstruction = ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification)
+-            ? .meshWithClassification : .mesh
++        configuration.sceneReconstruction = .meshWithClassification
+         // Depth/mesh output is diagnostic only. No floor rectangle or free space is invented.
+         lifecycle = .capturing
+         producerQueue.async { [producer] in producer.begin() }
+--- a/Tests/LiveMeshBenchIngressTests.swift
++++ b/Tests/LiveMeshBenchIngressTests.swift
+@@ -3,26 +3,31 @@
+ @testable import MeshSnapshot82
+ import MeshCandidateIngress83
+ import BlindRoomMesh
+-@testable import LiveMeshBenchProposal
++@testable import LiveMeshClassifiedBench
+ 
+ /// Synthetic owned geometry exercises the actual existing decoder/83/native75
+ /// dependencies. It does NOT construct a fake live ARMeshAnchor or prove phone sensing.
+ final class LiveMeshBenchIngressTests: XCTestCase {
+     private let identity: [Float] = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+-    private func floor(_ context: MeshSnapshot82.Context, id: UUID, x: Float = 0,
+-                       malformed: Bool = false) -> MeshSnapshot82.Capture {
+-        let vertices: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
++    private func floor(_ context: MeshSnapshot82.Context, id: UUID, x: Float = 0, y: Float = 0,
++                       malformed: Bool = false, labels: [UInt8]? = [2,2], transform: [Float]? = nil,
++                       localVertices: [Float]? = nil) -> MeshSnapshot82.Capture {
++        let vertices: [Float] = localVertices ?? [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
+         let bytes = vertices.flatMap { value in
+             (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0 * 8)) }
+         }
+         let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
++        let classification: MeshSnapshot82.Descriptor? = labels.map {
++            .init(count: $0.count, offset: 0, stride: 1, bufferLength: $0.count, format: .uint8)
++        }
+         let plan = try! MeshSnapshot82.preflight(context: context,
+             vertices: .init(count: 4, offset: 0, stride: 12, bufferLength: bytes.count, format: .float3),
+-            indices: .init(count: 6, offset: 0, stride: 2, bufferLength: indices.count, format: .uint16), classification: nil)
+-        var matrix = identity; matrix[12] = x
++            indices: .init(count: 6, offset: 0, stride: 2, bufferLength: indices.count, format: .uint16), classification: classification)
++        var matrix = identity; matrix[12] = x; matrix[13] = y
++        if let transform { matrix = transform }
+         if malformed { matrix[15] = 0 }
+         return .owned(.init(context: context, anchorID: id, plan: plan, vertexBytes: bytes,
+-            indexBytes: indices, classificationBytes: nil, transform: matrix))
++            indexBytes: indices, classificationBytes: labels, transform: matrix))
+     }
+     private final class ResultBox<T> {
+         private let lock = NSLock()
+@@ -30,14 +35,35 @@
+         func put(_ value: T) { lock.lock(); self.value = value; lock.unlock() }
+         func get() -> T? { lock.lock(); defer { lock.unlock() }; return value }
+     }
+-    private func candidate(_ owner: LiveMeshBenchIngress, x: Float = 0,
++    private func candidate(_ owner: LiveMeshBenchIngress, x: Float = 0, z: Float = 0, alongZ: Bool = false,
+                            file: StaticString = #filePath, line: UInt = #line) throws -> MeshCandidateIngress83.Candidate {
++        try query(owner, x: x, z: z, alongZ: alongZ, file: file, line: line).get()
++    }
++    private func query(_ owner: LiveMeshBenchIngress, x: Float = 0, z: Float = 0, alongZ: Bool = false,
++                       file: StaticString = #filePath, line: UInt = #line) throws
++        -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
+         let done = expectation(description: "actual native candidate completion")
+         let box = ResultBox<Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>>()
+-        owner.request(generation: owner.generation, start: [-2+x,0,0], goal: [2+x,0,0],
++        let start: [Float] = alongZ ? [x,0,z-2] : [x-2,0,z]
++        let goal: [Float] = alongZ ? [x,0,z+2] : [x+2,0,z]
++        owner.request(generation: owner.generation, start: start, goal: goal,
+             body: try MeshCandidateBody(radius: 0.225, height: 1.75)) { box.put($0); done.fulfill() }
+         wait(for: [done], timeout: 10)
+-        return try XCTUnwrap(box.get(), file: file, line: line).get()
++        return try XCTUnwrap(box.get(), file: file, line: line)
++    }
++    private func assertNoCandidate(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
++                                   file: StaticString = #filePath, line: UInt = #line) {
++        switch result {
++        case .failure(.runtime(.nativeFailure)): break
++        default: XCTFail("Expected native no-route refusal, not admission failure or a candidate", file: file, line: line)
++        }
++    }
++    private func assertIncompletePreviewRefused(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
++                                                file: StaticString = #filePath, line: UInt = #line) {
++        switch result {
++        case .failure(.unavailable): break // Consumer refuses75's otherwise usable but incomplete candidate.
++        default: XCTFail("Expected incomplete-source preview refusal", file: file, line: line)
++        }
+     }
+     private func discard(_ owner: LiveMeshBenchIngress) {
+         let done = expectation(description: "terminal native drain")
+@@ -70,7 +96,7 @@
+         XCTAssertFalse(copied)
+         XCTAssertFalse(owner.remove(anchorID: anchor, generation: UUID(), receiptUptime: 2))
+     }
+-    func testReplacementRetiresBeforeCopyAndExactRemovalRetainsOtherAnchor() throws {
++    func testReplacementRetiresBeforeCopyAndExactRemovalWithholdsIncompletePreview() throws {
+         let queue = DispatchQueue(label: "bench.test.replace")
+         let owner = try LiveMeshBenchIngress(decodeQueue: queue), a = UUID(), b = UUID()
+         defer { discard(owner) }
+@@ -81,20 +107,17 @@
+         })
+         queue.sync {}
+         XCTAssertTrue(owner.remove(anchorID: b, generation: owner.generation, receiptUptime: 3))
+-        let result = try candidate(owner)
+-        XCTAssertTrue(result.route.complete)
+-        XCTAssertTrue(result.route.unknownCoverage.contains("removed:" + b.uuidString))
+-    }
+-    func testMalformedReplacementKeepsUnknownInsteadOfPreviousCompleteCoverage() throws {
++        //75 retains the other tile, but removed-space coverage remains unknown.
++        assertIncompletePreviewRefused(try query(owner))
++    }
++    func testMalformedReplacementCannotExposeRetainedOldFloorPreview() throws {
+         let queue = DispatchQueue(label: "bench.test.reject")
+         let owner = try LiveMeshBenchIngress(decodeQueue: queue), anchor = UUID()
+         defer { discard(owner) }
+         XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) { floor($0, id: anchor) })
+         queue.sync {}
+         XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 2) { floor($0, id: anchor, malformed: true) })
+-        queue.sync {}; let result = try candidate(owner)
+-        XCTAssertFalse(result.route.sourceDeliveryComplete)
+-        XCTAssertTrue(result.route.unknownCoverage.contains("ingress-or-lifecycle-gap"))
++        queue.sync {}; assertIncompletePreviewRefused(try query(owner))
+     }
+     func testSingleCopyBackpressureDoesNotInvokeSecondCaptureAndRetainsGap() throws {
+         let queue = DispatchQueue(label: "bench.test.backpressure")
+@@ -110,7 +133,7 @@
+         XCTAssertFalse(secondCopied)
+         release.signal(); queue.sync {}
+         XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 3) { floor($0, id: anchor) })
+-        queue.sync {}; XCTAssertFalse(try candidate(owner).route.sourceDeliveryComplete)
++        queue.sync {}; assertIncompletePreviewRefused(try query(owner))
+     }
+     func testStopDuringCaptureFencesLateCompletionAndDoesNotReleaseReservationEarly() throws {
+         let queue = DispatchQueue(label: "bench.test.stop-copy")
+@@ -159,7 +182,7 @@
+                 queue.sync {} // Deliberately frees83's slot between every anchor.
+             })
+             XCTAssertEqual(copies, 1); XCTAssertEqual(omissions, 2)
+-            XCTAssertFalse(try candidate(owner).route.sourceDeliveryComplete)
++            assertIncompletePreviewRefused(try query(owner))
+         }
+         XCTAssertEqual(selected, [0, 1, 2])
+         var invoked = false
+@@ -186,4 +209,124 @@
+         wait(for: [finished], timeout: 10)
+         XCTAssertEqual(acknowledged.wait(timeout: .now() + 10), .success)
+     }
++    func testClassifiedConsumerNeverPromotesMissingUnknownOrNonFloorPlane() throws {
++        // Identical upward geometry; only real82 classification bytes differ.
++        // Positive control is testActualDependencyRouteAndExactlyOneTransformRemainNonphysical.
++        let cases: [[UInt8]?] = [nil, [0,0], [1,1], [3,3], [4,4], [5,5], [6,6], [7,7], [255,255]]
++        for labels in cases {
++            let queue = DispatchQueue(label: "bench.classified.non-floor"), anchor = UUID()
++            let owner = try LiveMeshBenchIngress(decodeQueue: queue)
++            defer { discard(owner) }
++            XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) {
++                floor($0, id: anchor, labels: labels)
++            })
++            queue.sync {}
++            assertNoCandidate(try query(owner))
++        }
++    }
++    func testNonFloorGeometryStillBlocksAndExactRemovalCannotDeclareClearance() throws {
++        let queue = DispatchQueue(label: "bench.classified.obstacle"), ground = UUID(), table = UUID()
++        let owner = try LiveMeshBenchIngress(decodeQueue: queue)
++        defer { discard(owner) }
++        XCTAssertTrue(owner.observe(anchorID: ground, generation: owner.generation, receiptUptime: 1) { floor($0, id: ground) })
++        queue.sync {}; let original = try candidate(owner)
++        XCTAssertTrue(original.route.complete)
++        // Full synthetic footprint at 0.5m: dropping table faces would wrongly leave a route.
++        XCTAssertTrue(owner.observe(anchorID: table, generation: owner.generation, receiptUptime: 2) {
++            XCTAssertFalse(owner.isCurrent(original, generation: owner.generation))
++            return floor($0, id: table, y: 0.5, labels: [4,4])
++        })
++        queue.sync {}; assertNoCandidate(try query(owner))
++        XCTAssertTrue(owner.remove(anchorID: table, generation: owner.generation, receiptUptime: 3))
++        // Removal is not proof the vacated footprint is currently supported/clear.
++        assertIncompletePreviewRefused(try query(owner))
++    }
++    func testUnclassifiedReplacementAndLaterFloorCannotEraseGapInSameOwner() throws {
++        let queue = DispatchQueue(label: "bench.classified.replacement"), anchor = UUID()
++        let owner = try LiveMeshBenchIngress(decodeQueue: queue)
++        defer { discard(owner) }
++        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) { floor($0, id: anchor) })
++        queue.sync {}; let original = try candidate(owner)
++        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 2) {
++            XCTAssertFalse(owner.isCurrent(original, generation: owner.generation))
++            return floor($0, id: anchor, labels: nil)
++        })
++        queue.sync {}; assertNoCandidate(try query(owner))
++        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 3) { floor($0, id: anchor, x: 10) })
++        queue.sync {}
++        //83 can build a route again, but this consumer refuses its retained gap.
++        assertIncompletePreviewRefused(try query(owner, x: 10))
++        assertNoCandidate(try query(owner)) // Original position must not survive replacement.
++    }
++    func testNewTerminalOwnerCannotReusePriorGenerationOrGeometry() throws {
++        let queue = DispatchQueue(label: "bench.classified.new-owner"), anchor = UUID()
++        let old = try LiveMeshBenchIngress(decodeQueue: queue)
++        XCTAssertTrue(old.observe(anchorID: anchor, generation: old.generation, receiptUptime: 1) { floor($0, id: anchor) })
++        queue.sync {}; let original = try candidate(old)
++        discard(old)
++        let fresh = try LiveMeshBenchIngress(decodeQueue: queue)
++        defer { discard(fresh) }
++        XCTAssertNotEqual(fresh.generation, old.generation)
++        XCTAssertFalse(old.isCurrent(original, generation: old.generation))
++        var copied = false
++        XCTAssertFalse(fresh.observe(anchorID: anchor, generation: old.generation, receiptUptime: 1) {
++            copied = true; return floor($0, id: anchor)
++        })
++        XCTAssertFalse(copied)
++        XCTAssertTrue(fresh.observe(anchorID: anchor, generation: fresh.generation, receiptUptime: 1) { floor($0, id: anchor, x: 10) })
++        queue.sync {}; let replacement = try candidate(fresh, x: 10)
++        XCTAssertTrue(replacement.route.complete); XCTAssertTrue(replacement.route.sourceDeliveryComplete)
++        XCTAssertFalse(replacement.physicalAuthority); XCTAssertFalse(replacement.coverageKnown)
++        assertNoCandidate(try query(fresh))
++    }
++    func testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview() throws {
++        let queue = DispatchQueue(label: "bench.classified.refused-removal"), anchor = UUID()
++        let owner = try LiveMeshBenchIngress(decodeQueue: queue)
++        defer { discard(owner) }
++        let release = DispatchSemaphore(value: 0)
++        queue.async { _ = release.wait(timeout: .now() + 10) }
++        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) { floor($0, id: anchor) })
++        // Equal receipt is refused before75 sees removal; old copy can still install.
++        // This reproduces the retained-tile gap rather than assuming removal succeeded.
++        XCTAssertFalse(owner.remove(anchorID: anchor, generation: owner.generation, receiptUptime: 1))
++        release.signal(); queue.sync {}
++        assertIncompletePreviewRefused(try query(owner))
++    }
++    func testRotatedTranslatedMetreGeometryUsesExactlyOneRigidTransform() throws {
++        let queue = DispatchQueue(label: "bench.classified.rigid"), anchor = UUID()
++        let owner = try LiveMeshBenchIngress(decodeQueue: queue)
++        defer { discard(owner) }
++        // ARKit column-major: +90-degree yaw, then10m X/4m Z translation.
++        let matrix: [Float] = [0,0,-1,0, 0,1,0,0, 1,0,0,0, 10,0,4,1]
++        //6m X by2m Z rectangle, deliberately NOT invariant under90-degree rotation.
++        let rectangle: [Float] = [-3,0,-1,-3,0,1,3,0,1,3,0,-1]
++        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) {
++            floor($0, id: anchor, transform: matrix, localVertices: rectangle)
++        })
++        queue.sync {}; let result = try candidate(owner, x: 10, z: 4, alongZ: true)
++        XCTAssertTrue(result.route.complete)
++        XCTAssertEqual(result.route.projectedStart[0], 10, accuracy: 0.5)
++        XCTAssertEqual(result.route.projectedStart[2], 2, accuracy: 0.5)
++        XCTAssertEqual(result.route.projectedGoal[2], 6, accuracy: 0.5)
++        XCTAssertFalse(result.physicalAuthority); XCTAssertFalse(result.coverageKnown)
++        // This horizontal path would exist if translation were applied without rotation.
++        assertNoCandidate(try query(owner, x: 10, z: 4))
++        assertNoCandidate(try query(owner))
++    }
++    func testScaleAndReflectionReplacementCannotExposePriorFloor() throws {
++        let scales: [Float] = [2, -1]
++        for xScale in scales {
++            let queue = DispatchQueue(label: "bench.classified.non-rigid"), anchor = UUID()
++            let owner = try LiveMeshBenchIngress(decodeQueue: queue)
++            defer { discard(owner) }
++            XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) { floor($0, id: anchor) })
++            queue.sync {}; let original = try candidate(owner)
++            var matrix = identity; matrix[0] = xScale
++            XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 2) {
++                XCTAssertFalse(owner.isCurrent(original, generation: owner.generation))
++                return floor($0, id: anchor, transform: matrix)
++            })
++            queue.sync {}; assertIncompletePreviewRefused(try query(owner))
++        }
++    }
+ }
+--- a/Tests/LiveMeshBenchSessionTests.swift
++++ b/Tests/LiveMeshBenchSessionTests.swift
+@@ -2,7 +2,7 @@
+ import ARKit
+ import UIKit
+ import XCTest
+-@testable import LiveMeshBenchProposal
++@testable import LiveMeshClassifiedBench
+ 
+ /// Actual ARSession ownership fixtures, WITHOUT run(), permission prompts or camera.
+ /// Requires Apple iOS-hosted execution; host macOS tests do not execute these cases.

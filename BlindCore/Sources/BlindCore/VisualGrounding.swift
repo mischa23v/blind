@@ -81,6 +81,10 @@ public enum VisualGrounding {
     // generic sighting is not the person's own item (identity needs image comparison with saved views).
     private static let absence = regex(#"\b(?:there(?:'s|’s|\s+is|\s+are)\s+no|there\s+(?:isn't|aren't|is not|are not)|(?:is|are)\s*(?:not|n't)\s+(?:here|there|visible|in (?:the |this )?(?:view|picture|photo|image|room))|(?:isn't|aren't)\s+(?:here|there|visible|any)|no\s+[a-z]+\s+(?:here|in view|visible|in (?:the |this )?(?:picture|photo|image))|no\s+[a-z]+\s+(?:is|are)\s+visible|see\s+no|i\s+(?:don't|do not|can't|cannot|couldn't|could not)\s+see\s+(?:a|an|any|the|your)|nothing\s+(?:here|in view|visible)|not\s+found|is missing|are missing)\b"#)
     private static let arabicAbsence = regex(#"(لا يوجد|لا توجد|ليس هناك|ليست هناك|لا اري|غير موجود|مفقود|ما في|مافي|مو موجود|ما اشوف)"#)
+    // Partial camera coverage and category detections cannot establish an empty
+    // room/container or that people have departed, even when a model hedges it.
+    private static let emptyView = regex(#"\b(?:empty|unoccupied|vacant|nobody|no[\s-]?one)\b|\b(?:is|are|seems?|appears?)\s+(?:to be\s+)?(?:absent|gone|missing)\b|\b(?:everyone|everybody|all\s+people)\s+(?:has|have)\s+(?:left|gone)\b"#)
+    private static let arabicEmptyView = regex(#"(فارغ|فاضي|خاليه|خالي من|لا احد|ما احد)"#)
 
     private static func found(_ pattern: NSRegularExpression, _ text: String) -> Bool {
         pattern.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) != nil
@@ -140,7 +144,8 @@ public enum VisualGrounding {
 
     static func isAbsenceClaim(_ sentence: String) -> Bool {
         let plain = sentence.replacingOccurrences(of: "\u{2019}", with: "'").replacingOccurrences(of: "\u{2018}", with: "'")
-        return found(absence, plain) || found(arabicAbsence, folded(sentence))
+        return found(absence, plain) || found(emptyView, plain)
+            || found(arabicAbsence, folded(sentence)) || found(arabicEmptyView, folded(sentence))
     }
 
     /// "your" followed by an object within three words, "yours" with an object, or an Arabic object

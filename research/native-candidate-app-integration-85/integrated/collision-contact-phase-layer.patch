@@ -1,0 +1,991 @@
+diff --git a/ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json b/ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json
+new file mode 100644
+--- /dev/null
++++ b/ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json
+@@ -0,0 +1,98 @@
++{
++  "schema": 1,
++  "preparedBeforeFirstNativeExecution": true,
++  "physicalAuthority": false,
++  "nativeExecuted": false,
++  "changesOriginalSchedules": false,
++  "sourceFixtureSHA256": {
++    "Hallway2": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
++    "Bedroom3": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e"
++  },
++  "baseProtocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
++  "radiusPolicy": "hypot(width,depth)/2 + margin, unchanged",
++  "nativeConfiguration": {
++    "cellSize": 0.025,
++    "cellHeight": 0.025,
++    "maxClimb": 0.025,
++    "maxSlope": 15,
++    "maxCells": 250000,
++    "maxNodes": 4096,
++    "queryHalfExtents": [
++      0.2,
++      0.3,
++      0.2
++    ]
++  },
++  "queries": [
++    {
++      "id": "unchanged-hall-declared-nominal",
++      "room": "Hallway2",
++      "start": [
++        2.8,
++        -0.45,
++        0.0
++      ],
++      "goal": [
++        3.65,
++        0.45,
++        0.0
++      ],
++      "profile": "declared-nominal",
++      "source": "unchanged original pair/profile; separately named detailed-contact diagnostic"
++    },
++    {
++      "id": "unchanged-hall-declared-width28-assumed-depth20-height120",
++      "room": "Hallway2",
++      "start": [
++        2.8,
++        -0.45,
++        0.0
++      ],
++      "goal": [
++        3.65,
++        0.45,
++        0.0
++      ],
++      "profile": "declared-width28-assumed-depth20-height120",
++      "source": "unchanged original pair/profile; separately named detailed-contact diagnostic"
++    },
++    {
++      "id": "additional-bed-start-to-aisle",
++      "room": "Bedroom3",
++      "start": [
++        -0.75,
++        0.0,
++        0.0
++      ],
++      "goal": [
++        -0.6000000000000001,
++        1.1,
++        0.0
++      ],
++      "profile": "declared-width28-assumed-depth20-height120",
++      "source": "separate source-only lattice point; no actual relocation or get-up claim"
++    },
++    {
++      "id": "additional-chair-start-to-aisle",
++      "room": "Bedroom3",
++      "start": [
++        -0.75,
++        -0.35000000000000003,
++        0.0
++      ],
++      "goal": [
++        -0.6000000000000001,
++        1.1,
++        0.0
++      ],
++      "profile": "declared-width28-assumed-depth20-height120",
++      "source": "separate source-only lattice point; no actual relocation or get-up claim"
++    }
++  ],
++  "decisionRules": [
++    "Stationary native initial/end validation must pass before querying; disagreement stops, no alternate-point search.",
++    "Record raw and margin initial/swept/terminal contacts separately with IDs and available point/normal/distance.",
++    "Original failures and expectations remain unchanged.",
++    "Partial/rejected/timeout/contact are separate failures or withholds, never physical arrivals."
++  ]
++}
+diff --git a/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift b/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift
+--- a/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift
++++ b/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift
+@@ -35,7 +35,16 @@
+         let transform: [Double]
+     }
+
++    /// Opt-in authored-fixture diagnostics only; never private scene capture.
++    struct ContactDetail: Equatable, Sendable {
++        let featureID: UUID
++        let kind: String
++        let point, normal: [Double]
++        let penetrationDistance: Double
++    }
++
+     struct Contacts: Equatable, Sendable {
++        var details: [ContactDetail] = []
+         var obstacleSurfaceIDs = Set<UUID>()
+         var floorSurfaceIDs = Set<UUID>()
+         var furnitureBoundIDs = Set<UUID>()
+@@ -44,6 +53,7 @@
+             obstacleSurfaceIDs.formUnion(other.obstacleSurfaceIDs)
+             floorSurfaceIDs.formUnion(other.floorSurfaceIDs)
+             furnitureBoundIDs.formUnion(other.furnitureBoundIDs)
++            details.append(contentsOf: other.details)
+         }
+     }
+
+@@ -51,6 +61,7 @@
+         let initial: Contacts
+         let swept: Contacts
+         let terminal: Contacts
++        let detailShape: [String: Double]?
+         /// Whole-footprint support is deliberately NOT inferred from floor contact
+         /// or from absence of a non-floor collision. Holes remain unverified here.
+         let fullFootprintSupportVerified = false
+@@ -193,12 +204,12 @@
+
+     /// Feet/base-centre positions in the original saved world. Continuous sweep of
+     /// a full cylinder, plus explicit initial AND terminal overlap queries.
+-    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float) throws -> SweepResult {
++    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float, recordDetails: Bool = false) throws -> SweepResult {
+         guard Self.valid(from), Self.valid(to), radius.isFinite, height.isFinite,
+               (0.1...2).contains(radius), (0.5...3).contains(height) else { throw Failure.invalidQuery }
+         let geometry = SCNCylinder(radius: CGFloat(radius), height: CGFloat(height))
+         let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
+-        let initial = try overlap(at: from, height: height, shape: shape)
++        let initial = try overlap(at: from, height: height, shape: shape, recordDetails: recordDetails)
+         let start = Self.centreTransform(from, height: height), end = Self.centreTransform(to, height: height)
+         synchronizePhysics()
+         // Query both categories with the identical cylinder/transforms, then
+@@ -209,13 +220,16 @@
+             let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
+                 options: [.collisionBitMask: mask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
+                           .backfaceCulling: false])
+-            swept.formUnion(try contacts(raw))
+-        }
+-        let terminal = try overlap(at: to, height: height, shape: shape)
+-        return SweepResult(initial: initial, swept: swept, terminal: terminal)
+-    }
+-
+-    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape) throws -> Contacts {
++            swept.formUnion(try contacts(raw, recordDetails: recordDetails))
++        }
++        let terminal = try overlap(at: to, height: height, shape: shape, recordDetails: recordDetails)
++        return SweepResult(initial: initial, swept: swept, terminal: terminal,
++            detailShape: recordDetails ? ["radius": Double(geometry.radius), "height": Double(geometry.height),
++                "radialSegmentCount": Double(geometry.radialSegmentCount),
++                "heightSegmentCount": Double(geometry.heightSegmentCount), "collisionMargin": 0] : nil)
++    }
++
++    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape, recordDetails: Bool = false) throws -> Contacts {
+         let node = SCNNode()
+         node.simdTransform = Self.centreTransform(foot, height: height)
+         let body = SCNPhysicsBody(type: .kinematic, shape: shape)
+@@ -227,18 +241,37 @@
+         defer { node.removeFromParentNode(); synchronizePhysics() }
+         var result = Contacts()
+         for mask in queryMasks {
+-            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask])))
++            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask]), recordDetails: recordDetails))
+         }
+         return result
+     }
+
+-    private func contacts(_ raw: [SCNPhysicsContact]) throws -> Contacts {
++    private func contacts(_ raw: [SCNPhysicsContact], recordDetails: Bool = false) throws -> Contacts {
++        // Bound each native category response; overflow fails, never truncates.
++        if recordDetails && raw.count > 32 { throw Failure.backendUnavailable("contact detail count exceeded") }
+         var result = Contacts()
+         for contact in raw {
+             var recognized = false
+             for node in [contact.nodeA, contact.nodeB] {
+                 guard let identity = identities[ObjectIdentifier(node)] else { continue }
+                 recognized = true
++                if recordDetails {
++                    let p = contact.contactPoint, n = contact.contactNormal
++                    let point = [Double(p.x), Double(p.y), Double(p.z)]
++                    let normal = [Double(n.x), Double(n.y), Double(n.z)]
++                    let penetration = Double(contact.penetrationDistance)
++                    guard (point + normal + [penetration]).allSatisfy(\.isFinite) else {
++                        throw Failure.backendUnavailable("nonfinite contact detail")
++                    }
++                    let kind: String
++                    switch identity.kind {
++                    case .obstacleSurface: kind = "obstacle-surface"
++                    case .floorSurface: kind = "floor-surface"
++                    case .furnitureBound: kind = "furniture-bound"
++                    }
++                    result.details.append(.init(featureID: identity.id, kind: kind,
++                        point: point, normal: normal, penetrationDistance: penetration))
++                }
+                 switch identity.kind {
+                 case .obstacleSurface: result.obstacleSurfaceIDs.insert(identity.id)
+                 case .floorSurface: result.floorSurfaceIDs.insert(identity.id)
+diff --git a/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift b/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift
+--- a/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift
++++ b/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift
+@@ -339,4 +339,195 @@
+         XCTAssertGreaterThan(completedCandidates,0,"No complete candidate route was exercised; no-path is not success")
+         XCTAssertEqual(conflictingCompleteCandidates,0,"Original-model body/margin contact is a failed candidate, not a successful stop")
+     }
++
++    /// Additive historical-model diagnostic. Original schedules and assertions
++    /// above remain untouched; these new starts never relocate an actual person.
++    func testAdditiveSourceProvedStartsAndUnchangedHallContactPhases() async throws {
++        struct Query: Decodable { let id, room, profile: String; let start, goal: [Double] }
++        struct Addendum: Decodable {
++            let schema: Int
++            let physicalAuthority, nativeExecuted, changesOriginalSchedules: Bool
++            let sourceFixtureSHA256: [String: String]
++            let queries: [Query]
++        }
++        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "VALID_START_PHASE_ADDENDUM",
++            withExtension: "json", subdirectory: "RoomRouteDiagnostic"))
++        let data = try Data(contentsOf: url)
++        XCTAssertEqual(sha(data), "a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663")
++        let addendum = try JSONDecoder().decode(Addendum.self, from: data)
++        XCTAssertEqual(addendum.schema, 1)
++        XCTAssertFalse(addendum.physicalAuthority); XCTAssertFalse(addendum.nativeExecuted)
++        XCTAssertFalse(addendum.changesOriginalSchedules); XCTAssertEqual(addendum.queries.count, 4)
++        guard addendum.queries.count == 4 else { throw BenchFailure.invalidProtocol }
++        let original = try loadProtocol()
++        XCTAssertEqual(addendum.sourceFixtureSHA256, original.fixtures)
++        let width28 = Profile(id: "declared-width28-assumed-depth20-height120", width: 0.28,
++            depth: 0.20, height: 1.20, margin: 0.15)
++        let profiles = original.profiles + [width28]
++        func phase(_ contacts: SavedRoomRouteCollisionOracle.Contacts) -> [String: Any] {
++            ["obstacleIDs": contacts.obstacleSurfaceIDs.map(\.uuidString).sorted(),
++             "floorIDs": contacts.floorSurfaceIDs.map(\.uuidString).sorted(),
++             "boundIDs": contacts.furnitureBoundIDs.map(\.uuidString).sorted(),
++             "hasObstacleContact": contacts.hasObstacleContact,
++             "details": contacts.details.map { detail -> [String: Any] in
++                 ["featureID": detail.featureID.uuidString, "kind": detail.kind,
++                  "point": detail.point, "normal": detail.normal,
++                  "penetrationDistance": detail.penetrationDistance]
++             }]
++        }
++        func phases(_ result: SavedRoomRouteCollisionOracle.SweepResult) -> [String: Any] {
++            ["initial": phase(result.initial), "swept": phase(result.swept),
++             "terminal": phase(result.terminal), "fullFootprintSupportVerified": false,
++             "physicalAuthority": false, "actualCylinder": result.detailShape ?? [:]]
++        }
++        var rows: [[String: Any]] = []
++        var geometry: [[String: Any]] = []
++        enum DetailFailure: Error { case budgetExceeded }
++        final class DrainFlag: @unchecked Sendable {
++            private let lock = NSLock()
++            private var acknowledged = false
++            func set() { lock.lock(); acknowledged = true; lock.unlock() }
++            func get() -> Bool { lock.lock(); defer { lock.unlock() }; return acknowledged }
++        }
++        func acknowledgedDiscard(_ owner: RoomMeshCandidateRuntime) async -> Bool {
++            let done = expectation(description: "additive contact owner terminal discard")
++            let flag = DrainFlag()
++            owner.stopAndDiscard { flag.set(); done.fulfill() }
++            await fulfillment(of: [done], timeout: 15)
++            return flag.get()
++        }
++        // Transactional prefix retention: reject an over-budget addition, retain
++        // every preceding complete receipt and mark failure. Never a passing truncation.
++        func store(_ key: String, _ value: Any, in row: inout [String: Any]) throws {
++            var candidate = row; candidate[key] = value
++            let retained: [String: Any] = ["outcomes": rows + [candidate], "hallTriangles": geometry]
++            guard try JSONSerialization.data(withJSONObject: retained).count <= 900_000 else {
++                throw DetailFailure.budgetExceeded
++            }
++            row = candidate
++        }
++        var failed = 0
++        var previousOwnerUndrained = false
++        for queryInput in addendum.queries {
++            var row: [String: Any] = ["id": queryInput.id, "room": queryInput.room,
++                "profile": queryInput.profile, "physicalAuthority": false,
++                "fullFootprintSupportVerified": false]
++            if previousOwnerUndrained {
++                row["outcome"] = "not-run-after-undrained-owner"; failed += 1
++                rows.append(row); continue
++            }
++            var retainedOwner: RoomMeshCandidateRuntime?
++            do {
++                let digest = try XCTUnwrap(original.fixtures[queryInput.room])
++                let profile = try XCTUnwrap(profiles.first { $0.id == queryInput.profile })
++                let snapshot = try await mesh(room: queryInput.room, digest: digest)
++                if queryInput.room == "Hallway2" && geometry.isEmpty {
++                    let ids = Set(["0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA", "0CD2F73E-5F0B-444C-BE63-2F9855C59D47"])
++                    for index in snapshot.triangleFeatureIDs.indices where ids.contains(snapshot.triangleFeatureIDs[index].uuidString) {
++                        let triangle = Array(snapshot.triangles[(index * 3)..<(index * 3 + 3)])
++                        let vertices = triangle.map { vertex -> [UInt32] in
++                            let offset = Int(vertex) * 3
++                            return (0..<3).map { Float(snapshot.vertices[offset + $0]).bitPattern }
++                        }
++                        guard geometry.count < 128 else { throw DetailFailure.budgetExceeded }
++                        geometry.append(["triangleIndex": index, "featureID": snapshot.triangleFeatureIDs[index].uuidString,
++                            "indices": triangle, "worldPositionFloat32Bits": vertices])
++                    }
++                }
++                let floor = try XCTUnwrap(snapshot.features.first { $0.kind == .floor })
++                let boxes = snapshot.features.filter { $0.kind == .furniture }.map {
++                    SavedRoomRouteCollisionOracle.FurnitureBox(featureID: $0.id,
++                        dimensions: $0.dimensions, transform: $0.transform)
++                }
++                let oracle = try SavedRoomRouteCollisionOracle(vertices: snapshot.vertices,
++                    triangles: snapshot.triangles, floorSupport: snapshot.floorSupport,
++                    triangleFeatureIDs: snapshot.triangleFeatureIDs, furnitureBoxes: boxes)
++                let a = try point(queryInput.start, floor: floor), b = try point(queryInput.goal, floor: floor)
++                row["sourceSHA256"] = digest; row["requestedStart"] = array(a); row["requestedGoal"] = array(b)
++                row["rawRadius"] = profile.radius; row["rawHeight"] = profile.height
++                row["effectiveRadius"] = profile.effectiveRadius; row["effectiveHeight"] = profile.effectiveHeight
++                let startRaw = try oracle.sweep(from: a, to: a, radius: Float(profile.radius), height: Float(profile.height), recordDetails: true)
++                try store("startRaw", phases(startRaw), in: &row)
++                let startMargin = try oracle.sweep(from: a, to: a, radius: profile.effectiveRadius, height: profile.effectiveHeight, recordDetails: true)
++                try store("startMargin", phases(startMargin), in: &row)
++                let goalRaw = try oracle.sweep(from: b, to: b, radius: Float(profile.radius), height: Float(profile.height), recordDetails: true)
++                try store("goalRaw", phases(goalRaw), in: &row)
++                let goalMargin = try oracle.sweep(from: b, to: b, radius: profile.effectiveRadius, height: profile.effectiveHeight, recordDetails: true)
++                try store("goalMargin", phases(goalMargin), in: &row)
++                if startRaw.all.hasObstacleContact || startMargin.all.hasObstacleContact ||
++                    goalRaw.all.hasObstacleContact || goalMargin.all.hasObstacleContact {
++                    row["outcome"] = "stationary-endpoint-contact"; failed += 1
++                    rows.append(row); continue
++                }
++                // Same original routing mesh and settings. No collision result
++                // selects a different endpoint, repairs or retries a route.
++                let owner = try RoomMeshCandidateRuntime(sessionID: "additive-contact-fixture", supportPolicy: .classifiedFloorOnly)
++                retainedOwner = owner
++                try owner.reset(sessionID: "additive-contact-fixture", generation: 1)
++                let identity: [Double] = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
++                let accepted = owner.offer(.init(sessionID: "additive-contact-fixture", generation: 1,
++                    anchorID: digest, revision: 1, timestamp: 0, vertices: snapshot.vertices,
++                    triangles: snapshot.triangles, columnMajorTransform: identity, complete: true,
++                    triangleSupport: snapshot.floorSupport.map { $0 ? .floor : .obstacle }))
++                guard accepted else { throw BenchFailure.invalidProtocol }
++                let result = try await query(owner, from: a, to: b, profile: profile)
++                switch result {
++                case .failure:
++                    row["outcome"] = "native-query-failure"; failed += 1
++                case .success(let route):
++                    guard route.points.count <= 128 else { throw BenchFailure.invalidProtocol }
++                    row["nativeComplete"] = route.complete; row["nativeStatus"] = route.nativeStatus
++                    row["routePoints"] = route.points; row["projectedStart"] = route.projectedStart
++                    row["projectedGoal"] = route.projectedGoal
++                    let segments = try scoredSegments(start: a, projectedStart: vector(route.projectedStart),
++                        points: route.points.map(vector), projectedGoal: vector(route.projectedGoal), goal: b, complete: route.complete)
++                    var records: [[String: Any]] = []; var contact = false
++                    for segment in segments {
++                        let raw = try oracle.sweep(from: segment.from, to: segment.to,
++                            radius: Float(profile.radius), height: Float(profile.height), recordDetails: true)
++                        records.append(["kind": segment.kind, "from": array(segment.from), "to": array(segment.to),
++                            "raw": phases(raw), "receiptState": "raw-recorded"])
++                        try store("segments", records, in: &row)
++                        let margin = try oracle.sweep(from: segment.from, to: segment.to,
++                            radius: profile.effectiveRadius, height: profile.effectiveHeight, recordDetails: true)
++                        contact = contact || raw.all.hasObstacleContact || margin.all.hasObstacleContact
++                        records[records.count - 1]["margin"] = phases(margin)
++                        records[records.count - 1]["receiptState"] = "complete"
++                        try store("segments", records, in: &row)
++                    }
++                    row["outcome"] = !route.complete ? "partial-route" : (contact ? "candidate-contact" : "historical-model-no-contact")
++                    if !route.complete || contact { failed += 1 }
++                }
++
++            } catch DetailFailure.budgetExceeded {
++                row["outcome"] = "diagnostic-budget-exceeded"
++                row["detailsComplete"] = false; failed += 1
++            } catch let error as SavedRoomRouteCollisionOracle.Failure {
++                if case .backendUnavailable(let code) = error, code == "contact detail count exceeded" {
++                    row["outcome"] = "contact-detail-budget-exceeded"
++                } else { row["outcome"] = "query-or-oracle-error" }
++                row["detailsComplete"] = false; failed += 1
++            } catch {
++                row["detailsComplete"] = false
++                // No arbitrary error text is emitted; prefix fields retain what
++                // actually ran. An exception is a failure, never a passing subset.
++                row["outcome"] = "query-or-oracle-error"; failed += 1
++            }
++            if let owner = retainedOwner {
++                let drained = await acknowledgedDiscard(owner)
++                row["cleanupAcknowledged"] = drained
++                if !drained { previousOwnerUndrained = true; failed += 1 }
++            }
++            rows.append(row)
++        }
++        let report: [String: Any] = ["schema": 1, "physicalAuthority": false,
++            "fullFootprintSupportVerified": false, "originalSchedulesChanged": false,
++            "outcomes": rows, "hallTriangles": geometry]
++        let bytes = try JSONSerialization.data(withJSONObject: report, options: [.sortedKeys])
++        guard bytes.count <= 1_048_576 else { XCTFail("Additive contact report exceeded bound; no truncation"); return }
++        let attachment = XCTAttachment(data: bytes, uniformTypeIdentifier: "public.json")
++        attachment.name = "APPLE_VALID_START_CONTACT_PHASES.json"; attachment.lifetime = .keepAlways; add(attachment)
++        XCTAssertEqual(rows.count, 4)
++        XCTAssertEqual(failed, 0, "Additive contact/rejection/timeout stays a failure; original failures are unchanged")
++    }
+ }
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -1014,6 +1014,11 @@
+       "sha256": "cba80b2e7b6e435203ca53514fbd3153eee7657562d5d65c42fa202426f82e73"
+     },
+     {
++      "path": "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json",
++      "bytes": 2726,
++      "sha256": "a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663"
++    },
++    {
+       "path": "ios/BlindAssistTests/HostedNonvisualJourneyTests.swift",
+       "bytes": 18228,
+       "sha256": "414ebb6c8345cd1ed097307b3e41c2832ad94676206566068d3c000a5ae08d6f"
+@@ -1040,8 +1045,13 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
+-      "bytes": 33197,
+-      "sha256": "9581e63244f89a5183d752124d306e6808bf114dfc5cb3eecf809b03183e9b53"
++      "bytes": 35309,
++      "sha256": "cd0b86b0db9a15973e6b2cf39d2a013a4006d3bf93a2974a161cdaf1a8088140"
++    },
++    {
++      "path": "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift",
++      "bytes": 37825,
++      "sha256": "06a5fa848a9d228cecdd29896f6269c052b293752ee5363b5942693874d7d816"
+     },
+     {
+       "path": "ios/BlindAssistTests/SeatedCollisionBridgeTests.swift",
+@@ -1879,11 +1889,21 @@
+       "sha256": "42be731425576c22a166a5fa44a399b8ac3c5a5bb6d75794138d1360aad5c8e4"
+     },
+     {
++      "path": "tools/ci/native-route-diagnostic-evidence.py",
++      "bytes": 87230,
++      "sha256": "829669d351307c85301a2ec1a471592a5c80983f0f592cb51c44ad09f8876e08"
++    },
++    {
+       "path": "tools/ci/test-collect-seated-projection.py",
+       "bytes": 22756,
+       "sha256": "0440a2b890b18433503ddee0ea930dae96326e88e45df9295f1aabc3446feba3"
+     },
+     {
++      "path": "tools/ci/test-native-route-diagnostic-evidence.py",
++      "bytes": 87512,
++      "sha256": "9c0e26f28c7ea44b6c51f69a796a2ecddaf3150a9b2ff04c8adff7a514e76dc4"
++    },
++    {
+       "path": "tools/ci/test_collect_classified_bench.py",
+       "bytes": 13379,
+       "sha256": "d09225d11a9edc1b62c40cc93dd4a02dccac844c9ca443d6672ae1f222d65b24"
+@@ -1967,6 +1987,11 @@
+       "path": "tools/test/classified-hit-current.test.py",
+       "bytes": 5510,
+       "sha256": "1c603497b3993f6f3454f7339a23a2e7ef9a077979eaf9e1691ea053370a5d57"
++    },
++    {
++      "path": "tools/test/collision-contact-addendum.test.py",
++      "bytes": 5129,
++      "sha256": "59870d0f3e13d62ae00a3d281a631397fdc8b9c5d3478a2ad0c3b2d3f1542bac"
+     },
+     {
+       "path": "tools/test/connected-beacon-bool.test.py",
+@@ -2357,5 +2382,11 @@
+     "nativeMethodsRetained": 15,
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "collisionContactPhaseAddendum": {
++    "scope": "Separate authored valid-start/contact-phase diagnostic and exact optional collector; original outcomes not replaced",
++    "newNativeMethodsUnrun": 1,
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }
+diff --git a/tools/ci/native-route-diagnostic-evidence.py b/tools/ci/native-route-diagnostic-evidence.py
+--- a/tools/ci/native-route-diagnostic-evidence.py
++++ b/tools/ci/native-route-diagnostic-evidence.py
+@@ -51,6 +51,8 @@
+      'SavedRoomCollisionMixedScene-v1.json', 'collision-mixed-scene'),
+     ('SavedRoomRouteMeshAppleFixtureTests/testPublicRawExportAndExactDegenerateReceiptsRemainAuditable',
+      'APPLE_ROOM_PACKED_ROUTING_GEOMETRY.json', 'packed-routing'))
++CONTACT_PHASE_SPEC = ('SavedRoomRouteDiagnosticAppleTests/testAdditiveSourceProvedStartsAndUnchangedHallContactPhases',
++                      'APPLE_VALID_START_CONTACT_PHASES.json', 'valid-start-contact-phases')
+ DIAGNOSTIC_LIMIT = 131072
+ CONTROL_NAMES = ('thinWallForward', 'thinWallReverse', 'wallInitialOverlap', 'wallTerminalOverlap',
+                  'containedSolid', 'overheadTallForward', 'overheadTallReverse', 'overheadShort', 'clear', 'floor')
+@@ -85,7 +87,7 @@
+     stripped = identifier.removesuffix('()')
+     if stripped.startswith('BlindAssistTests/'):
+         stripped = stripped[len('BlindAssistTests/'):]
+-    return stripped if stripped in {s[0] for s in SPECS + DIAGNOSTIC_SPECS} else None
++    return stripped if stripped in {s[0] for s in SPECS + DIAGNOSTIC_SPECS + (CONTACT_PHASE_SPEC,)} else None
+
+
+ def export_size(directory):
+@@ -945,13 +947,232 @@
+     return report
+
+
++CONTACT_PHASE_INPUT = 'RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json'
++CONTACT_PHASE_SHA256 = 'a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663'
++CONTACT_PHASE_SPEC = ('SavedRoomRouteDiagnosticAppleTests/testAdditiveSourceProvedStartsAndUnchangedHallContactPhases',
++                      'APPLE_VALID_START_CONTACT_PHASES.json', 'valid-start-contact-phases')
++CONTACT_HALL_IDS = {'0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA', '0CD2F73E-5F0B-444C-BE63-2F9855C59D47'}
++
++
++def contact_phase_source(repo, docs, hashes):
++    # Optional exact public fixture only. Older result bundles never need this file.
++    name = 'ios/BlindAssistTests/Fixtures/' + CONTACT_PHASE_INPUT
++    path = repo / name
++    require(not path.is_symlink() and path.is_file() and 0 < path.stat().st_size <= 16384, 'invalid_contact_phase_source')
++    raw = path.read_bytes()
++    require(hashlib.sha256(raw).hexdigest() == CONTACT_PHASE_SHA256, 'contact_phase_source_hash_mismatch')
++    docs[CONTACT_PHASE_INPUT] = decode(raw)
++    hashes[name] = CONTACT_PHASE_SHA256
++
++
++def contact_phase_point(local, floor):
++    # Same declared Float32 RoomPlan feature transform and final Float32 point.
++    matrix = [float32(value) for value in floor['transform']]
++    return [float32(((matrix[r] * local[0] + matrix[4+r] * local[1]) +
++                     matrix[8+r] * local[2]) + matrix[12+r]) for r in range(3)]
++
++
++def contact_phase_same_number(actual, expected):
++    # JSON NSNumber Float formatting may shorten the exact Float32 decimal.
++    # Two Float32 ULP-scale serialization tolerance, never a geometry clearance.
++    return number(actual) and abs(actual - expected) <= max(1e-8, abs(expected) * 2**-22)
++
++
++def contact_phase_feature_sets(room, docs):
++    source = docs['RoomPlanApple/' + room + '.capturedRoom.json']
++    return {'floorIDs': {x['identifier'] for x in source['floors']},
++            'boundIDs': {x['identifier'] for x in source['objects']},
++            'obstacleIDs': {x['identifier'] for kind in ('walls','doors','windows','openings','objects') for x in source[kind]}}
++
++
++def validate_contact_phase(phase, room, docs):
++    allowed = contact_phase_feature_sets(room, docs)
++    names = set(allowed) | {'hasObstacleContact', 'details'}
++    keys(phase, names, names)
++    for field, identities in allowed.items():
++        values = phase[field]
++        require(isinstance(values, list) and len(values) <= len(identities) and
++                all(isinstance(v, str) and v in identities for v in values) and
++                values == sorted(set(values)), 'contact_phase_feature_identity')
++    require(type(phase['hasObstacleContact']) is bool and
++            phase['hasObstacleContact'] == bool(phase['obstacleIDs'] or phase['boundIDs']), 'contact_phase_contact_disagreement')
++    details = phase['details']
++    require(isinstance(details, list) and len(details) <= 128, 'contact_phase_detail_budget')
++    kinds = {'obstacle-surface':'obstacleIDs', 'floor-surface':'floorIDs', 'furniture-bound':'boundIDs'}
++    observed = {field:set() for field in allowed}
++    for detail in details:
++        fields = {'featureID','kind','point','normal','penetrationDistance'}
++        keys(detail, fields, fields)
++        kind = detail['kind']
++        require(isinstance(kind, str) and kind in kinds and isinstance(detail['featureID'], str) and
++                detail['featureID'] in phase[kinds[kind]], 'contact_phase_detail_identity')
++        require(vector(detail['point']) and vector(detail['normal']) and
++                all(abs(n) <= 10000 for n in detail['point']) and all(abs(n) <= 2 for n in detail['normal']) and
++                number(detail['penetrationDistance']) and abs(detail['penetrationDistance']) <= 100,
++                'contact_phase_detail_number')
++        observed[kinds[kind]].add(detail['featureID'])
++    require(all(observed[k] == set(phase[k]) for k in allowed), 'contact_phase_detail_inventory')
++
++
++def validate_contact_phases(phases, room, docs, radius, height):
++    fields = {'initial','swept','terminal','fullFootprintSupportVerified','physicalAuthority','actualCylinder'}
++    keys(phases, fields, fields)
++    require(phases['fullFootprintSupportVerified'] is False and phases['physicalAuthority'] is False,
++            'physical_authority_or_coverage_claim')
++    shape = phases['actualCylinder']
++    shape_fields = {'radius','height','radialSegmentCount','heightSegmentCount','collisionMargin'}
++    keys(shape, shape_fields, shape_fields)
++    require(contact_phase_same_number(shape['radius'], radius) and contact_phase_same_number(shape['height'], height) and
++            number(shape['collisionMargin']) and shape['collisionMargin'] == 0 and
++            number(shape['radialSegmentCount']) and shape['radialSegmentCount'] == int(shape['radialSegmentCount']) and 3 <= shape['radialSegmentCount'] <= 1024 and
++            number(shape['heightSegmentCount']) and shape['heightSegmentCount'] == int(shape['heightSegmentCount']) and 1 <= shape['heightSegmentCount'] <= 1024,
++            'contact_cylinder_mismatch')
++    for name in ('initial','swept','terminal'):
++        validate_contact_phase(phases[name], room, docs)
++    return any(phases[name]['hasObstacleContact'] for name in ('initial','swept','terminal'))
++
++
++def validate_contact_triangles(geometry, docs):
++    require(isinstance(geometry, list) and len(geometry) <= 128, 'contact_triangle_budget')
++    wall_ids = {x['identifier'] for x in docs['RoomPlanApple/Hallway2.capturedRoom.json']['walls']}
++    require(CONTACT_HALL_IDS <= wall_ids, 'contact_triangle_source_identity')
++    seen = set()
++    for triangle in geometry:
++        fields = {'triangleIndex','featureID','indices','worldPositionFloat32Bits'}
++        keys(triangle, fields, fields)
++        index = triangle['triangleIndex']
++        require(bounded_integer(index, 1000000) and index not in seen and
++                isinstance(triangle['featureID'], str) and triangle['featureID'] in CONTACT_HALL_IDS,
++                'contact_triangle_identity')
++        seen.add(index)
++        require(isinstance(triangle['indices'], list) and len(triangle['indices']) == 3 and
++                all(bounded_integer(v, 1000000) for v in triangle['indices']), 'contact_triangle_indices')
++        words = triangle['worldPositionFloat32Bits']
++        require(isinstance(words, list) and len(words) == 3 and all(isinstance(v, list) and len(v) == 3 for v in words),
++                'contact_triangle_words')
++        for vertex in words:
++            require(all(bounded_integer(v, 0xffffffff) for v in vertex), 'contact_triangle_words')
++            values = [struct.unpack('<f', struct.pack('<I', v))[0] for v in vertex]
++            require(all(math.isfinite(v) and abs(v) <= 10000 for v in values), 'contact_triangle_number')
++    require([v['triangleIndex'] for v in geometry] == sorted(seen), 'contact_triangle_order')
++
++
++def validate_contact_phase_report(report, docs):
++    top = {'schema','physicalAuthority','fullFootprintSupportVerified','originalSchedulesChanged','outcomes','hallTriangles'}
++    keys(report, top, top)
++    require(type(report['schema']) is int and report['schema'] == 1 and
++            report['physicalAuthority'] is False and report['fullFootprintSupportVerified'] is False and
++            report['originalSchedulesChanged'] is False, 'unsupported_contact_report_schema')
++    require(CONTACT_PHASE_INPUT in docs, 'contact_phase_source_unavailable')
++    plan = docs[CONTACT_PHASE_INPUT]
++    require(plan['sourceFixtureSHA256'] == FIXTURES and plan['baseProtocolSHA256'] == BASE and
++            plan['physicalAuthority'] is False and plan['nativeExecuted'] is False and
++            plan['changesOriginalSchedules'] is False, 'contact_phase_source_mismatch')
++    queries = plan['queries']; rows = report['outcomes']
++    require(isinstance(rows, list) and len(rows) == 4 and len(queries) == 4, 'contact_phase_schedule_count')
++    profiles = docs['RoomRouteDiagnostic/PROTOCOL.json']['profiles'] + docs['RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json']['profiles']
++    base = {'id','room','profile','physicalAuthority','fullFootprintSupportVerified','outcome'}
++    meta = {'sourceSHA256','requestedStart','requestedGoal','rawRadius','rawHeight','effectiveRadius','effectiveHeight'}
++    phases = ['startRaw','startMargin','goalRaw','goalMargin']
++    native = {'nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal'}
++    error_outcomes = {'diagnostic-budget-exceeded','contact-detail-budget-exceeded','query-or-oracle-error'}
++    outcomes = error_outcomes | {'not-run-after-undrained-owner','stationary-endpoint-contact','native-query-failure','partial-route','candidate-contact','historical-model-no-contact'}
++    undrained = False
++    for row, query in zip(rows, queries):
++        keys(row, base | meta | set(phases) | native | {'segments','detailsComplete','cleanupAcknowledged'}, base)
++        require((row['id'],row['room'],row['profile']) == (query['id'],query['room'],query['profile']) and
++                row['physicalAuthority'] is False and row['fullFootprintSupportVerified'] is False,
++                'contact_phase_schedule_identity')
++        outcome = row['outcome']
++        require(isinstance(outcome, str) and outcome in outcomes, 'contact_phase_unknown_outcome')
++        if undrained:
++            require(outcome == 'not-run-after-undrained-owner' and set(row) == base, 'contact_phase_undrained_admission')
++            continue
++        require(outcome != 'not-run-after-undrained-owner', 'contact_phase_unjustified_abort')
++        error = outcome in error_outcomes
++        require((row.get('detailsComplete') is False) if error else ('detailsComplete' not in row), 'contact_phase_completeness_disagreement')
++        if 'cleanupAcknowledged' in row:
++            require(type(row['cleanupAcknowledged']) is bool, 'contact_phase_cleanup_boolean')
++            undrained = not row['cleanupAcknowledged']
++        room = query['room']; source = docs['RoomPlanApple/' + room + '.capturedRoom.json']
++        profile = next((p for p in profiles if p['id'] == query['profile']), None)
++        require(profile is not None, 'contact_phase_unknown_profile')
++        radius = math.hypot(profile['width'], profile['depth']) / 2
++        raw_radius, raw_height = float32(radius), float32(profile['height'])
++        margin_radius, margin_height = float32(radius + profile['margin']), float32(profile['height'] + profile['margin'])
++        metadata_present = set(row) & meta
++        require(metadata_present in (set(), meta), 'contact_phase_partial_metadata')
++        if metadata_present:
++            require(row['sourceSHA256'] == FIXTURES[room], 'contact_phase_source_hash_mismatch')
++            floor = source['floors'][0]
++            for field, local in [('requestedStart',query['start']),('requestedGoal',query['goal'])]:
++                expected = contact_phase_point(local, floor)
++                require(vector(row[field]) and all(contact_phase_same_number(a,b) for a,b in zip(row[field],expected)), 'contact_phase_requested_point_mismatch')
++            for field, expected in [('rawRadius',radius),('rawHeight',profile['height']),('effectiveRadius',margin_radius),('effectiveHeight',margin_height)]:
++                require(contact_phase_same_number(row[field],expected), 'contact_phase_profile_mismatch')
++        else:
++            require(error and set(row) <= base | {'detailsComplete'}, 'contact_phase_missing_active_metadata')
++            continue
++        phase_present = [name for name in phases if name in row]
++        require(phase_present == phases[:len(phase_present)], 'contact_phase_endpoint_order')
++        endpoint_contact = False
++        for name in phase_present:
++            r,h = (raw_radius,raw_height) if name.endswith('Raw') else (margin_radius,margin_height)
++            endpoint_contact |= validate_contact_phases(row[name],room,docs,r,h)
++        if 'cleanupAcknowledged' in row:
++            require(phase_present == phases and not endpoint_contact, 'contact_phase_cleanup_without_admission')
++        if not error:
++            require(phase_present == phases, 'contact_phase_endpoint_receipt_missing')
++        if outcome == 'stationary-endpoint-contact':
++            require(endpoint_contact and not set(row) & (native | {'segments','cleanupAcknowledged'}), 'contact_phase_stationary_disagreement')
++            continue
++        if not error:
++            require(not endpoint_contact and 'cleanupAcknowledged' in row, 'contact_phase_native_admission_disagreement')
++        native_present = set(row) & native
++        require(native_present in (set(),native), 'contact_phase_partial_native_metadata')
++        if not native_present:
++            require('segments' not in row and (error or outcome == 'native-query-failure'), 'contact_phase_missing_route')
++            continue
++        require('cleanupAcknowledged' in row and phase_present == phases and not endpoint_contact, 'contact_phase_route_without_admission')
++        require(type(row['nativeComplete']) is bool and bounded_integer(row['nativeStatus'],2**32-1) and
++                isinstance(row['routePoints'],list) and len(row['routePoints']) <= 128 and all(vector(v) for v in row['routePoints']) and
++                vector(row['projectedStart']) and vector(row['projectedGoal']), 'contact_phase_native_fields')
++        points = row['routePoints']; segments = row.get('segments',[])
++        require(isinstance(segments,list) and len(segments) <= 131, 'contact_phase_segment_budget')
++        if not points:
++            require(error and not segments, 'contact_phase_empty_route')
++            continue
++        expected = [('requested-start-to-projection',row['requestedStart'],row['projectedStart'])]
++        if points[0] != row['projectedStart']: expected.append(('projection-to-detour-start',row['projectedStart'],points[0]))
++        expected += [('detour-segment-'+str(i),points[i-1],points[i]) for i in range(1,len(points))]
++        if row['nativeComplete']:
++            if points[-1] != row['projectedGoal']: expected.append(('detour-end-to-projection',points[-1],row['projectedGoal']))
++            expected.append(('projection-to-requested-goal',row['projectedGoal'],row['requestedGoal']))
++        require(len(segments) <= len(expected) and (error or len(segments) == len(expected)), 'contact_phase_segment_chain')
++        route_contact = False
++        for index,(segment,edge) in enumerate(zip(segments,expected)):
++            fields = {'kind','from','to','raw','margin','receiptState'}
++            keys(segment,fields,fields-{'margin'})
++            require((segment['kind'],segment['from'],segment['to']) == edge and vector(segment['from']) and vector(segment['to']), 'contact_phase_segment_chain')
++            state = segment['receiptState']
++            require(state in ('raw-recorded','complete') and (('margin' in segment) == (state == 'complete')), 'contact_phase_segment_state')
++            require(state == 'complete' or (error and index == len(segments)-1), 'contact_phase_incomplete_segment_position')
++            route_contact |= validate_contact_phases(segment['raw'],room,docs,raw_radius,raw_height)
++            if 'margin' in segment: route_contact |= validate_contact_phases(segment['margin'],room,docs,margin_radius,margin_height)
++        if not error:
++            expected_outcome = 'partial-route' if not row['nativeComplete'] else 'candidate-contact' if route_contact else 'historical-model-no-contact'
++            require(outcome == expected_outcome, 'contact_phase_outcome_disagreement')
++    validate_contact_triangles(report['hallTriangles'],docs)
++    return report
++
++
+ def collect(repo, bundle, cases, query):
+     result = {'schema':1, 'status':'not_observed', 'physicalAuthority':False,
+               'scope':'public Apple historical fixtures and synthetic controls; no physical authority',
+               'aggregateByteLimit':LIMIT, 'reports':[]}
+     wanted = {}
+     observed = {canonical(case['identifier']) for case in cases}
+-    specs = SPECS + tuple(spec for spec in DIAGNOSTIC_SPECS if spec[0] in observed)
++    specs = SPECS + tuple(spec for spec in DIAGNOSTIC_SPECS + (CONTACT_PHASE_SPEC,) if spec[0] in observed)
+     for key, name, label in specs:
+         found = [c for c in cases if canonical(c['identifier']) == key]
+         record = {'attachmentName':name, 'testIdentifier':key, 'status':'test_not_observed'}
+@@ -979,7 +1200,10 @@
+                     raw = exported_report(directory, name)
+                 require(total + len(raw) <= LIMIT, 'aggregate_over_budget')
+                 total += len(raw)
+-                if label in ('metadata-inventory','collision-backend','collision-mixed-scene','packed-routing'):
++                if label == 'valid-start-contact-phases':
++                    contact_phase_source(repo, docs, hashes)
++                    report = validate_contact_phase_report(decode(raw), docs)
++                elif label in ('metadata-inventory','collision-backend','collision-mixed-scene','packed-routing'):
+                     require(len(raw) <= DIAGNOSTIC_LIMIT, 'diagnostic_over_budget')
+                     if label == 'metadata-inventory': report = validate_metadata_inventory(decode(raw), uuids, docs)
+                     elif label == 'collision-backend': report = validate_collision_matrix(decode(raw))
+diff --git a/tools/ci/test-native-route-diagnostic-evidence.py b/tools/ci/test-native-route-diagnostic-evidence.py
+--- a/tools/ci/test-native-route-diagnostic-evidence.py
++++ b/tools/ci/test-native-route-diagnostic-evidence.py
+@@ -963,5 +963,171 @@
+             bad=copy.deepcopy(d);mutation(bad['fixtures'][0])
+             with self.assertRaises(m.EvidenceError):self.validate(bad)
+
++
++
++def contact_docs():
++    docs = copy.deepcopy(DOCS); hashes = {}
++    m.contact_phase_source(ROOT, docs, hashes)
++    return docs
++
++
++def contact_phase_fixture(radius, height):
++    contact = {'obstacleIDs':[],'floorIDs':[],'boundIDs':[],'hasObstacleContact':False,'details':[]}
++    return {**{k:copy.deepcopy(contact) for k in ('initial','swept','terminal')},
++            'physicalAuthority':False,'fullFootprintSupportVerified':False,
++            'actualCylinder':{'radius':radius,'height':height,'radialSegmentCount':48,'heightSegmentCount':1,'collisionMargin':0}}
++
++
++def contact_report():
++    docs = contact_docs(); plan=docs[m.CONTACT_PHASE_INPUT]
++    profiles=docs['RoomRouteDiagnostic/PROTOCOL.json']['profiles']+docs['RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json']['profiles']
++    rows=[]
++    for query in plan['queries']:
++        room=query['room']; profile=next(p for p in profiles if p['id']==query['profile'])
++        floor=docs['RoomPlanApple/'+room+'.capturedRoom.json']['floors'][0]
++        a=m.contact_phase_point(query['start'],floor);b=m.contact_phase_point(query['goal'],floor)
++        radius=m.math.hypot(profile['width'],profile['depth'])/2
++        rr,rh=m.float32(radius),m.float32(profile['height']);mr,mh=m.float32(radius+profile['margin']),m.float32(profile['height']+profile['margin'])
++        raw=contact_phase_fixture(rr,rh);margin=contact_phase_fixture(mr,mh)
++        row={'id':query['id'],'room':room,'profile':query['profile'],'physicalAuthority':False,'fullFootprintSupportVerified':False,
++             'sourceSHA256':m.FIXTURES[room],'requestedStart':a,'requestedGoal':b,'rawRadius':radius,'rawHeight':profile['height'],
++             'effectiveRadius':mr,'effectiveHeight':mh,'startRaw':copy.deepcopy(raw),'startMargin':copy.deepcopy(margin),
++             'goalRaw':copy.deepcopy(raw),'goalMargin':copy.deepcopy(margin),'nativeComplete':True,'nativeStatus':1073741824,
++             'routePoints':[a,b],'projectedStart':a,'projectedGoal':b,'cleanupAcknowledged':True,'outcome':'historical-model-no-contact'}
++        row['segments']=[{'kind':k,'from':x,'to':y,'raw':copy.deepcopy(raw),'margin':copy.deepcopy(margin),'receiptState':'complete'}
++                         for k,x,y in [('requested-start-to-projection',a,a),('detour-segment-1',a,b),('projection-to-requested-goal',b,b)]]
++        rows.append(row)
++    return {'schema':1,'physicalAuthority':False,'fullFootprintSupportVerified':False,'originalSchedulesChanged':False,'outcomes':rows,'hallTriangles':[]}
++
++
++class ContactPhaseEvidenceTests(unittest.TestCase):
++    def validate(self, value): return m.validate_contact_phase_report(value, contact_docs())
++    def test_complete_observation_not_physical_acceptance(self):
++        value=contact_report();self.assertEqual(self.validate(value),value)
++        self.assertFalse(value['physicalAuthority']);self.assertFalse(value['fullFootprintSupportVerified'])
++    def test_optional_new_case_exact_identity_only(self):
++        self.assertEqual(m.canonical(m.CONTACT_PHASE_SPEC[0]+'()'),m.CONTACT_PHASE_SPEC[0])
++        self.assertIsNone(m.canonical(m.CONTACT_PHASE_SPEC[0]+'Private'))
++        self.assertEqual(len(m.SPECS),3);self.assertEqual(len(m.DIAGNOSTIC_SPECS),4)
++    def test_unknown_private_fields_and_text_rejected(self):
++        mutations=[lambda d:d.update(private='secret'),lambda d:d['outcomes'][0].update(error='/private/path'),
++                   lambda d:d['outcomes'][0].update(outcome='private string'),lambda d:d['outcomes'][0]['segments'][0].update(extra='secret'),
++                   lambda d:d['outcomes'][0]['startRaw']['initial'].update(private='secret'),
++                   lambda d:d['outcomes'][0]['startRaw']['actualCylinder'].update(path='secret')]
++        for mutation in mutations:
++            with self.subTest(mutation=mutation):
++                d=contact_report();mutation(d)
++                with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_schedule_hash_geometry_profile_and_authority_mutations_rejected(self):
++        mutations=[lambda d:d.update(schema=True),lambda d:d.update(originalSchedulesChanged=True),lambda d:d.update(physicalAuthority=True),
++                   lambda d:d['outcomes'].reverse(),lambda d:d['outcomes'].pop(),lambda d:d['outcomes'][0].update(sourceSHA256='0'*64),
++                   lambda d:d['outcomes'][0].update(requestedStart=[0,0,0]),lambda d:d['outcomes'][0].update(rawRadius=.001),
++                   lambda d:d['outcomes'][0].update(effectiveRadius=.001),lambda d:d['outcomes'][0]['startRaw']['actualCylinder'].update(collisionMargin=.1),
++                   lambda d:d['outcomes'][0]['startRaw']['actualCylinder'].update(radialSegmentCount=2),
++                   lambda d:d['outcomes'][0]['startRaw'].update(fullFootprintSupportVerified=True)]
++        for mutation in mutations:
++            with self.subTest(mutation=mutation):
++                d=contact_report();mutation(d)
++                with self.assertRaises(m.EvidenceError):self.validate(d)
++    def add_contact(self, phase, room='Hallway2', kind='obstacle-surface'):
++        docs=contact_docs();field={'obstacle-surface':'obstacleIDs','floor-surface':'floorIDs','furniture-bound':'boundIDs'}[kind]
++        identity=sorted(m.contact_phase_feature_sets(room,docs)[field])[0]
++        phase[field]=[identity];phase['hasObstacleContact']=field!='floorIDs'
++        phase['details']=[{'kind':kind,'featureID':identity,'point':[0,0,0],'normal':[1,0,0],'penetrationDistance':.001}]
++    def test_contacts_require_exact_category_details_and_outcome(self):
++        d=contact_report();p=d['outcomes'][0]['segments'][1]['margin']['swept'];self.add_contact(p);d['outcomes'][0]['outcome']='candidate-contact';self.validate(d)
++        mutations=[lambda p:p['details'][0].update(featureID='private'),lambda p:p['details'][0].update(kind='floor-surface'),
++                   lambda p:p['details'][0].update(point=[float('nan'),0,0]),lambda p:p['details'][0].update(normal=[float('inf'),0,0]),
++                   lambda p:p['details'][0].update(penetrationDistance='private'),lambda p:p.update(details=[]),
++                   lambda p:p.update(hasObstacleContact=False),lambda p:p['obstacleIDs'].append(p['obstacleIDs'][0]),
++                   lambda p:p.update(details=p['details']*129)]
++        for mutation in mutations:
++            with self.subTest(mutation=mutation):
++                bad=copy.deepcopy(d);mutation(bad['outcomes'][0]['segments'][1]['margin']['swept'])
++                with self.assertRaises(m.EvidenceError):self.validate(bad)
++        d['outcomes'][0]['outcome']='historical-model-no-contact'
++        with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_stationary_contact_stops_native_query(self):
++        d=contact_report();r=d['outcomes'][0];self.add_contact(r['startMargin']['initial']);r['outcome']='stationary-endpoint-contact'
++        for k in ['nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal','segments','cleanupAcknowledged']:r.pop(k)
++        self.validate(d);r['cleanupAcknowledged']=True
++        with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_floor_contact_is_not_obstacle_or_support(self):
++        d=contact_report();self.add_contact(d['outcomes'][0]['startRaw']['initial'],kind='floor-surface');self.validate(d)
++    def test_error_keeps_only_observed_prefix(self):
++        for count in range(5):
++            d=contact_report();r=d['outcomes'][0];r.update(outcome='query-or-oracle-error',detailsComplete=False)
++            for k in ['nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal','segments','cleanupAcknowledged']:r.pop(k)
++            for k in ['startRaw','startMargin','goalRaw','goalMargin'][count:]:r.pop(k)
++            self.validate(d)
++        d=contact_report();r=d['outcomes'][0];r.update(outcome='contact-detail-budget-exceeded',detailsComplete=False)
++        r['segments']=r['segments'][:2];r['segments'][-1].pop('margin');r['segments'][-1]['receiptState']='raw-recorded';self.validate(d)
++        r['outcome']='historical-model-no-contact';r.pop('detailsComplete')
++        with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_partial_prefix_order_and_exact_chain_rejected(self):
++        mutations=[lambda r:r.pop('startRaw'),lambda r:r['segments'].pop(0),lambda r:r['segments'][0].update(to=[99,99,99]),
++                   lambda r:r['segments'][0].update(kind='detour-segment-1'),lambda r:r['segments'][0].update(receiptState='raw-recorded'),
++                   lambda r:r.update(routePoints=[]),lambda r:r.update(nativeComplete=False),lambda r:r.pop('cleanupAcknowledged')]
++        for mutation in mutations:
++            with self.subTest(mutation=mutation):
++                d=contact_report();mutation(d['outcomes'][0])
++                with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_undrained_owner_aborts_remaining_without_invented_receipts(self):
++        d=contact_report();d['outcomes'][0]['cleanupAcknowledged']=False
++        fields={'id','room','profile','physicalAuthority','fullFootprintSupportVerified'}
++        for i in range(1,4):d['outcomes'][i]={**{k:v for k,v in d['outcomes'][i].items() if k in fields},'outcome':'not-run-after-undrained-owner'}
++        self.validate(d)
++        d['outcomes'][1]['sourceSHA256']=m.FIXTURES['Hallway2']
++        with self.assertRaises(m.EvidenceError):self.validate(d)
++        d=contact_report();d['outcomes'][0]['cleanupAcknowledged']=False
++        with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_triangles_closed_numeric_capture(self):
++        d=contact_report();triangle={'triangleIndex':4,'featureID':sorted(m.CONTACT_HALL_IDS)[0],'indices':[0,1,2],'worldPositionFloat32Bits':[[0,0,0],[1065353216,0,0],[0,1065353216,0]]}
++        d['hallTriangles']=[triangle];self.validate(d)
++        for mutation in [lambda t:t.update(featureID='private'),lambda t:t.update(triangleIndex=True),lambda t:t.update(indices=[-1,0,1]),
++                         lambda t:t.update(worldPositionFloat32Bits=[[0x7f800000,0,0],[0,0,0],[0,0,0]]),lambda t:t.update(path='secret')]:
++            bad=copy.deepcopy(d);mutation(bad['hallTriangles'][0])
++            with self.assertRaises(m.EvidenceError):self.validate(bad)
++        d['hallTriangles']*=129
++        with self.assertRaises(m.EvidenceError):self.validate(d)
++    def test_source_hash_and_alias_refused(self):
++        with tempfile.TemporaryDirectory() as temp:
++            root=Path(temp);p=root/'ios/BlindAssistTests/Fixtures'/m.CONTACT_PHASE_INPUT;p.parent.mkdir(parents=True)
++            p.write_text('{}')
++            with self.assertRaises(m.EvidenceError):m.contact_phase_source(root,{}, {})
++            p.unlink();p.symlink_to(ROOT/'ios/BlindAssistTests/Fixtures'/m.CONTACT_PHASE_INPUT)
++            with self.assertRaises(m.EvidenceError):m.contact_phase_source(root,{}, {})
++    def test_collector_optional_eighth_report_preserves_failed_result(self):
++        cases=[{'identifier':k,'result':'Failed'} for k,_,_ in m.SPECS+m.DIAGNOSTIC_SPECS+(m.CONTACT_PHASE_SPEC,)]
++        def exporter(bundle,identifier,destination):
++            key,name,label=next(s for s in m.SPECS+m.DIAGNOSTIC_SPECS+(m.CONTACT_PHASE_SPEC,) if s[0]==m.canonical(identifier))
++            value=contact_report() if label=='valid-start-contact-phases' else diagnostic_report(label) if (key,name,label) in m.DIAGNOSTIC_SPECS else report(label)
++            export_fixture(destination,name,value)
++        with patch.object(m,'export_test',side_effect=exporter):result=m.collect(ROOT,Path('unused'),cases,None)
++        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),8)
++        self.assertEqual(result['reports'][-1]['testResult'],'Failed');self.assertEqual(result['reports'][-1]['report'],contact_report())
++    def test_optional_source_failure_does_not_suppress_old_reports(self):
++        cases=[{'identifier':k,'result':'Failed'} for k,_,_ in m.SPECS+(m.CONTACT_PHASE_SPEC,)]
++        def exporter(bundle,identifier,destination):
++            key,name,label=next(s for s in m.SPECS+(m.CONTACT_PHASE_SPEC,) if s[0]==m.canonical(identifier))
++            export_fixture(destination,name,contact_report() if label=='valid-start-contact-phases' else report(label))
++        # Patch only collector source-load, leaving the authored synthetic payload factory intact.
++        value=contact_report()
++        def fixed_exporter(bundle,identifier,destination):
++            key,name,label=next(s for s in m.SPECS+(m.CONTACT_PHASE_SPEC,) if s[0]==m.canonical(identifier))
++            export_fixture(destination,name,value if label=='valid-start-contact-phases' else report(label))
++        with patch.object(m,'export_test',side_effect=fixed_exporter), patch.object(m,'contact_phase_source',side_effect=m.EvidenceError('contact_phase_source_hash_mismatch')):
++            result=m.collect(ROOT,Path('unused'),cases,None)
++        self.assertEqual([r['status'] for r in result['reports'][:3]],['collected']*3)
++        self.assertEqual(result['reports'][-1]['status'],'contact_phase_source_hash_mismatch')
++
++    def test_private_additive_payload_not_copied_on_failure(self):
++        cases=[{'identifier':m.CONTACT_PHASE_SPEC[0],'result':'Failed'}]
++        value=contact_report();value['secret']='PRIVATE_TOKEN'
++        with patch.object(m,'export_test',side_effect=lambda b,i,d:export_fixture(d,m.CONTACT_PHASE_SPEC[1],value)):
++            result=m.collect(ROOT,Path('unused'),cases,None)
++        self.assertNotIn('PRIVATE_TOKEN',json.dumps(result));self.assertNotIn('report',result['reports'][-1])
++        self.assertEqual(result['reports'][-1]['status'],'unsupported_report_schema')
++
+ if __name__=='__main__':unittest.main()
+
+diff --git a/tools/test/collision-contact-addendum.test.py b/tools/test/collision-contact-addendum.test.py
+new file mode 100644
+--- /dev/null
++++ b/tools/test/collision-contact-addendum.test.py
+@@ -0,0 +1,50 @@
++#!/usr/bin/env python3
++"""Current source contracts only; no Swift/SceneKit or physical acceptance."""
++from pathlib import Path
++import hashlib,json,os,re,unittest
++ROOT=Path(os.environ.get('BLIND_SOURCE_ROOT',Path(__file__).resolve().parents[2]))
++TEST='ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift'
++ORACLE='ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift'
++FIXTURE='ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/VALID_START_PHASE_ADDENDUM.json'
++PREFIX_SHA256='7f432a653d23814f26883b90b0948e80a24178b2a2674fb896c0260277ce4326'
++FIXTURE_SHA256='a8d4cc19bf25292b52d7d3282229d52177c920c39795badda413f82377475663'
++def contracts(s,o,f):
++ marker='    /// Additive historical-model diagnostic.'
++ prefix,new=s.split(marker,1)
++ assert hashlib.sha256(prefix.rstrip().encode()).hexdigest()==PREFIX_SHA256,'original three native methods and helpers unchanged'
++ assert len(re.findall(r'func test\w+\(',s))==4,'original3 plus additive1'
++ assert 'await fulfillment(of: [done], timeout: 15)' in new,'cleanup original15s'
++ assert 'owner.stopAndDiscard { flag.set(); done.fulfill() }' in new and new.count('flag.set()')==1 and 'return flag.get()' in new,'callback-only acknowledgment'
++ assert new.index('if previousOwnerUndrained')<new.index('let snapshot = try await mesh')<new.index('let owner = try RoomMeshCandidateRuntime'),'gate before admission'
++ assert 'if !drained { previousOwnerUndrained = true; failed += 1 }' in new and '"not-run-after-undrained-owner"; failed += 1' in new,'undrained remains failure'
++ assert all(f'try store("{k}", phases({k}), in: &row)' in new for k in ['startRaw','startMargin','goalRaw','goalMargin']),'individual endpoint receipts'
++ assert new.index('"receiptState": "raw-recorded"')<new.index('let margin = try oracle.sweep') and new.index('try store("segments", records, in: &row)')<new.index('let margin = try oracle.sweep'),'raw retained before margin'
++ assert 'records[records.count - 1]["receiptState"] = "complete"\n                        try store("segments", records, in: &row)' in new,'complete margin retained'
++ assert 'guard try JSONSerialization.data(withJSONObject: retained).count <= 900_000' in new and new.index('throw DetailFailure.budgetExceeded')<new.index('row = candidate'),'transactional bound'
++ assert '"diagnostic-budget-exceeded"' in new and '"contact-detail-budget-exceeded"' in new and 'row["detailsComplete"] = false; failed += 1' in new,'explicit failed incomplete prefix'
++ assert 'guard geometry.count < 128' in new and 'guard route.points.count <= 128' in new,'geometry route caps'
++ assert '"APPLE_VALID_START_CONTACT_PHASES.json"' in new and 'XCTAssertEqual(failed, 0' in new,'fixed artifact and failed result'
++ assert 'XCTSkip' not in new and '\\(error)' not in new,'no skips or raw errors'
++ assert 'recordDetails: Bool = false' in o and 'if recordDetails && raw.count > 32 { throw' in o,'opt-in bounded details'
++ assert '(point + normal + [penetration]).allSatisfy(\\.isFinite)' in o,'finite native details'
++ assert 'let geometry = SCNCylinder(radius: CGFloat(radius), height: CGFloat(height))' in o and 'options: [.collisionMargin: 0.0]' in o,'unchanged cylinder'
++ assert hashlib.sha256(f).hexdigest()==FIXTURE_SHA256 and FIXTURE_SHA256 in new,'fixed authored fixture'
++ return 18
++class Tests(unittest.TestCase):
++ def test_current_contracts(self):
++  self.assertEqual(contracts((ROOT/TEST).read_text(),(ROOT/ORACLE).read_text(),(ROOT/FIXTURE).read_bytes()),18)
++ def test_admission_retention_and_failure_mutations(self):
++  s=(ROOT/TEST).read_text();o=(ROOT/ORACLE).read_text();f=(ROOT/FIXTURE).read_bytes()
++  changes=[('await fulfillment(of: [done], timeout: 15)','await fulfillment(of: [done], timeout: 30)'),('owner.stopAndDiscard { flag.set(); done.fulfill() }','owner.stopAndDiscard { done.fulfill() }'),('if previousOwnerUndrained','if false'),('previousOwnerUndrained = true','previousOwnerUndrained = false'),('try store("startRaw", phases(startRaw), in: &row)','row["startRaw"] = phases(startRaw)'),('"receiptState": "raw-recorded"','"receiptState": "dropped"'),('<= 900_000','<= 9_000_000'),('"diagnostic-budget-exceeded"','"success"'),('guard geometry.count < 128','guard geometry.count < 10000'),('XCTAssertEqual(failed, 0','XCTAssertEqual(0, 0')]
++  for a,b in changes:
++   with self.subTest(a=a):
++    self.assertIn(a,s)
++    # Restrict mutation to additive method so original-prefix check cannot mask its contract.
++    prefix,new=s.split('    /// Additive historical-model diagnostic.',1)
++    with self.assertRaises((AssertionError,ValueError)):contracts(prefix+'    /// Additive historical-model diagnostic.'+new.replace(a,b,1),o,f)
++ def test_oracle_and_fixture_mutations(self):
++  s=(ROOT/TEST).read_text();o=(ROOT/ORACLE).read_text();f=(ROOT/FIXTURE).read_bytes()
++  for a,b in [('recordDetails: Bool = false','recordDetails: Bool = true'),('raw.count > 32','raw.count > 3200'),('(point + normal + [penetration]).allSatisfy(\\.isFinite)','true')]:
++   with self.subTest(a=a),self.assertRaises(AssertionError):contracts(s,o.replace(a,b),f)
++  with self.assertRaises(AssertionError):contracts(s,o,f+b' ')
++if __name__=='__main__':unittest.main()

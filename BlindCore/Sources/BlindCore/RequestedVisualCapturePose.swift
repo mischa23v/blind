@@ -12,4 +12,18 @@ public enum RequestedVisualCapturePose {
         let cosine = (originForward.x*currentForward.x + originForward.y*currentForward.y + originForward.z*currentForward.z)/(first*last)
         return cosine.isFinite && cosine > cos(.pi/36)
     }
+
+    /// SceneDelivery's legacy heading inputs are horizontal unit vectors. Keep
+    /// the strict full-optical comparison above, then adapt only its yaw inputs.
+    /// A near-vertical view still has no usable legacy heading; never invent one.
+    public static func sceneDeliveryAllowed(capturedAt: Double, now: Double,
+        origin: Point3, current: Point3, currentFrameAt: Double, hazard: Hazard, tracking: Bool,
+        originForward: Point3, currentForward: Point3) -> Bool {
+        guard poseStable(origin: origin, current: current, originForward: originForward, currentForward: currentForward),
+              let sourceHeading = NativeDepthObservationPolicy.horizontalForward(opticalX: Float(originForward.x), opticalZ: Float(originForward.z)),
+              let currentHeading = NativeDepthObservationPolicy.horizontalForward(opticalX: Float(currentForward.x), opticalZ: Float(currentForward.z)) else { return false }
+        return SceneDelivery.allowed(capturedAt: capturedAt, now: now, origin: origin, current: current,
+            currentFrameAt: currentFrameAt, hazard: hazard, tracking: tracking,
+            originForward: sourceHeading, currentForward: currentHeading)
+    }
 }

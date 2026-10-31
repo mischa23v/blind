@@ -1,0 +1,104 @@
+{
+  "scope": "Post-outcome original public iPhone processed-export diagnostic; not a new matrix evaluation",
+  "originalFrameCount": 3,
+  "sourceArchiveSHA256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518",
+  "sourceRecord": "https://zenodo.org/records/10230733",
+  "license": "CC BY 4.0",
+  "deviceSource": "MuSHRoom Koivu, original paper identifies iPhone12 Pro Max and Polycam",
+  "selection": [
+    "Before any pixel inspection, minimum target range among original-pose frames containing full missing ray segment (episode16) or full saved face (episode17). Episode18 checked in same episode16 frame. No depth/error criterion.",
+    "After nearest-view inspection, fixed supplemental rule: minimum optical-axis angle among all original frames containing full episode16 vertical segment, independent of image/depth values; no alternate if occluded. Third and final original frame."
+  ],
+  "rows": [
+    {
+      "episode": 16,
+      "frame": "frame_00024",
+      "columnRow": [
+        290,
+        861
+      ],
+      "targetKind": "missingVerticalRayWithModelYZeroForIndexingOnly",
+      "projectedTargetAxialNominalMetres": 2.580933756712093,
+      "recordedExportAxialNominalMetres": 1.319,
+      "recordedMinusTargetNominalMetres": -1.261933756712093,
+      "qualitativeImageRegion": "tabletop/edge region"
+    },
+    {
+      "episode": 18,
+      "frame": "frame_00024",
+      "columnRow": [
+        290,
+        862
+      ],
+      "targetKind": "missingVerticalRayWithModelYZeroForIndexingOnly",
+      "projectedTargetAxialNominalMetres": 2.5780681207282794,
+      "recordedExportAxialNominalMetres": 1.319,
+      "recordedMinusTargetNominalMetres": -1.2590681207282794,
+      "qualitativeImageRegion": "tabletop/edge region"
+    },
+    {
+      "episode": 17,
+      "frame": "frame_00248",
+      "columnRow": [
+        118,
+        576
+      ],
+      "targetKind": "actualSavedReferenceHit",
+      "projectedTargetAxialNominalMetres": 1.882613891315982,
+      "recordedExportAxialNominalMetres": 1.85,
+      "recordedMinusTargetNominalMetres": -0.03261389131598191,
+      "qualitativeImageRegion": "left chair-caster region; triangle identity not established"
+    },
+    {
+      "episode": 16,
+      "frame": "frame_00119",
+      "columnRow": [
+        332,
+        533
+      ],
+      "targetKind": "missing ray; model Y=0 only for image indexing, not measured floor",
+      "projectedTargetAxialNominalMetres": 6.293722970299683,
+      "recordedExportAxialNominalMetres": 6.356,
+      "recordedMinusTargetNominalMetres": 0.06227702970031679,
+      "qualitativeImageRegion": "red-carpet region; both targets select same stored pixel"
+    },
+    {
+      "episode": 18,
+      "frame": "frame_00119",
+      "columnRow": [
+        332,
+        533
+      ],
+      "targetKind": "missing ray; model Y=0 only for image indexing, not measured floor",
+      "projectedTargetAxialNominalMetres": 6.2968782132835965,
+      "recordedExportAxialNominalMetres": 6.356,
+      "recordedMinusTargetNominalMetres": 0.059121786716403335,
+      "qualitativeImageRegion": "red-carpet region; both targets select same stored pixel"
+    }
+  ],
+  "face10030019ProjectedBoundingSizePixels": [
+    0.6047058099006506,
+    2.1630110704962817
+  ],
+  "face10030019ProjectedAreaPixelsSquared": 0.4670666624463033,
+  "sourceAssociation": "Selected original/COLMAP-file poses/intrinsics exactly equal; documented model/level and author registration chain, with existing calibration uncertainty. Original evidence values unchanged.",
+  "projection": "Original per-frame pinhole calibration; OpenGL C2W, negative Z forward; screen centres column+0.5,row+0.5; nearest original stored pixel, no interpolation",
+  "units": "Published processed UInt16 depth export converted by author factor0.001 to nominal metres axial -Z; NOT raw native LiDAR measurements or independently validated metric accuracy",
+  "rawConfidenceLimits": "No native raw ARKit depth/confidence, tracking, capture timestamps, measured RGB-depth alignment error or phone-to-FARO uncertainty bound available. Missing fields remain unknown; no confidence is fabricated.",
+  "referenceLimits": "FARO reference is author-cleaned/hole-completed without a measured-versus-edited face mask. Missing support ray is not a proven physical drop; projected image content is not a semantic face label.",
+  "physicalAuthority": false,
+  "clearanceOrContinuousSupportEstablished": false,
+  "frozenMatrixOrMapsChanged": false,
+  "originalPixelsInspected": true,
+  "generatedImagery": false,
+  "noRawImagesDepthBuffersOrPosesInThisSummary": true,
+  "measuredDiagnosticRuns": {
+    "wallSeconds": 2.8851680899970233,
+    "CPUSeconds": 2.8563564,
+    "peakRSSKiB": 35712,
+    "scope": "two bounded data-inspection scripts only; excludes earlier source-reading/metadata enumeration"
+  },
+  "correspondenceQualification": "All pixel addresses and depths are conditional on documented frozen offline transforms. Raw OBJ is unaligned; source planner uses separately reviewed fixed-scale stage37 bridge. Pixel diagnostic uses saved original-model rays/FARO hit, not OBJ vertices. No independently established physical pixel-to-target correspondence.",
+  "rawMeshPoseIdentityAssumed": false,
+  "coordinateProvenanceReview": "COORDINATE_PROVENANCE_REVIEW.md"
+}

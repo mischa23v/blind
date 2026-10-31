@@ -1,0 +1,106 @@
+✔ foreground frame loop schedules contextual capabilities without a mode command (15.944591ms)
+✔ contextual jobs retain capture leases, existing verifier and final target gates (0.865682ms)
+✔ passive rectangles never speak a value without the reference verifier (7.292176ms)
+✔ relevant OCR/barcode/color use existing native evidence, not unsolicited mode speech (1.09426ms)
+✖ room scan requests require trusted UI rather than microphone authority and confirm before start (2.314019ms)
+✔ room scanning does not end continuous listening or falsely retain camera path alerts (0.939198ms)
+✔ contextual job cleanup and native timeout retain exact lease ownership (0.71144ms)
+✔ contextual outputs honor existing signs and objects settings (0.352162ms)
+✔ scan approval waits for matching completed warning and starts its response clock then (0.857542ms)
+✔ room-scan lifecycle prefix contracts reject missing, reordered or asynchronously deferred cancellation (27.164045ms)
+✖ optional mesh diagnostics follow critical lifecycle retirement and precede pause or recovery (0.639765ms)
+✔ room-scan entry contract rejects microphone promotion, missing denial return and routes before the gate (12.952283ms)
+✔ observed scene consumes actual depth after urgent detector, off the native owner (8.926389ms)
+✔ loss/restart/deletion retain explicit capture ownership and retire candidates (1.480782ms)
+✔ return target comes from the existing recorder/trail, never origin shortcut (0.579853ms)
+✔ historical hits cannot reopen missing current support or physical sinks (0.635305ms)
+✔ native runtime and its actual portable tests have generated project membership (9.395766ms)
+✔ helper progress is explicitly nonphysical and not auto-announced (2.58054ms)
+✔ new goal and changed body independently fence queued candidate plans (0.999997ms)
+✔ urgent detector ordering contract rejects missing calls and premature scene work (76.580062ms)
+✔ capture-loss and timestamp-order contracts reject absent guard tokens (2.473135ms)
+✔ room A to B during debounce cannot attach the previous room to a new capture (source) (17.370592ms)
+✔ yesterday generic cup cannot outrank today explicitly saved cup or user report (source) (11.969938ms)
+✔ scoped deletion cutoffs reload from private storage after restart (source) (7.175733ms)
+✔ reopening an old map after scoped deletion checks room and normalized category cutoffs before import (source) (3.434077ms)
+✔ scoped deletion commits durable suppression before replacing history and exposes write failures (source) (7.473482ms)
+✔ full clear commits suppression before removal and cancels already captured callbacks (source) (3.087872ms)
+✔ RGB-only history survives depth and tracking failure without acquiring spatial authority (source) (3.970032ms)
+✔ tracking recovery cannot resurrect pre-failure spatial work or permanently block RGB collection (source) (4.422694ms)
+✔ privacy and session resets cancel RGB work while depth-only failure keeps its bounded token (source) (10.338182ms)
+✔ RGB-preservation contracts reject privacy/session leakage and weakened loss or freshness guards (56.809705ms)
+✔ item and room forget paths invalidate captured work and perform scoped history deletion (source) (4.419943ms)
+✔ cancelled route cannot repeat its retired physical distance while alignment survives (source) (7.693956ms)
+✔ new world-map recovery rejects queued frames captured before its own beginning (source) (0.823468ms)
+✔ recorded-spot empirical receipt is debug-only and never enables object handling (source) (3.842525ms)
+✔ recorded-spot promotion binds exact re-read scan frame point ID and position, not a category label (source) (3.933184ms)
+✔ historical-spot renderer rechecks the receipt and never substitutes present object location (source) (0.989021ms)
+✔ receipt is bound to the current local device and app build rather than only iPhone family (source) (3.067703ms)
+✔ spoken recorded direction is cancelled if target, heading freshness or rendered relation changes (source) (5.453672ms)
+✔ recorded pose age uses sensor capture time rather than delayed main-queue receipt (source) (3.144903ms)
+✔ delayed world-map callbacks cannot extend a captured frame lease (source) (1.7449ms)
+✔ positional bearing interval uses tangent uncertainty and guards both sector boundaries (source) (16.98164ms)
+✖ connected issuer is retired by mount or frame ownership loss before frame throttling (source) (4.453135ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 40
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 827.922024
+
+✖ failing tests:
+
+test at ../../../tmp/navigation-contract-negative-control-20261027/tools/test/contextual-capabilities.test.mjs:102:1
+✖ room scan requests require trusted UI rather than microphone authority and confirm before start (2.314019ms)
+  AssertionError [ERR_ASSERTION]: private func stopCameraMonitoring()
+      at assertScanCancellationPrefixes (file:///tmp/navigation-contract-negative-control-20261027/tools/test/contextual-capabilities.test.mjs:35:12)
+      at TestContext.<anonymous> (file:///tmp/navigation-contract-negative-control-20261027/tools/test/contextual-capabilities.test.mjs:110:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '\n        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n        meshCandidateDiagnostics.stop()\n        #endif\n        nativeObservations.stop()\n        voiceRoomScan.cancel()\n        retireBodyWarning(publishChange: false)\n        withObservedScene { $0.stop() }\n        cameraRecovery.pause()\n        cancelAutomaticRoomRecovery()\n        interruptedSearch.cancel()\n        persistObservedObjects()\n        places.invalidateWorldMapRecovery()\n        defer { updateLiveActivity() }\n        cameraStartupID = UUID()\n        cancelDescription()\n        invalidatePerceptionWork()\n        peopleTracking.reset()\n        fixedBodyMount = false\n        visualStairs.reset()\n        survey.invalidate()\n        stopReturn()\n        mapping.stop(); journeys.finish()\n        attention.resetMotion()\n        requestID = UUID(); questionTask?.cancel(); questionTask = nil; busy = false\n        places.cancelScan(); session.pause(); watchdog?.invalidate(); watchdog = nil\n        detector.reset(); continuity = MonitoringContinuity(); lastObservation = nil; recognizedPlace = nil; awaitingPlace = nil\n        placeRecovery.reset(); placeRecoveryQuestion = ""\n        indoor.invalidatePosition(); outdoor.stop(); wearables.disconnect()\n        practiceTimer?.invalidate(); practiceTimer = nil\n        UIApplication.shared.isIdleTimerDisabled = false\n        running = false; simulation = false; phoneDetection = Detection(.stopped); detection = phoneDetection\n    }',
+    expected: /^\s*nativeObservations\.stop\(\)\s*voiceRoomScan\.cancel\(\)\s*(?:\n|$)/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at ../../../tmp/navigation-contract-negative-control-20261027/tools/test/contextual-capabilities.test.mjs:160:1
+✖ optional mesh diagnostics follow critical lifecycle retirement and precede pause or recovery (0.639765ms)
+  AssertionError [ERR_ASSERTION]: private func stopCameraMonitoring(): critical retirement stays first
+      at assertLifecycle (file:///tmp/navigation-contract-negative-control-20261027/tools/test/contextual-capabilities.test.mjs:172:14)
+      at TestContext.<anonymous> (file:///tmp/navigation-contract-negative-control-20261027/tools/test/contextual-capabilities.test.mjs:183:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at ../../../tmp/navigation-contract-negative-control-20261027/tools/test/spatial-review-regressions.test.mjs:364:1
+✖ connected issuer is retired by mount or frame ownership loss before frame throttling (source) (4.453135ms)
+  AssertionError [ERR_ASSERTION]: All exact ownership retirements are synchronous and before throttle; normal frames do not retire them
+      at assertRawRetirement (file:///tmp/navigation-contract-negative-control-20261027/tools/test/spatial-review-regressions.test.mjs:380:12)
+      at TestContext.<anonymous> (file:///tmp/navigation-contract-negative-control-20261027/tools/test/spatial-review-regressions.test.mjs:392:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n        if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }\n        #endif\n        \n        if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }\n        \n        if case .normal = frame.camera.trackingState {} else {\n            journeys.breakTracking()\n            nativeObservations.trackingLost()\n            withObservedScene { $0.trackingLost(at: frame.timestamp) }\n            mapping.trackingLost(at: frame.timestamp)\n            clearBoardingReading() \n            \n            \n            if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }\n        }',
+    expected: /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*withObservedScene \{ \$0\.trackingLost\(at: frame\.timestamp\) \}\s*mapping\.trackingLost\(at: frame\.timestamp\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}\s*#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\s*if case \.normal = frame\.camera\.trackingState \{\} else \{ meshCandidateDiagnostics\.stop\(\) \}\s*#endif$/,
+    operator: 'match',
+    diff: 'simple'
+  }

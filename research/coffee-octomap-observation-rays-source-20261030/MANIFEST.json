@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "source-only; not compiled, native-loaded or tested",
+  "files": [
+    {
+      "path": "OBSERVATION_ADAPTATION.diff",
+      "bytes": 7345,
+      "sha256": "523206508b3cca9f2e22d2122e4f91fe1848d60e7a2c6491f9b7bb56d69cde12"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5453,
+      "sha256": "a7b39237cecef641130f62d07e65c36886737df27d99fb2126b04c93ab14e372"
+    },
+    {
+      "path": "REVISION.json",
+      "bytes": 774,
+      "sha256": "7b3523dd9ef847ddde8a581923e884e2c7545d08bf0b1612b7c6fc0ee24a8854"
+    },
+    {
+      "path": "SOURCE_PINS.json",
+      "bytes": 3240,
+      "sha256": "554969a0d9dc8e61de74c458958203f3886e40aa6133c2e63a35c2461ce76f73"
+    },
+    {
+      "path": "build_readonly.py",
+      "bytes": 14955,
+      "sha256": "99331948979e682ee1877163454a88cdf43924d51567df6844dd31d5aeb58766"
+    },
+    {
+      "path": "finalize_build_receipt.py",
+      "bytes": 3177,
+      "sha256": "e2bebd6554de79d064b3c0c7111dabf726a8cc2bc3a03c16967d47a1582f1ca4"
+    },
+    {
+      "path": "ray_binding.py",
+      "bytes": 5390,
+      "sha256": "38e3da2e3ed65da193a184b1a3874be2623ac78686cf4cbf673248343d9c9ec4"
+    },
+    {
+      "path": "readonly_rays.cpp",
+      "bytes": 8992,
+      "sha256": "b8be2ec124cbb927e74bfb434aadf5c4bd6d2dcc57faba17ffc0534fa03f4564"
+    },
+    {
+      "path": "run_controls.py",
+      "bytes": 6319,
+      "sha256": "9ebe7749cf3c9b3a8855e65cb405f0881dd0cc84ef98775c65a7508f3563e9ae"
+    },
+    {
+      "path": "run_controls_bounded.sh",
+      "bytes": 627,
+      "sha256": "dac41149e488a7da3a044422826ea9ae0ba98d0e51467382fea19144da469bf4"
+    },
+    {
+      "path": "test_observation_rays.py",
+      "bytes": 3874,
+      "sha256": "6ebc20c683859948ed583913770ee74e4545e51976cccf7dc5d6e1924f54882d"
+    },
+    {
+      "path": "test_readonly_rays.py",
+      "bytes": 9674,
+      "sha256": "098f2f8fb92ccc2456d3c7a567bd41eff6b3768e1751560af108d39b47e5f2a9"
+    }
+  ],
+  "excludedSeparateRootPin": "BUILD_RUN_PINS.json",
+  "containsNativeBinary": false,
+  "containsRawData": false,
+  "physicalAuthority": false
+}

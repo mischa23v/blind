@@ -1,0 +1,11 @@
+# Only the explicit text-only publication packet is eligible for staging.
+# All original RGB/depth/pose exports and detailed local outputs stay accounted here.
+*
+!.gitignore
+!PUBLIC_SUMMARY.md
+!PUBLIC_RESULT.json
+!TRANSFER_RECEIPT.json
+!FINAL_ACCOUNTING.json
+!PUBLICATION_MANIFEST.json
+!COORDINATE_PROVENANCE_REVIEW.md
+!COORDINATE_PROVENANCE_REVIEW.json

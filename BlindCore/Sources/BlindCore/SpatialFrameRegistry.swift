@@ -177,6 +177,12 @@ public struct SpatialFrameRegistry: Sendable {
         // binding alone must not relabel arbitrary geometry as the active map.
         guard indoorMap.packageID == binding.mapID, indoorMap.packageRevision == binding.revision,
               indoorMap.packageModified != true else { throw SpatialRegistryError.staleRevision }
+        if !indoorMap.permitsRoutePlanning {
+            guard record.savedWorldFrame != nil, record.floorLevels.isEmpty,
+                  snapshot.nodes.first(where: { $0.id == record.nodeID })?.kind == .place else {
+                throw SpatialRegistryError.invalidMap
+            }
+        }
         let levels = indoorMap.nodes.map(\.level) + (indoorMap.surfaces ?? []).map(\.level)
             + (indoorMap.keepOutZones ?? []).map(\.level)
         guard levels.allSatisfy({ record.floorLevels[$0] != nil }) else { throw SpatialRegistryError.unknownFloor }

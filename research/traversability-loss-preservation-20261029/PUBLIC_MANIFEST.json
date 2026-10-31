@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "scope": "Strict public text-only whitelist; no raw/derived dataset geometry or per-record payload",
+  "files": [
+    {
+      "path": "AGGREGATE_RESULTS.json",
+      "bytes": 6401,
+      "sha256": "68d77f8e225a13cf4c19ad7b3d8b117dbf937c465b11371343266a16246fdaf4",
+      "gitBlobSHA": "bbb5405c973e24d2123b64560b78ede388f572c5"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7328,
+      "sha256": "0ef4303b2c1cc72315fac45171f1f2ea606516f1e2c21b66cb73639a19755e5f",
+      "gitBlobSHA": "6c251e634ffb891f3d19fcd14458520327a8fdd9"
+    },
+    {
+      "path": "SCRIPT_PROVENANCE.json",
+      "bytes": 4352,
+      "sha256": "79ea8232528a141c383aa49f59fe9541f67e1c68ff562c75c492cd39814d6779",
+      "gitBlobSHA": "22baa2b499e99b625a83ba4a516a0b0b3f58f2eb"
+    },
+    {
+      "path": "SOURCE_PINS.json",
+      "bytes": 16461,
+      "sha256": "013dfb89743b51e3c893c051e2dcb5ff1be349ccd8d071fa8f76c4fd393c81df",
+      "gitBlobSHA": "879bd4511d61712bb77eee449537a4349d51110e"
+    },
+    {
+      "path": "scripts/erosion-seed-audit__read_saved_triangle_vertices.py.txt",
+      "bytes": 2166,
+      "sha256": "96af7dadf5739a5c75364d9fc32d000d2f2e461d8cb38ba302cd91b0680d5ef4",
+      "gitBlobSHA": "e8c1f9ca6e026b78bc2819c4369969e1084430b9"
+    },
+    {
+      "path": "scripts/erosion-seed-audit__replay_saved.py.txt",
+      "bytes": 7609,
+      "sha256": "52c918b4a66e0317fcc7025d8aa0ff8618397dec60731876af912222741a5854",
+      "gitBlobSHA": "5fc1da081bd301d309ec94c41c9b0de32dae27d2"
+    },
+    {
+      "path": "scripts/erosion-seed-audit__trace_ledge_closure.py.txt",
+      "bytes": 2539,
+      "sha256": "53c8e6f608ff16d7538c8c84a30f6fa211a62f942544d4618ac78edc11a62ff6",
+      "gitBlobSHA": "68ec6ad26f4044ed55e958db1ec184c1f58dbd5c"
+    },
+    {
+      "path": "scripts/stock-route-prep__guard.py.txt",
+      "bytes": 18314,
+      "sha256": "b33cafd3fb0f5ab83eb366ca075d61f78f48ff2c570dac1903834b8d09cbf3d0",
+      "gitBlobSHA": "ebf656f82dea07d4f44efea95fd37870c5f0698b"
+    },
+    {
+      "path": "scripts/stock-route-prep__reader_fixtures.py.txt",
+      "bytes": 5382,
+      "sha256": "d85c7d88623f5646b7e4404ba1b6f99d03d888f34348554b087b580380bc8a76",
+      "gitBlobSHA": "984e1331c96806a33a06c8c1589d0db1baf57f42"
+    },
+    {
+      "path": "scripts/stock-route-prep__summarize_completed.py.txt",
+      "bytes": 5147,
+      "sha256": "5847abf259f4c54bc995757d51ee0190ec49723fb7db2e3ea6731d8836ed4a4a",
+      "gitBlobSHA": "f57c93e42ccd681a4871d5f3f2488843138d1472"
+    },
+    {
+      "path": "scripts/stock-route-prep__worker.py.txt",
+      "bytes": 19052,
+      "sha256": "123428b097ccadd099f4e0bbee63b2ae8929050f3ffb848ad83bbf2c15cc6f5b",
+      "gitBlobSHA": "9b4c5d5bcebd70986c7c65dae0692f85fe6d04f9"
+    }
+  ],
+  "excluded": [
+    "raw/derived geometry",
+    "per-ray arrays",
+    "poses",
+    "images",
+    "model/native binaries",
+    "traces",
+    "full trajectory coordinates",
+    "admission token/launch authorization",
+    "dataset cell selections and raster-domain coordinates"
+  ],
+  "newExperiments": false,
+  "physicalAuthority": false,
+  "redistributionRightsExpanded": false
+}

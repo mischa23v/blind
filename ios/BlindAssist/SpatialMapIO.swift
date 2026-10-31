@@ -81,7 +81,7 @@ final class SpatialMapIO<Value: Sendable>: @unchecked Sendable {
     }
     private let storage: any SpatialMapStorageIO
     private let publishOnMain: (@escaping () -> Void) -> Void
-    private let queue = DispatchQueue(label: "BlindAssist.spatial-map-io", qos: .utility)
+    private let queue = DispatchQueue(label: "BlindAssist.spatial-map-io", qos: .userInitiated)
     private let lock = NSLock()
     private var current: SpatialMapIOToken?
     private var pending: Job?

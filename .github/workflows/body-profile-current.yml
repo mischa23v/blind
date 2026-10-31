@@ -1,0 +1,57 @@
+# Proposal: root installs as .github/workflows/body-profile-current.yml after review.
+name: Current-source body profile regression
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'ios/BlindAssist/SpatialMapIO.swift'
+      - 'ios/BlindAssist/BodyProfileStore.swift'
+      - 'BlindCore/**'
+      - 'research/evaluations/body-aware-warning/verification/**'
+      - 'research/indoor-io-qos-proposal/**'
+      - '.github/workflows/body-profile-current.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+
+# No paid-storage assumption: uploads require a separately reviewed source opt-in.
+# Normal push/dispatch runs retain evidence only in built-in logs and job summaries.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
+concurrency:
+  group: body-profile-current-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  body-profile:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Run unchanged extracted tests against current checkout
+        id: fixtures
+        timeout-minutes: 12
+        run: python3 research/indoor-io-qos-proposal/run-current-body-profile.py
+      - name: Preserve current compiled inputs and result
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: body-profile-current-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/body-profile-current-evidence/
+          if-no-files-found: error
+          retention-days: 3
+      - name: Emit bounded log-only CI receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py body-profile

@@ -1,0 +1,115 @@
+{
+  "sourcePins": {
+    "research/native-floor-import-repair-20261028/edt-navigation-probe/main.swift": {
+      "sha256": "cc1cc7e6423bd35fd767e8a1e3822f10dbda98de9a01656d3bd65e6f094c0546",
+      "bytes": 33696,
+      "sourceCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d"
+    },
+    "research/native-floor-import-repair-20261028/strict-endpoint-probe/PACKED_ROUTING_GEOMETRY.json": {
+      "sha256": "0731735bf24f198288efea26d79c8a29929d49b10d3be0637e9e15fb983c63b7",
+      "bytes": 120756,
+      "sourceCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d"
+    },
+    "research/native-floor-import-repair-20261028/strict-endpoint-probe/REQUESTS_49A.json": {
+      "sha256": "e5d2e07c7564869d2abde1d4a947e022d1a166c64641a81f2b92fcdbab73ac51",
+      "bytes": 60836,
+      "sourceCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d"
+    },
+    "research/native-floor-import-repair-20261028/edt-navigation-probe/EDT_MASK_INPUTS.json": {
+      "sha256": "13f436a77608178789c6ba19db1f6de7f91d07229b3af3771106d7c4b218ed2a",
+      "bytes": 162134,
+      "sourceCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d"
+    }
+  },
+  "geometryKind": "Apple public prescanned CapturedRoom parametric model export, packed final-adapter geometry; not raw RGB-D frames and not synthetic room geometry",
+  "rawCoffeeDataUsed": false,
+  "fixtureRequests": {
+    "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e": 13,
+    "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d": 12
+  },
+  "requestScope": "18 frozen route queries plus 7 actually executed journey queries; 9 stopped journey stages remain not-run, never fabricated",
+  "requestProfiles": [
+    {
+      "profile": "declared-nominal",
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75
+    },
+    {
+      "profile": "declared-wide",
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158
+    },
+    {
+      "profile": "declared-width28-assumed-depth20-height120",
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858
+    },
+    {
+      "profile": "journey-width28",
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858
+    }
+  ],
+  "packedFixtureMetadata": [
+    {
+      "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "fixtureID": "Hallway2"
+    },
+    {
+      "sourceSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "fixtureID": "Bedroom3"
+    }
+  ],
+  "acceptanceIDs": {
+    "retainSixNoContactCorridors": [
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-around-bed:declared-nominal",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-long:declared-nominal",
+      "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-around-bed:declared-width28-assumed-depth20-height120",
+      "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-long:declared-width28-assumed-depth20-height120",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:open-door-approach",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:return-within-original-supported-model"
+    ],
+    "seekTwoCompleteNoContactCorners": [
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-corner:declared-nominal",
+      "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-corner:declared-width28-assumed-depth20-height120"
+    ],
+    "retainThreeTypedEndpointRefusals": [
+      "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-aisle:declared-width28-assumed-depth20-height120",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:bed-supplied-rise-around-closed-door-return:connector-to-existing-aisle-route",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:chair-supplied-rise-around-closed-door-return:connector-to-existing-aisle-route"
+    ],
+    "otherPreviouslyFailedRequests": [
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-aisle:declared-nominal",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-aisle:declared-wide",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-around-bed:declared-wide",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-contained-start:declared-nominal",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-contained-start:declared-wide",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-long:declared-wide",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-corner:declared-wide",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-missing-floor:declared-nominal",
+      "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-missing-floor:declared-wide",
+      "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-contained-start:declared-width28-assumed-depth20-height120",
+      "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-missing-floor:declared-width28-assumed-depth20-height120",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:standing-inside-bed-is-invalid:inside-bed-connector-attempt",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:standing-inside-chair-is-invalid:inside-chair-connector-attempt",
+      "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:outside-original-floor-unsupported"
+    ]
+  },
+  "candidateGroupCountsImpliedByVerifiedTruePredicate": {
+    "retainedSixNoContactCorridors": 6,
+    "completeNoContactCorners": 2,
+    "retainedThreeTypedRefusals": 3,
+    "preservedOtherFourteenFailures": 14
+  },
+  "fullResultRowsRetrieved": false,
+  "logSHA256": "97c52c58387fddd551b4692f94df29ccc229254939ec250d1952ef68f0bcf9b6",
+  "allRouteRequestsAndBodyProfilesSupplied": true
+}

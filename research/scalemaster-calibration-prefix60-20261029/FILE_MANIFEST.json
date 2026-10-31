@@ -1,0 +1,189 @@
+{
+  "exclusions": [
+    "dataset archives",
+    "raw poses or per-frame trajectories",
+    "raw images",
+    "full masks",
+    "geometry arrays/PLY",
+    "private preview"
+  ],
+  "files": [
+    {
+      "bytes": 3740,
+      "path": "README.txt",
+      "sha256": "72c044a5f65ddde206eccaa39eb3ca046185b12eee04587e186b9dcb4f23b3fd"
+    },
+    {
+      "bytes": 2117,
+      "path": "calibration/README.txt",
+      "sha256": "a0777bb0dcd5e66ae5852dbf41fe325f3310ea59842239e629673890600dc66a"
+    },
+    {
+      "bytes": 8144,
+      "path": "calibration/aggregates/diagnostic_results.json",
+      "sha256": "50bdd076fcac76ed4fd44562449d4301e39707f46a078c9222694076e21c62f4"
+    },
+    {
+      "bytes": 5199,
+      "path": "calibration/aggregates/synthetic_statuses.json",
+      "sha256": "d2b3eb99ae726ed3f3ad33b9357ed8fcb9805f0d3edd10f00e66d0db2894f674"
+    },
+    {
+      "bytes": 4081,
+      "path": "calibration/provenance/input_result_identities.json",
+      "sha256": "a31fd76150200af447e0a3f91dce6c386bc12b1d06a1b95c700ab03fb3a64ee1"
+    },
+    {
+      "bytes": 4585,
+      "path": "calibration/provenance/sanitized_source_freezes.json",
+      "sha256": "0b36ec71d32e2189ecc6cdefc80deebf18212a21543d73f7c467fceb34fc9206"
+    },
+    {
+      "bytes": 962,
+      "path": "calibration/resources/axis-diagnostic-run-001.json",
+      "sha256": "fd2f270376b7c3603f8a0945467214ce03d63fd9df75ccc45458feafed4e1630"
+    },
+    {
+      "bytes": 945,
+      "path": "calibration/resources/scale-diagnostic-run-001.json",
+      "sha256": "fd88ba339c8ffc1659bb76331f9fd80b12b566245ed9bf15960a0d52b8ea7f38"
+    },
+    {
+      "bytes": 7143,
+      "path": "calibration/sources/scalemaster-axis-diagnostic/PREREGISTRATION.txt",
+      "sha256": "90eebc01ac943c1f7fd4f6750c2c7413655024c79a901e80f0bf19a77651e9e3"
+    },
+    {
+      "bytes": 19911,
+      "path": "calibration/sources/scalemaster-axis-diagnostic/axis_diagnostic.py",
+      "sha256": "23502f094323be831385dc958d815955bb3b575eb62348b8bb53e9f9c5ace3a9"
+    },
+    {
+      "bytes": 6011,
+      "path": "calibration/sources/scalemaster-axis-diagnostic/run_bounded.py",
+      "sha256": "e66b2cb5ec291fc8929f88efb4f3fae77b8fa95372cab78b9f60eb51937db6ff"
+    },
+    {
+      "bytes": 5602,
+      "path": "calibration/sources/scalemaster-scale-diagnostic/REVIEW_NOTES.txt",
+      "sha256": "64f925fdb886c691a64c4e2970172fc44debef5092eb05f07aee75b221bd8e93"
+    },
+    {
+      "bytes": 14193,
+      "path": "calibration/sources/scalemaster-scale-diagnostic/diagnostic.py",
+      "sha256": "9f774ff9d152f0485fc1fd762d8068ee9abe561cf1898f080f11989fb77432ee"
+    },
+    {
+      "bytes": 3541,
+      "path": "calibration/sources/scalemaster-scale-diagnostic/extract_selected.py",
+      "sha256": "f1777e4156fe4aeb1e71e67414b59f9c8ebad782a802c77f94c7ee4d15ee2b3a"
+    },
+    {
+      "bytes": 5009,
+      "path": "calibration/sources/scalemaster-scale-diagnostic/freeze_pairs.py",
+      "sha256": "ff91a20b1ba629258973fc6ff1678cb66ebbfaac9cbf54f757c1207221c5ab08"
+    },
+    {
+      "bytes": 4580,
+      "path": "calibration/sources/scalemaster-scale-diagnostic/run_bounded.py",
+      "sha256": "eec80ce45992016f8cde80ec17f8d12fcbe3c23a5f61556364fc79bbd17b4003"
+    },
+    {
+      "bytes": 6393,
+      "path": "provenance/EXACT_TEXT_COPY_IDENTITIES.json",
+      "sha256": "f9716901e8cd4556d398fb1d0a676077e9d564edbded6365030efadc3b001ccd"
+    },
+    {
+      "bytes": 2686,
+      "path": "replay/aggregates/ENGINEERING_RESULTS.json",
+      "sha256": "152fe35d71ca02f2fd033c9e67707c7647f14a21f427c2b3a6c5449bc1f04fd4"
+    },
+    {
+      "bytes": 2167,
+      "path": "replay/aggregates/EXPORT_ONLY_CALIBRATION_CONTRACT.json",
+      "sha256": "8160eaff732eb752ecee65149c2bee141934abc78fbe3e9ed214c33226b2a322"
+    },
+    {
+      "bytes": 1598,
+      "path": "replay/aggregates/MASK_DENOMINATORS.json",
+      "sha256": "10ff2a2fec7362618d3962ef8e56edabcfdfb7de73a57e2b734fccadd205cb24"
+    },
+    {
+      "bytes": 2358,
+      "path": "replay/baseline-reference/BASELINE_PROVENANCE.json",
+      "sha256": "0533d829c4bb4682ac5c1326a5837cefeb0c73729d42759104ffeb0cfa40e3e4"
+    },
+    {
+      "bytes": 8257,
+      "path": "replay/baseline-reference/fusion_worker.py",
+      "sha256": "cce6699ab0430fda0c9bdac02fb992af2d82f4f1a689b934cbb71d2f43cc5086"
+    },
+    {
+      "bytes": 4590,
+      "path": "replay/provenance/SANITIZED_SOURCE_FREEZE.json",
+      "sha256": "cd17d96a58ca5e907d10aa2b294ef6b61be7d8026e19d5135bb39c3b1e190316"
+    },
+    {
+      "bytes": 1225,
+      "path": "replay/resources/EXECUTION_RECEIPT.json",
+      "sha256": "61290308aecb2a1d6d7bb56f70cc666f6f64e3998de70c7d6a65972a47694cd6"
+    },
+    {
+      "bytes": 585,
+      "path": "replay/resources/SOFTWARE_CONTROLS.json",
+      "sha256": "48d18e59f8ef7ce67ef3447cfca03e05870e1b5448aad8620f226482bbd01dad"
+    },
+    {
+      "bytes": 7662,
+      "path": "replay/sources/scalemaster-prefix60/PLAN.txt",
+      "sha256": "70fcb919b199f97455513bcfeba7eec16e5d913e15aa3d7ed99b642907466ede"
+    },
+    {
+      "bytes": 1732,
+      "path": "replay/sources/scalemaster-prefix60/SELECTED_CALIBRATION.json",
+      "sha256": "5b5a614341b351ed041053886c5327c8342479a7135691405e491e8e559c4746"
+    },
+    {
+      "bytes": 5539,
+      "path": "replay/sources/scalemaster-prefix60/common.py",
+      "sha256": "a48a74b5cd1f92a9b5169d7b7ae1a3a67ef084f2194c6bf872ce99311b9d845f"
+    },
+    {
+      "bytes": 3774,
+      "path": "replay/sources/scalemaster-prefix60/extract_prefix.py",
+      "sha256": "d2c3eb5d33a9f9b0bf4c0e2a86d4123bdfe751dbfdc969e972b97f7af78cc55f"
+    },
+    {
+      "bytes": 3537,
+      "path": "replay/sources/scalemaster-prefix60/preview.py",
+      "sha256": "f8a61d5a0fcc0ef32f74a738e0ecd0eb6ee435066795aa70d7ca80bd67eada94"
+    },
+    {
+      "bytes": 12805,
+      "path": "replay/sources/scalemaster-prefix60/replay.py",
+      "sha256": "f39c51d741e85aa523355c146df219a3e4af4fbc08334a60f9d5b1d99c0594d4"
+    },
+    {
+      "bytes": 7698,
+      "path": "replay/sources/scalemaster-prefix60/run_bounded.py",
+      "sha256": "744da974d1adefc455ded2c2fabf71cccc0ac28fe3adaf40e621825af0e77c82"
+    },
+    {
+      "bytes": 2608,
+      "path": "reviews/calibration-completed.json",
+      "sha256": "1232d8c46537b2ebc013b8aa0a0644069ce7001f241641da2d27d784c8ca1f12"
+    },
+    {
+      "bytes": 3976,
+      "path": "reviews/prefix60-completed.json",
+      "sha256": "3d05075ce02ff7252216bdc54dad7866730260c70add1ff4b04d0043fc87dd85"
+    },
+    {
+      "bytes": 2142,
+      "path": "reviews/prefix60-source.json",
+      "sha256": "bdec366b6ca90d087377a927749ffdbf5f527a6f123f32557e0228da49e17e89"
+    }
+  ],
+  "publication": "root review/sole publisher only; not published by packaging task",
+  "schema": "text-only-scalemaster-preservation-v2"
+}

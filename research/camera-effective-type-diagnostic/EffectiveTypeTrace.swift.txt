@@ -1,0 +1,86 @@
+
+// Disposable, source-pinned synthetic audit instrumentation; never shipped.
+// No geometry reader, overlay, new accessibility node, font or size override.
+@MainActor
+private struct AuditEffectiveTypeProbe: ViewModifier {
+    let role: String
+    @Environment(\.dynamicTypeSize) private var dynamic
+    @Environment(\.sizeCategory) private var legacy
+    func body(content: Content) -> some View {
+        content
+            .onAppear { emit("appear") }
+            .onChange(of: dynamic) { _, _ in emit("dynamic-change") }
+            .onChange(of: legacy) { _, _ in emit("legacy-change") }
+    }
+    private func dynamicLabel(_ value: DynamicTypeSize) -> String {
+        switch value {
+        case .xSmall: return "xSmall"
+        case .small: return "small"
+        case .medium: return "medium"
+        case .large: return "large"
+        case .xLarge: return "xLarge"
+        case .xxLarge: return "xxLarge"
+        case .xxxLarge: return "xxxLarge"
+        case .accessibility1: return "accessibility1"
+        case .accessibility2: return "accessibility2"
+        case .accessibility3: return "accessibility3"
+        case .accessibility4: return "accessibility4"
+        case .accessibility5: return "accessibility5"
+        default: return "unknown"
+        }
+    }
+    private func legacyLabel(_ value: ContentSizeCategory) -> String {
+        switch value {
+        case .extraSmall: return "extraSmall"
+        case .small: return "small"
+        case .medium: return "medium"
+        case .large: return "large"
+        case .extraLarge: return "extraLarge"
+        case .extraExtraLarge: return "extraExtraLarge"
+        case .extraExtraExtraLarge: return "extraExtraExtraLarge"
+        case .accessibilityMedium: return "accessibilityMedium"
+        case .accessibilityLarge: return "accessibilityLarge"
+        case .accessibilityExtraLarge: return "accessibilityExtraLarge"
+        case .accessibilityExtraExtraLarge: return "accessibilityExtraExtraLarge"
+        case .accessibilityExtraExtraExtraLarge: return "accessibilityExtraExtraExtraLarge"
+        default: return "unknown"
+        }
+    }
+    private func emit(_ event: String) {
+        AuditEffectiveTypeTrace.emit(role: role, event: event,
+            dynamic: dynamicLabel(dynamic), legacy: legacyLabel(legacy))
+    }
+}
+
+@MainActor
+private enum AuditEffectiveTypeTrace {
+    private static var count = 0
+    private static let launch = UUID().uuidString
+    private static let file = FileManager.default.temporaryDirectory
+        .appendingPathComponent("blind-effective-type-synthetic.jsonl")
+    static func emit(role: String, event: String, dynamic: String, legacy: String) {
+        guard ProcessInfo.processInfo.arguments.contains("--ui-testing"),
+              ProcessInfo.processInfo.arguments.contains("--audit-effective-type"),
+              count < 129 else { return }
+        count += 1
+        let row: [String: Any] = ["schema": 1, "seq": count, "launch": launch,
+            "uptime": ProcessInfo.processInfo.systemUptime,
+            "role": role, "event": count == 129 ? "overflow" : event,
+            "dynamic": dynamic, "legacy": legacy]
+        do {
+            var bytes = try JSONSerialization.data(withJSONObject: row, options: [.sortedKeys])
+            bytes.append(10)
+            guard bytes.count <= 1024 else { return }
+            if count == 1 {
+                try bytes.write(to: file, options: .atomic)
+            } else {
+                let handle = try FileHandle(forWritingTo: file)
+                defer { try? handle.close() }
+                try handle.seekToEnd()
+                try handle.write(contentsOf: bytes)
+            }
+        } catch {
+            // Collector requires fresh complete records; logging failure never changes audit result.
+        }
+    }
+}

@@ -1,0 +1,157 @@
+--- stage83/Sources/MeshCandidateIngress.swift
++++ stage86-proposal/Sources/OriginBoundMeshIngress.swift
+@@ -2,9 +2,16 @@
+ import MeshSnapshot82
+ import BlindRoomMesh
+ 
++// ISOLATED PROPOSAL ONLY. Not imported by the app. Authored, not Apple-compiled.
+ /// Candidate-only owner. The lock is the serialized ingress/lifecycle boundary;
+ /// it is deliberately entered BEFORE synchronous native-buffer copying.
+-public final class MeshCandidateIngress83 {
++public final class OriginBoundMeshIngress86 {
++    /// Opaque immutable API capability, NOT an ARKit origin or freshness proof.
++    /// Keep it in a producer owner's `let` property. Never read a new global lease
++    /// inside an old callback. There is intentionally no public constructor/getter.
++    public final class ProducerLease {
++        fileprivate init() {}
++    }
+     public enum Failure: Error { case unavailable, stale, runtime(MeshCandidateError) }
+     public struct Candidate {
+         public let route: MeshCandidateRoute
+@@ -18,7 +25,9 @@
+     private let maxAnchors: Int, maxCopies: Int
+     private var epoch: UUID
+     private var token: UInt64 = 0
+-    private var stopped = false, copies = 0
++    // Construction is closed. Only a successful reset returns a new lease.
++    private var stopped = true, copies = 0
++    private var activeLease: ProducerLease?
+     private var discarding = false, runtimeDiscarded = false, discarded = false
+     private var discardWaiters: [() -> Void] = []
+     // Only the decode job reads/releases contents. Clearing this box also releases
+@@ -31,7 +40,7 @@
+     // Tombstones remain until reset; no eviction that could permit anchor ABA.
+     private var revisions: [UUID: UInt64] = [:]
+     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+-                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
++                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh86.decode", qos: .utility)) throws {
+         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+         let initialEpoch = UUID(); epoch = initialEpoch
+@@ -45,8 +54,11 @@
+         token += 1; return true
+     }
+     private func gap() { runtime.invalidate() } // ONLY loss/failure, never ordinary updates.
+-    private func admit(_ anchor: UUID, _ time: Double) -> MeshSnapshot82.Context? {
+-        // Even malformed/newer/overflow callbacks retire the outer result immediately.
++    private func admit(_ lease: ProducerLease, _ anchor: UUID, _ time: Double) -> MeshSnapshot82.Context? {
++        // A foreign/revoked callback is not a current-producer delivery gap. Reject
++        // BEFORE token, receipt, revisions, runtime or copy reservations mutate.
++        guard let activeLease, activeLease === lease, !stopped else { return nil }
++        // Current-lease malformed/newer/overflow callbacks still retire the result.
+         guard advance(), !stopped else { return nil }
+         guard time.isFinite, time >= 0, time > receipt else { gap(); return nil }
+         receipt = time
+@@ -59,10 +71,13 @@
+     /// Call on the owning AR callback queue AFTER independent hazards. `capture` is
+     /// nonescaping: do not send anchors/Metal/raw pointers to the decode worker.
+     /// Explicit receipt uptime must increase; it is NEVER sensor capture freshness.
+-    @discardableResult public func ingest(anchorID: UUID, receiptUptime: Double,
++    /// Lease identity is checked atomically with admission, before `capture`.
++    /// The issuer cannot tell if a caller wrongly rebound a native old event to a
++    /// new lease: immutable native producer ownership remains an external gate.
++    @discardableResult public func ingest(lease: ProducerLease, anchorID: UUID, receiptUptime: Double,
+         capture: (MeshSnapshot82.Context) -> MeshSnapshot82.Capture) -> Bool {
+         let context: MeshSnapshot82.Context? = locked {
+-            guard let c = admit(anchorID, receiptUptime) else { return nil }
++            guard let c = admit(lease, anchorID, receiptUptime) else { return nil }
+             guard copies < maxCopies else { gap(); return nil }
+             copies += 1; return c
+         }
+@@ -104,16 +119,16 @@
+                 }
+             }
+     }
+-    @discardableResult public func remove(anchorID: UUID, receiptUptime: Double) -> Bool {
++    @discardableResult public func remove(lease: ProducerLease, anchorID: UUID, receiptUptime: Double) -> Bool {
+         locked {
+-            guard let c = admit(anchorID, receiptUptime) else { return false }
++            guard let c = admit(lease, anchorID, receiptUptime) else { return false }
+             return runtime.offer(.init(sessionID: epoch.uuidString, generation: 1,
+                 anchorID: anchorID.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
+                 vertices: [], triangles: [], columnMajorTransform: [], complete: false, removed: true))
+         }
+     }
+     /// Fences only; NOT a privacy purge or acknowledgement that native work drained.
+-    public func stop() { locked { _ = advance(); stopped = true; runtime.stop() } }
++    public func stop() { locked { activeLease = nil; _ = advance(); stopped = true; runtime.stop() } }
+     /// Terminal stop and acknowledged release of this owner's retained copies and
+     /// runtime geometry. Does not erase ARKit/caller/system allocations. Captures
+     /// already admitted must return; no slot is released early and no reset/restart
+@@ -123,7 +138,7 @@
+             if discarded { DispatchQueue.global(qos: .utility).async { completion() }; return }
+             discardWaiters.append(completion)
+             guard !discarding else { return }
+-            discarding = true; _ = advance(); stopped = true
++            discarding = true; activeLease = nil; _ = advance(); stopped = true
+             revisions.removeAll(keepingCapacity: false); receipt = -1
+             runtime.stopAndDiscard { [self] in
+                 locked { runtimeDiscarded = true; acknowledgeDiscardIfDrained() }
+@@ -139,12 +154,19 @@
+     }
+     /// Fresh UUID epoch prevents A->B->A generation reuse. Outstanding copies still
+     /// consume their original aggregate slots until they actually return/drain.
+-    public func reset() throws {
++    /// Returns the ONLY newly issued capability. Old leases never revive. This is
++    /// an API epoch, not proof that ARKit drained or began an attributable run.
++    /// A reset failure stays closed; previously issued leases remain revoked.
++    public func reset() throws -> ProducerLease {
+         try locked {
+             guard !discarding, advance() else { throw Failure.unavailable }
++            activeLease = nil; stopped = true
+             let next = UUID()
+             try runtime.reset(sessionID: next.uuidString, generation: 1)
+-            epoch = next; revisions.removeAll(keepingCapacity: false); receipt = -1; stopped = false
++            let issued = ProducerLease()
++            epoch = next; revisions.removeAll(keepingCapacity: false); receipt = -1
++            activeLease = issued; stopped = false
++            return issued
+         }
+     }
+     public func isCurrent(_ candidate: Candidate) -> Bool {
+--- stage83/Sources/ARKitIngress.swift
++++ stage86-proposal/Sources/ARKitIngress.swift
+@@ -4,12 +4,14 @@
+ import MeshSnapshot82
+ 
+ @available(iOS 13.4, *)
+-public extension MeshCandidateIngress83 {
++public extension OriginBoundMeshIngress86 {
+     /// Integration seam only, NOT an installed ARSession delegate or app activation.
+-    /// Owning callback queue and buffer validity must already be established.
+-    @discardableResult func ingest(_ anchor: ARMeshAnchor, receiptUptime: Double,
++    /// Owning callback queue, immutable native producer identity and buffer validity
++    /// must already be established. A lease alone proves NONE of those conditions.
++    /// Not safe to wire into the existing reused-ARSession callback owner.
++    @discardableResult func ingest(_ anchor: ARMeshAnchor, lease: ProducerLease, receiptUptime: Double,
+                                    limits: MeshBufferDecoder.Limits = .init()) -> Bool {
+-        ingest(anchorID: anchor.identifier, receiptUptime: receiptUptime) { context in
++        ingest(lease: lease, anchorID: anchor.identifier, receiptUptime: receiptUptime) { context in
+             // Clamp caller-selected limits to this owner's aggregate per-job ceiling.
+             let bounded = MeshBufferDecoder.Limits(vertices: min(limits.vertices, 200_000),
+                 faces: min(limits.faces, 100_000), inputBytes: min(limits.inputBytes, 16_000_000),
+--- stage83/Package.swift
++++ stage86-proposal/Package.swift
+@@ -2,9 +2,9 @@
+ import PackageDescription
+ // Actual local products; no copied decoder, snapshot, lifecycle or native algorithm.
+ let package = Package(
+-    name: "MeshCandidateIngress83", platforms: [.iOS(.v17), .macOS(.v13)],
+-    products: [.library(name: "MeshCandidateIngress83", targets: ["MeshCandidateIngress83"])],
++    name: "OriginBoundMeshIngress86", platforms: [.iOS(.v17), .macOS(.v13)],
++    products: [.library(name: "OriginBoundMeshIngress86", targets: ["OriginBoundMeshIngress86"])],
+     dependencies: [.package(path: "../native-mesh-decoder-81"),
+         .package(path: "../arkit-mesh-adapter-82"),
+         .package(path: "../room-mesh-package-75/BlindRoomMesh")],
+-    targets: [.target(name: "MeshCandidateIngress83", dependencies: [.product(name: "MeshBufferDecoder81", package: "native-mesh-decoder-81"), .product(name: "MeshSnapshot82", package: "arkit-mesh-adapter-82"), .product(name: "BlindRoomMesh", package: "BlindRoomMesh")], path: "Sources")])
++    targets: [.target(name: "OriginBoundMeshIngress86", dependencies: [.product(name: "MeshBufferDecoder81", package: "native-mesh-decoder-81"), .product(name: "MeshSnapshot82", package: "arkit-mesh-adapter-82"), .product(name: "BlindRoomMesh", package: "BlindRoomMesh")], path: "Sources")])

@@ -5,19 +5,22 @@ import BlindCore
 /// registered preview is explicitly distinct and cannot receive journey pairs.
 /// No fallback from a selected but unavailable journey to a preview is permitted.
 @MainActor final class NativeLocalizationRouter {
-    enum Selection: Equatable { case none, connectedJourney, registeredPreview }
+    enum Selection: Equatable { case none, connectedJourney, registeredPreview, localSavedFrameReference }
     private(set) var selection: Selection = .none
     private var selectionEpoch = UUID()
     private let journey: ConnectedJourneyRuntime
     private let previewContext: () -> NativeLocalizationRouteContext?
+    private let savedFrameContext: () -> NativeLocalizationRouteContext?
     private let withholdPreview: (UUID, SpatialMapArtifactIdentity) -> Void
     private let issuer = NativeLocalizationIssuer()
     var candidate: NativeLocalizationCandidate? { issuer.candidate }
     var reason: NativeLocalizationNotReady { issuer.reason }
     init(journey: ConnectedJourneyRuntime,
          previewContext: @escaping () -> NativeLocalizationRouteContext?,
-         withholdPreview: @escaping (UUID, SpatialMapArtifactIdentity) -> Void) {
+         withholdPreview: @escaping (UUID, SpatialMapArtifactIdentity) -> Void,
+         savedFrameContext: @escaping () -> NativeLocalizationRouteContext? = { nil }) {
         self.journey = journey; self.previewContext = previewContext; self.withholdPreview = withholdPreview
+        self.savedFrameContext = savedFrameContext
         issuer.retireRegisteredOutput = { [weak self] owner in self?.withdraw(owner) }
     }
     func select(_ next: Selection) {
@@ -33,6 +36,11 @@ import BlindCore
         case .none: return nil
         case .connectedJourney: return journey.nativeLocalizationContext
         case .registeredPreview: return previewContext()
+        case .localSavedFrameReference:
+            guard let value = savedFrameContext(), value.scope == .localSavedFrameReference,
+                  value.goalRevision == nil, value.revision.floorLevels.isEmpty,
+                  value.revision.savedWorldFrame != nil else { return nil }
+            return value
         }
     }
     /// Explicit current observation/lifecycle loss, not an asynchronous completion.
@@ -41,7 +49,7 @@ import BlindCore
     private func withholdSelectedContext() {
         guard let context else { return }
         switch selection {
-        case .none: return
+        case .none, .localSavedFrameReference: return
         case .connectedJourney:
             guard let goal = context.goalRevision else { return }
             _ = journey.withholdNativeEvidence(session: context.sessionID, artifact: context.artifact, goalRevision: goal)
@@ -55,6 +63,7 @@ import BlindCore
         case .none: return false
         case .connectedJourney: kind = .connectedJourney
         case .registeredPreview: kind = .registeredPreview
+        case .localSavedFrameReference: kind = .localSavedFrameReference
         }
         return owner.selection.kind == kind && owner.selection.epoch == selectionEpoch &&
             owner.selection.goalRevision == context.goalRevision &&
@@ -63,7 +72,7 @@ import BlindCore
     private func withdraw(_ owner: NativeLocalizationOwner) {
         guard let context, matchesSelection(owner, context: context) else { return }
         switch selection {
-        case .none: return
+        case .none, .localSavedFrameReference: return
         case .connectedJourney:
             guard let goal = owner.selection.goalRevision else { return }
             _ = journey.withholdNativeEvidence(session: owner.registeredSession,
@@ -74,14 +83,21 @@ import BlindCore
     }
     func currentOwner(arSession: UUID, calibrationRevision: String, mountRevision: UUID) -> NativeLocalizationOwner? {
         guard let context, let saved = context.revision.savedWorldFrame else { return nil }
-        let kind: NativeLocalizationSelection.Kind = selection == .connectedJourney ? .connectedJourney : .registeredPreview
+        let kind: NativeLocalizationSelection.Kind
+        switch selection {
+        case .none: return nil
+        case .connectedJourney: kind = .connectedJourney
+        case .registeredPreview: kind = .registeredPreview
+        case .localSavedFrameReference: kind = .localSavedFrameReference
+        }
+        guard (kind == .localSavedFrameReference) == (context.scope == .localSavedFrameReference) else { return nil }
         return .init(arSession: arSession, registeredSession: context.sessionID,
             artifact: context.artifact, descriptor: saved, calibrationRevision: calibrationRevision,
             mountRevision: mountRevision, selection: .init(kind: kind, epoch: selectionEpoch, goalRevision: context.goalRevision))
     }
     func offer(arSession: UUID, calibrationRevision: String, mountRevision: UUID,
                capturedAt: Double, cameraToWorld: [Double], trackingNormal: Bool,
-               recovered: SavedWorldFrame?, now: Double) {
+               association: SavedWorldFrameCameraAssociation?, now: Double) {
         guard selection != .none else { issuer.invalidate(.noSelectedOwner); return }
         guard let context else { issuer.invalidate(.noConfiguredSession); return }
         // Calibration/support/error provider is absent. Withdraw even if this
@@ -91,10 +107,21 @@ import BlindCore
         guard let owner = currentOwner(arSession: arSession, calibrationRevision: calibrationRevision, mountRevision: mountRevision) else {
             issuer.invalidate(.noInstallation); return
         }
-        issuer.offer(.init(owner: owner, capturedAt: capturedAt, cameraToWorld: cameraToWorld, trackingNormal: trackingNormal),
-            installed: context.revision, recovered: recovered, now: now)
+        // A recent descriptor alone cannot authorize a different or rejected frame.
+        // The normal owner supplies the exact ARFrame timestamp receipt; stable map
+        // creation time is historical metadata and is deliberately not age-gated.
+        guard let association else { issuer.invalidate(.noRecoveredWorldFrame); return }
+        issuer.offer(.init(owner: owner, capturedAt: capturedAt, cameraToWorld: cameraToWorld,
+            trackingNormal: trackingNormal, association: association),
+            installed: context.revision, recovered: association.frame, now: now)
     }
-    func watchdog(arSession: UUID, calibrationRevision: String, mountRevision: UUID, now: Double) {
+    func watchdog(arSession: UUID, calibrationRevision: String, mountRevision: UUID,
+                  association: SavedWorldFrameCameraAssociation?, now: Double) {
+        // Re-read from the current recovery owner, never a copied asynchronous result.
+        // Nil covers deletion/map replacement, tracking loss, restart and expiry.
+        if let candidate, candidate.association != association {
+            invalidate(.noRecoveredWorldFrame); return
+        }
         issuer.watchdog(currentOwner: currentOwner(arSession: arSession,
             calibrationRevision: calibrationRevision, mountRevision: mountRevision), now: now)
     }

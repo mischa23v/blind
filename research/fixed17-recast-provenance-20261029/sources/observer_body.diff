@@ -1,0 +1,96 @@
+--- released-erosion-body
++++ observer-only-body
+@@ -1,4 +1,4 @@
+-bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactHeightfield& compactHeightfield)
++bool provenanceErode(rcContext* context, const int erosionRadius, rcCompactHeightfield& compactHeightfield, ProvenanceTrace& trace)
+ {
+ 	rcAssert(context != NULL);
+ 
+@@ -28,6 +28,7 @@
+ 				if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
+ 				{
+ 					distanceToBoundary[spanIndex] = 0;
++					trace.boundary(spanIndex);
+ 					continue;
+ 				}
+ 				const rcCompactSpan& span = compactHeightfield.spans[spanIndex];
+@@ -57,6 +58,7 @@
+ 				if (neighborCount != 4)
+ 				{
+ 					distanceToBoundary[spanIndex] = 0;
++					trace.boundary(spanIndex);
+ 				}
+ 			}
+ 		}
+@@ -86,6 +88,7 @@
+ 					if (newDistance < distanceToBoundary[spanIndex])
+ 					{
+ 						distanceToBoundary[spanIndex] = newDistance;
++						trace.improve(spanIndex, aIndex, newDistance);
+ 					}
+ 
+ 					// (-1,-1)
+@@ -98,6 +101,7 @@
+ 						if (newDistance < distanceToBoundary[spanIndex])
+ 						{
+ 							distanceToBoundary[spanIndex] = newDistance;
++							trace.improve(spanIndex, bIndex, newDistance);
+ 						}
+ 					}
+ 				}
+@@ -112,6 +116,7 @@
+ 					if (newDistance < distanceToBoundary[spanIndex])
+ 					{
+ 						distanceToBoundary[spanIndex] = newDistance;
++						trace.improve(spanIndex, aIndex, newDistance);
+ 					}
+ 
+ 					// (1,-1)
+@@ -124,6 +129,7 @@
+ 						if (newDistance < distanceToBoundary[spanIndex])
+ 						{
+ 							distanceToBoundary[spanIndex] = newDistance;
++							trace.improve(spanIndex, bIndex, newDistance);
+ 						}
+ 					}
+ 				}
+@@ -153,6 +159,7 @@
+ 					if (newDistance < distanceToBoundary[spanIndex])
+ 					{
+ 						distanceToBoundary[spanIndex] = newDistance;
++						trace.improve(spanIndex, aIndex, newDistance);
+ 					}
+ 
+ 					// (1,1)
+@@ -165,6 +172,7 @@
+ 						if (newDistance < distanceToBoundary[spanIndex])
+ 						{
+ 							distanceToBoundary[spanIndex] = newDistance;
++							trace.improve(spanIndex, bIndex, newDistance);
+ 						}
+ 					}
+ 				}
+@@ -179,6 +187,7 @@
+ 					if (newDistance < distanceToBoundary[spanIndex])
+ 					{
+ 						distanceToBoundary[spanIndex] = newDistance;
++						trace.improve(spanIndex, aIndex, newDistance);
+ 					}
+ 
+ 					// (-1,1)
+@@ -191,6 +200,7 @@
+ 						if (newDistance < distanceToBoundary[spanIndex])
+ 						{
+ 							distanceToBoundary[spanIndex] = newDistance;
++							trace.improve(spanIndex, bIndex, newDistance);
+ 						}
+ 					}
+ 				}
+@@ -207,6 +217,7 @@
+ 		}
+ 	}
+ 
++	memcpy(trace.distance, distanceToBoundary, compactHeightfield.spanCount);
+ 	rcFree(distanceToBoundary);
+ 	
+ 	return true;

@@ -1,0 +1,65 @@
+{
+  "status": "STATIC_SOURCE_REUSE_AUDIT_ONLY_NOT_EXECUTED",
+  "basePath": "research/conference-replay-source-20261029/run_aggregate.py",
+  "baseSHA256": "ccdb636e2a2f3176c4139f44568bf46b005c92ceac6e651f0ff2ede3e8cb18b3",
+  "adaptedSHA256": "1398745c03ca6884191982ecdb7893985fd4272853aaf7ea5fc4ed29ee498ef6",
+  "unchangedHelpers": [
+    {
+      "function": "file_record",
+      "sha256": "db3d3478c1548d874a922f7dc8cd45496c0ec1683e93e7d1bc0f4e197fee4016"
+    },
+    {
+      "function": "sha",
+      "sha256": "e55157f9bd048352aa5345b646952cd487b03fdfb2d097ac993854504e06378e"
+    },
+    {
+      "function": "inventory",
+      "sha256": "20417cb1dfb5aecb20529670999e602b8572ce91e85c0dba9594803a3d6f561b"
+    },
+    {
+      "function": "stable_inventory",
+      "sha256": "b91f66efa43324d4c13682ed403fd6a2b8c252e7bd6a99185153ea6b42b57591"
+    },
+    {
+      "function": "usage",
+      "sha256": "dea5ca8b5158779578dbaea7f437b13c96509d29c16d855aa9c675b918b991b7"
+    },
+    {
+      "function": "group_sample",
+      "sha256": "0945468d18d6199dd1ec0ce3445d7f8947e287927dcab77aaac12c3243247db5"
+    },
+    {
+      "function": "kill_group",
+      "sha256": "5102364e8b21a41738ef171f1a343221dc901325690c1386f6c1ad2bef63c405"
+    },
+    {
+      "function": "main.write_receipt",
+      "sha256": "0c37f9bdadc883227e6e100596a33785b6d26bed143eb143745e0586052c36de"
+    },
+    {
+      "function": "main.save",
+      "sha256": "75fc33e8edb26fc8e52c16014700385c3519ec81936704cd9b0e96d93319ac92"
+    },
+    {
+      "function": "main.retire",
+      "sha256": "d8920cbd9c45a005bc816784a774e0ae2e8a0f5d98413d501d1e8d31713f5ee1"
+    },
+    {
+      "function": "main.command",
+      "sha256": "1b0f2984b77e166e75da6c8b4ad0783228b0a8b8632ddce06b46ca32b9067e36"
+    }
+  ],
+  "limitsUnchanged": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "observedAggregateRSSBytes": 1073741824,
+    "outputBytes": 16777216
+  },
+  "changes": [
+    "Protocol interpretation and limitations",
+    "Explicit frozen cap-schema equality",
+    "Exact-byte terminal contract/scheduler loading and paired-result/control receipt reconciliation",
+    "Require paired-result manifest provenance to equal admitted digest"
+  ],
+  "nativeExecuted": false
+}

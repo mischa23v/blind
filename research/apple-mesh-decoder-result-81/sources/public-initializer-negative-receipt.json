@@ -1,0 +1,30 @@
+{
+  "label": "public-initializer-negative",
+  "command": [
+    "xcrun",
+    "--sdk",
+    "macosx",
+    "swiftc",
+    "-sdk",
+    "/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+    "-module-cache-path",
+    "/Users/runner/work/_temp/blind-mesh-decoder-81/host-cache",
+    "-I",
+    "/Users/runner/work/_temp/blind-mesh-decoder-81",
+    "-typecheck",
+    "/Users/runner/work/_temp/blind-mesh-decoder-81/cannot-forge.swift"
+  ],
+  "exitCode": 1,
+  "expectedFailure": true,
+  "timedOut": false,
+  "exception": null,
+  "wallSeconds": 0.22977133299991692,
+  "scratchBytesAfterCommand": 30778132,
+  "scratchEntries": 72,
+  "fileCapBytes": 134217728,
+  "cpuCapSeconds": 180,
+  "wallTimeoutSeconds": 240,
+  "scratchAccounting": "stage end only; not a live quota or RAM cap",
+  "logTail": "/Users/runner/work/_temp/blind-mesh-decoder-81/cannot-forge.swift:2:14: error: 'MeshBufferDecoder.ValidatedRevision' initializer is inaccessible due to 'fileprivate' protection level\n1 | import MeshBufferDecoder81\n2 | let forged = MeshBufferDecoder.ValidatedRevision(revision: 1, localVertices: [], triangleIndices: [], anchorTransform: [], classifications: [], classificationDiagnostics: [])\n  |              `- error: 'MeshBufferDecoder.ValidatedRevision' initializer is inaccessible due to 'fileprivate' protection level\n3 | \n\nMeshBufferDecoder81.MeshBufferDecoder.ValidatedRevision.init:3:13: note: 'init(revision:localVertices:triangleIndices:anchorTransform:classifications:classificationDiagnostics:)' declared here\n1 | enum MeshBufferDecoder {\n2 |   struct ValidatedRevision {\n3 | fileprivate init(revision: UInt64, localVertices: [Float], triangleIndices: [UInt32], anchorTransform: [Float], classifications: [UInt8?], classificationDiagnostics: [MeshBufferDecoder81.MeshBufferDecoder.ClassificationDiagnostic])  }\n  |             `- note: 'init(revision:localVertices:triangleIndices:anchorTransform:classifications:classificationDiagnostics:)' declared here\n4 | }\n5 | \n",
+  "passed": true
+}

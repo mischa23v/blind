@@ -1,0 +1,53 @@
+{
+  "run": 40664336968,
+  "commit": "9e8585c81874a97a4eac670a73ee7dd11886d8da",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1434,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "executed": 58,
+    "failed": 0
+  },
+  "hosted": {
+    "Passed": 185,
+    "Expected Failure": 0,
+    "Skipped": 2,
+    "Failed": 7
+  },
+  "appleFixtures": [
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testBedroomOriginalFloorPolygonAndBedDepthHaveIndependentWorldWitnesses()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testDefaultProviderReadsOriginalRoomAndRetiresAtDeletionAdmission()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testRealSourceHashMismatchIsRejectedInsteadOfBorrowingOtherRoom()",
+      "result": "Passed"
+    }
+  ],
+  "providerCasesPassed": 7,
+  "recordedRouteStoreCasesPassed": 23,
+  "sceneLatencySeconds": 3.5368111666666664,
+  "sceneBudgetSeconds": 1.2,
+  "sceneFunctionalCompletion": true,
+  "ui": {
+    "passed": 14,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "Contrast failed"
+  },
+  "practiceExplicitEndSeconds": 5.074456458333316,
+  "caseEvidenceSource": "Parsed complete NATIVE_UNIT_CASE_STATUSES JSON from terminal GitHub job log; no artifact download claimed",
+  "fullNativeAcceptance": false
+}

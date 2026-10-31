@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "runID": 41008743162,
+  "jobID": 123909566306,
+  "commit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
+  "status": "completed",
+  "conclusion": "failure",
+  "failureStage": "historical-native-source-pin-gate",
+  "mismatchedPath": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+  "historicalExpectedSHA256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
+  "actualCommitSHA256": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
+  "nativeBuildExecuted": false,
+  "nativeControlsExecuted": false,
+  "resultAvailable": false,
+  "receipts": [
+    {
+      "availability": "present",
+      "bytes": 2060,
+      "metadata": {
+        "appActivation": false,
+        "physicalAuthority": false,
+        "schema": 1,
+        "sourceCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
+        "status": "failed-or-inconclusive-diagnostic"
+      },
+      "path": "blind-edt-navigation-probe/receipt.json",
+      "sha256": "429cc6119b197dfdb91e64ee33994db4c214f737315dabbb12fb0ac2c5f7727d"
+    },
+    {
+      "availability": "unavailable",
+      "error_type": "FileNotFoundError",
+      "path": "blind-edt-navigation-probe/RESULT.json"
+    }
+  ],
+  "artifactCount": 0,
+  "artifactAPIObservedUTC": "2026-10-30T05:31:37Z",
+  "uploadStep": "skipped",
+  "sourceEditsPerformed": false,
+  "rerunRequested": false,
+  "logSHA256": "4c9c39d8c71691c5075a57f9c817ce90eb869559c07b95a7a090b65c973e1472"
+}

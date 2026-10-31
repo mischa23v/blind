@@ -1,0 +1,179 @@
+{
+  "kind": "five_cm",
+  "frame": "frame_00290",
+  "rasterPixels": 733572,
+  "zeroDepthPixels": 0,
+  "rangeExcludedPixels": 110176,
+  "fixedGridCandidates": 11625,
+  "fixedGridZeroDepth": 0,
+  "fixedGridRangeExcluded": 1723,
+  "fixedGridValid": 9902,
+  "mapBefore": {
+    "state": {
+      "scans": 1,
+      "treeNodes": 102015,
+      "leaves": 86757,
+      "evidenceKeys": 86757,
+      "hitVotes": 9304,
+      "freeVotes": 77453
+    },
+    "defaults": {
+      "resolution": 0.05,
+      "hit": 0.69999999724559,
+      "miss": 0.40000000284949333,
+      "occupancy": 0.5,
+      "clampMin": 0.1191999932599187,
+      "clampMax": 0.9710000010045966
+    },
+    "payload": {
+      "xyzSizeProbability.npy": {
+        "sha256": "90d34a224cfadef67aec8cfe5680439fbce8977b79b70959cad965bf871650e9",
+        "bytes": 3470408
+      },
+      "logOdds.npy": {
+        "sha256": "c0da2b3065e4f910c957ee236456f52afcfce64d051f74a54136d4ee01418d0c",
+        "bytes": 347156
+      },
+      "hitScans.npy": {
+        "sha256": "e4b8e983d4fd4c8ec922b965e565e84114cc4859a49c6a4984e6f47010b06af9",
+        "bytes": 347156
+      },
+      "freeScans.npy": {
+        "sha256": "366661cd852375dc72efbfe90bd87ba2eb279d6f5b1cb8e8aaca278a7b56cc51",
+        "bytes": 347156
+      }
+    }
+  },
+  "mapLeafSizeCounts": {
+    "0.05": 86757
+  },
+  "nativeIntersectionBoxMetres": 0.05,
+  "resolutionMetres": 0.05,
+  "acceptedPixels": 623396,
+  "endpointPixelWeighted": {
+    "total": 623396,
+    "knownOccupied": 623396,
+    "knownNotOccupied": 0,
+    "unknown": 0,
+    "hitFreeConflict": 0
+  },
+  "endpointDistinctKeyWeighted": {
+    "total": 9304,
+    "knownOccupied": 9304,
+    "knownNotOccupied": 0,
+    "unknown": 0,
+    "hitFreeConflict": 0
+  },
+  "entryPredictionSigns": {
+    "nearer": 9899,
+    "equal": 0,
+    "farther": 0,
+    "hitCount": 9899
+  },
+  "primaryRayStatuses": {
+    "unresolved": 0,
+    "hit-known-prefix": 9500,
+    "origin-unknown": 0,
+    "origin-occupied": 0,
+    "unknown-before-hit": 400,
+    "range-exhausted": 2,
+    "invalid-input": 0,
+    "bounds-rejected": 0,
+    "intersection-failed": 0
+  },
+  "observationRayStatuses": {
+    "unresolved": 0,
+    "hit-known-prefix": 0,
+    "origin-unknown": 0,
+    "origin-occupied": 0,
+    "unknown-before-hit": 0,
+    "range-exhausted": 3,
+    "invalid-input": 0,
+    "bounds-rejected": 0,
+    "intersection-failed": 0,
+    "observed-hit-visibility-unverified": 9899
+  },
+  "entryAxialResidualMetres": {
+    "count": 9899,
+    "signed": {
+      "min": -1.8740631736646907,
+      "p05": -0.4748038993722275,
+      "p25": -0.09971258369651603,
+      "median": -0.059167472135360555,
+      "p75": -0.03415473220967025,
+      "p95": -0.015544437505048813,
+      "max": -0.00022414474018495056,
+      "mean": -0.11745154134113085,
+      "rms": 0.2453025519189853
+    },
+    "absolute": {
+      "min": 0.00022414474018495056,
+      "p05": 0.015544437505048813,
+      "p25": 0.03415473220967025,
+      "median": 0.059167472135360555,
+      "p75": 0.09971258369651603,
+      "p95": 0.47480389937222867,
+      "max": 1.8740631736646907,
+      "mean": 0.11745154134113085,
+      "rms": 0.2453025519189853
+    }
+  },
+  "centerAxialResidualMetres": {
+    "count": 9899,
+    "signed": {
+      "min": -1.8574911606271776,
+      "p05": -0.4538836677069694,
+      "p25": -0.09643722870809768,
+      "median": -0.04516950954487897,
+      "p75": -0.019477584005736404,
+      "p95": 0.0024356477541338083,
+      "max": 0.03271278154728652,
+      "mean": -0.10571334438327157,
+      "rms": 0.24049653985524516
+    },
+    "absolute": {
+      "min": 4.076433441069227e-05,
+      "p05": 0.004368298226859047,
+      "p25": 0.019875868163797827,
+      "median": 0.04516950954487897,
+      "p75": 0.09643722870809768,
+      "p95": 0.4538836677069714,
+      "max": 1.8574911606271776,
+      "mean": 0.10678556531247474,
+      "rms": 0.24049653985524516
+    }
+  },
+  "entryAlongRayResidualMetres": {
+    "count": 9899,
+    "signed": {
+      "min": -1.929541142489613,
+      "p05": -0.5180033876664064,
+      "p25": -0.10988248339958617,
+      "median": -0.0652059477039244,
+      "p75": -0.0373732439683474,
+      "p95": -0.017202533815344204,
+      "max": -0.00024270608921472814,
+      "mean": -0.12777259631568708,
+      "rms": 0.26331646093922906
+    },
+    "absolute": {
+      "min": 0.00024270608921472814,
+      "p05": 0.017202533815344225,
+      "p25": 0.0373732439683474,
+      "median": 0.0652059477039244,
+      "p75": 0.10988248339958617,
+      "p95": 0.5180033876664066,
+      "max": 1.929541142489613,
+      "mean": 0.12777259631568708,
+      "rms": 0.26331646093922906
+    }
+  },
+  "hitTerminalConflicts": 0,
+  "beforeAfterPayloadEqual": true,
+  "derivedEvidence": {
+    "path": "five_cm_frame_00290.npz",
+    "sha256": "cc42c39bbd5c4410fb96946f9a1031bceb86155411ee4a25437a373786d727d7",
+    "bytes": 516046
+  },
+  "exactFiveCmBaselineReproduced": true
+}

@@ -1,0 +1,42 @@
+{
+  "source_files": [
+    "ios/BlindAssist/RecordedRouteStore.swift",
+    "ios/BlindAssistTests/RecordedRouteStoreTests.swift",
+    "tools/ci/native-apple.sh"
+  ],
+  "files": {
+    "ios/BlindAssist/RecordedRouteStore.swift": "7c49fe6cf308e743ba8ebad61f7ececb87a04a74bd86669009dc95e446025285",
+    "ios/BlindAssistTests/RecordedRouteStoreTests.swift": "02c540c82c91d61325f2a2572f4f43a048744aa864de5409cc4c951f3ef697b6",
+    "tools/ci/native-apple.sh": "d798efeed160cb0a0513991ee7d291bffe88b30844ba112121662e0d79add32a",
+    "research/recorder-operation-timing-20261028/APPLIED.patch": "04c842421fcddde3a38df51dd56fa1df1205e41425c39a78abe9846b24764fdb",
+    "research/recorder-operation-timing-20261028/CHECK_RESULT.json": "1262a58207cacac6f8542f6bb61ab7902341a54393f54ffe94f2c46217cf68f4",
+    "research/recorder-operation-timing-20261028/EXTRACTION.proposed": "7a32795955d62cbff8849af14a0b940d064281aece76cf07479eb29485e35acb",
+    "research/recorder-operation-timing-20261028/EXTRACTION_CHECK_RESULT.json": "c61c86da39480f647455279745177ec75cfc3cb1737f81e1e7fdf5ffe82c8989",
+    "research/recorder-operation-timing-20261028/README.md": "9b9942dac16a60625bcb8d01c52a46b02fedc30bff2736c7132ec4d885a0c318",
+    "research/recorder-operation-timing-20261028/RecordedRouteStore.swift.before": "414c9416b6aa4dedc3a0bcd3ac51d8539a8b7a16a1879cd7fc7532310d398fde",
+    "research/recorder-operation-timing-20261028/RecordedRouteStoreTests.swift.before": "47f565d7aa0e56c534d4cf5fde52744afbdc04dad2ee1591ef83ecbb04e291d5",
+    "research/recorder-operation-timing-20261028/check.py": "2c69216f7722e0ce816e26fecc9a9335b9815af61db7356fef9898d811f2ae8d",
+    "research/recorder-operation-timing-20261028/check_extraction.py": "99efe6a582e952f829358b9e821d2a28bcf0679ede370a1795374c3eae2e6b85",
+    "research/recorder-operation-timing-20261028/existing-helper-contracts.log": "57abe111538b1af00031f1271961253151124a7971893a96a328a04053b3ea46",
+    "research/recorder-operation-timing-20261028/native-apple.sh.before": "163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6",
+    "research/recorder-operation-timing-20261028/source-checks.log": "1262a58207cacac6f8542f6bb61ab7902341a54393f54ffe94f2c46217cf68f4",
+    "research/recorder-operation-timing-20261028/REVIEW.json": "d789b3487013b3dcb69827d80c54d1664510230672a605b7e35440b56b3030b4",
+    "research/recorder-operation-timing-20261028/PIN_OWNER_PROOF.json": "268676431401482e81605bcd621b295c50ced2497166e226b8dc43013f5a135c"
+  },
+  "source_only": true,
+  "native_validation_pending": true,
+  "integration_pin_owner_proof": {
+    "owner": "/root/audit_localization_capture_contract",
+    "manifest_path": "research/localization-contract-review-20261028/recorder-ci-helper-pin-stage/PUBLISH_SHA256.txt",
+    "manifest_sha256": "adfe29c237352cf2cefa252dc10469dd81a39a4635ab0ec29b449e93208e0075",
+    "source_checks_passed": 58,
+    "helper_recovery": [
+      "d798efeed160cb0a0513991ee7d291bffe88b30844ba112121662e0d79add32a",
+      "163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6",
+      "683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263"
+    ],
+    "external_manifest_entries_verified": true,
+    "independent_proof_review": "pending owner follow-up",
+    "native_validation_pending": true
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "status": "PASS_saved_profiles_and_source_review",
+  "sourceFreezeSHA256": "30ca5d9b480ce920f604707b9a31009ee88d836b89a805e6e31609819dbe35ed",
+  "verifiedPinnedFiles": 16,
+  "originalFRegression": "saved recursive profile/control match within 1e-12; original run remains inconclusive_no_coverage",
+  "candidate": {
+    "id": "C23",
+    "optical_to_recorded_camera": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "scale_m_per_unit": 0.001,
+    "score": 0.057572159389514085,
+    "runner_up_convention_score_gap": 0.014862354098077193
+  },
+  "developmentLeaveOnePairOutRecounts": 4,
+  "heldoutPairScores": [
+    0.07399235729348971,
+    0.06559844170892394
+  ],
+  "zeroTranslationBestScore": 0.06982114620430421,
+  "cpuSeconds": 3.656098,
+  "wallSeconds": 3.6243453409988433,
+  "checks": [
+    "24-convention ranking and margin",
+    "four coarse-grid leave-one-out choices and margins",
+    "scale profile width",
+    "coarse and equally-refined zero/shuffle controls",
+    "12 direction coverage gates and two heldout score/residual gates",
+    "development-only durable lock precedes holdout load and single fixed-scale evaluation in frozen source",
+    "all original frozen text/metadata inputs unchanged"
+  ],
+  "scope": "No rerun, PNG decode, image geometry recomputation or independent metric validation. Saved-profile arithmetic and source review only. Conditional inferred export convention/scale, not documented units, calibration, stair accuracy or navigation safety.",
+  "metadataCaveat": "diagnostic-result.geometry_assumptions is inherited original-F metadata, not selected C; consume candidate.optical_to_recorded_camera or interpretation.json for identity. Do not reuse inherited optical_to_arkit_camera field as selected convention.",
+  "nextGate": "Any replay must explicitly pin selected identity C and .001 scale, preserve K/pixel-center and pose-direction assumptions, and retain private data scope. No further execution authorized by this review.",
+  "evidenceSHA256": {
+    "development-candidate-lock.json": "40a7f1ffe9de9179020e569a35f1d715ac4d8c9883b3508ee1077be7a8e82f5e",
+    "diagnostic-result.json": "9840945112cead2da8790c9d25578bc6495f86e53f4bc2a885527385616358dd",
+    "interpretation.json": "9724918433539c10aec52e2284e95199aab6a5d66b9d52502dd048be0c4bb62a",
+    "execution-receipt.json": "035312dd23926775606e214a0f3741a265e6a67cce6d2890021642114f7117c3",
+    "synthetic-checks.json": "a7e0cdd17822320285f1cb9bf3c68306814bde4c66af0c610355e6ad1ab10406"
+  }
+}

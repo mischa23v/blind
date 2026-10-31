@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "scope": "Aggregates extracted from saved completed receipts; no rerun or new geometry query",
+  "completedStockDiagnostic": {
+    "frozenOrderedPairs": 20,
+    "routeOutcomes": {
+      "Open3D": {
+        "partialProjectedCorridor": 8,
+        "endpointAssociationFailed": 12
+      },
+      "Voxblox": {
+        "completeProjectedCorridor": 12,
+        "endpointAssociationFailed": 8
+      }
+    },
+    "stockCompleteProjectedLengthMetres": {
+      "minimum": 16.994810940470117,
+      "maximum": 17.364949461457826
+    },
+    "correspondingReferenceLengthMetres": {
+      "minimum": 2.0,
+      "maximum": 2.25
+    },
+    "uniqueUnorderedCompletedPairs": 6,
+    "referenceSampleCount": 1156,
+    "referenceSampleFirstRejectedStageCounts": {
+      "Open3D": {
+        "survives": 356,
+        "erosion": 536,
+        "initial": 62,
+        "ledge": 26,
+        "noFloorBandSpan": 156,
+        "headroom": 20
+      },
+      "Voxblox": {
+        "survives": 510,
+        "erosion": 452,
+        "ledge": 54,
+        "noFloorBandSpan": 72,
+        "initial": 68
+      }
+    },
+    "controlChecks": {
+      "frozenFilesVerifiedBeforeAfter": 73,
+      "all20Open3DQueriesExact": true,
+      "allOpen3DStageCountsAndSpansExact": true,
+      "all678ExistingSourceRayFieldsExact": true,
+      "allSixWitnessSummariesExact": true
+    },
+    "witnessAggregates": [
+      {
+        "model": "Open3D",
+        "fixedRays": 678,
+        "positiveReferenceSurfaceHits": 24,
+        "sameRayMatchesWithin4cm": 0,
+        "sourceFloorMissingRays": 25,
+        "raisedBodyBandRaysRelativeReferenceFloor": 0,
+        "raisedBodyBandSurfaceHitsRelativeReferenceFloor": 0
+      },
+      {
+        "model": "Voxblox",
+        "fixedRays": 678,
+        "positiveReferenceSurfaceHits": 24,
+        "sameRayMatchesWithin4cm": 0,
+        "sourceFloorMissingRays": 11,
+        "raisedBodyBandRaysRelativeReferenceFloor": 20,
+        "raisedBodyBandSurfaceHitsRelativeReferenceFloor": 25,
+        "raisedHitsAboveSourceFloorRangeMetres": [
+          0.0,
+          2.1918663328790444e-08
+        ],
+        "raisedHitsAboveReferenceFloorRangeMetres": [
+          0.053389091502697994,
+          0.061341510910977615
+        ],
+        "raisedHitsAbsNormalZRange": [
+          0.9715562708899635,
+          0.999947357525143
+        ]
+      }
+    ],
+    "resourceUse": {
+      "aggregateCPUSeconds": 2.2397829999999996,
+      "elapsedSeconds": 2.2742269700102042,
+      "peakConservativeAggregateRSSBytes": 217088000,
+      "peakSampledAggregateRSSBytes": 214929408,
+      "limits": {
+        "CPUCount": 1,
+        "RSSBytes": 536870912,
+        "cpuSeconds": 10,
+        "outputBytes": 33554432,
+        "wallSeconds": 15
+      },
+      "sampleIntervalSeconds": 0.025,
+      "resourceEnforcement": "single CPU affinity; aggregate sampling with fast-exit rusage; child CPU/FSIZE rlimits; wall alarm"
+    },
+    "outputBytes": 12032789
+  },
+  "savedErosionAudit": {
+    "models": {
+      "Open3D": {
+        "exactControl": {
+          "allRawSpanLedgeDecisions": 96274,
+          "allRawSpanHeadroomDecisions": 96274,
+          "allCompactErosionDecisions": 28740,
+          "allMatched": true
+        },
+        "quantizedProfile": {
+          "heightVoxels": 61,
+          "climbVoxels": 2,
+          "radiusVoxels": 6,
+          "erosionThresholdUnits": 12
+        },
+        "omittedBandUniqueColumns": 22,
+        "emptyRawColumns": 0
+      },
+      "Voxblox": {
+        "exactControl": {
+          "allRawSpanLedgeDecisions": 92946,
+          "allRawSpanHeadroomDecisions": 92946,
+          "allCompactErosionDecisions": 29704,
+          "allMatched": true
+        },
+        "quantizedProfile": {
+          "heightVoxels": 61,
+          "climbVoxels": 2,
+          "radiusVoxels": 6,
+          "erosionThresholdUnits": 12
+        },
+        "omittedBandUniqueColumns": 14,
+        "emptyRawColumns": 0
+      }
+    },
+    "allOmittedColumnsContainExactlyOneOverheadRawSpan": true,
+    "sourceFloorMissingRaysCorrection": {
+      "legacyMetricName": "sourceFloorMissingRays",
+      "correctMeaning": "no source floor candidate under the band-and-normal selector; NOT absent source geometry or support",
+      "Open3D": {
+        "legacyCount": 25,
+        "inBandGeometryRejectedOnlyByNormal": 25
+      },
+      "Voxblox": {
+        "legacyCount": 11,
+        "inBandGeometryRejectedOnlyByNormal": 11
+      },
+      "normalThresholdAbsoluteUpComponent": 0.9,
+      "all36RecordsContainInBandSourceHits": true,
+      "originalReceiptsPreservedNotRewritten": true
+    },
+    "principalStockFailureChain": "missing lower raster span -> adjacent ledge rejection -> radius erosion reaching the aisle",
+    "resourceUse": {
+      "cpuSeconds": 1.943015908,
+      "wallSeconds": 1.9445225309900707,
+      "maxRSSBytes": 108793856
+    }
+  },
+  "physicalAuthority": false,
+  "strictRouteAdmission": false,
+  "requestedEndpointConnectionsVerified": false,
+  "fullFootprintSupportVerified": false,
+  "shortAisleRestored": false,
+  "newExperimentPerformedForPacket": false,
+  "limitations": [
+    "No physical, strict-route, endpoint-connector or full-footprint-support admission.",
+    "The twelve completions are six unordered pairs in both directions and share much of one long detour, not independent journeys.",
+    "The 1,156 samples overlap; counts are not independent physical trials.",
+    "Floor band and normal selectors are reporting heuristics, not semantic floor classification.",
+    "Matching thresholded areas does not independently verify native distance bytes or unique native seeds.",
+    "Replay-selected seed follows deterministic pinned scan/tie order, not a physically nearest obstacle.",
+    "Generic boundary/MAX_LAYERS cases omitted by replay were inactive only in these saved fields.",
+    "Source-ray witnesses are not exhaustive raster contributors.",
+    "No new stock-path source/reference collision, continuous body or support evaluation was performed.",
+    "Observation holes and missing lower raster spans do not establish physical holes or free space.",
+    "Floor-height error is not retained furniture; nearest distance is not object identity.",
+    "No geometry repair, fit, threshold/radius reduction, model winner, live-app readiness or child-use claim.",
+    "This packet performs no experiment and does not authorize another run; restricted inputs are not bundled."
+  ]
+}

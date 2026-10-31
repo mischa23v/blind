@@ -1,0 +1,2046 @@
+{
+  "schema": "blind.public-fixed-contour-requests.v1",
+  "physicalAuthority": false,
+  "sourceCommit": "49a9878c51dc97214cdfacf74946d8f2816597f0",
+  "nativeRun": 40773062534,
+  "unitCaseJSONSHA256": "861f32962cae831251da7de12679ae477035dc00c31e63dead9b8ca7104dc5e0",
+  "scope": "18 frozen route queries plus 7 actually executed journey queries; 9 stopped journey stages remain not-run, never fabricated",
+  "requests": [
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-aisle:declared-nominal",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-nominal",
+      "requestedStart": [
+        0.12442538887262344,
+        -1.4659849405288696,
+        15.277722358703613
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-aisle:declared-wide",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-wide",
+      "requestedStart": [
+        0.12442538887262344,
+        -1.4659849405288696,
+        15.277722358703613
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-around-bed:declared-nominal",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-nominal",
+      "requestedStart": [
+        0.25728940963745117,
+        -1.4659849405288696,
+        13.630043029785156
+      ],
+      "requestedGoal": [
+        1.9404196739196777,
+        -1.4659849405288696,
+        13.868941307067871
+      ],
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75,
+      "expectedOutcome": "candidate-model-route-no-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          0.25728940963745117,
+          -1.440985083580017,
+          13.630043029785156
+        ],
+        [
+          1.9404196739196777,
+          -1.440985083580017,
+          13.868941307067871
+        ]
+      ],
+      "expectedProjectedStart": [
+        0.25728940963745117,
+        -1.440985083580017,
+        13.630043029785156
+      ],
+      "expectedProjectedGoal": [
+        1.9404196739196777,
+        -1.440985083580017,
+        13.868941307067871
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": false,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "B95427E8-846F-4367-A2DA-87892E259635"
+          ],
+          "from": [
+            0.25728940963745117,
+            -1.4659849405288696,
+            13.630043029785156
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.25728940963745117,
+            -1.440985083580017,
+            13.630043029785156
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.25728940963745117,
+            -1.440985083580017,
+            13.630043029785156
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            1.9404196739196777,
+            -1.440985083580017,
+            13.868941307067871
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "B95427E8-846F-4367-A2DA-87892E259635"
+          ],
+          "from": [
+            1.9404196739196777,
+            -1.440985083580017,
+            13.868941307067871
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            1.9404196739196777,
+            -1.4659849405288696,
+            13.868941307067871
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-around-bed:declared-wide",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-wide",
+      "requestedStart": [
+        0.25728940963745117,
+        -1.4659849405288696,
+        13.630043029785156
+      ],
+      "requestedGoal": [
+        1.9404196739196777,
+        -1.4659849405288696,
+        13.868941307067871
+      ],
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-contained-start:declared-nominal",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-nominal",
+      "requestedStart": [
+        1.4342299699783325,
+        -1.4659849405288696,
+        15.227649688720703
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-contained-start:declared-wide",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-wide",
+      "requestedStart": [
+        1.4342299699783325,
+        -1.4659849405288696,
+        15.227649688720703
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-long:declared-nominal",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-nominal",
+      "requestedStart": [
+        -2.0884804725646973,
+        -1.424294114112854,
+        12.09678840637207
+      ],
+      "requestedGoal": [
+        3.63810133934021,
+        -1.424294114112854,
+        13.016716003417969
+      ],
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75,
+      "expectedOutcome": "candidate-model-route-no-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          -2.0884804725646973,
+          -1.399294137954712,
+          12.09678840637207
+        ],
+        [
+          3.63810133934021,
+          -1.399294137954712,
+          13.016716003417969
+        ]
+      ],
+      "expectedProjectedStart": [
+        -2.0884804725646973,
+        -1.399294137954712,
+        12.09678840637207
+      ],
+      "expectedProjectedGoal": [
+        3.63810133934021,
+        -1.399294137954712,
+        13.016716003417969
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": false,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            -2.0884804725646973,
+            -1.424294114112854,
+            12.09678840637207
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            -2.0884804725646973,
+            -1.399294137954712,
+            12.09678840637207
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            -2.0884804725646973,
+            -1.399294137954712,
+            12.09678840637207
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.63810133934021,
+            -1.424294114112854,
+            13.016716003417969
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-long:declared-wide",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-wide",
+      "requestedStart": [
+        -2.0884804725646973,
+        -1.424294114112854,
+        12.09678840637207
+      ],
+      "requestedGoal": [
+        3.63810133934021,
+        -1.424294114112854,
+        13.016716003417969
+      ],
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-corner:declared-nominal",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-nominal",
+      "requestedStart": [
+        3.63810133934021,
+        -1.424294114112854,
+        13.016716003417969
+      ],
+      "requestedGoal": [
+        4.620089054107666,
+        -1.424294114112854,
+        12.262925148010254
+      ],
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75,
+      "expectedOutcome": "candidate-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          3.63810133934021,
+          -1.399294137954712,
+          13.016716003417969
+        ],
+        [
+          3.9515743255615234,
+          -1.399294137954712,
+          13.034481048583984
+        ],
+        [
+          4.076574325561523,
+          -1.399294137954712,
+          13.034481048583984
+        ],
+        [
+          4.326574325561523,
+          -1.399294137954712,
+          12.909481048583984
+        ],
+        [
+          4.351573944091797,
+          -1.399294137954712,
+          12.884480476379395
+        ],
+        [
+          4.40157413482666,
+          -1.399294137954712,
+          12.784481048583984
+        ],
+        [
+          4.451574325561523,
+          -1.399294137954712,
+          12.684480667114258
+        ],
+        [
+          4.476573944091797,
+          -1.399294137954712,
+          12.634480476379395
+        ],
+        [
+          4.620089054107666,
+          -1.399294137954712,
+          12.262925148010254
+        ]
+      ],
+      "expectedProjectedStart": [
+        3.63810133934021,
+        -1.399294137954712,
+        13.016716003417969
+      ],
+      "expectedProjectedGoal": [
+        4.620089054107666,
+        -1.399294137954712,
+        12.262925148010254
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": true,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            3.63810133934021,
+            -1.424294114112854,
+            13.016716003417969
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.9515743255615234,
+            -1.399294137954712,
+            13.034481048583984
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            3.9515743255615234,
+            -1.399294137954712,
+            13.034481048583984
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-2",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.076574325561523,
+            -1.399294137954712,
+            13.034481048583984
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.076574325561523,
+            -1.399294137954712,
+            13.034481048583984
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-3",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.326574325561523,
+            -1.399294137954712,
+            12.909481048583984
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.326574325561523,
+            -1.399294137954712,
+            12.909481048583984
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-4",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.351573944091797,
+            -1.399294137954712,
+            12.884480476379395
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.351573944091797,
+            -1.399294137954712,
+            12.884480476379395
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-5",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.40157413482666,
+            -1.399294137954712,
+            12.784481048583984
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.40157413482666,
+            -1.399294137954712,
+            12.784481048583984
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-6",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.451574325561523,
+            -1.399294137954712,
+            12.684480667114258
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.451574325561523,
+            -1.399294137954712,
+            12.684480667114258
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-7",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.476573944091797,
+            -1.399294137954712,
+            12.634480476379395
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.476573944091797,
+            -1.399294137954712,
+            12.634480476379395
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-8",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.620089054107666,
+            -1.399294137954712,
+            12.262925148010254
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            4.620089054107666,
+            -1.399294137954712,
+            12.262925148010254
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.620089054107666,
+            -1.424294114112854,
+            12.262925148010254
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-corner:declared-wide",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-wide",
+      "requestedStart": [
+        3.63810133934021,
+        -1.424294114112854,
+        13.016716003417969
+      ],
+      "requestedGoal": [
+        4.620089054107666,
+        -1.424294114112854,
+        12.262925148010254
+      ],
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-missing-floor:declared-nominal",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-nominal",
+      "requestedStart": [
+        -2.0884804725646973,
+        -1.424294114112854,
+        12.09678840637207
+      ],
+      "requestedGoal": [
+        1.0242221355438232,
+        -1.424294114112854,
+        11.634638786315918
+      ],
+      "rawRadius": 0.27041634565979916,
+      "rawHeight": 1.6,
+      "effectiveRadius": 0.42041635513305664,
+      "effectiveHeight": 1.75,
+      "expectedOutcome": "native-query-failure",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-missing-floor:declared-wide",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-wide",
+      "requestedStart": [
+        -2.0884804725646973,
+        -1.424294114112854,
+        12.09678840637207
+      ],
+      "requestedGoal": [
+        1.0242221355438232,
+        -1.424294114112854,
+        11.634638786315918
+      ],
+      "rawRadius": 0.4301162633521313,
+      "rawHeight": 1.8,
+      "effectiveRadius": 0.5801162719726562,
+      "effectiveHeight": 1.9500000476837158,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-aisle:declared-width28-assumed-depth20-height120",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-width28-assumed-depth20-height120",
+      "requestedStart": [
+        0.12442538887262344,
+        -1.4659849405288696,
+        15.277722358703613
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true,
+      "expectedRoutePoints": [
+        [
+          0.00823664665222168,
+          -1.440985083580017,
+          15.199405670166016
+        ],
+        [
+          0.00823664665222168,
+          -1.440985083580017,
+          15.024405479431152
+        ],
+        [
+          0.03323662281036377,
+          -1.440985083580017,
+          14.849405288696289
+        ],
+        [
+          0.0832366943359375,
+          -1.440985083580017,
+          14.499404907226562
+        ],
+        [
+          0.10823667049407959,
+          -1.440985083580017,
+          14.324405670166016
+        ],
+        [
+          0.13323664665222168,
+          -1.440985083580017,
+          14.199405670166016
+        ],
+        [
+          0.3562970757484436,
+          -1.440985083580017,
+          13.644095420837402
+        ]
+      ],
+      "expectedProjectedStart": [
+        0.00823664665222168,
+        -1.440985083580017,
+        15.199405670166016
+      ],
+      "expectedProjectedGoal": [
+        0.3562970757484436,
+        -1.440985083580017,
+        13.644095420837402
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": true,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "B95427E8-846F-4367-A2DA-87892E259635"
+          ],
+          "from": [
+            0.12442538887262344,
+            -1.4659849405288696,
+            15.277722358703613
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.199405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.199405670166016
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.024405479431152
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.024405479431152
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-2",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.03323662281036377,
+            -1.440985083580017,
+            14.849405288696289
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.03323662281036377,
+            -1.440985083580017,
+            14.849405288696289
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-3",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.499404907226562
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.499404907226562
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-4",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.10823667049407959,
+            -1.440985083580017,
+            14.324405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.10823667049407959,
+            -1.440985083580017,
+            14.324405670166016
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-5",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.13323664665222168,
+            -1.440985083580017,
+            14.199405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.13323664665222168,
+            -1.440985083580017,
+            14.199405670166016
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-6",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.3562970757484436,
+            -1.440985083580017,
+            13.644095420837402
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "B95427E8-846F-4367-A2DA-87892E259635"
+          ],
+          "from": [
+            0.3562970757484436,
+            -1.440985083580017,
+            13.644095420837402
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.3562970757484436,
+            -1.4659849405288696,
+            13.644095420837402
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-around-bed:declared-width28-assumed-depth20-height120",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-width28-assumed-depth20-height120",
+      "requestedStart": [
+        0.25728940963745117,
+        -1.4659849405288696,
+        13.630043029785156
+      ],
+      "requestedGoal": [
+        1.9404196739196777,
+        -1.4659849405288696,
+        13.868941307067871
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "candidate-model-route-no-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          0.25728940963745117,
+          -1.440985083580017,
+          13.630043029785156
+        ],
+        [
+          1.9404196739196777,
+          -1.440985083580017,
+          13.868941307067871
+        ]
+      ],
+      "expectedProjectedStart": [
+        0.25728940963745117,
+        -1.440985083580017,
+        13.630043029785156
+      ],
+      "expectedProjectedGoal": [
+        1.9404196739196777,
+        -1.440985083580017,
+        13.868941307067871
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": false,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "B95427E8-846F-4367-A2DA-87892E259635"
+          ],
+          "from": [
+            0.25728940963745117,
+            -1.4659849405288696,
+            13.630043029785156
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            0.25728940963745117,
+            -1.440985083580017,
+            13.630043029785156
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            0.25728940963745117,
+            -1.440985083580017,
+            13.630043029785156
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            1.9404196739196777,
+            -1.440985083580017,
+            13.868941307067871
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "B95427E8-846F-4367-A2DA-87892E259635"
+          ],
+          "from": [
+            1.9404196739196777,
+            -1.440985083580017,
+            13.868941307067871
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            1.9404196739196777,
+            -1.4659849405288696,
+            13.868941307067871
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-contained-start:declared-width28-assumed-depth20-height120",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "declared-width28-assumed-depth20-height120",
+      "requestedStart": [
+        1.4342299699783325,
+        -1.4659849405288696,
+        15.227649688720703
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "invalid-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-long:declared-width28-assumed-depth20-height120",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-width28-assumed-depth20-height120",
+      "requestedStart": [
+        -2.0884804725646973,
+        -1.424294114112854,
+        12.09678840637207
+      ],
+      "requestedGoal": [
+        3.63810133934021,
+        -1.424294114112854,
+        13.016716003417969
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "candidate-model-route-no-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          -2.0884804725646973,
+          -1.399294137954712,
+          12.09678840637207
+        ],
+        [
+          3.63810133934021,
+          -1.399294137954712,
+          13.016716003417969
+        ]
+      ],
+      "expectedProjectedStart": [
+        -2.0884804725646973,
+        -1.399294137954712,
+        12.09678840637207
+      ],
+      "expectedProjectedGoal": [
+        3.63810133934021,
+        -1.399294137954712,
+        13.016716003417969
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": false,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            -2.0884804725646973,
+            -1.424294114112854,
+            12.09678840637207
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            -2.0884804725646973,
+            -1.399294137954712,
+            12.09678840637207
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            -2.0884804725646973,
+            -1.399294137954712,
+            12.09678840637207
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.63810133934021,
+            -1.424294114112854,
+            13.016716003417969
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-corner:declared-width28-assumed-depth20-height120",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-width28-assumed-depth20-height120",
+      "requestedStart": [
+        3.63810133934021,
+        -1.424294114112854,
+        13.016716003417969
+      ],
+      "requestedGoal": [
+        4.620089054107666,
+        -1.424294114112854,
+        12.262925148010254
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "candidate-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          3.63810133934021,
+          -1.399294137954712,
+          13.016716003417969
+        ],
+        [
+          4.076574325561523,
+          -1.399294137954712,
+          12.934480667114258
+        ],
+        [
+          4.1265740394592285,
+          -1.399294137954712,
+          12.909481048583984
+        ],
+        [
+          4.226573944091797,
+          -1.399294137954712,
+          12.859480857849121
+        ],
+        [
+          4.301574230194092,
+          -1.399294137954712,
+          12.784481048583984
+        ],
+        [
+          4.620089054107666,
+          -1.399294137954712,
+          12.262925148010254
+        ]
+      ],
+      "expectedProjectedStart": [
+        3.63810133934021,
+        -1.399294137954712,
+        13.016716003417969
+      ],
+      "expectedProjectedGoal": [
+        4.620089054107666,
+        -1.399294137954712,
+        12.262925148010254
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": true,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            3.63810133934021,
+            -1.424294114112854,
+            13.016716003417969
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            3.63810133934021,
+            -1.399294137954712,
+            13.016716003417969
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.076574325561523,
+            -1.399294137954712,
+            12.934480667114258
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.076574325561523,
+            -1.399294137954712,
+            12.934480667114258
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-2",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.1265740394592285,
+            -1.399294137954712,
+            12.909481048583984
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.1265740394592285,
+            -1.399294137954712,
+            12.909481048583984
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-3",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.226573944091797,
+            -1.399294137954712,
+            12.859480857849121
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.226573944091797,
+            -1.399294137954712,
+            12.859480857849121
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-4",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.301574230194092,
+            -1.399294137954712,
+            12.784481048583984
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [],
+          "from": [
+            4.301574230194092,
+            -1.399294137954712,
+            12.784481048583984
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "detour-segment-5",
+          "marginContact": true,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.620089054107666,
+            -1.399294137954712,
+            12.262925148010254
+          ]
+        },
+        {
+          "bodyContact": false,
+          "floorContactIDs": [
+            "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+          ],
+          "from": [
+            4.620089054107666,
+            -1.399294137954712,
+            12.262925148010254
+          ],
+          "fullFootprintSupportVerified": false,
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "sourceFloorSupport": "unverified-full-footprint",
+          "to": [
+            4.620089054107666,
+            -1.424294114112854,
+            12.262925148010254
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-missing-floor:declared-width28-assumed-depth20-height120",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "declared-width28-assumed-depth20-height120",
+      "requestedStart": [
+        -2.0884804725646973,
+        -1.424294114112854,
+        12.09678840637207
+      ],
+      "requestedGoal": [
+        1.0242221355438232,
+        -1.424294114112854,
+        11.634638786315918
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "native-query-failure",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:bed-supplied-rise-around-closed-door-return:connector-to-existing-aisle-route",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "journey-width28",
+      "requestedStart": [
+        0.20171594619750977,
+        -1.4659849405288696,
+        14.733180046081543
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "invalid-standing-start-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true,
+      "expectedRoutePoints": [
+        [
+          0.0832366943359375,
+          -1.440985083580017,
+          14.674405097961426
+        ],
+        [
+          0.0832366943359375,
+          -1.440985083580017,
+          14.499404907226562
+        ],
+        [
+          0.10823667049407959,
+          -1.440985083580017,
+          14.324405670166016
+        ],
+        [
+          0.13323664665222168,
+          -1.440985083580017,
+          14.199405670166016
+        ],
+        [
+          0.3562970757484436,
+          -1.440985083580017,
+          13.644095420837402
+        ]
+      ],
+      "expectedProjectedStart": [
+        0.0832366943359375,
+        -1.440985083580017,
+        14.674405097961426
+      ],
+      "expectedProjectedGoal": [
+        0.3562970757484436,
+        -1.440985083580017,
+        13.644095420837402
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": true,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "from": [
+            0.20171594619750977,
+            -1.4659849405288696,
+            14.733180046081543
+          ],
+          "kind": "requested-start-to-projection",
+          "marginContact": true,
+          "to": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.674405097961426
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.674405097961426
+          ],
+          "kind": "detour-segment-1",
+          "marginContact": true,
+          "to": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.499404907226562
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.499404907226562
+          ],
+          "kind": "detour-segment-2",
+          "marginContact": false,
+          "to": [
+            0.10823667049407959,
+            -1.440985083580017,
+            14.324405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.10823667049407959,
+            -1.440985083580017,
+            14.324405670166016
+          ],
+          "kind": "detour-segment-3",
+          "marginContact": false,
+          "to": [
+            0.13323664665222168,
+            -1.440985083580017,
+            14.199405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.13323664665222168,
+            -1.440985083580017,
+            14.199405670166016
+          ],
+          "kind": "detour-segment-4",
+          "marginContact": false,
+          "to": [
+            0.3562970757484436,
+            -1.440985083580017,
+            13.644095420837402
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.3562970757484436,
+            -1.440985083580017,
+            13.644095420837402
+          ],
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "to": [
+            0.3562970757484436,
+            -1.4659849405288696,
+            13.644095420837402
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:chair-supplied-rise-around-closed-door-return:connector-to-existing-aisle-route",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "journey-width28",
+      "requestedStart": [
+        0.08194796741008759,
+        -1.4659849405288696,
+        15.221192359924316
+      ],
+      "requestedGoal": [
+        0.257927268743515,
+        -1.4659849405288696,
+        14.337149620056152
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "invalid-standing-start-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": true,
+      "expectedRoutePoints": [
+        [
+          0.00823664665222168,
+          -1.440985083580017,
+          15.199405670166016
+        ],
+        [
+          0.00823664665222168,
+          -1.440985083580017,
+          15.024405479431152
+        ],
+        [
+          0.03323662281036377,
+          -1.440985083580017,
+          14.849405288696289
+        ],
+        [
+          0.0832366943359375,
+          -1.440985083580017,
+          14.499404907226562
+        ],
+        [
+          0.10823667049407959,
+          -1.440985083580017,
+          14.324405670166016
+        ],
+        [
+          0.13323664665222168,
+          -1.440985083580017,
+          14.324405670166016
+        ]
+      ],
+      "expectedProjectedStart": [
+        0.00823664665222168,
+        -1.440985083580017,
+        15.199405670166016
+      ],
+      "expectedProjectedGoal": [
+        0.13323664665222168,
+        -1.440985083580017,
+        14.324405670166016
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": true,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "from": [
+            0.08194796741008759,
+            -1.4659849405288696,
+            15.221192359924316
+          ],
+          "kind": "requested-start-to-projection",
+          "marginContact": true,
+          "to": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.199405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.199405670166016
+          ],
+          "kind": "detour-segment-1",
+          "marginContact": true,
+          "to": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.024405479431152
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.00823664665222168,
+            -1.440985083580017,
+            15.024405479431152
+          ],
+          "kind": "detour-segment-2",
+          "marginContact": false,
+          "to": [
+            0.03323662281036377,
+            -1.440985083580017,
+            14.849405288696289
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.03323662281036377,
+            -1.440985083580017,
+            14.849405288696289
+          ],
+          "kind": "detour-segment-3",
+          "marginContact": false,
+          "to": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.499404907226562
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.0832366943359375,
+            -1.440985083580017,
+            14.499404907226562
+          ],
+          "kind": "detour-segment-4",
+          "marginContact": false,
+          "to": [
+            0.10823667049407959,
+            -1.440985083580017,
+            14.324405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.10823667049407959,
+            -1.440985083580017,
+            14.324405670166016
+          ],
+          "kind": "detour-segment-5",
+          "marginContact": true,
+          "to": [
+            0.13323664665222168,
+            -1.440985083580017,
+            14.324405670166016
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            0.13323664665222168,
+            -1.440985083580017,
+            14.324405670166016
+          ],
+          "kind": "projection-to-requested-goal",
+          "marginContact": true,
+          "to": [
+            0.257927268743515,
+            -1.4659849405288696,
+            14.337149620056152
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:standing-inside-bed-is-invalid:inside-bed-connector-attempt",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "journey-width28",
+      "requestedStart": [
+        1.4342299699783325,
+        -1.4659849405288696,
+        15.227649688720703
+      ],
+      "requestedGoal": [
+        0.3562970757484436,
+        -1.4659849405288696,
+        13.644095420837402
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "invalid-standing-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:standing-inside-chair-is-invalid:inside-chair-connector-attempt",
+      "fixtureSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "profile": "journey-width28",
+      "requestedStart": [
+        -0.7023256421089172,
+        -1.4659849405288696,
+        15.49435043334961
+      ],
+      "requestedGoal": [
+        0.257927268743515,
+        -1.4659849405288696,
+        14.337149620056152
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "invalid-standing-start-contact",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": true,
+      "expectedInitialMarginContact": true
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:open-door-approach",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "journey-width28",
+      "requestedStart": [
+        3.8355696201324463,
+        -1.424294114112854,
+        13.048437118530273
+      ],
+      "requestedGoal": [
+        4.472583770751953,
+        -1.424294114112854,
+        13.18115234375
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "modeled-segment-candidate-no-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          3.8355696201324463,
+          -1.399294137954712,
+          13.048437118530273
+        ],
+        [
+          4.472583770751953,
+          -1.399294137954712,
+          13.18115234375
+        ]
+      ],
+      "expectedProjectedStart": [
+        3.8355696201324463,
+        -1.399294137954712,
+        13.048437118530273
+      ],
+      "expectedProjectedGoal": [
+        4.472583770751953,
+        -1.399294137954712,
+        13.18115234375
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": false,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "from": [
+            3.8355696201324463,
+            -1.424294114112854,
+            13.048437118530273
+          ],
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "to": [
+            3.8355696201324463,
+            -1.399294137954712,
+            13.048437118530273
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            3.8355696201324463,
+            -1.399294137954712,
+            13.048437118530273
+          ],
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "to": [
+            4.472583770751953,
+            -1.399294137954712,
+            13.18115234375
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            4.472583770751953,
+            -1.399294137954712,
+            13.18115234375
+          ],
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "to": [
+            4.472583770751953,
+            -1.424294114112854,
+            13.18115234375
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:outside-original-floor-unsupported",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "journey-width28",
+      "requestedStart": [
+        4.472583770751953,
+        -1.424294114112854,
+        13.18115234375
+      ],
+      "requestedGoal": [
+        5.469798564910889,
+        -1.424294114112854,
+        13.341346740722656
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "expected-withheld-outbound",
+      "expectedNativeSucceeded": false,
+      "expectedComplete": false,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false
+    },
+    {
+      "id": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:return-within-original-supported-model",
+      "fixtureSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "profile": "journey-width28",
+      "requestedStart": [
+        4.472583770751953,
+        -1.424294114112854,
+        13.18115234375
+      ],
+      "requestedGoal": [
+        3.8355696201324463,
+        -1.424294114112854,
+        13.048437118530273
+      ],
+      "rawRadius": 0.17204650534085256,
+      "rawHeight": 1.2,
+      "effectiveRadius": 0.32204651832580566,
+      "effectiveHeight": 1.350000023841858,
+      "expectedOutcome": "modeled-segment-candidate-no-contact",
+      "expectedNativeSucceeded": true,
+      "expectedComplete": true,
+      "expectedInitialBodyContact": false,
+      "expectedInitialMarginContact": false,
+      "expectedRoutePoints": [
+        [
+          4.472583770751953,
+          -1.399294137954712,
+          13.18115234375
+        ],
+        [
+          3.8355696201324463,
+          -1.399294137954712,
+          13.048437118530273
+        ]
+      ],
+      "expectedProjectedStart": [
+        4.472583770751953,
+        -1.399294137954712,
+        13.18115234375
+      ],
+      "expectedProjectedGoal": [
+        3.8355696201324463,
+        -1.399294137954712,
+        13.048437118530273
+      ],
+      "expectedBodyContact": false,
+      "expectedMarginContact": false,
+      "expectedSegments": [
+        {
+          "bodyContact": false,
+          "from": [
+            4.472583770751953,
+            -1.424294114112854,
+            13.18115234375
+          ],
+          "kind": "requested-start-to-projection",
+          "marginContact": false,
+          "to": [
+            4.472583770751953,
+            -1.399294137954712,
+            13.18115234375
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            4.472583770751953,
+            -1.399294137954712,
+            13.18115234375
+          ],
+          "kind": "detour-segment-1",
+          "marginContact": false,
+          "to": [
+            3.8355696201324463,
+            -1.399294137954712,
+            13.048437118530273
+          ]
+        },
+        {
+          "bodyContact": false,
+          "from": [
+            3.8355696201324463,
+            -1.399294137954712,
+            13.048437118530273
+          ],
+          "kind": "projection-to-requested-goal",
+          "marginContact": false,
+          "to": [
+            3.8355696201324463,
+            -1.424294114112854,
+            13.048437118530273
+          ]
+        }
+      ]
+    }
+  ],
+  "preservedUnrun": [
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "around-bed"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "back-to-aisle"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "closed-door-approach"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "closed-door-outbound-unsupported"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "return-to-supplied-standing-place"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "around-room-aisle"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "closed-door-approach"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "closed-door-outbound-unsupported"
+    },
+    {
+      "report": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "not-run-after-journey-stop",
+      "stage": "return-to-supplied-standing-place"
+    }
+  ]
+}

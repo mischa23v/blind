@@ -1,0 +1,22 @@
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -22,13 +22,18 @@
+     # timing. No geometry, source/session identity, arbitrary errors or model text.
+     # Keep this on both pass/fail paths; it never changes the test exit status.
+     echo 'CLASSIFIED_QUERY_STAGE_TIMING_BEGIN (at most 40 lines; 1500 characters each)'
+-    local stage='(requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered)'
++    local stage='(requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired)'
+     grep -E "^CLASSIFIED_QUERY_STAGE_RECEIPT id=[0-9A-F-]{36} event=(callback|waitFinished|failureDiscardCompleted|discardCompleted) stages=($stage:[0-9]+;)*$stage:[0-9]+$" "$out/$label.log" | head -40 | cut -c 1-1500 || true
+     echo 'CLASSIFIED_QUERY_STAGE_TIMING_END'
+     # Exact synthetic ingress fields only; no source IDs, geometry or free text.
+     echo 'CLASSIFICATION_INGRESS_TIMING_BEGIN (at most 80 lines; 1800 characters each)'
+     grep -E "^CLASSIFICATION_INGRESS_TIMING query=[0-9A-F-]{36} runtime=[0-9A-F-]{36} event=(submitted|waitFinished) elapsed_ms=[0-9]+ main_thread=(true|false) stages=(($stage:[0-9]+;)*$stage:[0-9]+)?$" "$out/$label.log" | head -80 | cut -c 1-1800 || true
+     echo 'CLASSIFICATION_INGRESS_TIMING_END'
++    # Closed synthetic worker CPU summary, optional unavailable values are -1.
++    echo 'CLASSIFICATION_WORKER_CPU_BEGIN (at most 64 lines; 2000 characters each)'
++    local cpuNumber='(-1|[0-9]+)'
++    grep -E "^CLASSIFICATION_WORKER_CPU id=[0-9A-F-]{36} worker_begin_ms=$cpuNumber lane=(ingress83|runtime75) worker_wall_ms=$cpuNumber worker_cpu_us=$cpuNumber worker_pair_valid=(true|false) build_wall_ms=$cpuNumber build_cpu_us=$cpuNumber build_pair_valid=(true|false) route_wall_ms=$cpuNumber route_cpu_us=$cpuNumber route_pair_valid=(true|false) retired=(true|false) native_failed=(true|false) records=([0-9]|[1-5][0-9]|6[0-4])$" "$out/$label.log" | head -64 | cut -c 1-2000 || true
++    echo 'CLASSIFICATION_WORKER_CPU_END'
+   fi
+   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
+   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.

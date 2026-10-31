@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "scope": "Existing native Apple unit-case artifact: additive bounded public-fixture route/journey JSON evidence only",
+  "sourceOnly": true,
+  "nativeExportExecutionPending": true,
+  "physicalAuthority": false,
+  "baseCheckoutHEAD": "e9e18d15fe1fdac1ff1487b3c2a8a2e731607427",
+  "unchangedInterfaces": [
+    "export-native-unit-statuses.py CLI",
+    "schema 1 case statuses and reconciliation",
+    "target witness and clean-source checks",
+    "base complete/target verification/exit semantics",
+    "native-apple.sh",
+    "native-apple.yml",
+    "Swift app and test producers"
+  ],
+  "verification": {
+    "existingStatusFixtures": 31,
+    "routeEvidenceFixtures": 28,
+    "totalPassing": 59,
+    "nativeAppleExecution": false,
+    "heavyBuildsOrDependencies": false
+  },
+  "review": {
+    "status": "independent review complete: implementation and all 59 bounded fixtures",
+    "reviewer": "review_recorded_route_preview",
+    "fixedFindings": [
+      "Huge finite-integer rejection before math.isfinite prevents OverflowError",
+      "Outcome-specific fields and no-contact consistency required",
+      "Export-directory symlink rejected before traversal"
+    ],
+    "nativeCompatibility": "Modern exact-test export/manifest behavior must be verified on first Apple run",
+    "boundsCaveat": "Temporary aggregate/count checks sampled every 50ms; per-file limit hard; published artifact hard <=1MiB",
+    "subprocessFixtureScope": "Real owned subprocess timeout branch with injected clock, not a 30-second elapsed-time measurement; actual 2MiB write under hard 1MiB per-file limit."
+  },
+  "files": [
+    {
+      "path": "tools/ci/export-native-unit-statuses.py",
+      "bytes": 13438,
+      "sha256": "2d690e3b4d8182ce6ac68e8417570048008f446256373afd496fb4629527074e"
+    },
+    {
+      "path": "tools/ci/native-route-diagnostic-evidence.py",
+      "bytes": 25290,
+      "sha256": "667b38711f4cdd5678e6e4deeb552f2769a838063e7d9c136f55ab796cc1dc98"
+    },
+    {
+      "path": "tools/ci/test-native-route-diagnostic-evidence.py",
+      "bytes": 19570,
+      "sha256": "89c9b66faab78e69b0be52ac880122677e9390aeccd26ebe409d7172fbbfcaf2"
+    },
+    {
+      "path": "tools/ci/test-native-unit-statuses.py",
+      "bytes": 10287,
+      "sha256": "11996ca8b4dde9e1ebc08173d9aa42a5707f97b3cc0298a37cb6dc9dd02d10dc"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/README.md",
+      "bytes": 5657,
+      "sha256": "255480a6ab22bda1b121ab2cd418efe8d27bcfbad6dcfcdc9ca8a6b9ee473a46"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/unit-parser-tests.txt",
+      "bytes": 130,
+      "sha256": "8a3e4354d0050f78af6844a2de4a7bda2d7820699ff116d3af1cc58fb6cdc2c2"
+    },
+    {
+      "path": "research/apple-route-evidence-export-20261028/route-exporter-tests.txt",
+      "bytes": 127,
+      "sha256": "49120db3d37100b8b6e6a7eacaed1a14317fb0354ec5802dbb1a59f4ac7b30f6"
+    }
+  ]
+}

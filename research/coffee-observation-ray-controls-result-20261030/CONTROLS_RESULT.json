@@ -1,0 +1,40 @@
+{
+  "status": "completed-controls-only",
+  "nativeControlsOnly": true,
+  "physicalAuthority": false,
+  "suites": [
+    {
+      "name": "original",
+      "testsRun": 16,
+      "expected": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "name": "read-only-rays",
+      "testsRun": 22,
+      "expected": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "name": "observation-only-rays",
+      "testsRun": 10,
+      "expected": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "success": true
+    }
+  ],
+  "librarySHA256": "82afb6c94b3e0234ee371395b6f7ba17ae159987293ac357463bde43605ebc26",
+  "sourceManifestSHA256": "98ddf1a4cd0cadb285509389f6b7ba2ae40e94558e6e1cd19db83bb79a04a14f",
+  "buildReceiptSHA256": "5cd8ccc9754498f0ae2d6889395ff7d550b7e9d3e9b332cebf4aa499970ec81d",
+  "wallSeconds": 0.17487094199896092,
+  "cpuSeconds": 0.229813,
+  "peakRSSKiB": 33336
+}

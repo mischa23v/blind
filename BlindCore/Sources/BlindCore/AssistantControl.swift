@@ -8,6 +8,20 @@ public enum AssistantControl: Equatable, Sendable {
         let value = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
             .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX"))
             .replacingOccurrences(of: "أ", with: "ا").replacingOccurrences(of: "إ", with: "ا").replacingOccurrences(of: "آ", with: "ا")
+        // Only complete, bounded polite narration requests. Preserve legacy
+        // bilingual aliases below; do not extract keywords from quoted speech,
+        // negations, questions or a statement about another person.
+        if text.utf8.count <= 256 && !text.contains(where: { "?؟\"'“”‘’".contains($0) }) {
+            switch value {
+            case "please stay quiet while i listen to the story",
+                 "please stay quiet while i listen", "please be quiet while i listen",
+                 "please pause descriptions", "please stop descriptions",
+                 "please hold descriptions", "please stay quiet", "please be quiet": return .quiet
+            case "please resume descriptions", "please continue descriptions",
+                 "please continue talking", "resume descriptions please": return .resume
+            default: break
+            }
+        }
         switch value {
         case "quiet", "hold on", "hold descriptions", "pause descriptions", "stop descriptions", "صمت", "اوقف الوصف": return .quiet
         case "resume", "continue descriptions", "continue talking", "resume descriptions", "استأنف الوصف", "استأنف", "استانف الوصف", "استانف": return .resume
@@ -18,6 +32,16 @@ public enum AssistantControl: Equatable, Sendable {
         case "less information", "معلومات اقل": return .lessInformation
         default: return nil
         }
+    }
+    /// Context-dependent continuation is narration resume only while narration
+    /// is actually held. It never starts/unmutes a session or grants permission.
+    public static func resumesHeldNarration(_ text: String, isHeld: Bool) -> Bool {
+        guard isHeld, text.utf8.count <= 256,
+              !text.contains(where: { "?؟\"'“”‘’".contains($0) }) else { return false }
+        if parse(text) == .resume { return true }
+        let value = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+            .lowercased()
+        return value == "continue" || value == "wait. now continue what we were doing"
     }
     /// A whole-utterance yes/no reply to the current offer. Longer sentences are questions, not answers.
     public static func offerAnswer(_ text: String) -> OfferAnswer? {

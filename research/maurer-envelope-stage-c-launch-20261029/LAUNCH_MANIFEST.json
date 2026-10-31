@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "attemptID": "envelope001",
+  "sourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
+  "scope": "reviewed envelope source launcher; not execution admission",
+  "files": {
+    "ACTUAL003_EXPECTED_ENVELOPE.json": {
+      "bytes": 77203,
+      "sha256": "cfae06b474540a7e0bed91c09ced9f6ad47add1eda4e49da03354aae3d5da4cc"
+    },
+    "INPUT_TRANSFER_SCOPE.json": {
+      "bytes": 5500,
+      "sha256": "2599c13c0e0fc28698c82610b626b1a495780ecbc8f56bdc8430f21d6ad0be84"
+    },
+    "MATERIALIZATION_MANIFEST.json": {
+      "bytes": 3978,
+      "sha256": "89f582735b098bdcf3dddfba9bcbdb83d8687ce852d82afe7e11db11ed9ba4a8"
+    },
+    "PUBLIC_AGGREGATE_SCHEMA.json": {
+      "bytes": 13465,
+      "sha256": "be169fa7614eb57d4fbba8b05027df0a71075cef17dbc6c1a8016a935bac7dad"
+    },
+    "failure_evidence.py": {
+      "bytes": 12040,
+      "sha256": "47ec9a9694a2b3e131677248c81744d7d03ef99e1392f2d7dbd086bab17c248d"
+    },
+    "launch_stage_c.py": {
+      "bytes": 33835,
+      "sha256": "eed665db3407de1cd021de62bcd91347fdf40babee863e073ecf7adfcb505e76"
+    },
+    "mac_guard.py": {
+      "bytes": 20193,
+      "sha256": "24fffc700af4f8472859ce615518e989ac7cc89c83a090d559998501568dc499"
+    },
+    "public_aggregate.py": {
+      "bytes": 7600,
+      "sha256": "7d43687f8dcccce02019fd863a73effd5dbae1458b45bd4504a0cf8d522a1511"
+    }
+  },
+  "sourceReviewSHA256": "72fb69bbce0f96f8131af3d085990f079334321d7448d17029a4c05ed8772fda"
+}

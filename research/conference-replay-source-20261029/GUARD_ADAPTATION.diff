@@ -1,0 +1,138 @@
+--- research/clearance-first-coffee-source-20261029/run_aggregate.py
++++ research/conference-replay-source-20261029/run_aggregate.py
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python3
+ """SOURCE ONLY: root review/admission required. Never invokes installs or retries.
+-Adapted from the passed Coffee baseline aggregate guard.
+-Only workload/preflight changed; this adapter still needs independent review.
++Same passed Coffee aggregate supervisor, with seven-objective comparator terminal checks.
++Historical estimated registration is diagnostic only, not camera-mesh calibration.
+ """
+ import hashlib, json, math, os, pathlib, resource, signal, stat, subprocess, sys, time
+ H = pathlib.Path(__file__).resolve().parent
+@@ -107,6 +107,7 @@
+     if len(sys.argv)!=3 or sys.argv[1]!='--admitted-source-commit':
+         raise SystemExit('Requires root admission: --admitted-source-commit <exact git HEAD>')
+     if sys.platform!='linux': raise SystemExit('Linux procfs required')
++    os.environ['GIT_NO_LAZY_FETCH']='1'
+     def interrupted(signum, frame):
+         raise SystemExit('Supervisor interrupted by signal '+str(signum))
+     for signum in (signal.SIGTERM,signal.SIGHUP): signal.signal(signum,interrupted)
+@@ -116,7 +117,7 @@
+     pins=json.loads(manifestBytes)
+     def expand(value):
+         return (value.replace('@WORKSPACE@',str(ROOT.parent))
+-                     .replace('@PROTOCOL@',str(H)).replace('@PINS_SHA256@',manifestDigest))
++                     .replace('@PROTOCOL@',str(H)).replace('@REPO@',str(ROOT)).replace('@PINS_SHA256@',manifestDigest))
+     def verify_pins():
+         if sha(H/'SOURCE_PINS.json')!=manifestDigest: raise RuntimeError('Run manifest changed')
+         actual={}
+@@ -132,11 +133,9 @@
+     committed=subprocess.check_output(['git','show',head+':'+str((H/'SOURCE_PINS.json').relative_to(ROOT))],
+                                       cwd=ROOT,timeout=5)
+     if committed!=manifestBytes: raise RuntimeError('Run manifest differs from admitted commit')
+-    # Bind every repository source byte to the admitted commit. The restored
+-    # schedule is instead bound to its committed gzip and original SHA256.
++    # Bind every repository source byte to the explicitly admitted commit.
+     for name,digest in pins['inputs'].items():
+         if name.startswith('/') or name.startswith('@WORKSPACE@'): continue
+-        if name.endswith('/SCHEDULE_20.json'): continue
+         data=subprocess.check_output(['git','show',head+':'+name],cwd=ROOT,timeout=5)
+         if hashlib.sha256(data).hexdigest()!=digest:
+             raise RuntimeError('Input differs from admitted commit: '+name)
+@@ -150,6 +149,8 @@
+              'cpuAffinity':[cpu], 'manifestSHA256':manifestDigest, 'pins':pins, 'inputHashesBefore':beforePins, 'physicalAuthority':False,
+              'peakObservedAggregateRSS':0,'peakFastExitChildRSS':0,
+              'limitations':['Observed RSS polling, not hard cgroup memory limit',
++                 'Estimated historical registration is not camera-mesh calibration',
++                 'This comparator does not execute full-body collision or movement',
+                  'Same-mesh contacts cannot reveal tabletops absent from the mesh',
+                  'Nine probes are not complete-footprint support; labels are not semantic truth',
+                  'No-contact never establishes real-world clearance or navigation accuracy']}
+@@ -233,13 +234,79 @@
+         command([expand(arg) for arg in pins['controlsCommand']],'controls')
+         command([expand(arg) for arg in pins['comparisonCommand']],'comparison')
+         actual=json.loads((work/'comparison/PROPOSALS.json').read_text())
+-        canonical=json.loads((ROOT/'research/coffee-room-journey-recovery-20261029/collision-protocol/CURRENT_PATHS_20.json').read_text())
+-        pairs=[(p['start'],p['goal']) for p in actual['paths']]
+-        if pairs!=[(p['start'],p['goal']) for p in canonical['paths']]:raise RuntimeError('canonical pairs changed')
+-        if actual['bodyWidthDepthHeightMetres']!=[.45,.30,1.60] or actual['horizontalMarginMetres']!=.15 or actual['physicalAuthority'] is not False:raise RuntimeError('body/authority mismatch')
+-        receipt['comparison']={'status':actual['status'],'queries':len(pairs),
+-            'proposals':sum(p['status']=='proposalOnlyAwaitingHardValidation' for p in actual['paths']),
+-            'physicalAuthority':False,'bodyOrSupportValidated':False}
++        canonical=json.loads((ROOT/'research/conference-replay-input-inventory-20261029/TARGETS.json').read_text())['primaryPairs']
++        mesh_receipt=json.loads((ROOT/'research/conference-replay-input-inventory-20261029/evidence/MESH_INPUT_RECEIPT.json').read_text())
++        names=[p['name'] for p in actual['paths']]
++        expected_names=['table_92_to_120','table_120_to_200','table_200_to_220','table_220_to_20','table_20_to_92','varpu_130_to_160','varpu_160_to_130']
++        if names!=expected_names or names!=[p['name']for p in canonical]: raise RuntimeError('seven canonical objectives changed')
++        if actual['bodyWidthDepthHeightMetres']!=[.45,.30,1.60] or actual['horizontalMarginMetres']!=.15 or actual['physicalAuthority'] is not False: raise RuntimeError('body/authority mismatch')
++        if actual['proposalRadiusMetres']!=.225 or actual['proposalHeightMetres']!=1.75: raise RuntimeError('native proposal profile changed')
++        if actual['nativeExclusionEnabled'] is not False or actual['movementExecuted'] is not False or actual['validatedCameraMeshAlignment'] is not False or actual['correctedOccupancyConsumed'] is not False: raise RuntimeError('unexpected geometry/movement/calibration authority')
++        if actual['historicalEstimatedLevelFrameUsed'] is not True or actual['registrationAuthority']!='historicalEstimatedComparatorOnlyNotOfficialCameraMeshCalibration': raise RuntimeError('registration provenance missing')
++        if actual['fullBodyValidation']!='notEstablished' or actual['floorSupport']!='unknown' or actual['manualRepairArm']!='inputUnavailableNoKoivuPhysicalExclusionContract': raise RuntimeError('unsupported validation claim')
++        if actual['registeredFloat32VerticesSHA256']!=mesh_receipt['transformedFloat32VertexBytesSHA'] or actual['trianglesInt32SHA256']!=mesh_receipt['triangleBytesSHA']: raise RuntimeError('transformed source identity mismatch')
++        expected_cfg={'radius':.225,'height':1.75,'cell_size':.025,'cell_height':.025,'max_climb':.025,'max_slope':15,'max_cells':250000,'max_nodes':4096}
++        if actual['nativeConfig']!=expected_cfg: raise RuntimeError('native configuration changed')
++        counts={'baselineCompleteAndAssociated':0,'gridProposals':0,'gridDisconnected':0,'gridUnavailable':0}
++        def polyline_length(chain):
++            if not isinstance(chain,list) or len(chain)<2 or len(chain)>100012: raise RuntimeError('chain cardinality')
++            for p in chain:
++                if not isinstance(p,list) or len(p)!=3 or not all(isinstance(x,(int,float)) and not isinstance(x,bool) and math.isfinite(x)for x in p): raise RuntimeError('invalid chain point')
++            return sum(math.dist(a,b)for a,b in zip(chain[:-1],chain[1:]))
++        for row,request in zip(actual['paths'],canonical):
++            for key in ('requestedStartXYZ','requestedGoalXYZ','sourcePoseIndices'):
++                if row[key]!=request[key]: raise RuntimeError('fixed request changed: '+row['name'])
++            if row['physicalAuthority'] is not False or row['cameraAnchorsNotBodyPose'] is not True: raise RuntimeError('per-objective authority missing')
++            native=row['baselineNative'];aa=row['baselineStartAssociation'];bb=row['baselineGoalAssociation']
++            def association_passes(requested,projected,record):
++                finite=len(projected)==3 and all(isinstance(x,(int,float)) and not isinstance(x,bool) and math.isfinite(x)for x in projected)
++                if record['finite']!=finite or record['actorSnapped'] is not False: raise RuntimeError('association validity changed')
++                if not finite:
++                    if record['horizontalMetres'] is not None or record['verticalMetres'] is not None or record['passes10cmHorizontal'] is not False: raise RuntimeError('invalid association promoted')
++                    return False
++                horizontal=math.hypot(projected[0]-requested[0],projected[2]-requested[2]);vertical=projected[1]-requested[1]
++                if not math.isclose(horizontal,record['horizontalMetres'],rel_tol=0,abs_tol=1e-12) or not math.isclose(vertical,record['verticalMetres'],rel_tol=0,abs_tol=1e-12): raise RuntimeError('association arithmetic mismatch')
++                accepted=horizontal<=.1
++                if record['passes10cmHorizontal']!=accepted: raise RuntimeError('association threshold mismatch')
++                return accepted
++            start_ok=association_passes(request['requestedStartXYZ'],native['projected_start'],aa)
++            goal_ok=association_passes(request['requestedGoalXYZ'],native['projected_goal'],bb)
++            accepted=native['complete'] is True and len(native['points'])>=2 and start_ok and goal_ok
++            if row['baselineCompleteAndAssociated']!=accepted: raise RuntimeError('native acceptance mismatch')
++            if accepted:
++                expected_chain=[request['requestedStartXYZ']]+native['points']+[request['requestedGoalXYZ']]
++                if row['baselineRequestedConnectorChainXYZ']!=expected_chain: raise RuntimeError('native full connector chain changed')
++                polyline_length(expected_chain);counts['baselineCompleteAndAssociated']+=1
++            elif row['baselineRequestedConnectorChainXYZ'] is not None: raise RuntimeError('partial/rejected native path received invented goal connector')
++            status=row['gridStatus']
++            if status=='proposalOnlyAwaitingHardValidation':
++                choice=row['gridSelection']
++                if choice['status']!=status or choice['physicalAuthority'] is not False or choice['hardBodyValidation']!='notEstablished' or choice['fullFootprintSupport']!='notEstablished': raise RuntimeError('grid authority mismatch')
++                cap=1.5*choice['distanceGrid']['lengthMetres']+.5
++                if not math.isclose(cap,choice['lengthCapMetres'],rel_tol=0,abs_tol=1e-9): raise RuntimeError('original grid detour cap changed')
++                for arm in ('distanceGrid','clearanceGrid'):
++                    candidate=choice[arm];points=candidate['pointsXYZ'];chain=[request['requestedStartXYZ']]+points+[request['requestedGoalXYZ']]
++                    if candidate['requestedConnectorChainXYZ']!=chain: raise RuntimeError('grid requested connectors changed')
++                    length=polyline_length(points);full=polyline_length(chain)
++                    if not math.isclose(length,candidate['lengthMetres'],rel_tol=0,abs_tol=1e-8) or not math.isclose(full,candidate['connectorInclusiveLengthMetres'],rel_tol=0,abs_tol=1e-8): raise RuntimeError('grid length accounting mismatch')
++                    if length>cap+1e-9: raise RuntimeError('grid path exceeds frozen detour cap')
++                counts['gridProposals']+=1
++            elif status=='disconnected':
++                choice=row['gridSelection']
++                if choice['status']!=status or choice['physicalAuthority'] is not False or any(k in choice for k in ('distanceGrid','clearanceGrid')): raise RuntimeError('disconnected grid promoted')
++                counts['gridDisconnected']+=1
++            elif status=='unavailableWholeBatchAnchorOrGraphFailure':
++                if 'gridSelection' in row: raise RuntimeError('unavailable grid received candidate')
++                counts['gridUnavailable']+=1
++            else: raise RuntimeError('unrecognized/incomplete objective status')
++        if actual['status']=='SEVEN_SOURCE_OBJECTIVES_EVALUATED_NOT_BODY_VALIDATED':
++            if counts['gridUnavailable'] or counts['gridProposals']+counts['gridDisconnected']!=7: raise RuntimeError('grid evaluation incomplete')
++        elif actual['status']=='SOURCE_BASELINES_RETAINED_GRID_UNAVAILABLE':
++            if counts['gridUnavailable']!=7 or not actual.get('gridFailure'): raise RuntimeError('batch failure incompletely retained')
++        else: raise RuntimeError('unexpected comparator terminal status')
++        receipt['comparison']={'status':actual['status'],'queries':len(names),'objectives':names,**counts,
++            'allSevenRequestsRetained':True,'physicalAuthority':False,'bodyOrSupportValidated':False,
++            'registrationAuthority':'historical estimated comparator only; not camera-mesh calibration'}
+         receipt['status']='completed-zero-exit' # Candidate comparison only, not clearance.
+     except BaseException as error:
+         receipt['status']='failed';receipt['error']=type(error).__name__+': '+str(error)

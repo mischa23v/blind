@@ -1,0 +1,47 @@
+}
+var count=0
+func check(_ condition: @autoclosure () -> Bool, _ label: String) { precondition(condition(), label); count += 1 }
+for hazard in [Hazard.drop, .obstacle, .overhead] {
+ events=[]; let m=Model(); m.detector.next=Detection(hazard); BodyCollisionWarning.hit=true
+ m.run(ARFrame(observation: Observation(trackingNormal:true)))
+ check(m.publication?.hazard == hazard, "urgent recovery warning survives")
+ check(!events.contains("body"), "legacy urgent skips supplemental work")
+ check(events.firstIndex(of:"legacy")! < events.firstIndex(of:"publish")!, "detection before publication")
+ check(m.lastObservation == nil, "no live-route observation")
+}
+for hazard in [Hazard.observing,.uncertain,.needsCalibration] {
+ events=[]; let m=Model(); m.detector.next=Detection(hazard); BodyCollisionWarning.hit=false
+ m.run(ARFrame(observation: Observation(trackingNormal:true)))
+ check(m.publication?.hazard == .uncertain && m.publication?.reason == .localizing,"no recovery clearance")
+}
+do {
+ events=[]; let m=Model(); BodyCollisionWarning.hit=true
+ m.run(ARFrame(observation: Observation(trackingNormal:true)))
+ check(m.publication?.reason == .bodyEnvelope,"fresh independently admitted body warning")
+ check(events.firstIndex(of:"legacy")! < events.firstIndex(of:"body")!,"urgent path before supplemental")
+}
+do {
+ events=[]; let m=Model(); m.detector.next=Detection(.drop); m.detector.floorHeight=0; BodyCollisionWarning.hit=true
+ m.run(ARFrame(observation: Observation(trackingNormal:false)))
+ check(m.publication?.hazard == .uncertain,"invalid tracking neither warning nor clearance from pose")
+ check(m.detector.floorHeight == nil && !m.fixedBodyMount && m.recognizedPlace == nil,"invalid pose retires old calibration/mount/map")
+ check(events.firstIndex(of:"reset")! < events.firstIndex(of:"legacy")!,"reset before detector")
+}
+do {
+ events=[]; let m=Model(); m.phoneDetection=Detection(.drop); m.bodyWarningAssessment = .init(detection: Detection(.obstacle))
+ m.run(ARFrame(observation:nil))
+ check(m.publication?.hazard == .uncertain,"nil depth does not replay warning")
+ check(m.bodyWarningAssessment == nil,"nil depth retires body assessment")
+ check(events.contains("invalidateEvidence") && !events.contains("legacy"),"nil depth invalidates evidence")
+}
+do {
+ events=[]; let m=Model(); m.fixedBodyMount=false; m.detector.reset(); BodyCollisionWarning.hit=true
+ m.run(ARFrame(observation: Observation(trackingNormal:true)))
+ check(m.publication?.hazard == .uncertain,"real restart has neither calibration nor mounted-body warning")
+}
+do {
+ events=[]; let m=Model(); m.detector.floorHeight=0
+ m.run(ARFrame(observation:nil, noDepthTracking:.limited))
+ check(m.detector.floorHeight == nil && !m.fixedBodyMount,"nil depth plus invalid tracking still retires pose ownership")
+}
+print("PASS: \(count) extracted-helper assertions; adapter stubs, not native acceptance")

@@ -1,0 +1,930 @@
+{
+  "schema": 1,
+  "scope": "derived from preserved exact-source native receipts and original public fixtures; not new native tests or physical measurements",
+  "latestCompleteCaseEvidenceSource": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "independentExactUSDZComparison": "completed on exact retained diagnostic files; two native first-wall numerical witnesses, 24 reference features",
+  "runs": [
+    {
+      "id": 40698547633,
+      "source": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+      "caseCount": 221,
+      "counts": {
+        "Passed": 204,
+        "Failed": 11,
+        "Skipped": 6
+      },
+      "routes": [
+        {
+          "name": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+          "originalAttachmentSHA256": "7cb05ef9bc86372df5930749970bf6ed6606c3346e8d605e199373260fe422e7",
+          "outcomes": 12,
+          "outcomeCounts": {
+            "unsupported-geometry": 12
+          },
+          "errorCounts": {
+            "metadataDecodeFailed": 12
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+          "originalAttachmentSHA256": "40a85a2a0c615ff743effb3c21e8c6d6f93af898ff347576f52935c7cf5b0a9c",
+          "outcomes": 6,
+          "outcomeCounts": {
+            "unsupported-geometry": 6
+          },
+          "errorCounts": {
+            "metadataDecodeFailed": 6
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+          "originalAttachmentSHA256": "4ec263b826cc54e51088e44cb58852aa1d6a06769ba80c3d1f817850f3823b58",
+          "outcomes": 16,
+          "outcomeCounts": {
+            "unsupported-geometry": 16
+          },
+          "errorCounts": {
+            "metadataDecodeFailed": 16
+          },
+          "physicalAuthority": false
+        }
+      ],
+      "sourceReceipt": {
+        "path": "research/native-path-recovery-20261028/run40698547633/final-unit-case-statuses-original.json",
+        "bytes": 67599,
+        "sha256": "d1e0dd6956b9cc540f0830bd6dabd27c863a6a83bde88b98d2637a9176b0d876"
+      }
+    },
+    {
+      "id": 40706611490,
+      "source": "43e33d4b8a59a2a0431ab514c8821fabcf622a08",
+      "caseCount": 223,
+      "counts": {
+        "Passed": 209,
+        "Skipped": 6,
+        "Failed": 8
+      },
+      "routes": [
+        {
+          "name": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+          "originalAttachmentSHA256": "e933185d19639c9a0df60ab50e4c3535f65385c4d858ddac9cd11a81c2f52d65",
+          "outcomes": 12,
+          "outcomeCounts": {
+            "unsupported-geometry": 12
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 12
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+          "originalAttachmentSHA256": "48cbb4aa5c08e53096439cfb775fd38826a749b530686b755691c949a3184148",
+          "outcomes": 6,
+          "outcomeCounts": {
+            "unsupported-geometry": 6
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 6
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+          "originalAttachmentSHA256": "1c7fd67d45536b4c7d8f149f847b6d8158aa9fc4254e3ab0d75a1701e91355ff",
+          "outcomes": 16,
+          "outcomeCounts": {
+            "unsupported-geometry": 16
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 16
+          },
+          "physicalAuthority": false
+        }
+      ],
+      "sourceReceipt": {
+        "path": "research/native-path-recovery-20261028/run40706611490/final-unit-case-statuses-original.json",
+        "bytes": 75145,
+        "sha256": "b2f224901eb20e434ab0b341d8efc95831ffb7459f6ca4faab776c87fbcee83c"
+      }
+    },
+    {
+      "id": 40710093281,
+      "source": "9284719fe477135d4bcd85b2cbd2a587609ed428",
+      "caseCount": 224,
+      "counts": {
+        "Passed": 211,
+        "Skipped": 6,
+        "Failed": 7
+      },
+      "routes": [
+        {
+          "name": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+          "originalAttachmentSHA256": "e933185d19639c9a0df60ab50e4c3535f65385c4d858ddac9cd11a81c2f52d65",
+          "outcomes": 12,
+          "outcomeCounts": {
+            "unsupported-geometry": 12
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 12
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+          "originalAttachmentSHA256": "48cbb4aa5c08e53096439cfb775fd38826a749b530686b755691c949a3184148",
+          "outcomes": 6,
+          "outcomeCounts": {
+            "unsupported-geometry": 6
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 6
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+          "originalAttachmentSHA256": "1c7fd67d45536b4c7d8f149f847b6d8158aa9fc4254e3ab0d75a1701e91355ff",
+          "outcomes": 16,
+          "outcomeCounts": {
+            "unsupported-geometry": 16
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 16
+          },
+          "physicalAuthority": false
+        }
+      ],
+      "sourceReceipt": {
+        "path": "research/native-path-recovery-20261028/run40710093281/final-unit-case-statuses-original.json",
+        "bytes": 86255,
+        "sha256": "d764d9ef267aa2a23b23808cd60d488c794123b19ea12d7fc0b04b9e248942ef"
+      }
+    },
+    {
+      "id": 40726507227,
+      "source": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+      "caseCount": 236,
+      "counts": {
+        "Passed": 223,
+        "Skipped": 6,
+        "Failed": 7
+      },
+      "routes": [
+        {
+          "name": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+          "originalAttachmentSHA256": "e933185d19639c9a0df60ab50e4c3535f65385c4d858ddac9cd11a81c2f52d65",
+          "outcomes": 12,
+          "outcomeCounts": {
+            "unsupported-geometry": 12
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 12
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+          "originalAttachmentSHA256": "48cbb4aa5c08e53096439cfb775fd38826a749b530686b755691c949a3184148",
+          "outcomes": 6,
+          "outcomeCounts": {
+            "unsupported-geometry": 6
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 6
+          },
+          "physicalAuthority": false
+        },
+        {
+          "name": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+          "originalAttachmentSHA256": "1c7fd67d45536b4c7d8f149f847b6d8158aa9fc4254e3ab0d75a1701e91355ff",
+          "outcomes": 16,
+          "outcomeCounts": {
+            "unsupported-geometry": 16
+          },
+          "errorCounts": {
+            "sourceGeometryMismatch": 16
+          },
+          "physicalAuthority": false
+        }
+      ],
+      "sourceReceipt": {
+        "path": "research/native-path-recovery-20261028/run40726507227/final-unit-case-statuses-original.json",
+        "bytes": 91618,
+        "sha256": "cc39ee53c1bcd54b858895e5870a15e4cfdb0f518dbcea91d21e17f0e5581c2a"
+      }
+    }
+  ],
+  "fixtureMetadata": [
+    {
+      "fixture": "Hallway2",
+      "source": {
+        "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/Hallway2.capturedRoom.json",
+        "bytes": 27575,
+        "sha256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d"
+      },
+      "featureCounts": {
+        "floors": 1,
+        "walls": 6,
+        "doors": 6,
+        "windows": 0,
+        "openings": 0,
+        "objects": 0
+      },
+      "floorDimensionsAsSaved": [
+        8.322798,
+        1.9074692,
+        0
+      ],
+      "floorPolygonCornersAsSaved": [
+        [
+          4.1613975,
+          -0.9537344,
+          1.1920929e-07
+        ],
+        [
+          -4.1613994,
+          -0.9537306,
+          1.1920929e-07
+        ],
+        [
+          -4.1613984,
+          -0.4357109,
+          1.1920929e-07
+        ],
+        [
+          -4.1613984,
+          0.034230232,
+          1.1920929e-07
+        ],
+        [
+          -3.1082876,
+          0.034230232,
+          1.1920929e-07
+        ],
+        [
+          3.1273022,
+          0.03422737,
+          1.1920929e-07
+        ],
+        [
+          3.1273022,
+          0.95373535,
+          1.1920929e-07
+        ],
+        [
+          4.1613984,
+          0.95373535,
+          1.1920929e-07
+        ]
+      ],
+      "surfaceCount": 13,
+      "zeroDimensionZSurfaces": 13,
+      "meaning": "saved source fields; not independently measured physical dimensions, inferred clearance, or exported USD bounds"
+    },
+    {
+      "fixture": "Bedroom3",
+      "source": {
+        "path": "ios/BlindAssistTests/Fixtures/RoomPlanApple/Bedroom3.capturedRoom.json",
+        "bytes": 69516,
+        "sha256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e"
+      },
+      "featureCounts": {
+        "floors": 1,
+        "walls": 4,
+        "doors": 2,
+        "windows": 1,
+        "openings": 0,
+        "objects": 3
+      },
+      "floorDimensionsAsSaved": [
+        3.5544705,
+        3.3611374,
+        0
+      ],
+      "floorPolygonCornersAsSaved": [
+        [
+          1.7772355,
+          -1.6525068,
+          0
+        ],
+        [
+          -1.7669382,
+          -1.6525068,
+          0
+        ],
+        [
+          -1.7669384,
+          1.6805668,
+          0
+        ],
+        [
+          1.777235,
+          1.6805677,
+          0
+        ]
+      ],
+      "surfaceCount": 8,
+      "zeroDimensionZSurfaces": 8,
+      "meaning": "saved source fields; not independently measured physical dimensions, inferred clearance, or exported USD bounds"
+    }
+  ],
+  "declaredProfiles": [
+    {
+      "id": "declared-nominal",
+      "width": 0.45,
+      "depth": 0.3,
+      "height": 1.6,
+      "margin": 0.15,
+      "rawCircumscribedRadius": 0.2704163456597992,
+      "effectivePlannerRadius": 0.42041634565979924,
+      "effectivePlannerDiameter": 0.8408326913195985,
+      "effectivePlannerHeight": 1.75,
+      "meaning": "preregistered diagnostic inputs and arithmetic; not measured body, exported geometry, or demonstrated blockage cause"
+    },
+    {
+      "id": "declared-wide",
+      "width": 0.7,
+      "depth": 0.5,
+      "height": 1.8,
+      "margin": 0.15,
+      "rawCircumscribedRadius": 0.4301162633521313,
+      "effectivePlannerRadius": 0.5801162633521313,
+      "effectivePlannerDiameter": 1.1602325267042626,
+      "effectivePlannerHeight": 1.95,
+      "meaning": "preregistered diagnostic inputs and arithmetic; not measured body, exported geometry, or demonstrated blockage cause"
+    },
+    {
+      "id": "declared-width28-assumed-depth20-height120",
+      "width": 0.28,
+      "depth": 0.2,
+      "height": 1.2,
+      "margin": 0.15,
+      "rawCircumscribedRadius": 0.17204650534085256,
+      "effectivePlannerRadius": 0.32204650534085255,
+      "effectivePlannerDiameter": 0.6440930106817051,
+      "effectivePlannerHeight": 1.3499999999999999,
+      "meaning": "preregistered diagnostic inputs and arithmetic; not measured body, exported geometry, or demonstrated blockage cause"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "bytes": 31646,
+      "sha256": "95ec7254c7a5e130b5cae56da82c69bc4c79a1fb98c93ee6101f0180ea92798a"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/SavedRoomCollisionBackendMatrix-v1.json",
+      "bytes": 25953,
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/SavedRoomCollisionMixedScene-v1.json",
+      "bytes": 18853,
+      "sha256": "fe4aba11ad1749f1215b9a4420c01438463c8d86548263e2603227e38385ab8e"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/classified-timing-summary.json",
+      "bytes": 6460,
+      "sha256": "3a68d3ecb4026265537107b4e1bc8a1b5c9967dbf2110b38304500e58f833753"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40710093281/ui-audit/evidence.json",
+      "bytes": 1022,
+      "sha256": "ed9ce22cb24faca2befdbf54dda876f0e18562b07de409a728300b62be7dbb01"
+    },
+    {
+      "path": "research/roomplan-route-diagnostic-20261028/PROTOCOL.json",
+      "bytes": 3955,
+      "sha256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123"
+    },
+    {
+      "path": "research/roomplan-route-diagnostic-20261028/PROFILE_28CM_ADDENDUM.json",
+      "bytes": 1570,
+      "sha256": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d"
+    }
+  ],
+  "latestMeshInventory": [
+    {
+      "metadataEntryCount": 13,
+      "adapterFailure": "sourceGeometryMismatch",
+      "unmatchedMeshCount": 0,
+      "nodeCount": 27,
+      "fixtureID": "Hallway2",
+      "meshCount": 13,
+      "metadataRootKind": "object",
+      "metadataFormat": "binaryPlist",
+      "metadataByteCount": 707,
+      "metadataEntriesTruncated": false,
+      "unknownFeatureMeshCount": 0,
+      "nodesTruncated": false,
+      "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d"
+    },
+    {
+      "adapterFailure": "sourceGeometryMismatch",
+      "metadataByteCount": 608,
+      "metadataEntryCount": 11,
+      "sourceSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "unmatchedMeshCount": 0,
+      "metadataFormat": "binaryPlist",
+      "nodesTruncated": false,
+      "unknownFeatureMeshCount": 0,
+      "meshCount": 11,
+      "nodeCount": 26,
+      "metadataEntriesTruncated": false,
+      "fixtureID": "Bedroom3",
+      "metadataRootKind": "object"
+    }
+  ],
+  "startupCollision": [
+    {
+      "backendReady": false,
+      "configurationID": "restricted-no-renderer",
+      "failedControls": [
+        "thinWallForward",
+        "thinWallReverse",
+        "wallInitialOverlap",
+        "wallTerminalOverlap",
+        "containedSolid",
+        "overheadTallForward",
+        "overheadTallReverse",
+        "floor"
+      ],
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMask": 1,
+      "rendererMode": "none",
+      "sourceCategoryMask": 1,
+      "sourceCollisionMask": "probe-only",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 10,
+      "passedControls": 2
+    },
+    {
+      "backendReady": true,
+      "configurationID": "default-no-renderer",
+      "failedControls": [],
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMask": 1,
+      "rendererMode": "none",
+      "sourceCategoryMask": 1,
+      "sourceCollisionMask": "platform-default-all",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 10,
+      "passedControls": 10
+    },
+    {
+      "backendReady": false,
+      "configurationID": "restricted-offscreen-renderer",
+      "failedControls": [
+        "thinWallForward",
+        "thinWallReverse",
+        "wallInitialOverlap",
+        "wallTerminalOverlap",
+        "containedSolid",
+        "overheadTallForward",
+        "overheadTallReverse",
+        "floor"
+      ],
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMask": 1,
+      "rendererMode": "retained-offscreen-update",
+      "sourceCategoryMask": 1,
+      "sourceCollisionMask": "probe-only",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 10,
+      "passedControls": 2
+    },
+    {
+      "backendReady": true,
+      "configurationID": "default-offscreen-renderer",
+      "failedControls": [],
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMask": 1,
+      "rendererMode": "retained-offscreen-update",
+      "sourceCategoryMask": 1,
+      "sourceCollisionMask": "platform-default-all",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 10,
+      "passedControls": 10
+    }
+  ],
+  "mixedCollision": [
+    {
+      "backendReady": true,
+      "configurationID": "wall-only-combined",
+      "failedControls": [],
+      "floorCategoryMask": 1,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-only",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMasks": [
+        1
+      ],
+      "queryMode": "combined",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 6,
+      "passedControls": 6
+    },
+    {
+      "backendReady": false,
+      "configurationID": "wall-and-floor-combined",
+      "failedControls": [
+        "thinWallForward",
+        "thinWallReverse"
+      ],
+      "floorCategoryMask": 1,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-and-floor",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMasks": [
+        1
+      ],
+      "queryMode": "combined",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 6,
+      "passedControls": 4
+    },
+    {
+      "backendReady": true,
+      "configurationID": "wall-only-separated",
+      "failedControls": [],
+      "floorCategoryMask": 4,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-only",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMasks": [
+        1,
+        4
+      ],
+      "queryMode": "separated",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 6,
+      "passedControls": 6
+    },
+    {
+      "backendReady": true,
+      "configurationID": "wall-and-floor-separated",
+      "failedControls": [],
+      "floorCategoryMask": 4,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-and-floor",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queryCollisionMasks": [
+        1,
+        4
+      ],
+      "queryMode": "separated",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666,
+      "controls": 6,
+      "passedControls": 6
+    }
+  ],
+  "classifiedTiming": {
+    "receiptCount": 10,
+    "unit": "integer milliseconds relative to each query request; scheduling included",
+    "associationLimit": "Receipt IDs do not include scenario/test names in collected bounded stage lines. Do not invent per-test assignment.",
+    "minCallbackMs": 55,
+    "maxCallbackMs": 9948,
+    "nativeBuildMeasuredReceiptCount": 9,
+    "maxNativeBuildMs": 9781,
+    "maxQueueWaitMs": 356,
+    "maxHandoffMs": 1,
+    "minDiscardCompleteMs": 0,
+    "maxDiscardCompleteMs": 80
+  },
+  "followOnAppCapture": {
+    "runID": 40721822359,
+    "source": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+    "caseEvidenceComplete": false,
+    "sameExportStatus": "unverified_case_evidence",
+    "retainedAssets": 0,
+    "OpenUSDFixtureReadEstablished": false,
+    "receipt": {
+      "path": "research/native-path-recovery-20261028/run40721822359/same-export-failed-receipt.json",
+      "bytes": 569,
+      "sha256": "b62446d02dd86de8e4d07ea0c1967da92d80fe4377379b915c4fb798b4b1c2a8"
+    },
+    "caseEvidence": {
+      "path": "research/native-path-recovery-20261028/run40721822359/early-unit-case-statuses-original.json",
+      "bytes": 2134,
+      "sha256": "e3dc504fd551e5341388165a631446fbc761edd380ed977f844b75ccc5dd467f"
+    },
+    "terminal": {
+      "id": 40721822359,
+      "name": "Native Apple SDK checks",
+      "head_sha": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+      "head_tree": "7b7074133c219b83c3d919bfa48aeac1d5da49f1",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "updated_at": "2026-10-28T16:12:29Z",
+      "html_url": "https://github.com/mischa23v/blind/actions/runs/40721822359",
+      "jobs": [
+        {
+          "id": 122934455287,
+          "name": "native",
+          "status": "completed",
+          "conclusion": "failure",
+          "run_id": 40721822359,
+          "logs_url": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Verify source and installed Apple toolchain",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "BlindCore package tests on macOS",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "BlindMemory package tests on macOS",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Unsigned default iOS Simulator build",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6
+            },
+            {
+              "name": "Hosted iOS unit tests",
+              "status": "completed",
+              "conclusion": "failure",
+              "number": 7
+            },
+            {
+              "name": "Extract bounded hosted-unit case statuses before UI tests",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8
+            },
+            {
+              "name": "Preserve bounded hosted-unit case statuses",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Preserve bounded public Apple same-export comparison assets",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "iOS UI and accessibility audit tests",
+              "status": "completed",
+              "conclusion": "failure",
+              "number": 11
+            },
+            {
+              "name": "Extract callback evidence from the existing UI result bundle",
+              "status": "completed",
+              "conclusion": "failure",
+              "number": 12
+            },
+            {
+              "name": "Preserve bounded synthetic main UI audit evidence",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13
+            },
+            {
+              "name": "Summarize native evidence and preserve source",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 14
+            },
+            {
+              "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 28
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 29
+            }
+          ]
+        },
+        {
+          "id": 122934455883,
+          "name": "mesh-diagnostics-compile",
+          "status": "completed",
+          "conclusion": "success",
+          "run_id": 40721822359,
+          "logs_url": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Verify integrated no-copy source and toolchain",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Compile diagnostics flag present only",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            }
+          ]
+        }
+      ]
+    },
+    "terminalReceipt": {
+      "path": "research/native-path-recovery-20261028/run40721822359/terminal-run.json",
+      "bytes": 4629,
+      "sha256": "308f44bb659026dc9875f2175a2ce4cd477260cf67132193c31e0f3e46f035fc"
+    },
+    "linkFailureReceipt": {
+      "path": "research/native-path-recovery-20261028/run40721822359/bounded-link-failure-lines.txt",
+      "bytes": 2552,
+      "sha256": "ee36d3b53628c3422d6ddc5ab4bc24b33ec085e8f215dcbc718f3704bd689d32"
+    },
+    "zeroCaseSummaries": {
+      "unit": {
+        "result": "unknown",
+        "totalTestCount": 0,
+        "passedTests": 0,
+        "failedTests": 0,
+        "skippedTests": 0,
+        "expectedFailures": 0,
+        "startTime": 1793203871.879,
+        "finishTime": 1793203907.696
+      },
+      "ui": {
+        "result": "unknown",
+        "totalTestCount": 0,
+        "passedTests": 0,
+        "failedTests": 0,
+        "skippedTests": 0,
+        "expectedFailures": 0,
+        "startTime": 1793203923.395,
+        "finishTime": 1793203928.112
+      }
+    }
+  },
+  "followOnProofs": [
+    {
+      "runID": 40721821544,
+      "source": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+      "status": "completed",
+      "conclusion": "success",
+      "terminalReceipt": {
+        "path": "research/native-path-recovery-20261028/run40721821544/terminal-run.json",
+        "bytes": 1651,
+        "sha256": "25a25671b5945a2677ee1f0d4c97934f9158c9d6d572c99bbf63ad4f58a5a16e"
+      },
+      "scopeReceipt": {
+        "path": "research/native-path-recovery-20261028/run40721821544/bounded-proof-summary.txt",
+        "bytes": 635,
+        "sha256": "22af1b4c50a0b86e76a8be53aeb8b53f1389bc1d7359a428676c44c258a5c4df"
+      }
+    },
+    {
+      "runID": 40721821664,
+      "source": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+      "status": "completed",
+      "conclusion": "success",
+      "terminalReceipt": {
+        "path": "research/native-path-recovery-20261028/run40721821664/terminal-run.json",
+        "bytes": 1658,
+        "sha256": "1353e98802ee5b381090ac5eb31052f9a9bb6d583356f3ab57cc106cd780e850"
+      },
+      "scopeReceipt": {
+        "path": "research/native-path-recovery-20261028/run40721821664/bounded-proof-summary.txt",
+        "bytes": 493,
+        "sha256": "8d7b0fe2a18446f87fe2a1258997d7a0fbaaface1a4f6d4182998bf49c1ff136"
+      }
+    }
+  ],
+  "independentComparisonFiles": [
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/RESULTS.md",
+      "bytes": 6515,
+      "sha256": "83d6379be6b8d203f25f1abdf4d7b8b817e85a53ed0cb103d108135b5f905213"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/COMPARISON.json",
+      "bytes": 54037,
+      "sha256": "ae12a8f7c32deea716b6e174c9f1d7cbd8ce4784422210e27972a3df54667490"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/INPUT_MANIFEST.json",
+      "bytes": 2604,
+      "sha256": "423ff4a7914dd2fb1334ae41676feba557de9d0728d5d652407290de9c2f2447"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/INDEPENDENT_REVIEW.json",
+      "bytes": 1061,
+      "sha256": "13644a4b366a4f102877ee60ef55a37d907c99954049ca15e85799d8c84de2ba"
+    },
+    {
+      "path": "research/independent-usd-reference-catalog-20261028-1514/run40726507227/EXECUTION_RECEIPT.json",
+      "bytes": 800,
+      "sha256": "ab9c135c636ffb05cd655d86b62ce91692eabc8df20f3f52d63e31102321e34d"
+    }
+  ],
+  "currentNativeRunReceipt": {
+    "path": "research/native-path-recovery-20261028/run40726507227/terminal-jobs-170921Z.json",
+    "bytes": 4265,
+    "sha256": "ce22e1c570b0f4600f27b6d8f715890837f0dc498364c6ef76bf1ecac34a6b28"
+  }
+}

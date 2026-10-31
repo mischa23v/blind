@@ -1,0 +1,40 @@
+name: Candidate ARKit mesh snapshot adapter
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/arkit-mesh-adapter-82/**'
+      - '.github/workflows/arkit-mesh-adapter.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-arkit-mesh-adapter-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  adapter:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 18
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Run owned-buffer fixtures and compile actual ARKit APIs
+        timeout-minutes: 16
+        run: python3 research/arkit-mesh-adapter-82/apple/ci.py
+      - name: Preserve bounded source-only proof receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-arkit-mesh-adapter-82-receipts
+          path: |
+            ${{ runner.temp }}/blind-arkit-mesh-adapter-82/*-receipt.json
+            ${{ runner.temp }}/blind-arkit-mesh-adapter-82/RESULT.json
+          if-no-files-found: warn
+          retention-days: 3

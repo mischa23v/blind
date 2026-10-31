@@ -1,0 +1,451 @@
+diff --git a/ios/BlindAssist/DashboardView.swift b/ios/BlindAssist/DashboardView.swift
+--- a/ios/BlindAssist/DashboardView.swift
++++ b/ios/BlindAssist/DashboardView.swift
+@@ -606,6 +606,9 @@
+                 // The speech gate already holds this back during urgent hazards.
+                 Button(t("Repeat answer", "كرر الإجابة")) { model.speakRequested(model.sceneAnswer) }
+                     .disabled(model.sceneAnswer.isEmpty)
++                    // Reuse the readable disabled-state style; do not enable empty speech.
++                    .buttonStyle(AskCameraAnswerButtonStyle(tint: accent))
++                    .accessibilityIdentifier("repeat-answer")
+                 Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
+                     .accessibilityIdentifier("stop-descriptions")
+             } header: { Text(t("Answer", "الإجابة")).font(.headline).accessibilityAddTraits(.isHeader) }
+diff --git a/ios/BlindAssistUITests/LaunchTests.swift b/ios/BlindAssistUITests/LaunchTests.swift
+--- a/ios/BlindAssistUITests/LaunchTests.swift
++++ b/ios/BlindAssistUITests/LaunchTests.swift
+@@ -89,6 +89,10 @@
+         let reason = app.staticTexts["local-answer-unavailable-reason"]
+         reveal(reason)
+         XCTAssertEqual(reason.label, "Camera monitoring is not running. Open Camera and safety to start it.")
++        let repeatAnswer = app.buttons["repeat-answer"]
++        reveal(repeatAnswer)
++        XCTAssertEqual(repeatAnswer.label, "Repeat answer")
++        XCTAssertFalse(repeatAnswer.isEnabled, "Readable styling must not enable an empty answer")
+         XCTAssertTrue(app.descendants(matching: .any)["ask-focus"].exists)
+         let goal = app.descendants(matching: .any)["ask-goal"]
+         reveal(goal)
+@@ -380,6 +384,7 @@
+             ("practice-header", app.staticTexts.matching(NSPredicate(format: "label == %@", "Practice")).firstMatch),
+             ("practice-footer", app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Practice pauses live sensors and ends by itself after two minutes.")).firstMatch),
+             ("local-answer", app.buttons["local-answer"]),
++            ("repeat-answer", app.buttons["repeat-answer"]),
+             ("local-answer-unavailable-reason", app.staticTexts["local-answer-unavailable-reason"]),
+             ("voice-question", app.buttons["voice-question"])
+         ]
+diff --git a/research/j01-hosted-app-adapter-20261030/test_build_attestation.py b/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
+--- a/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
++++ b/research/j01-hosted-app-adapter-20261030/test_build_attestation.py
+@@ -4,7 +4,7 @@
+ spec=importlib.util.spec_from_file_location('a',P/'build_attestation.py');a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
+ class IdentityTests(unittest.TestCase):
+  def setUp(self):
+-  self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=pathlib.Path(self.temp.name)
++  self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=pathlib.Path(self.temp.name).resolve(strict=True)
+   app=self.root/'Product/App.app';bundle=app/'PlugIns/BlindAssistTests.xctest'
+   for directory,name in [(app,'App'),(bundle,'Tests')]:
+    directory.mkdir(parents=True);(directory/'Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':name}))
+@@ -93,11 +93,24 @@
+  def test_wrong_ci(self):
+   for key,value in [('GITHUB_ACTIONS','false'),('GITHUB_REPOSITORY','other/repo'),('GITHUB_RUN_ID','no'),('GITHUB_SHA','no')]:
+    with self.assertRaises(ValueError):a.ci_context(dict(self.ci,**{key:value}))
++class TempRootTests(unittest.TestCase):
++ def test_owned_temp_root_is_canonical_but_runtime_alias_stays_refused(self):
++  from unittest.mock import patch
++  with tempfile.TemporaryDirectory() as tmp:
++   root=pathlib.Path(tmp).resolve(strict=True);real=root/'real';real.mkdir()
++   alias=root/'alias';alias.symlink_to(real,target_is_directory=True)
++   with patch.object(tempfile,'tempdir',str(alias)):
++    fixture=IdentityTests(methodName='test_synthetic_identity_only');fixture.setUp()
++    try:
++     self.assertTrue(fixture.root.is_relative_to(real));self.assertTrue(fixture.verify()['verified'])
++     with self.assertRaises(ValueError):a.selection(alias/fixture.root.name,'build.xctestrun')
++    finally:fixture.doCleanups()
++
+ class ActualProvenanceTests(unittest.TestCase):
+  def test_existing_checker_real_clean_dirty_git(self):
+   repo=pathlib.Path(os.environ.get('BLIND_SOURCE_REPO',pathlib.Path(__file__).resolve().parents[2]))
+   with tempfile.TemporaryDirectory() as tmp:
+-   root=pathlib.Path(tmp)
++   root=pathlib.Path(tmp).resolve(strict=True)
+    for name in [a.HELPER,a.LOCK]:
+     data=(repo/name).read_bytes() # actual-current bytes, never an old Git HEAD fallback
+     self.assertEqual(hashlib.sha256(data).hexdigest(),{a.HELPER:a.HELPER_SHA,a.LOCK:a.LOCK_SHA}[name])
+diff --git a/research/j01-temp-fixture-portability-20261030/README.md b/research/j01-temp-fixture-portability-20261030/README.md
+new file mode 100644
+--- /dev/null
++++ b/research/j01-temp-fixture-portability-20261030/README.md
+@@ -0,0 +1,43 @@
++# J01 preflight fixture portability — model not run
++
++[84eb run 41102779317](https://github.com/mischa23v/blind/actions/runs/41102779317/job/124223554874)
++failed in `integrated/check.py` before native build or model execution. The failed
++portable command was `test_build_attestation.py`. The checker captured but did not
++emit its inner stderr, so the exact CI inner exception is unavailable. The final
++J01 receipt says `unavailable` / `no_terminal_runner_receipt`.
++
++## Reproduced defect and limits
++
++Exact baseline bytes pass all 22 attestation tests using canonical temporary paths.
++With the same source and a deliberately symlinked `TMPDIR`, all 22 fail during
++fixture construction with `ValueError: symlink component refused`. This supports
++a temporary-path alias incompatibility as a likely macOS preflight cause; it does
++not prove that was the hidden CI exception. The adjacent runner suite has the same
++fixture-path defect. No model assets, runtime downloads or alternate provider are
++used in this investigation.
++
++## Narrow repair
++
++Only test-owned temporary roots are canonicalized after creation. Production
++`build_attestation.py`, `j01-actual-model.py`, file/path refusal, deadlines, source
++attestation and model-observation criteria remain byte-identical. Added positive
++alias-temp tests also explicitly prove that an aliased runtime input remains
++refused. Existing bundle-file and directory-symlink negative controls remain.
++
++The integrated checker now emits closed diagnostic metadata before preserving
++the original failing assertion: failing test identifier, exception class, and the
++single recognized symlink-refusal reason. It reads at most the final 16 KiB / 96
++stderr lines and emits at most 24 records. Arbitrary messages, paths, environment,
++stdout and model text are not emitted. The formatter has executable privacy and
++bound checks and is included in the existing portable-contract loop.
++
++## Verification
++
++Candidate portable suites pass **23 attestation + 39 runner + 10 metadata + 4
++formatter tests**, separately with canonical and deliberately aliased temp roots.
++These are synthetic/source tests, not native builds or model observations.
++Preserve the failed84eb run. The next exact-source native preflight remains required;
++no model, whole-journey or device success is inferred from this repair.
++
++Ordered provenance must be added as a new layer; historical fixture pins and
++reversal evidence must not be silently replaced.
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -865,8 +865,8 @@
+     },
+     {
+       "path": "ios/BlindAssist/DashboardView.swift",
+-      "bytes": 90205,
+-      "sha256": "14f497dcc055ef07cec421320f77429df3cfdc1b193f9ea8954f1a4208937615"
++      "bytes": 90434,
++      "sha256": "42244dc19e3c4b0c3eeeea81455dc5e2ba84b1ad23eec47a3530c508ed1b0037"
+     },
+     {
+       "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
+@@ -1045,8 +1045,8 @@
+     },
+     {
+       "path": "ios/BlindAssistUITests/LaunchTests.swift",
+-      "bytes": 29513,
+-      "sha256": "187bc7f33b843c6f4e17b9a2e610c63a873907b9eb6acd9ac788a0d09d3ebbe3"
++      "bytes": 29818,
++      "sha256": "49210fc74eeda8bfe697da249cf16dd089dc6ee1242c4648e2e77129060bc9e5"
+     },
+     {
+       "path": "research/arkit-mesh-adapter-82/Package.swift",
+@@ -1110,8 +1110,13 @@
+     },
+     {
+       "path": "research/j01-hosted-app-adapter-20261030/test_build_attestation.py",
+-      "bytes": 9312,
+-      "sha256": "e84cd70dd5ac14c9fbb3d28b05f98a7f9c8c7b94940cf820c7ff73f9878d4928"
++      "bytes": 10076,
++      "sha256": "6896b49ce79a2923516ca01275630253abeb8b98f5cd984b66c0290eb97a4707"
++    },
++    {
++      "path": "research/j01-temp-fixture-portability-20261030/README.md",
++      "bytes": 2447,
++      "sha256": "72bc6f64bf10b2c36d76b25e06b40a495717046457e212d53665cb560e2401d3"
+     },
+     {
+       "path": "research/live-floor-support-gap-20261030/README.md",
+@@ -1464,6 +1469,11 @@
+       "sha256": "e03785e97737132e309efdccb90a3763f1241181ea963c3787e79e484870d6ed"
+     },
+     {
++      "path": "research/repeat-answer-contrast-20261030/README.md",
++      "bytes": 2120,
++      "sha256": "e06c38d2a904a45293e62aa30d4ec71918404d7c0af1ff2dcdfff0ea6181b69d"
++    },
++    {
+       "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+       "bytes": 17840,
+       "sha256": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a"
+@@ -1875,8 +1885,13 @@
+     },
+     {
+       "path": "tools/ci/test_j01_actual_model.py",
+-      "bytes": 19502,
+-      "sha256": "164ac5735170c953fc9c2b52b1a744b8592062150ce9b1d7d938cb8627916f89"
++      "bytes": 20120,
++      "sha256": "043f4f0b96d90796cb2a98d44b4d3cb3e1efbf911fff1c1cc0f77495f6543e4f"
++    },
++    {
++      "path": "tools/ci/test_j01_portable_failure_diagnostic.py",
++      "bytes": 2492,
++      "sha256": "a40f90786ca5c3e2526eb21b20026c493b23058a2dcf0ca4a3fa0fe4fcb1e147"
+     },
+     {
+       "path": "tools/ci/test_j01_project_membership.py",
+@@ -1977,6 +1992,11 @@
+       "path": "tools/test/normal-owner-mesh-current.test.py",
+       "bytes": 7271,
+       "sha256": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110"
++    },
++    {
++      "path": "tools/test/repeat-answer-contrast.test.py",
++      "bytes": 3715,
++      "sha256": "3c607e563a6e1f983a04686a7264cc5e7825742e51f74cd60bbaa4a89b1ce7b5"
+     },
+     {
+       "path": "tools/test/room-photo-import-bounds.test.mjs",
+@@ -2291,5 +2311,14 @@
+     "nativeExecuted": false,
+     "floorSupportImplementationChanged": false,
+     "physicalAuthority": false
++  },
++  "repeatAnswerContrastAndJ01FixtureRepair": {
++    "scope": "UI disabled Repeat answer source styling and test-created temporary-root identity only; not a rendered or native acceptance result",
++    "uiNativeTestMethods": 19,
++    "newNativeMethods": 0,
++    "j01FixturePacketIncluded": true,
++    "productionAttestationPolicyChanged": false,
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }
+diff --git a/research/repeat-answer-contrast-20261030/README.md b/research/repeat-answer-contrast-20261030/README.md
+new file mode 100644
+--- /dev/null
++++ b/research/repeat-answer-contrast-20261030/README.md
+@@ -0,0 +1,37 @@
++# Repeat-answer contrast candidate — native audit still required
++
++Base: `84eb13df3184ad9e8373255325efd3b87f6ba56a`. Failure evidence is from
++[ff0 native job 124202100185](https://github.com/mischa23v/blind/actions/runs/41096090593/job/124202100185):
++UI **20 = 16 passed + 1 failed + 3 skipped**. The Camera/Ask audit identifies
++the disabled **Repeat answer** button in the Ask phase as `Contrast nearly passed`.
++This is not the earlier Dynamic Type failure.
++
++That button inherited `CameraControlButtonStyle`: tint foreground with 0.5
++opacity when disabled. This candidate explicitly reuses the existing
++`AskCameraAnswerButtonStyle`, which uses full-opacity primary text when disabled
++and permits multiline Dynamic Type expansion. The actual button remains disabled
++for an empty answer, and the existing `speakRequested` action is unchanged.
++No other button style is changed. A stable identifier also adds the control to
++the existing audit evidence and a functional disabled-state assertion.
++
++The complete `auditFullDestination` function is byte-identical to the base.
++No additional contrast exemptions, audit filters, deadlines or fabricated answers
++are added. No claim is made that a source-level style change passes native contrast.
++
++## Portable verification
++
++`python3 -B tools/test/repeat-answer-contrast.test.py` checks the exact source
++contract and rejects altered disabled gates, reverted style, changed speech action,
++hidden control, added audit exemption and removed disabled-state assertion.
++These checks do not render SwiftUI or execute the UI audit.
++
++## Required native check
++
++On the committed candidate, run the existing native Apple workflow and its full
++`LaunchTests/testAccessibilityAuditOfCameraAndAsk` audit unchanged, plus
++`LaunchTests/testAskControlsAndUnavailableReasonRemainReachableWithoutCamera`.
++Keep any new findings. Native SwiftUI compilation, contrast, VoiceOver, and
++signed-device behavior remain unverified by this packet.
++
++The ff0 model-provider asset errors, native callback deadline failures, and
++historical route contacts are separate failures and are not repaired by this UI change.
+diff --git a/tools/ci/test_j01_actual_model.py b/tools/ci/test_j01_actual_model.py
+--- a/tools/ci/test_j01_actual_model.py
++++ b/tools/ci/test_j01_actual_model.py
+@@ -15,11 +15,11 @@
+    with self.subTest(key=key),self.assertRaises(ValueError):m.context(dict(env(),**{key:value}))
+  def test_root_exact_and_exclusive(self):
+   with tempfile.TemporaryDirectory() as d:
+-   root=m.root_path(env(d));self.assertEqual(root.name,'blind-j01-123-1');root.mkdir()
++   root=m.root_path(env(str(pathlib.Path(d).resolve(strict=True))));self.assertEqual(root.name,'blind-j01-123-1');root.mkdir()
+    with self.assertRaises(FileExistsError):root.mkdir()
+  def test_root_symlink_and_traversal_refused(self):
+   with tempfile.TemporaryDirectory() as d:
+-   target=pathlib.Path(d);(target/'link').symlink_to(target,target_is_directory=True)
++   target=pathlib.Path(d).resolve(strict=True);(target/'link').symlink_to(target,target_is_directory=True)
+    for value in (str(target/'link'),str(target/'x'/'..')):
+     with self.subTest(value=value),self.assertRaises(ValueError):m.root_path(env(value))
+  def test_fixed_default_build_command(self):
+@@ -120,13 +120,13 @@
+  def simulated_run(self,*,model_available=True,wrapper_exit=0,cleanup=True,ambiguous_create=False,build_exit=0,changed_source=False,malformed_response=False,extra_scripts=False,changed_selected_script=False):
+   import test_collect_j01_metadata as fixtures
+   with tempfile.TemporaryDirectory() as d:
+-   root=pathlib.Path(d);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
++   root=pathlib.Path(d).resolve(strict=True);repo=root/'repo';repo.mkdir();packet=repo/'packet';packet.mkdir()
+    scripts=json.loads(json.dumps(m.metadata.SUPPORTED))
+    if extra_scripts:scripts['REQ-SC53-1']=[{'unselected':'authored future script'}]
+    if changed_selected_script:scripts['REQ-SC02-1'][0]['text']='changed'
+    (packet/'SUPPORTED.json').write_text(json.dumps(scripts))
+    workflow=repo/'.github/workflows/j01-actual-model.yml';workflow.parent.mkdir(parents=True);workflow.write_text('reviewed fixture')
+-   e=env(d);e['GITHUB_WORKSPACE']=str(repo);ctx=m.context(e);calls=[];emitted=[]
++   e=env(str(root));e['GITHUB_WORKSPACE']=str(repo);ctx=m.context(e);calls=[];emitted=[]
+    before={'provenance':{'actual_head':SHA,'tracked_source_clean':True}}
+    def proof(*args,**kwargs):return dict(verified=True,runtimeLoadedBinaryVerified=False,sourceCommit=SHA,receiptSHA256=args[3],scope='selected prebuilt artifact bytes match independently trusted build receipt; runtime load not attested',trustBasis='external reviewed CI receipt digest, not caller source echo')
+    def command(argv,log,*args,**kwargs):
+@@ -150,6 +150,13 @@
+     code=m.run()
+    result=json.loads((root/'blind-j01-123-1/RESULT.json').read_text())
+    return code,result,calls,emitted
++ def test_owned_temp_alias_does_not_relax_runtime_root_guard(self):
++  with tempfile.TemporaryDirectory() as d:
++   root=pathlib.Path(d).resolve(strict=True);real=root/'real';real.mkdir()
++   alias=root/'alias';alias.symlink_to(real,target_is_directory=True)
++   with mock.patch.object(tempfile,'tempdir',str(alias)):
++    code,r,_,_=self.simulated_run();self.assertEqual(code,0);self.assertFalse(r['fullJourneyComplete'])
++    with self.assertRaises(ValueError):m.root_path(env(str(alias)))
+  def test_simulated_same_job_three_script_positive_is_not_journey_success(self):
+   code,r,calls,emitted=self.simulated_run();self.assertEqual(code,0);self.assertEqual(r['status'],'observed');self.assertEqual(len(calls),4);self.assertEqual(len(r['scriptReceipts']),3)
+   self.assertFalse(r['fullJourneyComplete']);self.assertFalse(r['runtimeLoadedBinaryVerified']);self.assertNotIn('PRIVATE',json.dumps(emitted))
+@@ -184,7 +191,7 @@
+
+  def test_actual_checkout_origin_top_level_and_push_event(self):
+   with tempfile.TemporaryDirectory() as d:
+-   root=pathlib.Path(d);event=root/'event.json';event.write_text(json.dumps({'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}))
++   root=pathlib.Path(d).resolve(strict=True);event=root/'event.json';event.write_text(json.dumps({'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}))
+    def query(argv,log,*args,**kwargs):
+     log.write_text(str(m.R) if argv[-1]=='--show-toplevel' else 'https://github.com/mischa23v/blind.git' if argv[-1]=='remote.origin.url' else SHA)
+     return {'exit_code':0,'reason':'completed'}
+@@ -192,7 +199,7 @@
+  def test_wrong_local_origin_or_push_identity_refused(self):
+   for kind in ('origin','root','head','after','ref','repository','private'):
+    with self.subTest(kind=kind),tempfile.TemporaryDirectory() as d:
+-    root=pathlib.Path(d);event=root/'event.json';data={'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}
++    root=pathlib.Path(d).resolve(strict=True);event=root/'event.json';data={'after':SHA,'ref':m.BRANCH,'repository':{'full_name':'mischa23v/blind','private':False}}
+     if kind in ('after','ref'):data[kind]='wrong'
+     if kind=='repository':data['repository']['full_name']='fork/blind'
+     if kind=='private':data['repository']['private']=True
+diff --git a/tools/ci/test_j01_portable_failure_diagnostic.py b/tools/ci/test_j01_portable_failure_diagnostic.py
+new file mode 100644
+--- /dev/null
++++ b/tools/ci/test_j01_portable_failure_diagnostic.py
+@@ -0,0 +1,53 @@
++"""Execute only the checker's metadata formatter; no native/model execution."""
++import ast
++import contextlib
++import io
++import json
++import os
++from pathlib import Path
++import re
++from types import SimpleNamespace
++import unittest
++
++ROOT = Path(os.environ.get('BLIND_SOURCE_ROOT', Path(__file__).resolve().parents[2]))
++tree = ast.parse((ROOT / 'research/native-candidate-app-integration-85/integrated/check.py').read_text())
++fn = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'j01_portable_failure')
++scope = {'json': json, 're': re}
++exec(compile(ast.Module(body=[fn], type_ignores=[]), '<isolated formatter>', 'exec'), scope)
++
++
++def run(code, stderr):
++    output = io.StringIO()
++    with contextlib.redirect_stdout(output):
++        accepted = scope['j01_portable_failure']('fixed-reviewed-test.py', SimpleNamespace(returncode=code, stderr=stderr))
++    return accepted, output.getvalue()
++
++
++class Tests(unittest.TestCase):
++    def test_success_stays_quiet(self):
++        self.assertEqual(run(0, b'PRIVATE'), (True, ''))
++
++    def test_alias_failure_metadata_preserved(self):
++        accepted, output = run(1, b'ERROR: test_owned_temp (__main__.Fixture.test_owned_temp)\nValueError: symlink component refused\n')
++        self.assertFalse(accepted)
++        value = json.loads(output.split('=', 1)[1])
++        self.assertEqual(value['returncode'], 1)
++        self.assertEqual(value['records'], [{'kind': 'ERROR', 'test': 'test_owned_temp'}, {'errorType': 'ValueError', 'reason': 'symlink_component_refused'}])
++
++    def test_arbitrary_messages_paths_and_arguments_not_emitted(self):
++        _, output = run(1, b'File "/PRIVATE/secret.py", line 20\nValueError: PRIVATE_KEY=abc\nFAIL: test_safe (PRIVATE argument)\nPRIVATE arbitrary model reply\n')
++        self.assertNotIn('PRIVATE', output)
++        self.assertNotIn('secret.py', output)
++        self.assertNotIn('abc', output)
++        self.assertEqual(json.loads(output.split('=', 1)[1])['records'], [{'errorType': 'ValueError'}, {'kind': 'FAIL', 'test': 'test_safe'}])
++
++    def test_output_and_input_observation_are_bounded(self):
++        _, output = run(7, b'PRIVATE' * 10000 + b'\n' + (b'ValueError: symlink component refused\n' * 1000))
++        value = json.loads(output.split('=', 1)[1])
++        self.assertEqual(len(value['records']), 24)
++        self.assertLessEqual(value['stderrTailBytesExamined'], 16384)
++        self.assertLess(len(output.encode()), 8192)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tools/test/repeat-answer-contrast.test.py b/tools/test/repeat-answer-contrast.test.py
+new file mode 100644
+--- /dev/null
++++ b/tools/test/repeat-answer-contrast.test.py
+@@ -0,0 +1,64 @@
++"""Portable source contract only; not a rendered contrast or native UI result."""
++import hashlib
++import os
++from pathlib import Path
++import unittest
++
++ROOT = Path(os.environ.get('BLIND_SOURCE_ROOT', Path(__file__).resolve().parents[2]))
++BUTTON = '''                Button(t("Repeat answer", "كرر الإجابة")) { model.speakRequested(model.sceneAnswer) }
++                    .disabled(model.sceneAnswer.isEmpty)
++                    // Reuse the readable disabled-state style; do not enable empty speech.
++                    .buttonStyle(AskCameraAnswerButtonStyle(tint: accent))
++                    .accessibilityIdentifier("repeat-answer")'''
++
++
++def validate(dashboard, ui):
++    assert dashboard.count(BUTTON) == 1, 'Exact action, disabled gate and readable style required'
++    style = dashboard.split('private struct AskCameraAnswerButtonStyle:', 1)[1].split('\n/// The child', 1)[0]
++    assert hashlib.sha256(style.encode()).hexdigest() == 'b1fa1aa3c6ebf21c0c17b424b238896ff2700912690ed8ad8107de79ca093d1e', 'Reuse the unchanged existing style'
++    audit = ui.split('    private func auditFullDestination(', 1)[1].split('\n    @MainActor\n    func testAccessibilityAuditOfCameraAndAsk()', 1)[0]
++    assert hashlib.sha256(audit.encode()).hexdigest() == '3091c683f16c1791133a0f258c92596ba52e825313eb0a7832d6cdb7e6e52b06', 'Do not weaken the exact failed audit'
++    test = ui.split('    func testAskControlsAndUnavailableReasonRemainReachableWithoutCamera()', 1)[1].split('\n    func testRooms', 1)[0]
++    assert 'let repeatAnswer = app.buttons["repeat-answer"]' in test
++    assert 'reveal(repeatAnswer)' in test
++    assert 'XCTAssertFalse(repeatAnswer.isEnabled, "Readable styling must not enable an empty answer")' in test
++    assert '("repeat-answer", app.buttons["repeat-answer"]),' in ui, 'Include the identified control in existing audit evidence'
++
++
++class Tests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.dashboard = (ROOT / 'ios/BlindAssist/DashboardView.swift').read_text()
++        cls.ui = (ROOT / 'ios/BlindAssistUITests/LaunchTests.swift').read_text()
++
++    def test_actual_source_contract(self):
++        validate(self.dashboard, self.ui)
++
++    def test_dimmed_style_or_disabled_action_bypasses_are_rejected(self):
++        for old, new in [
++            ('.buttonStyle(AskCameraAnswerButtonStyle(tint: accent))', '.buttonStyle(CameraControlButtonStyle())'),
++            ('.disabled(model.sceneAnswer.isEmpty)', '.disabled(false)'),
++            ('model.speakRequested(model.sceneAnswer)', 'model.speakRequested("invented answer")'),
++            ('.accessibilityIdentifier("repeat-answer")', '.accessibilityHidden(true)'),
++        ]:
++            with self.subTest(change=new):
++                altered = self.dashboard.replace(BUTTON, BUTTON.replace(old, new), 1)
++                self.assertNotEqual(altered, self.dashboard)
++                with self.assertRaises(AssertionError):
++                    validate(altered, self.ui)
++
++    def test_new_audit_exemption_is_rejected(self):
++        altered = self.ui.replace('return element.identifier == "retrace-session" && !element.isEnabled', 'return !element.isEnabled')
++        self.assertNotEqual(altered, self.ui)
++        with self.assertRaises(AssertionError):
++            validate(self.dashboard, altered)
++
++    def test_native_disabled_state_assertion_is_required(self):
++        altered = self.ui.replace('XCTAssertFalse(repeatAnswer.isEnabled, "Readable styling must not enable an empty answer")', 'XCTAssertTrue(repeatAnswer.exists)')
++        self.assertNotEqual(altered, self.ui)
++        with self.assertRaises(AssertionError):
++            validate(self.dashboard, altered)
++
++
++if __name__ == '__main__':
++    unittest.main()

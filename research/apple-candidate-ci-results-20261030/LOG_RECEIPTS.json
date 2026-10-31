@@ -1,0 +1,1712 @@
+{
+  "schema": 1,
+  "scope": "Existing public/synthetic Apple CI evidence only; no physical-device or live-guidance acceptance",
+  "jobs": [
+    {
+      "revision": "457c3f3",
+      "job": "classified",
+      "job_id": 123871783536,
+      "input_log": "apple-candidate-457c3f3/classified-job.log",
+      "input_sha256": "61c2a524b2a03769eb1bf346a2b2ed8662a62973bca7e1f79fed7818d06d7b4b",
+      "input_bytes": 56119,
+      "receipts": [
+        {
+          "availability": "present",
+          "bytes": 132,
+          "path": "classified-mesh-bench/result.json",
+          "sha256": "26631439e8905468f04160a1fad946682da884df04a3a5362cb7bc1321246b4b",
+          "metadata": {
+            "ios_session_fixtures_excluded": 5,
+            "log_writer_exit_code": 0,
+            "swift_test_exit_code": 1
+          }
+        },
+        {
+          "availability": "unavailable",
+          "error_type": "FileNotFoundError",
+          "path": "classified-mesh-bench/xctest-results.json",
+          "metadata": {}
+        }
+      ],
+      "ci_job": {
+        "artifact_uploads_enabled": false,
+        "job": "classified-mesh-bench",
+        "job_status_before_receipt": "failure",
+        "physical_authority": false,
+        "run_attempt": "1",
+        "run_id": "40996828157",
+        "schema": 1,
+        "steps": {
+          "fixtures": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          },
+          "preflight": {
+            "conclusion": "success",
+            "outcome": "success"
+          }
+        },
+        "workflow_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304"
+      },
+      "url": "https://github.com/mischa23v/blind/actions/runs/40996828157/job/123871783536",
+      "direct_distinct_terminal_case_records": [
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test01LatestOwnedReplacementRecoversOnlyLogicalDelivery",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test02ReplacementCannotClearAnotherAnchorsOmission",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test03BusyCopyRequiresNewerObservationAndDoesNotInvokeRejectedCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test04PendingLatestRevisionQuarantinesOldTileAndLateCompletion",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test05RefusedRemovalImmediatelyWithholdsAnotherRoutableFloor",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test06MissingClassesReplaceOldFloorWithoutPromotingNonfloor",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test07RejectedProjectedGeometryRecoversOnlyAfterValidNewerInstall",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test08GoodReplacementCannotClearGlobalClockTrackingOrContextFailure",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test09MetadataCapPreservesTombstonesAndCallerRecordLimit",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test10QueuedQueryAndSnapshotCannotPublishBeforeNewerUpdate",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test11LifecycleABAAndSameRevisionLateCommitCannotResolveFailures",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test12AllRemovalsRemainUnknownEvenAfterSameUUIDReappears",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test13MailboxRefusalNeedsExactNewerReplacementNotUnrelatedDrain",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test14SnapshotBudgetsAndDeliveryDrainRemainBoundedAfterRecovery",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testActualDependencyRouteAndExactlyOneTransformRemainNonphysical",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testBlockedSynchronousCapturePreventsDiscardAcknowledgement",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testCallbackBudgetBoundsSumWorkWithFastDecoderAndRotatesOmissions",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testClassifiedConsumerNeverPromotesMissingUnknownOrNonFloorPlane",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testForeignGenerationCannotInvokeBorrowedCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testMalformedReplacementCannotExposeRetainedOldFloorPreview",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testNewTerminalOwnerCannotReusePriorGenerationOrGeometry",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testNonFloorGeometryStillBlocksAndExactRemovalCannotDeclareClearance",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testReplacementRetiresBeforeCopyAndExactRemovalWithholdsIncompletePreview",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testRotatedTranslatedMetreGeometryUsesExactlyOneRigidTransform",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testScaleAndReflectionReplacementCannotExposePriorFloor",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testSingleCopyBackpressureDoesNotInvokeSecondCaptureAndRetainsGap",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testStopDuringCaptureFencesLateCompletionAndDoesNotReleaseReservationEarly",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testStrictSelectionPreservesInsideAndVerticalEndpointReceipts",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testUnclassifiedReplacementAndLaterFloorCannotEraseGapInSameOwner",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchCameraSnapshotTests/testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchCameraSnapshotTests/testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchExpectedSourceTests/testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan",
+          "status": "failed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testIndependentWatchdogRetiresWhileProducerDoesNoWork",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testLeaseBackwardsAndNonfiniteClockAreTerminal",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testMaximumRequestIssuesExactly192AttemptsThenStops",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testSchedulerClockFailuresAreTerminalWithinRequest",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testStartupExpiryAndFrameExpiryCannotRevive",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testStartupGraceIsNotCurrentButCanBecomeHealthy",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testTrackingLossAndStopAreTerminalAndDoNotChangeReason",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testActualIngressAndBenchForwardOwnedGeometryAndKeepMissingClassesUnknown",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testForeignBenchGenerationCannotRequestSnapshot",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testIngressOutstandingDecodeRefusesSnapshotWithoutCopyingAgain",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testIngressResetRetiresSnapshotAndCannotExposePreviousEpochGeometry",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testInvalidateAndResetRetireExactSnapshot",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testLateFailureGapRetiresPreviouslyCompleteSnapshotWithoutRevisionChange",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testMalformedReplacementRetainsOnlyExplicitlyIncompleteDiagnosticHistory",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testNoOwnerReturnsUnavailableNotSyntheticEmptyRoom",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testOnlyOneOutstandingSnapshotAndDiscardWaitsForAdmittedWorker",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testProjectedOverflowCannotPairNewLedgerWithOldRetainedTile",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testQueuedDeliveryRetainsReservationAndDiscardUntilPayloadReleased",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testQueuedSnapshotCannotDeliverAfterNewerUpdate",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testRemovalRetiresSnapshotKeepsTombstoneAndUnknownNotFreeSpace",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testSnapshotPreservesLocalValuesTransformRolesAndUnknownPhysicalAuthority",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testStableAnchorOrderReadOnlyRevisionAndExactOwnerIdentity",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testWholeSnapshotBudgetsAndInvalidLimitsNeverReturnPrefixes",
+          "status": "passed"
+        }
+      ],
+      "direct_terminal_status_counts": {
+        "passed": 64,
+        "failed": 1
+      }
+    },
+    {
+      "revision": "457c3f3",
+      "job": "native",
+      "job_id": 123871783209,
+      "input_log": "apple-candidate-457c3f3/native-job.log",
+      "input_sha256": "81a8c64bd762543e23adf663bc58569d7818e31d1730fc005db5df2afdccbe9f",
+      "input_bytes": 635648,
+      "receipts": [
+        {
+          "availability": "present",
+          "bytes": 183,
+          "path": "blind-native-ci/unit-summary.json",
+          "sha256": "d1ebde44c9ebabdd8855348c43e36d0c0d95a97413f273bd2f1103ccef220c81",
+          "metadata": {
+            "expectedFailures": 0,
+            "failedTests": 9,
+            "passedTests": 286,
+            "skippedTests": 2,
+            "totalTestCount": 297
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 432096,
+          "path": "blind-native-ci/unit-case-statuses.json",
+          "sha256": "eb4769304e89fa9061899fadd31be1aba028dd5555e46839d455d7eea88e26b3",
+          "metadata": {
+            "aggregate_counts_match": true,
+            "case_count": 297,
+            "case_records_in_input": 297,
+            "complete": true,
+            "counts": {
+              "Expected Failure": 0,
+              "Failed": 9,
+              "Passed": 286,
+              "Skipped": 2
+            },
+            "expected_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+            "schema": 1,
+            "source_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+            "source_verified": true
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 181,
+          "path": "blind-native-ci/ui-summary.json",
+          "sha256": "ee54cd6bb77836e2afa720214341d060bda3a7045f332a5d595a9c3f66e93f74",
+          "metadata": {
+            "expectedFailures": 0,
+            "failedTests": 1,
+            "passedTests": 14,
+            "skippedTests": 3,
+            "totalTestCount": 18
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 6322,
+          "path": "blind-native-ci/seed-radius-results.json",
+          "sha256": "88cf973ea16f4a4436bde0acb53d4a6746fe3df8f2e356d4a4e835d766b17ee3",
+          "metadata": {
+            "case_records_in_input": 14,
+            "commandExit": 0,
+            "complete": true,
+            "counts": {
+              "Expected Failure": 0,
+              "Failed": 0,
+              "Passed": 14,
+              "Skipped": 0
+            },
+            "executed": 14,
+            "expected_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+            "source_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+            "source_verified": true,
+            "status": "passed"
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 16,
+          "path": "blind-native-ci/seed-radius-unit-exit.json",
+          "sha256": "d24219f6de94b955cf36d25bd2aca88e2d35eef45b9317b7083f55ec8fe9653c",
+          "metadata": {
+            "exit_code": 0
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 4341,
+          "path": "blind-native-ci/seed-radius-diagnostics.json",
+          "sha256": "8e2ae6b9e8776e71b2abfddc82192ffdd5c101d98aef3d53a72dc5639d88e6e2",
+          "metadata": {
+            "case_records_in_input": 14,
+            "commandExit": 0,
+            "status": "diagnostic-only"
+          }
+        }
+      ],
+      "ci_job": {
+        "artifact_uploads_enabled": false,
+        "job": "native",
+        "job_status_before_receipt": "failure",
+        "physical_authority": false,
+        "run_attempt": "1",
+        "run_id": "40996828157",
+        "schema": 1,
+        "steps": {
+          "build": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "core": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "memory": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "preflight": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "seed-radius": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "ui": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          },
+          "unit": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          }
+        },
+        "workflow_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304"
+      },
+      "url": "https://github.com/mischa23v/blind/actions/runs/40996828157/job/123871783209",
+      "direct_distinct_terminal_case_records": [
+        {
+          "identifier": "LaunchTests/testAccessibilityAuditOfCameraAndAsk",
+          "status": "failed"
+        },
+        {
+          "identifier": "LaunchTests/testPracticeIsAnnouncedAndCanStop",
+          "status": "passed"
+        },
+        {
+          "identifier": "LaunchTests/testWritingIsAvailableWithoutMicrophoneCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testConversationInterruptionDoesNotRetireAnUnrelatedSceneOwner",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testConversationInterruptionRetiresDisplayedAndQueuedConversationLeases",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testDedicatedInspectionCannotFallBackToModelAnswer",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testExactTextCannotBeReplacedOrNormalizedAtDelivery",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testFreshObservationCannotOutliveItsOwnEvidenceDuringQueueDelay",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testGeneratedSceneCannotBorrowNavigationAuthority",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testKnownContinuationRequestsRetainPhysicalOwnershipEvenForBareYes",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testKnownMovementOutputsAreRejectedEvenDuringOrdinaryConversation",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testLateFinalDisplayOrQueueAdmissionCannotRenewTheSameRequest",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testNonfiniteFutureAndNegativeMonotonicTimesAreRejected",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testNonphysicalStoryContinuationIsNotGloballyBanned",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testOrdinaryEnglishAndArabicChatRemainAvailable",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testPhysicalOwnerCannotBeOverriddenByFreshMeasuredTextOrSourceLabel",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testPhysicalRequestRejectsBareModelAnswerWithoutDependingOnItsWords",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testProducerCannotBeChangedToBorrowADifferentAdmissionPolicy",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testQueuedReplyAndRepeatsNeverRefreshTheOriginalDeadline",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testRequestSessionAndGoalMismatchRejectAdmissionAndDelayedPlayback",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testRestartingEvenTheSameBindingRetiresOldQueueAndRepeatLease",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testRetainedNavigationGoalDoesNotDisableANewChatTurn",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testSceneLeaseExpiresAtCaptureDeadlineNotAtDelayedAdmission",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testUnstartedOrInvalidatedOwnerCannotAdmitOrPlay",
+          "status": "passed"
+        },
+        {
+          "identifier": "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn",
+          "status": "failed"
+        }
+      ],
+      "direct_terminal_status_counts": {
+        "failed": 5,
+        "passed": 23
+      },
+      "unit_verified_summary": {
+        "schema": 1,
+        "complete": true,
+        "source_verified": true,
+        "expected_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+        "source_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+        "case_count": 297,
+        "counts": {
+          "Failed": 9,
+          "Skipped": 2,
+          "Expected Failure": 0,
+          "Passed": 286
+        },
+        "aggregate_counts_match": true
+      },
+      "unit_nonpassing_cases": [
+        {
+          "identifier": "ConversationTests/remembersNameWithoutRecitingHistory()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "TextChatScenarioTests/followsConversation(_:)",
+          "result": "Failed"
+        },
+        {
+          "identifier": "TextChatScenarioTests/doesNotInventFloorClearance()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+          "result": "Failed"
+        },
+        {
+          "identifier": "CompanionNativeReplayTests/testInputOnlyConversationBatch()",
+          "result": "Skipped"
+        },
+        {
+          "identifier": "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+          "result": "Failed"
+        },
+        {
+          "identifier": "UnsupportedPremiseTests/unavailableProviderDoesNotInventAReply()",
+          "result": "Skipped"
+        },
+        {
+          "identifier": "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+          "result": "Failed"
+        }
+      ]
+    },
+    {
+      "revision": "457c3f3",
+      "job": "seated",
+      "job_id": 123871783531,
+      "input_log": "apple-candidate-457c3f3/seated-job.log",
+      "input_sha256": "f1c2aeb2df6d3f2e33769ecebd50abc74c6caec2fffc4a1418bca05a2f9cc3d5",
+      "input_bytes": 73637,
+      "receipts": [
+        {
+          "availability": "present",
+          "bytes": 233,
+          "path": "blind-native-ci/seated-projection-results.json",
+          "sha256": "7c07bb9fdd6a0834e982bfd57c5bda5fdb43cc4f6e004910ba35b3746d91b85f",
+          "metadata": {
+            "complete": false,
+            "expected_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+            "source_verified": false,
+            "status": "unavailable"
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 17,
+          "path": "blind-native-ci/diagnostics-unit-exit.json",
+          "sha256": "67139c0108bf555944cd442ba80729b57fb3b55cb8d8e94097c3fb645482cdc4",
+          "metadata": {
+            "exit_code": 65
+          }
+        }
+      ],
+      "ci_job": {
+        "artifact_uploads_enabled": false,
+        "job": "mesh-diagnostics-compile",
+        "job_status_before_receipt": "failure",
+        "physical_authority": false,
+        "run_attempt": "1",
+        "run_id": "40996828157",
+        "schema": 1,
+        "steps": {
+          "build": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "collect": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          },
+          "preflight": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "unit": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          }
+        },
+        "workflow_commit": "457c3f33dae01b2f036d5a391f42aa444cd7d304"
+      },
+      "url": "https://github.com/mischa23v/blind/actions/runs/40996828157/job/123871783531",
+      "direct_distinct_terminal_case_records": [
+        {
+          "identifier": "SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "status": "failed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow",
+          "status": "passed"
+        }
+      ],
+      "direct_terminal_status_counts": {
+        "passed": 11,
+        "failed": 1
+      },
+      "distinct_assertion_records": [
+        {
+          "source": "SeatedMeshProjectionTests.swift:139",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:144",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "XCTUnwrap failed"
+        }
+      ]
+    },
+    {
+      "revision": "b55cf93",
+      "job": "classified",
+      "job_id": 123883432485,
+      "input_log": "apple-candidate-b55cf93/classified-job.log",
+      "input_sha256": "1b4bc037fdf8b7eac2d58c6dc9cf2bfbe6f4a989250ab4b82f7e0d9bfa873237",
+      "input_bytes": 76234,
+      "receipts": [
+        {
+          "availability": "present",
+          "bytes": 132,
+          "path": "classified-mesh-bench/result.json",
+          "sha256": "2db41d5a98b9077aa9ae13122552056cda0e8d213e4bca26bc982c0029b72196",
+          "metadata": {
+            "ios_session_fixtures_excluded": 5,
+            "log_writer_exit_code": 0,
+            "swift_test_exit_code": 0
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 12582,
+          "path": "classified-mesh-bench/xctest-results.json",
+          "sha256": "bb828723fd7ccd5893ce7b3ab3c68f7aa8cb218f28a625e8cc0d800bdfe9951e",
+          "metadata": {
+            "case_records_in_input": 65,
+            "executed": 65,
+            "failed": 0,
+            "ios_session_fixtures_excluded": 5,
+            "passed": 65,
+            "source_clean_before_and_after": true,
+            "status": "passed",
+            "swift_testing_zero_suite_not_counted": true
+          }
+        }
+      ],
+      "ci_job": {
+        "artifact_uploads_enabled": false,
+        "job": "classified-mesh-bench",
+        "job_status_before_receipt": "success",
+        "physical_authority": false,
+        "run_attempt": "1",
+        "run_id": "41000267997",
+        "schema": 1,
+        "steps": {
+          "fixtures": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "preflight": {
+            "conclusion": "success",
+            "outcome": "success"
+          }
+        },
+        "workflow_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b"
+      },
+      "url": "https://github.com/mischa23v/blind/actions/runs/41000267997/job/123883432485",
+      "direct_distinct_terminal_case_records": [
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test01LatestOwnedReplacementRecoversOnlyLogicalDelivery",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test02ReplacementCannotClearAnotherAnchorsOmission",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test03BusyCopyRequiresNewerObservationAndDoesNotInvokeRejectedCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test04PendingLatestRevisionQuarantinesOldTileAndLateCompletion",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test05RefusedRemovalImmediatelyWithholdsAnotherRoutableFloor",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test06MissingClassesReplaceOldFloorWithoutPromotingNonfloor",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test07RejectedProjectedGeometryRecoversOnlyAfterValidNewerInstall",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test08GoodReplacementCannotClearGlobalClockTrackingOrContextFailure",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test09MetadataCapPreservesTombstonesAndCallerRecordLimit",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test10QueuedQueryAndSnapshotCannotPublishBeforeNewerUpdate",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test11LifecycleABAAndSameRevisionLateCommitCannotResolveFailures",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test12AllRemovalsRemainUnknownEvenAfterSameUUIDReappears",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test13MailboxRefusalNeedsExactNewerReplacementNotUnrelatedDrain",
+          "status": "passed"
+        },
+        {
+          "identifier": "AnchorDeliveryRecoveryTests/test14SnapshotBudgetsAndDeliveryDrainRemainBoundedAfterRecovery",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testActualDependencyRouteAndExactlyOneTransformRemainNonphysical",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testBlockedSynchronousCapturePreventsDiscardAcknowledgement",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testCallbackBudgetBoundsSumWorkWithFastDecoderAndRotatesOmissions",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testClassifiedConsumerNeverPromotesMissingUnknownOrNonFloorPlane",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testForeignGenerationCannotInvokeBorrowedCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testMalformedReplacementCannotExposeRetainedOldFloorPreview",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testNewTerminalOwnerCannotReusePriorGenerationOrGeometry",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testNonFloorGeometryStillBlocksAndExactRemovalCannotDeclareClearance",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testReplacementRetiresBeforeCopyAndExactRemovalWithholdsIncompletePreview",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testRotatedTranslatedMetreGeometryUsesExactlyOneRigidTransform",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testScaleAndReflectionReplacementCannotExposePriorFloor",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testSingleCopyBackpressureDoesNotInvokeSecondCaptureAndRetainsGap",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testStopDuringCaptureFencesLateCompletionAndDoesNotReleaseReservationEarly",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testStrictSelectionPreservesInsideAndVerticalEndpointReceipts",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts",
+          "status": "passed"
+        },
+        {
+          "identifier": "LiveMeshBenchIngressTests/testUnclassifiedReplacementAndLaterFloorCannotEraseGapInSameOwner",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchCameraSnapshotTests/testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchCameraSnapshotTests/testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchExpectedSourceTests/testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testIndependentWatchdogRetiresWhileProducerDoesNoWork",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testLeaseBackwardsAndNonfiniteClockAreTerminal",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testMaximumRequestIssuesExactly192AttemptsThenStops",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testSchedulerClockFailuresAreTerminalWithinRequest",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testStartupExpiryAndFrameExpiryCannotRevive",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testStartupGraceIsNotCurrentButCanBecomeHealthy",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testTrackingLossAndStopAreTerminalAndDoNotChangeReason",
+          "status": "passed"
+        },
+        {
+          "identifier": "MeshBenchHelperTests/testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testActualIngressAndBenchForwardOwnedGeometryAndKeepMissingClassesUnknown",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testForeignBenchGenerationCannotRequestSnapshot",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testIngressOutstandingDecodeRefusesSnapshotWithoutCopyingAgain",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testIngressResetRetiresSnapshotAndCannotExposePreviousEpochGeometry",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testInvalidateAndResetRetireExactSnapshot",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testLateFailureGapRetiresPreviouslyCompleteSnapshotWithoutRevisionChange",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testMalformedReplacementRetainsOnlyExplicitlyIncompleteDiagnosticHistory",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testNoOwnerReturnsUnavailableNotSyntheticEmptyRoom",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testOnlyOneOutstandingSnapshotAndDiscardWaitsForAdmittedWorker",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testProjectedOverflowCannotPairNewLedgerWithOldRetainedTile",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testQueuedDeliveryRetainsReservationAndDiscardUntilPayloadReleased",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testQueuedSnapshotCannotDeliverAfterNewerUpdate",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testRemovalRetiresSnapshotKeepsTombstoneAndUnknownNotFreeSpace",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testSnapshotPreservesLocalValuesTransformRolesAndUnknownPhysicalAuthority",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testStableAnchorOrderReadOnlyRevisionAndExactOwnerIdentity",
+          "status": "passed"
+        },
+        {
+          "identifier": "SourceGeometrySnapshotTests/testWholeSnapshotBudgetsAndInvalidLimitsNeverReturnPrefixes",
+          "status": "passed"
+        }
+      ],
+      "direct_terminal_status_counts": {
+        "passed": 65
+      }
+    },
+    {
+      "revision": "b55cf93",
+      "job": "native",
+      "job_id": 123883432346,
+      "input_log": "apple-candidate-b55cf93/native-job.log",
+      "input_sha256": "c7d6f2a759459c4c6dedb535e504371f8935e2b39c5de306ace8045a27453271",
+      "input_bytes": 616619,
+      "receipts": [
+        {
+          "availability": "present",
+          "bytes": 184,
+          "path": "blind-native-ci/unit-summary.json",
+          "sha256": "40ac862d8f8b6b3acf0da46f23255cbc970ec67d3bc294e0158daed047e97a12",
+          "metadata": {
+            "expectedFailures": 0,
+            "failedTests": 19,
+            "passedTests": 276,
+            "skippedTests": 2,
+            "totalTestCount": 297
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 432097,
+          "path": "blind-native-ci/unit-case-statuses.json",
+          "sha256": "a09f3d3f7a72771dcff9faae52cc5386973ec8b9d399e5c76b301fbe6f7a6137",
+          "metadata": {
+            "aggregate_counts_match": true,
+            "case_count": 297,
+            "case_records_in_input": 297,
+            "complete": true,
+            "counts": {
+              "Expected Failure": 0,
+              "Failed": 19,
+              "Passed": 276,
+              "Skipped": 2
+            },
+            "expected_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+            "schema": 1,
+            "source_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+            "source_verified": true
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 181,
+          "path": "blind-native-ci/ui-summary.json",
+          "sha256": "7f1ee5932796d38f6e9b2ee0578c7ad917e94628180d33ff2a93f2c4ec7c2e24",
+          "metadata": {
+            "expectedFailures": 0,
+            "failedTests": 1,
+            "passedTests": 14,
+            "skippedTests": 3,
+            "totalTestCount": 18
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 233,
+          "path": "blind-native-ci/seed-radius-results.json",
+          "sha256": "85e3359cea238d0bbc8fcf4a3c4e262a8507a6a07f8b7ddcf88df8fffc152a4d",
+          "metadata": {
+            "complete": false,
+            "expected_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+            "source_verified": false,
+            "status": "unavailable"
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 17,
+          "path": "blind-native-ci/seed-radius-unit-exit.json",
+          "sha256": "67139c0108bf555944cd442ba80729b57fb3b55cb8d8e94097c3fb645482cdc4",
+          "metadata": {
+            "exit_code": 65
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 5084,
+          "path": "blind-native-ci/seed-radius-diagnostics.json",
+          "sha256": "672e54b8254a02ca025454a21e8e7dcb4fc7bb9dc9958997f1018309b76d07e3",
+          "metadata": {
+            "case_records_in_input": 14,
+            "commandExit": 65,
+            "status": "diagnostic-only"
+          }
+        }
+      ],
+      "ci_job": {
+        "artifact_uploads_enabled": false,
+        "job": "native",
+        "job_status_before_receipt": "failure",
+        "physical_authority": false,
+        "run_attempt": "1",
+        "run_id": "41000267997",
+        "schema": 1,
+        "steps": {
+          "build": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "core": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "memory": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "preflight": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "seed-radius": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          },
+          "ui": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          },
+          "unit": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          }
+        },
+        "workflow_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b"
+      },
+      "url": "https://github.com/mischa23v/blind/actions/runs/41000267997/job/123883432346",
+      "direct_distinct_terminal_case_records": [
+        {
+          "identifier": "ClassificationIngressTests/testClassifiedFloorUsesRealRuntimeAndTransformOnceWithoutPhysicalAuthority",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testDefaultLegacyPolicyKeepsExistingUnclassifiedDiagnosticBehavior",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testKnownNonFloorMissingNoneAndUnsupportedNeverPromoteUpwardPlanes",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testKnownTableGeometryRemainsObstacleAndRemovalCanRestoreFloorCandidate",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testMalformedDecodedLabelsReplaceFloorWhileRejectedDescriptorKeepsExplicitGap",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testMissingReplacementRemovesPriorFloorAndValidRevisionRecoversButGapStays",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testUnknownCompanionFacesKeepExistingFloorRouteButNeverCompleteCoverage",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testFloorTouchingBedAndLowObjectNeverGainSupportUnderTriangleOrderPermutations",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testLegacyUnclassifiedAPIStillRoutesAndDoesNotIgnoreExplicitLabels",
+          "status": "failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testMissingAndMismatchedSupportAreRejectedAtIngress",
+          "status": "failed"
+        },
+        {
+          "identifier": "LaunchTests/testAccessibilityAuditOfCameraAndAsk",
+          "status": "failed"
+        },
+        {
+          "identifier": "LaunchTests/testPracticeIsAnnouncedAndCanStop",
+          "status": "passed"
+        },
+        {
+          "identifier": "LaunchTests/testWritingIsAvailableWithoutMicrophoneCapture",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testConversationInterruptionDoesNotRetireAnUnrelatedSceneOwner",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testConversationInterruptionRetiresDisplayedAndQueuedConversationLeases",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testDedicatedInspectionCannotFallBackToModelAnswer",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testExactTextCannotBeReplacedOrNormalizedAtDelivery",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testFreshObservationCannotOutliveItsOwnEvidenceDuringQueueDelay",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testGeneratedSceneCannotBorrowNavigationAuthority",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testKnownContinuationRequestsRetainPhysicalOwnershipEvenForBareYes",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testKnownMovementOutputsAreRejectedEvenDuringOrdinaryConversation",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testLateFinalDisplayOrQueueAdmissionCannotRenewTheSameRequest",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testNonfiniteFutureAndNegativeMonotonicTimesAreRejected",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testNonphysicalStoryContinuationIsNotGloballyBanned",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testOrdinaryEnglishAndArabicChatRemainAvailable",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testPhysicalOwnerCannotBeOverriddenByFreshMeasuredTextOrSourceLabel",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testPhysicalRequestRejectsBareModelAnswerWithoutDependingOnItsWords",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testProducerCannotBeChangedToBorrowADifferentAdmissionPolicy",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testQueuedReplyAndRepeatsNeverRefreshTheOriginalDeadline",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testRequestSessionAndGoalMismatchRejectAdmissionAndDelayedPlayback",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testRestartingEvenTheSameBindingRetiresOldQueueAndRepeatLease",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testRetainedNavigationGoalDoesNotDisableANewChatTurn",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testSceneLeaseExpiresAtCaptureDeadlineNotAtDelayedAdmission",
+          "status": "passed"
+        },
+        {
+          "identifier": "ModelResponseAuthorityTests/testUnstartedOrInvalidatedOwnerCannotAdmitOrPlay",
+          "status": "passed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation",
+          "status": "failed"
+        },
+        {
+          "identifier": "SavedRoomStrictEndpointTests/testStrictGoalOutsideMissingPolygonAndNonfiniteRefuseWithoutCandidate",
+          "status": "passed"
+        },
+        {
+          "identifier": "SavedRoomStrictEndpointTests/testThreeActualPublicMarginOverlappedStartsKeepInitialOracleAndRejectStrictAdmission",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusEnvelopeAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusEnvelopeAppleTests/testEnvelopeReceiptRejectsUnknownSchemaAlgorithmAndWorkUnit",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusEnvelopeAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusEnvelopeAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusEnvelopeAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusEnvelopeAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusVetoAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusVetoAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusVetoAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeedRadiusVetoAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne",
+          "status": "passed"
+        }
+      ],
+      "direct_terminal_status_counts": {
+        "failed": 16,
+        "passed": 36
+      },
+      "unit_verified_summary": {
+        "schema": 1,
+        "complete": true,
+        "source_verified": true,
+        "expected_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+        "source_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+        "case_count": 297,
+        "counts": {
+          "Passed": 276,
+          "Expected Failure": 0,
+          "Failed": 19,
+          "Skipped": 2
+        },
+        "aggregate_counts_match": true
+      },
+      "unit_nonpassing_cases": [
+        {
+          "identifier": "ClassificationIngressTests/testClassifiedFloorUsesRealRuntimeAndTransformOnceWithoutPhysicalAuthority()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testDefaultLegacyPolicyKeepsExistingUnclassifiedDiagnosticBehavior()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testKnownNonFloorMissingNoneAndUnsupportedNeverPromoteUpwardPlanes()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testKnownTableGeometryRemainsObstacleAndRemovalCanRestoreFloorCandidate()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testMalformedDecodedLabelsReplaceFloorWhileRejectedDescriptorKeepsExplicitGap()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testMissingReplacementRemovesPriorFloorAndValidRevisionRecoversButGapStays()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassificationIngressTests/testUnknownCompanionFacesKeepExistingFloorRouteButNeverCompleteCoverage()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ConversationTests/remembersNameWithoutRecitingHistory()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testFloorTouchingBedAndLowObjectNeverGainSupportUnderTriangleOrderPermutations()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testLegacyUnclassifiedAPIStillRoutesAndDoesNotIgnoreExplicitLabels()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "ClassifiedRoomMeshTests/testMissingAndMismatchedSupportAreRejectedAtIngress()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "TextChatScenarioTests/followsConversation(_:)",
+          "result": "Failed"
+        },
+        {
+          "identifier": "TextChatScenarioTests/doesNotInventFloorClearance()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+          "result": "Failed"
+        },
+        {
+          "identifier": "CompanionNativeReplayTests/testInputOnlyConversationBatch()",
+          "result": "Skipped"
+        },
+        {
+          "identifier": "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+          "result": "Failed"
+        },
+        {
+          "identifier": "UnsupportedPremiseTests/unavailableProviderDoesNotInventAReply()",
+          "result": "Skipped"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+          "result": "Failed"
+        },
+        {
+          "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+          "result": "Failed"
+        }
+      ]
+    },
+    {
+      "revision": "b55cf93",
+      "job": "seated",
+      "job_id": 123883432048,
+      "input_log": "apple-candidate-b55cf93/seated-job.log",
+      "input_sha256": "c8e30f7248ef1bb66813769e8faea28937ba9c0db4b83ca63f000b1ae46b903e",
+      "input_bytes": 80523,
+      "receipts": [
+        {
+          "availability": "present",
+          "bytes": 233,
+          "path": "blind-native-ci/seated-projection-results.json",
+          "sha256": "85e3359cea238d0bbc8fcf4a3c4e262a8507a6a07f8b7ddcf88df8fffc152a4d",
+          "metadata": {
+            "complete": false,
+            "expected_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b",
+            "source_verified": false,
+            "status": "unavailable"
+          }
+        },
+        {
+          "availability": "present",
+          "bytes": 17,
+          "path": "blind-native-ci/diagnostics-unit-exit.json",
+          "sha256": "67139c0108bf555944cd442ba80729b57fb3b55cb8d8e94097c3fb645482cdc4",
+          "metadata": {
+            "exit_code": 65
+          }
+        }
+      ],
+      "timing_summary": {
+        "dropped_valid_records": {
+          "phase": 0,
+          "worker": 0
+        },
+        "input_bytes_scanned": 607039,
+        "physical_authority": false,
+        "records": {
+          "phase": 4,
+          "worker": 0
+        },
+        "rejected_prefix_records": 0,
+        "scan_budget_reached": false,
+        "schema": 1,
+        "status": "observed",
+        "test_outcome": "not_inferred",
+        "unterminated_input": false
+      },
+      "ci_job": {
+        "artifact_uploads_enabled": false,
+        "job": "mesh-diagnostics-compile",
+        "job_status_before_receipt": "failure",
+        "physical_authority": false,
+        "run_attempt": "1",
+        "run_id": "41000267997",
+        "schema": 1,
+        "steps": {
+          "build": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "collect": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          },
+          "preflight": {
+            "conclusion": "success",
+            "outcome": "success"
+          },
+          "unit": {
+            "conclusion": "failure",
+            "outcome": "failure"
+          }
+        },
+        "workflow_commit": "b55cf93428cc70f3b470a2a61e88a94044f19c2b"
+      },
+      "url": "https://github.com/mischa23v/blind/actions/runs/41000267997/job/123883432048",
+      "direct_distinct_terminal_case_records": [
+        {
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "status": "failed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange",
+          "status": "failed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain",
+          "status": "passed"
+        },
+        {
+          "identifier": "SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow",
+          "status": "passed"
+        }
+      ],
+      "direct_terminal_status_counts": {
+        "failed": 2,
+        "passed": 8
+      },
+      "distinct_phase_records": [
+        "SEATED_CANDIDATE_PHASE id=560C9913-89FF-499E-B153-DA0AA3FFA83E event=happy_wait_finished elapsed_ms=-1 native_callback_ms=-1 main_held_ms=-1 stages=",
+        "SEATED_CANDIDATE_PHASE id=FAE262AA-D0EC-44D3-A2F0-6C3E84F380C0 event=rejection_wait_finished elapsed_ms=-1 native_callback_ms=-1 main_held_ms=-1 stages=",
+        "SEATED_CANDIDATE_PHASE id=560C9913-89FF-499E-B153-DA0AA3FFA83E event=drain_complete elapsed_ms=-1 native_callback_ms=-1 main_held_ms=-1 stages=discardRequested:27354;discardWorkerStarted:29884;discardReleased:29885;discardCompletionDelivered:63059",
+        "SEATED_CANDIDATE_PHASE id=FAE262AA-D0EC-44D3-A2F0-6C3E84F380C0 event=drain_complete elapsed_ms=-1 native_callback_ms=-1 main_held_ms=-1 stages=discardRequested:20817;discardWorkerStarted:39389;discardReleased:39389;discardCompletionDelivered:39389"
+      ],
+      "distinct_assertion_records": [
+        {
+          "source": "<unknown>:0",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "<unknown>:0",
+          "identifier": "SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:133",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:134",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "XCTAssertNotNil failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:139",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:141",
+          "identifier": "SeatedMeshProjectionTests/testDeclaredFootUsesActualStrictQueryAndHistoricalDisplayWithoutFrameRebinding",
+          "category": "XCTUnwrap failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:178",
+          "identifier": "SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:183",
+          "identifier": "SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange",
+          "category": "Asynchronous wait failed"
+        },
+        {
+          "source": "SeatedMeshProjectionTests.swift:185",
+          "identifier": "SeatedMeshProjectionTests/testHeldControllerResultCannotPublishAfterExplicitReplacementOrSourceChange",
+          "category": "XCTUnwrap failed"
+        }
+      ]
+    }
+  ]
+}

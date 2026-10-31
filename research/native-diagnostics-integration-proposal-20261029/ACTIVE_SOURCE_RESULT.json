@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "scope": "active exact-byte portable Stage85 source checks only",
+  "exit_code": 0,
+  "sourceChecksPassed": 255,
+  "limits": {
+    "cpu_seconds": 10,
+    "wall_seconds": 20,
+    "virtual_memory_MiB": 512
+  },
+  "evidence_sha256": {
+    "stdout.json": "b9202f26545f7cc5f586c045149b4d76c01af05d2a251eef1aa748a862019598",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "publication_manifest_sha256": "02a4aaaf97105b82ea36958d7f31f0bfd092379eba9da7e547242c1e0bc5339d",
+  "native_swift_execution": false,
+  "ask_native_format": "unverified",
+  "physical_authority": false,
+  "default_caller_activation": false,
+  "recovery_note": "Initial closure validation compared a changed file with its historical input hash and stopped after successful patch application. Continued without reapplying patch, verified every postimage, then verified closure using reviewed postimages for changed paths. No check failure suppressed."
+}

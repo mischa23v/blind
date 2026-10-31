@@ -1,0 +1,66 @@
+{
+  "schema": "blind.public-verified-contour-inputs.v1",
+  "physicalAuthority": false,
+  "sourceVerified": true,
+  "captureSourceCommit": "b1f3a9ae2dca8b9a45ece285174253de5f172255",
+  "captureNativeRun": 40780118332,
+  "packedGeometrySHA256": "0731735bf24f198288efea26d79c8a29929d49b10d3be0637e9e15fb983c63b7",
+  "packedGeometryBytes": 120756,
+  "serialization": "Collector-parsed original native attachment, pretty JSON; bit-pattern integers/indices/IDs/boxes unmodified. Not original attachment bytes.",
+  "originalNativeAttachment": {
+    "attachmentName": "APPLE_ROOM_PACKED_ROUTING_GEOMETRY.json",
+    "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testPublicRawExportAndExactDegenerateReceiptsRemainAuditable()",
+    "status": "collected",
+    "testResult": "Passed",
+    "bytes": 66797,
+    "sha256": "95f8810598563430215c95d5e2becab233ec299c6d2ee801bb37fe63505c574c"
+  },
+  "unitCaseJSONSHA256": "3b7c03995b9da561167a33408055c592165ae2e3c72e040021ef670963259d67",
+  "artifact": {
+    "id": 12856543726,
+    "name": "native-unit-case-statuses-40780118332-1",
+    "digest": "sha256:50f291d344b72afd47ec64f5d9bcb4f656eedf685bbb2f175e07a84529aaa203",
+    "size_in_bytes": 34953
+  },
+  "routeBaselineComparison": [
+    {
+      "attachment": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "outcomeCount": 12,
+      "outcomesExactlyEqualAsJSON": true,
+      "b1AttachmentSHA256": "5cced5e7d3b43843994a58b9b10bb6638b5cf5e7b90d322e4cd20b3a812e8c6d",
+      "49aAttachmentSHA256": "5cced5e7d3b43843994a58b9b10bb6638b5cf5e7b90d322e4cd20b3a812e8c6d"
+    },
+    {
+      "attachment": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "outcomeCount": 6,
+      "outcomesExactlyEqualAsJSON": true,
+      "b1AttachmentSHA256": "1575913ada07f0438d5f1c29e31fb68a310f346d99d3770e2faf4f456cb8d926",
+      "49aAttachmentSHA256": "1575913ada07f0438d5f1c29e31fb68a310f346d99d3770e2faf4f456cb8d926"
+    },
+    {
+      "attachment": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "outcomeCount": 16,
+      "outcomesExactlyEqualAsJSON": true,
+      "b1AttachmentSHA256": "0503d3a0f264278934b48a59f722f0ab383b4aa2efc8bfb05be73c4b3a87df28",
+      "49aAttachmentSHA256": "0503d3a0f264278934b48a59f722f0ab383b4aa2efc8bfb05be73c4b3a87df28"
+    }
+  ],
+  "fixtureInventory": [
+    {
+      "fixtureID": "Hallway2",
+      "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "vertices": 612,
+      "triangles": 308,
+      "supportFaces": 6,
+      "furnitureBoxes": 0
+    },
+    {
+      "fixtureID": "Bedroom3",
+      "sourceSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "vertices": 452,
+      "triangles": 226,
+      "supportFaces": 2,
+      "furnitureBoxes": 3
+    }
+  ]
+}

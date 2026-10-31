@@ -1,0 +1,57 @@
+{
+  "run": 40669189098,
+  "commit": "ad3cbd554ed7c59380cf6e7f9a1488e2eec2d417",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1434,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "executed": 58,
+    "failed": 0
+  },
+  "hosted": {
+    "Expected Failure": 0,
+    "Passed": 192,
+    "Failed": 0,
+    "Skipped": 6
+  },
+  "appleFixtures": [
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testBedroomOriginalFloorPolygonAndBedDepthHaveIndependentWorldWitnesses()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testDefaultProviderReadsOriginalRoomAndRetiresAtDeletionAdmission()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testRealSourceHashMismatchIsRejectedInsteadOfBorrowingOtherRoom()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testRepeatedOriginalDecodesBindStableSourceAndFeaturesNotRoomUUID()",
+      "result": "Passed"
+    }
+  ],
+  "sceneGoalAndBodyCase": "Passed, unchanged1.2s assertion; exact elapsed not exported on successful unit step",
+  "ui": {
+    "passed": 13,
+    "failed": 3,
+    "skipped": 2,
+    "failures": [
+      "Contrast failed",
+      "Practice pre-End elapsed110.50683820833342 exceeds90s",
+      "Largest accessibility practice test app termination failed"
+    ]
+  },
+  "practiceValidCancellationWitness": false,
+  "caseEvidenceSource": "Complete terminal-job NATIVE_UNIT_CASE_STATUSES JSON, no archive download",
+  "fullNativeAcceptance": false
+}

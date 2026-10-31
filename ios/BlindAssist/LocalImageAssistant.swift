@@ -12,6 +12,123 @@ struct LocalImageAnswer {
     let text: String?
     let status: String
     var taskUpdate: CompanionTaskUpdate? = nil
+    // Operational failure is not model content or an evidence-guard refusal.
+    // Keep text nil so integration fixtures cannot pass on this fallback.
+    enum ConversationRuntimeFailure: String, Equatable {
+        case generationFailed
+        case modelUnavailable
+    }
+    var conversationRuntimeFailure: ConversationRuntimeFailure? = nil
+    var conversationFailureDiagnostic: ConversationFailureDiagnostic? = nil
+
+    static func conversationFailure(_ failure: ConversationRuntimeFailure, arabic: Bool, diagnostic: ConversationFailureDiagnostic? = nil) -> LocalImageAnswer {
+        let message: String
+        switch failure {
+        case .generationFailed:
+            message = arabic ? "تعذر إكمال الرد على الجهاز الآن." : "I couldn't finish an on-device reply just now."
+        case .modelUnavailable:
+            message = arabic ? "نموذج المحادثة غير متاح على هذا الجهاز. لا يلزم اشتراك أو مفتاح API." : "The on-device conversation model is unavailable on this device. No subscription or API key is needed."
+        }
+        var answer = LocalImageAnswer(text: nil, status: message, conversationRuntimeFailure: failure)
+        answer.conversationFailureDiagnostic = diagnostic
+        return answer
+    }
+
+    /// Controllers still apply their current request/session/cancellation fences.
+    var conversationOperationalFallback: String? {
+        guard text == nil, conversationRuntimeFailure != nil else { return nil }
+        return status
+    }
+}
+
+/// Ephemeral operational metadata only: no error payload, prompt, userInfo,
+/// model words, paths, or private context are retained. Never used for recovery
+/// or evidence admission. A bridged numeric code is opaque, NOT a stable cause.
+struct ConversationFailureDiagnostic: Equatable, Sendable {
+    enum Phase: String, Sendable { case prepareContext, generateReply }
+    enum Category: String, Sendable {
+        case contextOverflow, assetsUnavailable, guardrailViolation, unsupportedGuide
+        case unsupportedLanguageOrLocale, decodingFailure, rateLimited, concurrentRequests
+        case refusal, timeout, unsupportedCapability, unsupportedTranscriptContent
+        case transcriptMutationWhileResponding, unclassified
+    }
+    enum Family: String, Sendable {
+        case legacyGeneration, languageModel, session, systemModel, unclassified
+    }
+    let phase: Phase
+    let category: Category
+    let family: Family
+    let opaqueCode: Int?
+    #if BLIND_FOUNDATION_MODELS_V2 || BLIND_APPLE_MULTIMODAL
+    static let v2HandlingCompiled = true
+    #else
+    static let v2HandlingCompiled = false
+    #endif
+
+    var receipt: String {
+        "phase=\(phase.rawValue);category=\(category.rawValue);family=\(family.rawValue);opaqueCode=\(opaqueCode.map(String.init) ?? "none");v2Handling=\(Self.v2HandlingCompiled)"
+    }
+
+    static func capture(_ error: Error, phase: Phase) -> Self {
+        var category: Category = .unclassified
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), let failure = error as? LanguageModelSession.GenerationError {
+            switch failure {
+            case .exceededContextWindowSize: category = .contextOverflow
+            case .assetsUnavailable: category = .assetsUnavailable
+            case .guardrailViolation: category = .guardrailViolation
+            case .unsupportedGuide: category = .unsupportedGuide
+            case .unsupportedLanguageOrLocale: category = .unsupportedLanguageOrLocale
+            case .decodingFailure: category = .decodingFailure
+            case .rateLimited: category = .rateLimited
+            case .concurrentRequests: category = .concurrentRequests
+            case .refusal: category = .refusal
+            @unknown default: break
+            }
+        }
+        // Preserve SDK26 compilation. The project's explicit SDK27 flag also
+        // controls existing overflow handling; this receipt makes its state clear.
+        #if BLIND_FOUNDATION_MODELS_V2 || BLIND_APPLE_MULTIMODAL
+        if #available(iOS 27.0, *) {
+            if let failure = error as? LanguageModelError {
+                switch failure {
+                case .contextSizeExceeded: category = .contextOverflow
+                case .guardrailViolation: category = .guardrailViolation
+                case .unsupportedGenerationGuide: category = .unsupportedGuide
+                case .unsupportedLanguageOrLocale: category = .unsupportedLanguageOrLocale
+                case .rateLimited: category = .rateLimited
+                case .refusal: category = .refusal
+                case .timeout: category = .timeout
+                case .unsupportedCapability: category = .unsupportedCapability
+                case .unsupportedTranscriptContent: category = .unsupportedTranscriptContent
+                @unknown default: break
+                }
+            } else if let failure = error as? LanguageModelSession.Error {
+                switch failure {
+                case .concurrentRequests: category = .concurrentRequests
+                case .transcriptMutationWhileResponding: category = .transcriptMutationWhileResponding
+                @unknown default: break
+                }
+            } else if let failure = error as? SystemLanguageModel.Error,
+                      case .assetsUnavailable = failure { category = .assetsUnavailable }
+        }
+        #endif
+        #endif
+        // A new SDK may throw types unavailable to the compiler. Match only
+        // fixed FoundationModels domains and retain a small opaque discriminator.
+        // Never emit the raw domain, description, userInfo, or underlying errors.
+        let native = error as NSError
+        let family: Family
+        switch native.domain {
+        case "FoundationModels.LanguageModelSession.GenerationError": family = .legacyGeneration
+        case "FoundationModels.LanguageModelError": family = .languageModel
+        case "FoundationModels.LanguageModelSession.Error": family = .session
+        case "FoundationModels.SystemLanguageModel.Error": family = .systemModel
+        default: family = .unclassified
+        }
+        let code = family != .unclassified && (0...255).contains(native.code) ? native.code : nil
+        return Self(phase: phase, category: category, family: family, opaqueCode: code)
+    }
 }
 
 /// App-owned state: a proposed step is never recorded as an executed action.
@@ -967,6 +1084,8 @@ enum LocalImageAssistant {
     }
     #endif
 
+    /// Provenance reaches onSpeechCandidate before onPartial so display can use
+    /// the same admitted evidence, without changing the display callback API.
     /// onPartial receives each new validated sentence exactly once (not a
     /// cumulative snapshot) for display. onSpeechCandidate carries provenance
     /// for a second freshness/safety check at actual queued speech dispatch.
@@ -984,6 +1103,7 @@ enum LocalImageAssistant {
         #endif
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *), OnDeviceLanguage.supports(arabic: arabic) {
+            var failurePhase = ConversationFailureDiagnostic.Phase.prepareContext
             do {
                 try Task.checkCancellation()
                 let latest = dialogue.turns.last?.text ?? ""
@@ -1075,6 +1195,7 @@ enum LocalImageAssistant {
                     #endif
                     let session = LanguageModelSession(tools: reduced ? [] : tools, instructions: instructions)
                     do {
+                        failurePhase = .generateReply
                         let stream = session.streamResponse(to: plan.prompt,
                             options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: ContextWindowPolicy.responseTokenLimit))
                         for try await snapshot in stream {
@@ -1090,9 +1211,9 @@ enum LocalImageAssistant {
                                     logger.info("First verified sentence after \(ProcessInfo.processInfo.systemUptime - started, privacy: .public) seconds")
                                     sentFirst = true
                                 }
-                                await onPartial?(chunk)
-                                try Task.checkCancellation()
                                 await onSpeechCandidate?(chunk, reports, evidence)
+                                try Task.checkCancellation()
+                                await onPartial?(chunk)
                             }
                             if chunks.rejected {
                                 #if DEBUG
@@ -1114,9 +1235,9 @@ enum LocalImageAssistant {
                             let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
                             if !suffix.isEmpty {
                                 try Task.checkCancellation()
-                                await onPartial?(suffix)
-                                try Task.checkCancellation()
                                 await onSpeechCandidate?(suffix, reports, evidence)
+                                try Task.checkCancellation()
+                                await onPartial?(suffix)
                             }
                             let kept = [chunks.delivered, suffix].filter { !$0.isEmpty }.joined(separator: " ")
                             try Task.checkCancellation()
@@ -1132,9 +1253,9 @@ enum LocalImageAssistant {
                 let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
                 for chunk in chunks.append(text, final: true, reports: reports, evidence: evidence) {
                     try Task.checkCancellation()
-                    await onPartial?(chunk)
-                    try Task.checkCancellation()
                     await onSpeechCandidate?(chunk, reports, evidence)
+                    try Task.checkCancellation()
+                    await onPartial?(chunk)
                 }
                 text = text.trimmingCharacters(in: .whitespacesAndNewlines)
                 let finalRejected = chunks.rejected || !usableChatReply(text) || !CompanionEvidenceGuard.allows(text, reports: reports, evidence: evidence)
@@ -1156,9 +1277,9 @@ enum LocalImageAssistant {
                     if fallback.split(whereSeparator: \.isWhitespace).count > remainingWords { fallback = "" }
                     try Task.checkCancellation()
                     if !fallback.isEmpty {
-                        await onPartial?(fallback)
-                        try Task.checkCancellation()
                         await onSpeechCandidate?(fallback, reports, evidence)
+                        try Task.checkCancellation()
+                        await onPartial?(fallback)
                     }
                     let safeText = [chunks.delivered, fallback].filter { !$0.isEmpty }.joined(separator: " ")
                     await onReplyComplete?(safeText)
@@ -1215,11 +1336,16 @@ enum LocalImageAssistant {
                 #if DEBUG
                 debugTrace?.event(.unavailable) { .init(label: "conversation.failed; errorDetailsOmitted") }
                 #endif
-                return LocalImageAnswer(text: nil, status: arabic ? "تعذر إكمال الرد على الجهاز. لم يتم تنفيذ أي إجراء خارجي." : "The on-device reply could not finish. No external action was taken.")
+                // Some providers throw a non-CancellationError after cancellation.
+                // Never turn an interrupted request into a new operational reply.
+                guard !Task.isCancelled else { return LocalImageAnswer(text: nil, status: "Conversation interrupted.") }
+                let diagnostic = ConversationFailureDiagnostic.capture(error, phase: failurePhase)
+                return LocalImageAnswer.conversationFailure(.generationFailed, arabic: arabic, diagnostic: diagnostic)
             }
         }
         #endif
-        return LocalImageAnswer(text: nil, status: arabic ? "نموذج المحادثة غير متاح على هذا الجهاز. لا يلزم اشتراك أو مفتاح API." : "The on-device conversation model is unavailable on this device. No subscription or API key is needed.")
+        guard !Task.isCancelled else { return LocalImageAnswer(text: nil, status: "Conversation interrupted.") }
+        return LocalImageAnswer.conversationFailure(.modelUnavailable, arabic: arabic)
     }
     /// A constrained uncertain hint, never a sensor search result or identity.
     /// The controller must revalidate the frame and guard the code-written hint.

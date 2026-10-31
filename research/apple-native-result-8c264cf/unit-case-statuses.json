@@ -1,0 +1,708 @@
+{
+  "schema": 1,
+  "target": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame",
+  "complete": true,
+  "target_pass_verified": true,
+  "source_verified": true,
+  "expected_commit": "8c264cfe9b641918c813405ef2b27771f56a944f",
+  "limits": {
+    "query_bytes": 4194304,
+    "query_seconds": 30,
+    "tree_nodes": 10000
+  },
+  "provenance": {
+    "actual_head": "8c264cfe9b641918c813405ef2b27771f56a944f",
+    "tracked_source_clean": true,
+    "untracked_scopes": [
+      "ios",
+      "BlindCore",
+      "BlindMemory",
+      "tools/ci",
+      ".github/workflows"
+    ],
+    "generated_metadata": [
+      {
+        "path": "BlindMemory/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      },
+      {
+        "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "824a59edae9822e44b24057fcda473860ba4a9b635f383a2adbb05b2001262a1",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "source_commit": "8c264cfe9b641918c813405ef2b27771f56a944f",
+  "cases": [
+    {
+      "identifier": "AssistantSituationTests/testLongDescriptionFollowUpAndGoalChangeReachNativeSnapshot()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "AssistantSituationTests/testRestoredBathroomGoalDoesNotRestorePoseOrInventRoomOwnership()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "AssistantSituationTests/testReviewedRoomIsHistoricalPreviewNotCurrentRoomOrEmptyChair()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "AssistantSituationTests/testUnreviewedInventoryIsOmittedAndInterestIsNotAnObservation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testCorruptionDoesNotHideOtherMapsAndRequiresExplicitRemoval()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testCountAndByteQuotaFailuresKeepSavedRevisionIntact()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testDownloadChecksDigestAndDoesNotInstallUntilReviewed()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testHTTPFailureAndStreamingSizeLimit()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testInstallReopenConflictAndImmutableOlderRevision()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testOfflineLaunchStillLoadsMapsAndRejectsNetwork()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testOfflineToggleCancelsPendingDownloadWithoutLatePreview()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testOversizedAndSymlinkFilesAreExcludedWithoutReadingTarget()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testPublicCopyKeepsProvenanceButDropsOldReviewClaims()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testPublicReleaseFilteringUsesUploadedCompatibleAssetsAndRepository()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConversationTests/remembersNameWithoutRecitingHistory()",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "CompanionNativeReplayTests/testInputOnlyConversationBatch()",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "TextChatScenarioTests/followsConversation(_:)",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "TextChatScenarioTests/doesNotInventFloorClearance()",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testCorrectionForgetRemoveExactSourcesNotUnrelatedReports()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testExplicitReplacementDropsParentWhileSameValuePreservesProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testExplicitSubtaskReportRetiresFindFocusWithoutClaimingPossession()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testForgetParentSourceRemovesItFromActiveAndPausedFind()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testModelFactCannotDropNegationOrExtractFromUncertainty()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testNegatedQuotedAndConditionalCancellationCannotMutateGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testOldStateDecodesAndBoundsRestoredCollections()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testParentDecodeRejectsInvalidHierarchyAndBoundsProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPausedFindRestoresItsParentAcrossPersistenceWithoutOldAction()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM001SameGoalTransitionRetiresOtherFridgeProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM008RestartAndIdentityLossDoNotRestoreActivePlaceOrPronoun()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM009DelayedModelUpdateCannotCommitAcrossScopeTransition()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM010ScopedCorrectionDeletionAndReturnHistory()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM013OldDialogueCannotRefillScopedTaskContext()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM016ScopedReportReachesActualRetrievalWithBoundedID()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM017MalformedArchivedContextIsDroppedWithoutTruncation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM020AmbiguousLegacyMutationWithholdsAndExactSourceDeletionStaysLocal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM023BoundLocationSourceRetainsTimestampAndDeletesItsOriginalReport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM027MalformedDerivedSourceFieldsAreNotRetained()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testProposedStepsNeverExecuteOrProveCompletion()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testReadingReportDoesNotCompleteSeparateFindGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testRepeatedFindSwitchesKeepOnlyOneParentWithoutGrowingPauseStack()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testReplacementRetiresOldProposalAndReportedProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testReportedIngredientsAdvanceOnlyBoundConversationalStepAndKeepEvidenceSource()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testSchoolParentSurvivesCoatBackpackSwitchAndOnlyExplicitResumeReturns()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testSuspendedAndReportStorageAreBounded()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testSuspendResumeRequiresExplicitCallAndClearsOldProposal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testUnrelatedOrQuotedCompletionCannotRetireCurrentStep()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testAutomaticRecoveryKeepsCurrentConservativeRestrictions()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testIntegratedAutomaticRecoveryAfterRejectedEvidence()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testIntegratedRejectedEvidenceCannotInferMidLegStart()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testMapIOWithdrawalInvalidGoalAndDeletionFenceStaleOutput()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testMaximumHistorySynchronousResidualIsBoundedAndMeasuredNotDeviceLatency()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testOuterEnvelopeCannotBypassNestedHistoryByteLimit()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testPauseRestartAndResumeRetainRealGoalButNeedFreshEvidence()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testRejectedEvidenceWaitsAtMidLegThenAutomaticallyReplansFromFreshAuthoredNode()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testReplacementOrHoldDuringDelayedRestoreOwnsLatestIntent()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testSyntheticFullNativeRuntimeOutAndBackRequiresDeliveredOneUseChoice()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testUnverifiedCommandsCannotEvenRetireActiveNativeRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/codeOwnedHistoricalReportNeverBecomesCurrentGeometry()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/unavailableProviderDoesNotInventAReply()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testCancellationAfterWithheldLegacyCueClearsMessageInBothLanguages()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testConfirmedFinalWaypointHasNoActiveRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testExplicitReplanDoesNotReuseOldRouteAlignment()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testTaskCancellationCannotCreateUnknownAlignment()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testTaskCancellationRetiresRouteButPreservesPreviewFrame()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testActualControllerAsyncFileImportRejectsOversizedInputWithoutMainRead()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testActualControllerRetiresPoseAndOutputBeforeBlockedImportThenPreservesNewTaskCaption()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testActualInitializerRestoresBoundedMapAsynchronouslyAndKeepsPoseUnknown()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedCommunityCacheCompletionCannotOverwriteNewImport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedCommunityCacheCompletionCannotResurrectDeletedMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedMissingStartupFileCannotOverwriteNewerTaskCaption()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedPrivacyPurgeCannotDeleteNewerImportOrOverwriteItsStatus()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testFailedPrivacyPurgeCannotDowngradeRetainedRegisteredMapThroughPreviewEdits()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testJourneyDeletionPublishesOnlyRemovedBindingWithoutGeometry()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testJourneyHooksDoNotConfuseLegacyPreviewWithDeletedMapOrPublishStaleDelete()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testJourneyHooksWithdrawSynchronouslyAndPublishAfterCurrentCAS()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testPendingOrFailedReplacementCannotTagObservationsWithRetainedOldMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testPrivacyPurgePrecedesActualDeleteAndFailureKeepsMapUnavailable()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testPublicPlanAttemptDuringBlockedSaveRetiresOldReplanContinuation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testAsyncMapWaitLeavesMainOwnerAvailable()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testBoundaryAndOverlappingRoomsRemainUnknownWithoutRegisteredPose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testDownloadPlanAndRestartNeverRestoreLivePose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testForgedRevisionCannotAttachAnotherGeometryOnRestart()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testLegacyMapContextKeepsGoalWithoutInventingRoomArrival()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testManualPoseKeepsCameraAndBodySeparate()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testOfflinePackageMetadataRestoresButPoseDoesNot()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testPreparationTimeExpiresPoseAndTracksBeforeModelDispatch()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testTrackingAgeAndAlignmentChangesInvalidateClaims()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testNativeRuntimeFeedsActualAccumulatorAndRejectsAbandonedCompletion()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testPreLossAndPreRestartFramesCannotSeedNewScene()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testRejectedFrameDisplaysEvidenceFailureNotTrailState()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testRejectedFutureTimestampDoesNotPoisonLaterCapture()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testRuntimeRechecksClockAfterWorkerAndWatchdogExpiresPlan()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testActualAdapterPersistsEnvelopeAndRestoresNoAuthority()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testEnvelopeLargerThanLegacyMapLimitLoadsWithExactBytes()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testExpiryWithdrawsHeldOutputWithoutAnotherSensorCallback()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testGoalCancellationRetiresOnlyHeldRouteOutputAndKeepsPose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testLegacyImportCannotKeepRegisteredAuthority()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testMapReplacementAndSessionLossNotifyRouteOutputRetirement()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testReconfigureOrRestoreCannotEraseRestrictionsInActiveOwner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testReportedBlockedNextLegIsAppliedToRegisteredPlanner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testReportedClosureSurvivesRestoreAndReconfiguration()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testUnconfiguredFailedRestrictionSaveCannotGainAuthorityByConfigure()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testUnconfiguredImportedMapCanPersistAvoidanceWithoutInventingPosePolicy()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigatorCaptionTests/testExpiredRouteCannotOverwriteNewDestinationSuggestion()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigatorCaptionTests/testExpiredRouteCaptionIsWithdrawn()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testAccessibilityPermissionNotCopyPermission()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testArabicAndMixedNumeralsUseActualTextLayer()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testColumnsAndTableRemainLiteralTextNotAssociatedMeaning()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testEnglishActualBytesHashAndWholePageText()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testExplicitPageIndexDoesNotReadNextPage()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testImageOnlyIsNoReadableTextLayerNotBlank()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testLockedPDFDoesNotTryPasswords()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testMalformedAndWholeOversizeAreDistinct()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testNonFileSelectionCannotBecomeNetworkAcquisition()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testNSMutableDataAliasCannotMutateFrozenPDFBytesHashOrText()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testOversizedPageTextIsRejectedWithoutTruncation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testPickerCancelThenLateSuccessCannotReviveOwner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testPickerSuccessThenLateCancelResolvesOnceWithOriginalOwner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testSourceReplacementDoesNotMutateSelectedImmutableBytes()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testBlockedWriterLeavesIndependentMainWarningAndWatchdogResponsive()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testDeleteBarrierCannotDisappearBehindLaterReplacementOrReportFalseSuccess()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testDeleteFailureBlocksQueuedReplacementUntilExplicitRetryBarrier()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testDeleteWaitsBehindInFlightWriteAndNoLateSaveResurrects()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testFailedNewerImportPreservesLastCommittedMapAfterStaleWrite()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testFailedRestrictionPersistenceRetainsUnionForRetryAndBlocksConfigure()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testInvalidLatestInputFencesAnAlreadyRunningWrite()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testLatestSlotIsBoundedAndSupersededImportsNeverPublish()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testNewGoalAttemptDuringSaveRetiresOldReplanContinuation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testPendingRestrictionUnionCannotBeClearedByDelayedEmptyUpdate()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testPersistentRollbackFailureFencesLaterWritesUntilDeleteBarrierSucceeds()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testRestoreAndFileImportUseBoundedReaderAndDoNotRestorePose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testSupersededMainPublicationRestoresPriorBytesBeforeFailedNewerJob()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testSupersededRestoreCannotOverwriteNewImport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testSupersededValidationCannotReachDurableCommit()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testTaskCancellationDuringRestrictionWriteDoesNotResurrectOldRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testBeaconOwnershipRejectsStaleRetirementAfterReplacement()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testBodyAndRestrictionChangesRetireHeldOutput()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testCurrentInstalledRouteReachesBothOwnedSinks()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testDelayedPlaybackStartRechecksTicket()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testExpiredTicketReachesNeitherSink()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testFailedSpeechDoesNotStartBeaconOrHoldAttempt()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testGoalChangeRetiresOutputButNotMeasuredPoseOrMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testOldCallbackCannotRetireNewRouteOrIndependentAlert()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testPermissionChangesBetweenSpeechAndBeacon()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testWatchdogRetiresExpiredOutputWithoutNewSensorCallback()",
+      "result": "Passed"
+    }
+  ],
+  "case_count": 155,
+  "counts": {
+    "Failed": 1,
+    "Skipped": 6,
+    "Expected Failure": 0,
+    "Passed": 148
+  },
+  "aggregate_counts_match": true,
+  "target_records": [
+    {
+      "identifier": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame()",
+      "result": "Passed"
+    }
+  ],
+  "target_log_events": [
+    "started",
+    "passed"
+  ],
+  "query_sha256": "c2fc6aa95a229b75997ed09816690304c9407c2418e45fdd2ae33beea493219e",
+  "source_sha256": {
+    "ios/BlindAssistTests/CommunityTests.swift": "24930b5106810a9a6929e08243ce4164cb0cb40693259e5e93a788cc593cf7b6",
+    "ios/BlindAssist/SpatialMapIO.swift": "f044ff2aa869cf0ea3ab8a2ff8d4c6ba7fc7fcd9915fe1fed59109219a3c548c"
+  }
+}

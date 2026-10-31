@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/OctoMap/octomap",
+  "revision": "007a0b5b6e4d3bb6c54f2c65a12234e03adcd72f",
+  "versionFromCMake": "1.10.0",
+  "license": "New BSD / BSD-3-Clause; retained LICENSE.txt",
+  "retainedSourceBytesVerifiedAgainstGitBlobPins": true,
+  "files": [
+    {
+      "path": "octomap/include/octomap/OccupancyOcTreeBase.h",
+      "bytes": 25146,
+      "gitBlobSHA": "488fa5f9364634b96ad2134213efa06bb3d8e9fe",
+      "sha256": "e0e6ad4ea2376732923f2462ec22809f59bb6c94add681b5624d0d44a5b628d0"
+    },
+    {
+      "path": "octomap/include/octomap/OccupancyOcTreeBase.hxx",
+      "bytes": 40621,
+      "gitBlobSHA": "5b47a8ab1cfdb11fd62dab0ba8a17d1c50469a91",
+      "sha256": "1d34fc3b704038e0f332beb820d765adad1fa870485333ca23e885f8c62a7903"
+    },
+    {
+      "path": "octomap/include/octomap/OcTreeBaseImpl.h",
+      "bytes": 23303,
+      "gitBlobSHA": "7109d9ccd5824adc53badb99f263494451556a20",
+      "sha256": "effad124afa4d61d8b8b0f6d282e05bfd9ffd1dcfc3516f33bee550e52c58c8c"
+    },
+    {
+      "path": "octomap/include/octomap/OcTreeBaseImpl.hxx",
+      "bytes": 32739,
+      "gitBlobSHA": "1da3a278bc118ab7e4ae462416cad5b2b20912d0",
+      "sha256": "ac5bd13365f68f6749865253782bdc5b64c0679cd14ecfacad2b8fd890ecc3da"
+    }
+  ],
+  "existingPinnedLibrarySHA256": "0a044001b1455634ab881cc42fb5954362d960abf5cd851b7b6dc99b6c3eb963",
+  "existingWrapperSHA256": "09645bd4065ccef13d28353d5a05e54c75f5ea284ca8e5c4439c58cc45aa4621",
+  "existingAdapterSHA256": "715b3e544dff913a82ec43f49c0255297af0c3a799397faceaa66ebe97f9dff7",
+  "existingABI": [
+    "om_create",
+    "om_insert",
+    "om_query",
+    "om_query_occupied",
+    "om_keys",
+    "om_query_keys",
+    "om_defaults",
+    "om_leaf_count",
+    "om_export",
+    "om_destroy"
+  ],
+  "neededUpstreamMethods": [
+    "castRay",
+    "getRayIntersection",
+    "search",
+    "coordToKeyChecked",
+    "computeRayKeys (controls only, if needed)"
+  ],
+  "existingABIMissing": [
+    "castRay",
+    "getRayIntersection",
+    "native tree serialization/import"
+  ],
+  "localReusableHeldoutRayEvaluatorFound": false,
+  "localSearchScope": "blind/research Python/C++ outside retained upstream sources/build output",
+  "nativeCalls": 0,
+  "newNativeSourceAuthored": false,
+  "buildExecuted": false,
+  "controlsExecuted": false
+}

@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "source-only; not compiled, native-loaded or tested",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 10852,
+      "sha256": "58fbdb5b47eece3a66fb2062a90b873f1a15dc123005a8992bced050e3ddd511"
+    },
+    {
+      "path": "SOURCE_PINS.json",
+      "bytes": 2800,
+      "sha256": "ec0a4e4d6baa8ba219c529357aeddb41e5a79c498db04ea0e1b8272cd64a760f"
+    },
+    {
+      "path": "build_readonly.py",
+      "bytes": 14946,
+      "sha256": "cd0ff1249d207a499c4a20b75b9514373e9883e80cd23e2830435ab86bc6e9b2"
+    },
+    {
+      "path": "finalize_build_receipt.py",
+      "bytes": 3171,
+      "sha256": "3d1b1a097a27bf523eb88aa9402a94b07f5a099febbda47c591a31e3f94e9014"
+    },
+    {
+      "path": "ray_binding.py",
+      "bytes": 4828,
+      "sha256": "4d39b4ba643d5edc2f4f82766d86bdb5711be2cae2cdc1d97f5c5f2f2e8e4df5"
+    },
+    {
+      "path": "readonly_rays.cpp",
+      "bytes": 7866,
+      "sha256": "86916f6c49c70c1b3fb982c2a4fbc5cd710f24b871999f6b34aaea6c6ec44dc2"
+    },
+    {
+      "path": "run_controls.py",
+      "bytes": 6055,
+      "sha256": "dcb36be7261d07057ff92e3f967f9d6d44186b05a19d6bf45951e42d67b5eadd"
+    },
+    {
+      "path": "run_controls_bounded.sh",
+      "bytes": 627,
+      "sha256": "dac41149e488a7da3a044422826ea9ae0ba98d0e51467382fea19144da469bf4"
+    },
+    {
+      "path": "test_readonly_rays.py",
+      "bytes": 9674,
+      "sha256": "098f2f8fb92ccc2456d3c7a567bd41eff6b3768e1751560af108d39b47e5f2a9"
+    }
+  ],
+  "excludedSeparateRootPin": "BUILD_RUN_PINS.json",
+  "containsNativeBinary": false,
+  "containsRawData": false,
+  "physicalAuthority": false
+}

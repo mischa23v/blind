@@ -1,0 +1,51 @@
+{
+  "run_id": 40765137795,
+  "source_commit": "fa43366dced02c8e578baf4d38d69caa10614718",
+  "terminal_conclusion": "failure",
+  "core": {
+    "executed": 1434,
+    "failures": 0,
+    "skipped": 1
+  },
+  "memory": {
+    "executed": 58,
+    "failures": 0
+  },
+  "default_ios_build": "passed",
+  "hosted": {
+    "cases": 242,
+    "passed": 224,
+    "failed": 16,
+    "skipped": 2
+  },
+  "ui": {
+    "cases": 18,
+    "passed": 13,
+    "failed": 2,
+    "skipped": 3,
+    "failures": [
+      "Contrast atLaunchTests.swift373",
+      "PracticeStop evidencewindow149.22751075seconds exceeds90seconds atLaunchTests.swift129"
+    ]
+  },
+  "callback_evidence_extraction": "failed",
+  "diagnostics_compile": "not reached:workflow pin mismatch",
+  "classified": {
+    "swift_exit": 0,
+    "actual_xctest_passed": 15,
+    "actual_xctest_failed": 0,
+    "ios_fixtures_excluded": 5,
+    "job": "failed:postcondition expectedtests.xml absent"
+  },
+  "physical_guidance_authority": false,
+  "apple_route_outcomes": {
+    "unsupported_geometry": 18,
+    "error": "invalidMesh",
+    "successful": 0
+  },
+  "apple_journey_stages": {
+    "unsupported_geometry": 16,
+    "successful": 0
+  },
+  "no_reruns_or_cancellation": true
+}

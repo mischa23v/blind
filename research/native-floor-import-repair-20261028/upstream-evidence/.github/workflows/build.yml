@@ -1,0 +1,287 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  Linux:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu:22.04" # gcc 12.3.0, clang 14.0.0, cmake 3.22.1
+          - "ubuntu:24.04" # gcc 13.2.0, clang 18.1.3, cmake 3.28.3
+        cpp_compiler:
+          - clang++
+          - g++
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: ${{ matrix.os }}
+
+    env:
+      CXX: ${{ matrix.cpp_compiler }}
+      DEBIAN_FRONTEND: noninteractive
+
+    permissions:
+      contents: read
+
+    steps:
+      # git is needed both for actions/checkout and for CMake FetchContent (clones deps at configure time)
+      - name: Install Git
+        run: |
+          apt-get update
+          apt-get install -y git
+          git --version
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install toolchain
+        run: |
+          apt-get install -y cmake ninja-build ${{ matrix.cpp_compiler == 'clang++' && 'clang' || 'g++' }}
+          ${{ matrix.cpp_compiler }} --version
+          cmake --version
+          ninja --version
+
+      # FetchContent clones googletest/benchmark/glfw/libtess2 + the earcut fixtures repo at
+      # configure time; cache the populated _deps so reruns skip the clones.
+      - name: Cache FetchContent deps
+        uses: actions/cache@v6
+        with:
+          path: build/_deps
+          key: deps-${{ matrix.os }}-${{ matrix.cpp_compiler }}-${{ hashFiles('CMakeLists.txt') }}
+          # Fall back to the last cache for this job when CMakeLists.txt changes (e.g. a dep tag bump):
+          # FetchContent re-checks-out only the dep whose tag moved and reuses the rest.
+          restore-keys: |
+            deps-${{ matrix.os }}-${{ matrix.cpp_compiler }}-
+
+      - name: Configure CMake
+        run: cmake -B build -GNinja -DEARCUT_WARNING_IS_ERROR=ON
+
+      - name: Build all targets
+        run: cmake --build build
+
+      - name: Run tests
+        run: build/tests
+
+  # arm64 + AppleClang coverage (x86_64 is covered by the Linux runners); macOS FP codegen
+  # matters here because of the cross-arch determinism issues #97/#103.
+  MacOS:
+    runs-on: macos-15
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install CMake & Ninja
+        run: |
+          brew install cmake ninja
+          cmake --version
+          ninja --version
+
+      - name: Cache FetchContent deps
+        uses: actions/cache@v6
+        with:
+          path: build/_deps
+          key: deps-macos-15-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            deps-macos-15-
+
+      - name: Configure CMake
+        run: cmake -B build -GNinja -DEARCUT_WARNING_IS_ERROR=ON
+
+      - name: Build all targets
+        run: cmake --build build
+
+      - name: Run tests
+        run: build/tests
+
+  Sanitizers:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ubuntu:24.04
+
+    env:
+      CXX: clang++
+      DEBIAN_FRONTEND: noninteractive
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Install Git
+        run: |
+          apt-get update
+          apt-get install -y git
+          git --version
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install toolchain
+        run: |
+          apt-get install -y cmake ninja-build clang
+          clang++ --version
+          cmake --version
+          ninja --version
+
+      - name: Cache FetchContent deps
+        uses: actions/cache@v6
+        with:
+          path: build/_deps
+          key: deps-sanitizers-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            deps-sanitizers-
+
+      - name: Configure CMake with sanitizers
+        run: >
+          cmake -B build -GNinja -DEARCUT_WARNING_IS_ERROR=ON -DEARCUT_BUILD_BENCH=OFF -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -g"
+
+      - name: Build tests
+        run: cmake --build build --target tests
+
+      - name: Run tests with sanitizers
+        run: build/tests
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:abort_on_error=1
+
+  Coverage:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ubuntu:24.04
+
+    env:
+      CXX: g++
+      DEBIAN_FRONTEND: noninteractive
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Install Git
+        run: |
+          apt-get update
+          apt-get install -y git
+          git --version
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install toolchain
+        run: |
+          apt-get install -y cmake ninja-build g++ lcov
+          g++ --version
+          cmake --version
+          ninja --version
+          lcov --version
+
+      - name: Cache FetchContent deps
+        uses: actions/cache@v6
+        with:
+          path: build/_deps
+          key: deps-coverage-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            deps-coverage-
+
+      - name: Configure CMake for coverage
+        run: cmake -B build -GNinja -DEARCUT_WARNING_IS_ERROR=ON -DEARCUT_BUILD_BENCH=OFF -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build tests
+        run: cmake --build build --target tests
+
+      - name: Run tests
+        run: build/tests
+
+      - name: Generate coverage summary
+        run: |
+          mkdir -p coverage
+
+          # Capture coverage, then keep only our shipping header. Note the extract pattern must be
+          # '*/include/mapbox/*' and not '*/include/*' — the latter also matches /usr/include and the
+          # fetched deps' headers, which tanks the reported total (gtest etc. dominate the line count).
+          lcov --capture --directory build --output-file coverage/coverage_raw.info \
+            --ignore-errors gcov,source,mismatch --gcov-tool gcov
+          lcov --extract coverage/coverage_raw.info '*/include/mapbox/*' --output-file coverage/coverage.info \
+            --ignore-errors unused
+
+          lcov --summary coverage/coverage.info
+
+  Format:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+          clang-format --version
+
+      - name: Check code formatting
+        run: find include test -name "*.hpp" -o -name "*.cpp" | xargs clang-format --dry-run --Werror
+
+      - name: Show formatting diff
+        if: failure()
+        run: |
+          find include test -name "*.hpp" -o -name "*.cpp" | xargs clang-format -i
+          echo "=== Run clang-format -i to fix ==="
+          git diff
+
+  # Keep the visualizer (off by default, needs OpenGL/GLFW) compiling so it doesn't rot.
+  Viz:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ubuntu:24.04
+
+    env:
+      CXX: g++
+      DEBIAN_FRONTEND: noninteractive
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Install Git
+        run: |
+          apt-get update
+          apt-get install -y git
+          git --version
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install toolchain
+        run: apt-get install -y cmake ninja-build g++ xorg-dev libgl1-mesa-dev
+
+      - name: Cache FetchContent deps
+        uses: actions/cache@v6
+        with:
+          path: build/_deps
+          key: deps-viz-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            deps-viz-
+
+      - name: Configure CMake
+        run: cmake -B build -GNinja -DEARCUT_WARNING_IS_ERROR=ON -DEARCUT_BUILD_TESTS=OFF -DEARCUT_BUILD_BENCH=OFF -DEARCUT_BUILD_VIZ=ON
+
+      - name: Build viz
+        run: cmake --build build --target viz

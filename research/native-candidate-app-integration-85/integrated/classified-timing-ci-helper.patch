@@ -1,0 +1,16 @@
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -18,6 +18,13 @@
+     echo 'MODEL_AVAILABILITY_BEGIN (first 80 lines; 600 characters each)'
+     grep -E '^MODEL_AVAILABILITY fixture=' "$out/$label.log" | head -80 | cut -c 1-600 || true
+     echo 'MODEL_AVAILABILITY_END'
++    # Synthetic test-only receipt: closed stage/event names and numeric monotonic
++    # timing. No geometry, source/session identity, arbitrary errors or model text.
++    # Keep this on both pass/fail paths; it never changes the test exit status.
++    echo 'CLASSIFIED_QUERY_STAGE_TIMING_BEGIN (at most 40 lines; 1500 characters each)'
++    local stage='(requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered)'
++    grep -E "^CLASSIFIED_QUERY_STAGE_RECEIPT id=[0-9A-F-]{36} event=(callback|waitFinished|failureDiscardCompleted|discardCompleted) stages=($stage:[0-9]+;)*$stage:[0-9]+$" "$out/$label.log" | head -40 | cut -c 1-1500 || true
++    echo 'CLASSIFIED_QUERY_STAGE_TIMING_END'
+   fi
+   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
+   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.

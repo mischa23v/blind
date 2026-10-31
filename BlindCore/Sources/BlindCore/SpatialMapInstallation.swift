@@ -97,6 +97,33 @@ public struct SpatialMapInstallation: Sendable {
         guard bytes.count <= maximumMapBytes else { throw SpatialInstallationError.invalidEnvelope }
         return bytes
     }
+    /// Local pairing reference, NOT a navigation map. Actual paired bytes must
+    /// match the capture-owned descriptor; no names/story/GPS or transform guesses.
+    /// Native caller already checks the archived origin anchor and decodes RoomPlan.
+    /// Run hashing/encoding on the existing bounded utility worker, not AR callbacks.
+    public static func localSavedFrameReference(frame: SavedWorldFrame,
+        worldMapBytes: Data, roomCaptureBytes: Data, sha256: SpatialMapSHA256) throws -> SpatialMapInstallation {
+        guard frame.valid, !worldMapBytes.isEmpty, worldMapBytes.count <= 32 * 1024 * 1024,
+              !roomCaptureBytes.isEmpty, roomCaptureBytes.count <= 8 * 1024 * 1024,
+              try frame.matches(worldMapSHA256: sha256(worldMapBytes), roomCaptureSHA256: sha256(roomCaptureBytes))
+        else { throw SpatialInstallationError.artifactMismatch }
+        let place = "private-place:" + frame.placeID
+        let binding = SpatialMapBinding(mapID: "local-saved-" + frame.placeID.lowercased(),
+            frameID: frame.frameID, revision: frame.revision)
+        let record = SpatialMapRevision(binding: binding, nodeID: place, metersPerUnit: 1,
+            floorLevels: [:], savedWorldFrame: frame)
+        // This is a private catalog namespace, not geographic/building assignment.
+        let snapshot = SpatialRegistrySnapshot(nodes: [
+            .init(id: "private-saved-world", kind: .world),
+            .init(id: place, kind: .place, parentID: "private-saved-world")],
+            maps: [record], activeBindings: [binding])
+        var map = IndoorMap(name: "Local saved-frame reference; no route or floor assignment", nodes: [], edges: [])
+        map.purpose = .localizationReferenceOnly
+        map.packageID = binding.mapID; map.packageRevision = binding.revision
+        let bytes = try canonicalMapBytes(map)
+        return try .init(envelope: .init(snapshot: snapshot, binding: binding, mapBytes: bytes,
+            artifactHistory: [.init(binding: binding, sha256: try sha256(bytes))]), sha256: sha256)
+    }
     public func encoded() throws -> Data {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let bytes = try encoder.encode(envelope)

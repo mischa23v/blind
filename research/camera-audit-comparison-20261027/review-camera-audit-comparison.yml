@@ -1,0 +1,42 @@
+name: Review branch camera audit comparison
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - '.github/workflows/review-camera-audit-comparison.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: review-camera-audit-comparison-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  scope-control:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify unchanged full and typed audit source contracts
+        run: node --test tools/test/camera-audit-scope-control.test.mjs
+      - name: Validate two-case orchestration with synthetic commands
+        run: python3 tools/test/camera-audit-scope-control.test.py
+      - name: Run original full audit then camera Dynamic Type only once each
+        run: python3 tools/ci/camera-audit-scope-control.py
+      - name: Preserve bounded synthetic native evidence and both outcomes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: real-app-camera-audit-scope-control
+          path: |
+            ${{ runner.temp }}/blind-camera-audit-scope-control/artifacts/**/*.png
+            ${{ runner.temp }}/blind-camera-audit-scope-control/artifacts/**/*.json
+          if-no-files-found: error
+          retention-days: 3

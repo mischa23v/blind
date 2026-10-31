@@ -1,0 +1,135 @@
+
+// Disposable synthetic UI observation only. No geometry-driving state or AX nodes.
+import CoreFoundation
+
+private struct AuditGeometrySample: Equatable, Sendable {
+    let frame: CGRect
+    let dynamic: String
+    let legacy: String
+}
+
+@MainActor
+private struct AuditGeometryProbe: ViewModifier {
+    let role: String
+    @Environment(\.dynamicTypeSize) private var dynamic
+    @Environment(\.sizeCategory) private var legacy
+    func body(content: Content) -> some View {
+        // onGeometryChange's transform is @Sendable. Resolve actor-isolated
+        // Environment values here, then capture immutable Sendable strings only.
+        let dynamicName = dynamicLabel(dynamic)
+        let legacyName = legacyLabel(legacy)
+        return content
+            .onAppear { emit("appear") }
+            .onDisappear { emit("disappear") }
+            .onChange(of: dynamic) { _, _ in emit("dynamic-change") }
+            .onChange(of: legacy) { _, _ in emit("legacy-change") }
+            .onGeometryChange(for: AuditGeometrySample.self) { proxy in
+                AuditGeometrySample(frame: proxy.frame(in: .global),
+                    dynamic: dynamicName, legacy: legacyName)
+            } action: { sample in
+                AuditGeometryTrace.emit(role: role, event: "geometry",
+                    dynamic: sample.dynamic, legacy: sample.legacy, frame: sample.frame)
+            }
+    }
+    private func dynamicLabel(_ value: DynamicTypeSize) -> String {
+        switch value {
+        case .xSmall: return "xSmall"
+        case .small: return "small"
+        case .medium: return "medium"
+        case .large: return "large"
+        case .xLarge: return "xLarge"
+        case .xxLarge: return "xxLarge"
+        case .xxxLarge: return "xxxLarge"
+        case .accessibility1: return "accessibility1"
+        case .accessibility2: return "accessibility2"
+        case .accessibility3: return "accessibility3"
+        case .accessibility4: return "accessibility4"
+        case .accessibility5: return "accessibility5"
+        default: return "unknown"
+        }
+    }
+    private func legacyLabel(_ value: ContentSizeCategory) -> String {
+        switch value {
+        case .extraSmall: return "extraSmall"
+        case .small: return "small"
+        case .medium: return "medium"
+        case .large: return "large"
+        case .extraLarge: return "extraLarge"
+        case .extraExtraLarge: return "extraExtraLarge"
+        case .extraExtraExtraLarge: return "extraExtraExtraLarge"
+        case .accessibilityMedium: return "accessibilityMedium"
+        case .accessibilityLarge: return "accessibilityLarge"
+        case .accessibilityExtraLarge: return "accessibilityExtraLarge"
+        case .accessibilityExtraExtraLarge: return "accessibilityExtraExtraLarge"
+        case .accessibilityExtraExtraExtraLarge: return "accessibilityExtraExtraExtraLarge"
+        default: return "unknown"
+        }
+    }
+    private func emit(_ event: String) {
+        AuditGeometryTrace.emit(role: role, event: event,
+            dynamic: dynamicLabel(dynamic), legacy: legacyLabel(legacy), frame: nil)
+    }
+}
+
+@MainActor
+private enum AuditGeometryTrace {
+    private static var rows: [[String: Any]] = []
+    private static var intervals: [String: Int] = [:]
+    private static var registered = false
+    private static var flushed = false
+    private static var overflow = false
+    private static let launch = UUID().uuidString
+    private static let notification = "org.blindassist.synthetic.geometry.flush"
+    private static let file = FileManager.default.temporaryDirectory
+        .appendingPathComponent("blind-geometry-type-synthetic.jsonl")
+    private static var enabled: Bool {
+        ProcessInfo.processInfo.arguments.contains("--ui-testing") &&
+        ProcessInfo.processInfo.arguments.contains("--audit-geometry-type")
+    }
+    static func emit(role: String, event: String, dynamic: String, legacy: String, frame: CGRect?) {
+        guard enabled, !flushed else { return }
+        if !registered {
+            registered = true
+            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), nil,
+                { _, _, _, _, _ in Task { @MainActor in AuditGeometryTrace.flush() } },
+                notification as CFString, nil, .deliverImmediately)
+        }
+        if event == "appear" { intervals[role, default: 0] += 1 }
+        guard rows.count < 512 else {
+            if !overflow {
+                overflow = true
+                append(role: "trace", event: "overflow", dynamic: "unknown", legacy: "unknown", frame: nil)
+            }
+            return
+        }
+        append(role: role, event: event, dynamic: dynamic, legacy: legacy, frame: frame)
+    }
+    private static func append(role: String, event: String, dynamic: String, legacy: String, frame: CGRect?) {
+        let geometry: Any
+        if let frame {
+            geometry = [Double(frame.origin.x), Double(frame.origin.y),
+                        Double(frame.size.width), Double(frame.size.height)]
+        } else { geometry = NSNull() }
+        rows.append(["schema": 1, "seq": rows.count + 1, "launch": launch,
+            "uptime": ProcessInfo.processInfo.systemUptime,
+            "role": role, "event": event, "dynamic": dynamic, "legacy": legacy,
+            "appearanceInterval": intervals[role, default: 0],
+            "frame": geometry])
+    }
+    static func flush() {
+        guard enabled, !flushed else { return }
+        flushed = true
+        append(role: "trace", event: "flushed", dynamic: "unknown", legacy: "unknown", frame: nil)
+        // Serialization and the sole write occur after the test posts its terminal audit marker.
+        do {
+            var bytes = Data()
+            for row in rows {
+                let encoded = try JSONSerialization.data(withJSONObject: row, options: [.sortedKeys])
+                guard encoded.count + 1 <= 2048 else { return }
+                bytes.append(encoded); bytes.append(10)
+            }
+            guard bytes.count <= 514 * 2048 else { return }
+            try bytes.write(to: file, options: .atomic)
+        } catch { /* Missing terminal evidence is a collection failure, never a pass. */ }
+    }
+}

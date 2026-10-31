@@ -1,0 +1,18 @@
+{
+  "variant": "restored-20261029-v2-aggregate",
+  "physicalAuthority": false,
+  "librarySHA256": "0a044001b1455634ab881cc42fb5954362d960abf5cd851b7b6dc99b6c3eb963",
+  "buildReceiptSHA256": "bd329fc48bd5e3e7dee4c0ef1c6bd30d556c4c58fa46e0da90c671f40fc3e077",
+  "originalControlsReceiptSHA256": "f8cd851c7afc3896b53f32720a725d4e81de55ca62ad42c2fa001528b6753bf6",
+  "historicalRetentionSHA256": "ced6ab06a578f7b211d532d978827b8583656a8f3b638d87f368b7cb8ec81e7c",
+  "historicalLibrarySHA256": "3c0a88593d07540d93dbbc3e404ee44b3f5167ff7bda74f16fc8075aab83b1db",
+  "changes": [
+    "retention required library hash",
+    "wrapper required library hash",
+    "explicit rebuiltBinding pin lookup"
+  ],
+  "rebuiltBinding": {
+    "retention.py": "96c7c6c7d1559692cd1785c9a094fa5dbbd7fd0e5cd2c19b4c69756df565e7a5",
+    "octomap_engine.py": "09645bd4065ccef13d28353d5a05e54c75f5ea284ca8e5c4439c58cc45aa4621"
+  }
+}

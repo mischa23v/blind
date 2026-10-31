@@ -1,0 +1,295 @@
+--- a/ios/BlindAssistUITests/LaunchTests.swift
++++ b/ios/BlindAssistUITests/LaunchTests.swift
+@@ -18,14 +18,6 @@
+         continueAfterFailure = false
+         app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US",
+             "-background-conversation", "NO", "-camera-awareness", "NO"]
+-        // A closed test identity, not a global simulator logging mode.
+-        if name == "-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]" {
+-            let runID = UUID().uuidString
+-            app.launchArguments.append("--practice-runtime-diagnostic")
+-            app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
+-            app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID
+-            print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\(runID)")
+-        }
+         app.launch()
+     }
+     private func openTab(_ name: String) {
+@@ -119,6 +111,15 @@
+         // not prove audible speech or active practice after the navigation delay.
+     }
+     func testPracticeIsAnnouncedAndCanStop() {
++        // This explicit test owns the synthetic receipt. Do not depend on
++        // XCTest's display-name formatting to decide whether to enable it.
++        let runID = UUID().uuidString
++        app.terminate()
++        app.launchArguments.append("--practice-runtime-diagnostic")
++        app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
++        app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID
++        print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\(runID)")
++        app.launch()
+         openSettingsPage("camera-screen")
+         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
+         let start = app.buttons["start-simulation"]
+@@ -220,6 +221,46 @@
+             recordPracticeLayoutAttachment(sizeName + "-" + role)
+         }
+         recordPracticeFooterEnd(footerElement, expectedLabel: footer, sizeName: sizeName)
++        recordAskLayout(sizeName: sizeName)
++    }
++    @MainActor private func recordAskLayout(sizeName: String) {
++        // Same system-selected category and synthetic app as the Practice probe.
++        // Observe real Form rows at this size; do not override fonts or the audit.
++        openSettingsPage("ask-screen")
++        let action = app.buttons["local-answer"]
++        let reason = app.staticTexts["local-answer-unavailable-reason"]
++        let expectedReason = "Camera monitoring is not running. Open Camera and safety to start it."
++        for (role, element) in [("ask-action", action), ("ask-reason", reason)] {
++            let existedBeforeReveal = element.exists
++            print("ASK_LAYOUT beforeReveal size=\(sizeName) role=\(role) exists=\(existedBeforeReveal)")
++            revealPracticeDiagnosticElement(element)
++            recordPracticeLayoutAttachment(sizeName + "-" + role)
++            print("ASK_LAYOUT afterReveal size=\(sizeName) role=\(role) frame=\(element.frame) hittable=\(element.isHittable) enabled=\(element.isEnabled) label=\(element.label)")
++            XCTAssertEqual(element.label, role == "ask-action" ? "Ask about the camera view" : expectedReason)
++        }
++        XCTAssertFalse(action.isEnabled, "Readable unavailable action must not start the camera")
++        let navigation = app.navigationBars.firstMatch
++        let tabs = app.tabBars.firstMatch
++        XCTAssertTrue(navigation.exists)
++        XCTAssertTrue(tabs.exists)
++        func endIsVisible() -> Bool {
++            guard reason.exists else { return false }
++            return reason.frame.maxY > navigation.frame.maxY && reason.frame.maxY <= tabs.frame.minY
++        }
++        for _ in 0..<8 {
++            if endIsVisible() { break }
++            app.swipeUp()
++        }
++        for _ in 0..<8 {
++            if endIsVisible() { break }
++            app.swipeDown()
++        }
++        recordPracticeLayoutAttachment(sizeName + "-ask-reason-end")
++        XCTAssertTrue(reason.exists)
++        print("ASK_LAYOUT reasonEnd size=\(sizeName) frame=\(reason.frame) unobscuredTop=\(navigation.frame.maxY) unobscuredBottom=\(tabs.frame.minY) endVisible=\(endIsVisible())")
++        XCTAssertTrue(endIsVisible(), "Full unavailable reason must scroll above the tab bar and below the navigation bar")
++        XCTAssertTrue(reason.isHittable)
++        XCTAssertEqual(reason.label, expectedReason)
+     }
+     @MainActor private func recordPracticeFooterEnd(_ footer: XCUIElement, expectedLabel: String, sizeName: String) {
+         let navigation = app.navigationBars.firstMatch
+--- a/tools/test/practice-runtime-diagnostic.test.mjs
++++ b/tools/test/practice-runtime-diagnostic.test.mjs
+@@ -18,7 +18,23 @@
+  assert.ok(diagnostic.includes('data.count <= 16 * 1024'));
+  assert.ok(diagnostic.includes('nextTickSnapshot = finish + 10'));
+  assert.ok(diagnostic.indexOf('queue.async {') < diagnostic.indexOf('try data.write'));
+- assert.ok(ui.includes('if name == "-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]"'));
++ const setup = ui.match(/override func setUpWithError\(\) throws \{([\s\S]*?)\n    \}/)?.[1];
++ const practice = ui.match(/func testPracticeIsAnnouncedAndCanStop\(\) \{([\s\S]*?)\n    \}/)?.[1];
++ assert.ok(setup && practice);
++ assert.doesNotMatch(setup,/practice-runtime-diagnostic|BLIND_PRACTICE_TRACE|PRACTICE_RUNTIME_RUN/);
++ assert.doesNotMatch(ui,/if name ==/);
++ assert.equal(ui.split('app.launchArguments.append("--practice-runtime-diagnostic")').length,2);
++ assert.equal(ui.split('print("PRACTICE_RUNTIME_RUN test=').length,2);
++ const configured = practice.indexOf('app.launchArguments.append("--practice-runtime-diagnostic")');
++ const launched = practice.indexOf('app.launch()');
++ const navigated = practice.indexOf('openSettingsPage("camera-screen")');
++ assert.ok(practice.indexOf('let runID = UUID().uuidString') >= 0 && practice.indexOf('let runID = UUID().uuidString') < configured);
++ assert.ok(practice.indexOf('app.terminate()') >= 0 && practice.indexOf('app.terminate()') < configured);
++ assert.ok(configured >= 0 && launched > configured && navigated > launched);
++ assert.ok(practice.slice(configured,launched).includes('app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"'));
++ assert.ok(practice.slice(configured,launched).includes('app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID'));
++ assert.ok(practice.slice(configured,launched).includes('print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\\(runID)")'));
++ assert.doesNotMatch(practice.slice(navigated),/app\.launch\(|app\.terminate\(|launchArguments|launchEnvironment/);
+  assert.ok(ui.includes('app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"'));
+  assert.ok(ui.includes('let cancellationEvidenceLimit: TimeInterval = 90'));
+  assert.equal((ui.match(/XCTAssertLessThan\(.*(?:\n[^\n]*)?/g)||[]).filter(x=>x.includes('cancellationEvidenceLimit')).length,2);
+@@ -39,3 +55,10 @@
+  assert.throws(()=>guardTrace(model,ui.replace('        end.tap()','        // no tap')));
+  assert.throws(()=>guardTrace(model,ui.replace('let cancellationEvidenceLimit: TimeInterval = 90','let cancellationEvidenceLimit: TimeInterval = 180')));
+ });
++
++test('only the explicit Practice test may relaunch with the diagnostic nonce',()=>{
++ assert.throws(()=>guardTrace(model,ui.replace('func testPracticeIsAnnouncedAndCanStop()', 'func testOtherPractice()')));
++ assert.throws(()=>guardTrace(model,ui.replace('        app.launchArguments.append("--practice-runtime-diagnostic")','        // diagnostic not configured')));
++ assert.throws(()=>guardTrace(model,ui.replace('        app.terminate()','        // stale instance')));
++ assert.throws(()=>guardTrace(model,ui.replace('        end.tap()', '        app.launch()\n        end.tap()')));
++});
+--- a/tools/ci/practice-layout-diagnostic.sh
++++ b/tools/ci/practice-layout-diagnostic.sh
+@@ -46,7 +46,7 @@
+     -only-testing:"BlindAssistUITests/LaunchTests/$selector" \
+     -resultBundlePath "$out/$size.xcresult" test > "$out/$size.log" 2>&1 || result=$?
+   printf 'PRACTICE_LAYOUT size=%s exit=%s\n' "$size" "$result"
+-  grep -E 'PRACTICE_LAYOUT|error:|Test Case .* (passed|failed)|Executed .*failure' "$out/$size.log" | tail -100 || true
++  grep -E 'PRACTICE_LAYOUT|ASK_LAYOUT|error:|Test Case .* (passed|failed)|Executed .*failure' "$out/$size.log" | tail -100 || true
+   if (( result != 0 )); then status=1; fi
+   if ! grep -q "PRACTICE_LAYOUT afterReveal.*role=footer" "$out/$size.log"; then
+     echo "PRACTICE_LAYOUT incomplete: footer evidence missing for $size"
+@@ -56,9 +56,17 @@
+     echo "PRACTICE_LAYOUT incomplete: footer end reachability missing for $size"
+     status=1
+   fi
++  if ! grep -q "ASK_LAYOUT afterReveal.*role=ask-reason" "$out/$size.log"; then
++    echo "ASK_LAYOUT incomplete: unavailable reason evidence missing for $size"
++    status=1
++  fi
++  if ! grep -q "ASK_LAYOUT reasonEnd.*endVisible=true" "$out/$size.log"; then
++    echo "ASK_LAYOUT incomplete: full reason reachability missing for $size"
++    status=1
++  fi
+   if [[ -d "$out/$size.xcresult" ]]; then
+     if xcrun xcresulttool export attachments --path "$out/$size.xcresult" --output-path "$out/attachments-$size"; then
+-      # Fail closed unless all four exact test-authored role screenshots exist.
++      # Fail closed unless all seven exact Practice/Ask role screenshots exist.
+       if ! python3 tools/ci/export-practice-layout-screenshots.py "$out/attachments-$size" "$out/screenshots" "$size"; then
+         status=1
+       fi
+--- a/tools/ci/export-practice-layout-screenshots.py
++++ b/tools/ci/export-practice-layout-screenshots.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Select only our four role screenshots from xcresulttool's exported manifest.
++"""Select only our seven Practice/Ask screenshots from the two size probes.
+ 
+ Manifest keys follow xcresulttool export attachments, also consumed by Chromium:
+ https://chromium.googlesource.com/chromium/src/+/HEAD/ios/build/bots/scripts/xcode_log_parser.py
+@@ -22,7 +22,7 @@
+     entries = json.loads(manifest.read_text())
+     if not isinstance(entries, list) or not entries:
+         raise ValueError('Missing test attachment entries')
+-    expected = ('button', 'header', 'footer', 'footer-end')
++    expected = ('button', 'header', 'footer', 'footer-end', 'ask-action', 'ask-reason', 'ask-reason-end')
+     selected = {}
+     prefix = 'practice-layout-' + size + '-'
+     for entry in entries:
+@@ -34,7 +34,7 @@
+             name = item.get('suggestedHumanReadableName', '')
+             if not isinstance(name, str):
+                 raise ValueError('Unexpected attachment name')
+-            match = re.match(re.escape(prefix) + r'(footer-end|button|header|footer)(?=[_. -]|$)', name)
++            match = re.match(re.escape(prefix) + r'(ask-reason-end|ask-action|ask-reason|footer-end|button|header|footer)(?=[_. -]|$)', name)
+             if not match:
+                 continue
+             role = match.group(1)
+@@ -61,7 +61,7 @@
+             raise ValueError('Refusing stale/duplicate output: ' + str(target))
+     for role in expected:
+         shutil.copyfile(selected[role], destination / f'{size}-{role}.png')
+-    print(f'PRACTICE_LAYOUT exported exactly4 authored PNG screenshots for {size}')
++    print(f'PRACTICE_LAYOUT exported exactly7 authored PNG screenshots for {size}')
+ 
+ 
+ if __name__ == '__main__':
+--- a/tools/test/practice-layout-export.test.py
++++ b/tools/test/practice-layout-export.test.py
+@@ -7,6 +7,8 @@
+ module = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(module)
+ 
++ROLES = ('button', 'header', 'footer', 'footer-end', 'ask-action', 'ask-reason', 'ask-reason-end')
++
+ class ExportTests(unittest.TestCase):
+     def setUp(self):
+         self.tmp = tempfile.TemporaryDirectory()
+@@ -15,17 +17,17 @@
+         self.source = self.root / 'source'; self.source.mkdir()
+         self.output = self.root / 'output'
+         self.items = []
+-        for role in ('button', 'header', 'footer', 'footer-end'):
++        for role in ROLES:
+             name = role + '.png'
+             (self.source / name).write_bytes(b'\x89PNG\r\n\x1a\nfixture')
+             self.items.append(dict(suggestedHumanReadableName=f'practice-layout-large-{role}_1_ABCD.png', exportedFileName=name))
+-    def run_export(self):
++    def run_export(self, size='large'):
+         (self.source / 'manifest.json').write_text(json.dumps([dict(attachments=self.items)]))
+-        module.export(self.source, self.output, 'large')
+-    def test_only_authored_four(self):
++        module.export(self.source, self.output, size)
++    def test_only_authored_seven(self):
+         self.items.append(dict(suggestedHumanReadableName='AutomaticScreenshot.png', exportedFileName='unread.png'))
+         self.run_export()
+-        self.assertEqual(sorted(p.name for p in self.output.iterdir()), ['large-button.png','large-footer-end.png','large-footer.png','large-header.png'])
++        self.assertEqual(sorted(p.name for p in self.output.iterdir()), sorted('large-' + role + '.png' for role in ROLES))
+     def test_missing_role_fails(self):
+         self.items.pop()
+         with self.assertRaisesRegex(ValueError, 'Missing authored'): self.run_export()
+@@ -53,4 +55,28 @@
+         self.run_export()
+         with self.assertRaisesRegex(ValueError,'stale/duplicate'): self.run_export()
+ 
++    def test_exact_roles_at_largest_size(self):
++        size = 'accessibility-extra-extra-extra-large'
++        for item in self.items:
++            item['suggestedHumanReadableName'] = item['suggestedHumanReadableName'].replace('practice-layout-large-', 'practice-layout-' + size + '-')
++        self.run_export(size)
++        self.assertEqual(sorted(p.name for p in self.output.iterdir()), sorted(size + '-' + role + '.png' for role in ROLES))
++    def test_every_missing_role_fails(self):
++        original = list(self.items)
++        for role in ROLES:
++            self.items = [item for item in original if item['exportedFileName'] != role + '.png']
++            with self.assertRaisesRegex(ValueError, 'Missing authored'): self.run_export()
++    def test_symlink_rejected(self):
++        path = self.source / 'ask-reason-end.png'; path.unlink()
++        target = self.root / 'outside.png'; target.write_bytes(b'\x89PNG\r\n\x1a\nfixture'); path.symlink_to(target)
++        with self.assertRaisesRegex(ValueError, 'escapes'): self.run_export()
++    def test_unknown_schema_rejected(self):
++        (self.source / 'manifest.json').write_text('{}')
++        with self.assertRaises(ValueError): module.export(self.source, self.output, 'large')
++    def test_unknown_size_rejected(self):
++        with self.assertRaisesRegex(ValueError, 'Unexpected size'): self.run_export('made-up-size')
++    def test_wrong_size_cannot_fill_missing_role(self):
++        self.items[-1]['suggestedHumanReadableName'] = 'practice-layout-accessibility-extra-extra-extra-large-ask-reason-end.png'
++        with self.assertRaisesRegex(ValueError, 'Missing authored'): self.run_export()
++
+ if __name__ == '__main__': unittest.main()
+--- /dev/null
++++ b/tools/test/ask-layout-diagnostic.test.mjs
+@@ -0,0 +1,45 @@
++// Source/mutation checks, not native rendering or physical-navigation evidence.
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFileSync } from 'node:fs';
++import { assertFullAuditDestinations } from './helpers/full-audit-contract.mjs';
++const read = p => readFileSync(new URL('../../' + p, import.meta.url), 'utf8');
++const ui = read('ios/BlindAssistUITests/LaunchTests.swift');
++const runner = read('tools/ci/practice-layout-diagnostic.sh');
++const exporter = read('tools/ci/export-practice-layout-screenshots.py');
++function guardAsk(source, shell, python) {
++ const probe = source.match(/private func recordAskLayout\(sizeName: String\) \{([\s\S]*?)\n    \}\n    @MainActor/)?.[1];
++ assert.ok(probe);
++ assert.ok(source.includes('recordPracticeFooterEnd(footerElement, expectedLabel: footer, sizeName: sizeName)\n        recordAskLayout(sizeName: sizeName)'));
++ assert.ok(probe.includes('openSettingsPage("ask-screen")'));
++ assert.ok(probe.includes('app.buttons["local-answer"]'));
++ assert.ok(probe.includes('app.staticTexts["local-answer-unavailable-reason"]'));
++ assert.ok(probe.includes('let expectedReason = "Camera monitoring is not running. Open Camera and safety to start it."'));
++ assert.ok(probe.includes('XCTAssertFalse(action.isEnabled'));
++ assert.ok(probe.includes('XCTAssertEqual(reason.label, expectedReason)'));
++ assert.ok(probe.includes('reason.frame.maxY > navigation.frame.maxY && reason.frame.maxY <= tabs.frame.minY'));
++ assert.ok(probe.includes('XCTAssertTrue(endIsVisible()'));
++ assert.ok(probe.includes('recordPracticeLayoutAttachment(sizeName + "-ask-reason-end")'));
++ assert.doesNotMatch(probe,/\.tap\(|launchArguments|launchEnvironment|performAccessibilityAudit|continueAfterFailure/);
++ assert.ok(shell.includes('for size in large accessibility-extra-extra-extra-large; do'));
++ assert.ok(shell.includes('xcrun simctl ui "$device" content_size "$size"'));
++ assert.ok(shell.includes('ASK_LAYOUT afterReveal.*role=ask-reason'));
++ assert.ok(shell.includes('ASK_LAYOUT reasonEnd.*endVisible=true'));
++ assert.ok(python.includes("'ask-action', 'ask-reason', 'ask-reason-end'"));
++ assert.ok(python.includes('set(selected) != set(expected)'));
++ assert.ok(python.includes('32 * 1024 * 1024'));
++ assertFullAuditDestinations(source);
++}
++test('same two system-size probes retain full Ask reason, disabled semantics and bounded seven-role export',()=>guardAsk(ui,runner,exporter));
++for(const [name,from,to] of [
++ ['full reason','Camera monitoring is not running. Open Camera and safety to start it.','Unavailable.'],
++ ['disabled state','XCTAssertFalse(action.isEnabled','XCTAssertTrue(action.isEnabled'],
++ ['tab-bar overlap','reason.frame.maxY <= tabs.frame.minY','true'],
++ ['end reachability','XCTAssertTrue(endIsVisible()','XCTAssertTrue(true'],
++ ['after-Practice visit','        recordAskLayout(sizeName: sizeName)','        // no Ask probe'],
++]) test(name+' regression is rejected',()=>assert.throws(()=>guardAsk(ui.replaceAll(from,to),runner,exporter)));
++test('missing size/endpoint/export coverage cannot pass source contract',()=>{
++ assert.throws(()=>guardAsk(ui,runner.replace('for size in large accessibility-extra-extra-extra-large; do','for size in large; do'),exporter));
++ assert.throws(()=>guardAsk(ui,runner.replace('ASK_LAYOUT reasonEnd.*endVisible=true','ignored'),exporter));
++ assert.throws(()=>guardAsk(ui,runner,exporter.replace("'ask-action', 'ask-reason', 'ask-reason-end'","'ask-action'")));
++});

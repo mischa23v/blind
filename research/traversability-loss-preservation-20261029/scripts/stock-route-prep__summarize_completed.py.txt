@@ -1,0 +1,37 @@
+"""Read only completed receipts; never import a geometry or native engine."""
+import json,pathlib,collections,math,hashlib,resource,time
+resource.setrlimit(resource.RLIMIT_CPU,(10,10));resource.setrlimit(resource.RLIMIT_AS,(512*1024**2,512*1024**2));t=time.monotonic()
+H=pathlib.Path(__file__).resolve().parent;R=H/'run';ROOT=H.parents[2]
+read=lambda p:json.loads(p.read_text())
+# PUBLIC EXPORT: dataset domain is withheld, not reconstructed here.
+private_domain=read(H/'PRIVATE_DOMAIN.json')
+a=read(R/'Open3D_ROUTES.json');b=read(R/'Voxblox_ROUTES.json');w=[read(R/(n+'_WITNESSES.json'))for n in ['Open3D','Voxblox']]
+reg=read(ROOT/'research/corrected-map-route-preflight-20261028/reference-qualified-benchmark-v1/REFERENCE_REGISTRY.json')
+trans=collections.Counter();examples={};outcomes=[];firstloss=[]
+for ra,rb,qa,qb,pair in zip(a['spatialEvidence'],b['spatialEvidence'],a['queries'],b['queries'],reg['orderedPairs']):
+ assert ra['pairID']==rb['pairID']==qa['orderedPairID']==qb['orderedPairID']==pair['orderedPairID']
+ for sa,sb in zip(ra['referenceSamples'],rb['referenceSamples']):
+  assert sa['referenceSampleID']==sb['referenceSampleID'] and sa['pointDatasetXYZ']==sb['pointDatasetXYZ']
+  k=(sa['sourceColumn']['firstRejectedStage'],sb['sourceColumn']['firstRejectedStage']);trans[k]+=1
+  if k not in examples:examples[k]={'pairID':ra['pairID'],'referenceSampleID':sa['referenceSampleID'],'point':sa['pointDatasetXYZ'],'Open3D':sa['sourceColumn'],'Voxblox':sb['sourceColumn']}
+ for name,rr in [('Open3D',ra),('Voxblox',rb)]:
+  first=next((s for s in rr['referenceSamples']if s['sourceColumn']['firstRejectedStage']!='survives'),None)
+  firstloss.append({'model':name,'pairID':rr['pairID'],'firstRejectedReferenceSample':first})
+ path=qb['pathDatasetXYZ'];row={'pairID':qb['orderedPairID'],'oldOutcome':qa['status'],'stockOutcome':qb['status'],'referenceLengthMetres':pair['referenceLengthMetres'],'stockProjectedLengthMetres':qb['projectedCandidateLengthMetres'],'stockRequestedStart':qb['requestedStartDatasetXYZ'],'stockRequestedGoal':qb['requestedGoalDatasetXYZ'],'stockStartProjectionOffset':qb['diagnosticWorldQ']['startProjectionOffset'],'stockGoalProjectionOffset':qb['diagnosticWorldQ']['goalProjectionOffset']}
+ if path:
+  lo=[min(x[i]for x in path)for i in range(3)];hi=[max(x[i]for x in path)for i in range(3)]
+  row.update(lengthRatioToReference=qb['projectedCandidateLengthMetres']/pair['referenceLengthMetres'],sourcePathBoundsDatasetXYZ=[lo,hi],modeledBodyDomainMarginMetres=min(lo[0]-private_domain['minimum'][0]-private_domain['radius'],private_domain['maximum'][0]-hi[0]-private_domain['radius'],lo[1]-private_domain['minimum'][1]-private_domain['radius'],private_domain['maximum'][1]-hi[1]-private_domain['radius'],lo[2]-private_domain['minimum'][2],private_domain['maximum'][2]-hi[2]-private_domain['height']))
+ outcomes.append(row)
+wc=[]
+for model in w:
+ rays=[r for p in model['positions']for r in p['rays']];positive=[c for r in rays for c in r['positiveReferenceComparisons']];raised=[(r,h)for r in rays for h in r['sourceRaisedBodyBandHitsRelativeReferenceFloor']]
+ d={'model':model['model'],'fixedRays':len(rays),'positiveReferenceSurfaceHits':len(positive),'sameRayMatchesWithin4cm':sum(bool(c['sameRaySourceHitsWithin4cmHeight'])for c in positive),'sourceFloorMissingRays':sum(r['sourceFloorCandidateWorldZ']is None for r in rays),'raisedBodyBandRaysRelativeReferenceFloor':sum(bool(r['sourceRaisedBodyBandHitsRelativeReferenceFloor'])for r in rays),'raisedBodyBandSurfaceHitsRelativeReferenceFloor':len(raised)}
+ if raised:
+  d['raisedHitsAboveSourceFloorRangeMetres']=[min(h['worldZ']-r['sourceFloorCandidateWorldZ']for r,h in raised),max(h['worldZ']-r['sourceFloorCandidateWorldZ']for r,h in raised)]
+  d['raisedHitsAboveReferenceFloorRangeMetres']=[min(h['worldZ']-r['referenceFloorCandidateWorldZ']for r,h in raised),max(h['worldZ']-r['referenceFloorCandidateWorldZ']for r,h in raised)]
+  d['raisedHitsAbsNormalZRange']=[min(h['absNormalWorldZ']for r,h in raised),max(h['absNormalWorldZ']for r,h in raised)]
+ wc.append(d)
+allcounts={m['model']:dict(collections.Counter(s['sourceColumn']['firstRejectedStage']for r in m['spatialEvidence']for s in r['referenceSamples']))for m in(a,b)}
+result={'scope':'post-run read-only exact result derivation; no new native/geometry/reference queries','outcomes':outcomes,'firstLossByFixedReferenceRoute':firstloss,'all1156ReferenceSamplesBySavedSourceStage':allcounts,'stageTransitions':[{'Open3D':k[0],'Voxblox':k[1],'sampleCount':n,'firstExample':examples[k]}for k,n in sorted(trans.items())],'witnessRecount':wc,'modeledBodyDomainCheckIsNotClearanceOrSupport':True,'allPhysicalStrictConnectorSupportAdmissions':False,'elapsedSeconds':time.monotonic()-t,'cpuSeconds':resource.getrusage(resource.RUSAGE_SELF).ru_utime+resource.getrusage(resource.RUSAGE_SELF).ru_stime}
+with(H/'TERMINAL_ANALYSIS.json').open('x')as f:json.dump(result,f,indent=2);f.write('\n')
+print(json.dumps({'outcomes':[{k:r[k]for k in ['pairID','oldOutcome','stockOutcome','referenceLengthMetres','stockProjectedLengthMetres']}for r in outcomes],'stageCounts':allcounts,'witnesses':wc},indent=2))

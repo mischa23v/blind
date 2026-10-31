@@ -1,6 +1,5 @@
 import SwiftUI
 import PhotosUI
-import ImageIO
 import BlindCore
 import BlindMemory
 
@@ -11,6 +10,9 @@ struct RoomDetailView: View {
     @State private var message = ""
     @State private var photo: PhotosPickerItem?
     @State private var photoURL: URL?
+    @State private var hasTrashedPhoto = false
+    @State private var confirmDeletePhoto = false
+    @State private var photoRevision = UUID()
     @State private var suggesting = false
     @State private var suggestion: String?
     @State private var suggestionBase: String?
@@ -42,6 +44,17 @@ struct RoomDetailView: View {
 
     var body: some View {
         List {
+            Section(t("Research tools (not this room)", "أدوات بحثية (ليست هذه الغرفة)")) {
+                NavigationLink(t("Recorded route preview", "معاينة مسار مسجل")) {
+                    RecordedRoomRoutePreview(arabic: model.arabic)
+                }
+            }
+            Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
+                NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
+                    model.makeNavigationTestRecordingView()
+                }
+                Text(t("Uses the existing camera session. Selecting this room does not locate you in it.", "يستخدم جلسة الكاميرا الحالية. اختيار هذه الغرفة لا يحدد موقعك فيها."))
+            }
             if let layout {
                 Section(t("Measured room overview", "مخطط الغرفة المقاس")) {
                     FloorPlanPreview(layout: layout).frame(height: 280).accessibilityHidden(true)
@@ -133,6 +146,23 @@ struct RoomDetailView: View {
                 if let photoURL, let image = UIImage(contentsOfFile: photoURL.path) {
                     Image(uiImage: image).resizable().scaledToFit().accessibilityLabel(t("Saved reference photo", "الصورة المرجعية المحفوظة"))
                 }
+                if photoURL != nil {
+                    Button(t("Move photo to trash", "نقل الصورة إلى سلة المحذوفات"), systemImage: "trash") {
+                        changeReferencePhoto { try model.places.trashPhoto(for: place) }
+                    }.disabled(hasTrashedPhoto)
+                }
+                if hasTrashedPhoto {
+                    Text(t("One photo is in trash on this phone. Restore it or explicitly delete it before trashing another. The room map and your Photos library are unchanged.", "توجد صورة واحدة في سلة المحذوفات على هذا الهاتف. استعدها أو احذفها صراحةً قبل نقل صورة أخرى. لا يتغير مخطط الغرفة أو مكتبة الصور."))
+                    Button(t("Restore trashed photo", "استعادة الصورة المحذوفة")) {
+                        changeReferencePhoto { try model.places.restorePhoto(for: place) }
+                    }.disabled(photoURL != nil)
+                    if photoURL != nil {
+                        Text(t("A reference photo already exists. Restoration cannot overwrite it.", "توجد صورة مرجعية بالفعل. لا يمكن استبدالها بالاستعادة."))
+                    }
+                    Button(t("Delete trashed photo permanently", "حذف الصورة من السلة نهائيًا"), role: .destructive) {
+                        confirmDeletePhoto = true
+                    }
+                }
             }
             if !message.isEmpty { Text(message) }
         }
@@ -143,27 +173,68 @@ struct RoomDetailView: View {
                     .compactMap { title, ext in model.places.fileURL(for: place, extension: ext).map { (title, $0) } }
             }
         }
+        .confirmationDialog(t("Permanently delete the trashed reference photo? This cannot be undone. Your room map and Photos library will not change.", "حذف الصورة المرجعية من السلة نهائيًا؟ لا يمكن التراجع عن ذلك. لن يتغير مخطط الغرفة أو مكتبة الصور."), isPresented: $confirmDeletePhoto, titleVisibility: .visible) {
+            Button(t("Delete permanently", "حذف نهائي"), role: .destructive) {
+                changeReferencePhoto { try model.places.deleteTrashedPhoto(for: place) }
+            }
+            Button(t("Cancel", "إلغاء"), role: .cancel) {}
+        }
+        .onDisappear { photoRevision = UUID(); photo = nil }
         .onAppear {
-            reload(); photoURL = model.places.fileURL(for: place, extension: "photo.jpg")
+            reload(); refreshReferencePhoto()
             if let pending = editorProposal { editorProposal = nil; propose(pending.0, source: pending.1) }
         }
         .sheet(item: $review) { pending in
             RoomChangeReview(before: pending.before, after: pending.after, arabic: model.arabic,
                 approve: { approve(pending) }, reject: { reject(pending) }).interactiveDismissDisabled()
         }
-        .task(id: photo) {
-            guard let photo else { return }
+        .task(id: photo) { @MainActor in
+            guard let photo, !Task.isCancelled else { return }
+            let revision = photoRevision, store = model.places
+            guard let lease = store.beginReferencePhotoImport() else {
+                self.photo = nil // Permit selecting the same item again after the worker finishes.
+                message = t("The previous photo is still finishing. Choose this photo again shortly.", "جارٍ إنهاء الصورة السابقة. اختر هذه الصورة مرة أخرى بعد قليل.")
+                return
+            }
+            defer { store.finishReferencePhotoImport(lease) }
             do {
-                guard let data = try await photo.loadTransferable(type: Data.self), data.count <= 20_000_000,
-                      let source = CGImageSourceCreateWithData(data as CFData, nil),
-                      let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true,
-                        kCGImageSourceThumbnailMaxPixelSize: 1200, kCGImageSourceCreateThumbnailWithTransform: true] as CFDictionary),
-                      let jpeg = UIImage(cgImage: image).jpegData(compressionQuality: 0.7) else { throw CocoaError(.fileReadCorruptFile) }
-                try Task.checkCancellation(); try model.places.savePhoto(jpeg, for: place)
-                photoURL = model.places.fileURL(for: place, extension: "photo.jpg")
+                try Task.checkCancellation()
+                // The worker is intentionally not cancelled with this view task.
+                // Await its actual return before releasing the shared import slot;
+                // a cancelled waiter must not fan out system transfers or decoders.
+                // It returns bounded JPEG bytes, not a cross-actor UIKit image.
+                let result = await Task.detached(priority: .utility) { () -> Data? in
+                    guard let transfer = try? await photo.loadTransferable(type: SelectedPhotoTransfer.self),
+                          transfer.data.count <= 20_000_000,
+                          let decoded = SelectedPhotoDecoder.decode(transfer.data, maximumDecodedSide: 1200) else { return nil }
+                    return decoded.image.jpegData(compressionQuality: 0.7)
+                }.value
+                try Task.checkCancellation()
+                guard revision == photoRevision, self.photo == photo else { return }
+                guard let jpeg = result else { throw CocoaError(.fileReadCorruptFile) }
+                try model.places.savePhoto(jpeg, for: place)
+                refreshReferencePhoto()
                 message = t("Photo saved locally.", "حُفظت الصورة على الهاتف.")
-            } catch is CancellationError {} catch { message = t("Could not save this photo.", "تعذر حفظ هذه الصورة.") }
+            } catch is CancellationError {} catch {
+                guard revision == photoRevision, self.photo == photo else { return }
+                message = t("Could not save this photo.", "تعذر حفظ هذه الصورة.")
+            }
         }
+    }
+    private func refreshReferencePhoto() {
+        photoURL = model.places.fileURL(for: place, extension: "photo.jpg")
+        hasTrashedPhoto = model.places.fileURL(for: place, extension: "photo-trash.jpg") != nil
+    }
+    @MainActor private func changeReferencePhoto(_ operation: () throws -> Void) {
+        // Invalidate a picker transfer before touching files: a late result cannot resurrect a photo.
+        photoRevision = UUID(); photo = nil
+        do {
+            try operation()
+            message = t("Reference photo updated locally. Room map unchanged.", "حُدثت الصورة المرجعية محليًا. لم يتغير مخطط الغرفة.")
+        } catch {
+            message = t("Photo change did not finish. No existing photo was overwritten; try again.", "لم يكتمل تغيير الصورة. لم تُستبدل أي صورة موجودة؛ حاول مرة أخرى.")
+        }
+        refreshReferencePhoto()
     }
     private func confidence(_ value: String) -> String {
         guard model.arabic else { return value }

@@ -1,0 +1,211 @@
+{
+  "stage": "B",
+  "status": "completed",
+  "frames": [
+    {
+      "frame": "frame_00290",
+      "depthSHA256": "333eeb023a27656ae4f313db27a6b4ecee72acfff4cf8691a769aa92117ac38e",
+      "intrinsics": {
+        "fl_x": 807.7563082379797,
+        "fl_y": 807.7563082379797,
+        "cx": 367.5287170410156,
+        "cy": 504.5511474609375
+      },
+      "acceptedPoints": 623396,
+      "zeroPixels": 0,
+      "rangeExcludedPixels": 110176,
+      "pointsFloat64SHA256": "42a7198f03934326e8f24b42721e1a602ee4b25a69a92e1c51445e0ef56d5772",
+      "diagnostic": {
+        "tablePoints": 325,
+        "floorPoints": 414,
+        "floorNormalCameraCV": [
+          -0.013106490703224009,
+          -0.9901815060259057,
+          -0.13917185428712223
+        ],
+        "floorOffset": 1.2760915379814506,
+        "floorSingularValues": [
+          2.869006384408465,
+          1.623048730843685,
+          0.009958392203771113
+        ],
+        "floorResidualMax": 0.00135833489456183,
+        "tableSignedDistanceMedian": 0.6495903326711644,
+        "tableSignedDistanceMin": 0.6466585832945413,
+        "tableSignedDistanceMax": 0.6528108114456125,
+        "floorFitIsEvaluatorOnly": true
+      },
+      "native": {
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "insertion": {
+          "frame": 0,
+          "originalPoints": 623396,
+          "occupiedKeys": 8582,
+          "representativeRays": 8582,
+          "freeKeys": 77059,
+          "treeNodes": 100627,
+          "conflictKeys": 0
+        },
+        "endpointCount": 623396,
+        "distinctEndpointKeys": 8582,
+        "tableEndpointCount": 5000,
+        "distinctTableKeys": 37,
+        "allTableKeysOccupied": true,
+        "float32MaxAbsoluteConversionMetres": 1.1917790398996431e-07,
+        "keysSHA256": "43ec74a34a837f4fccc2954810907a2c521eb07f436f2f5defb19ba63fb1a3ba",
+        "tableKeysSHA256": "8c38bc8e5a03dec4c96f9ebfe2bbf18f98ecab5a13a7be24a35f22e9ac02aa1d",
+        "independentTrees": true,
+        "rawHitsNotClearedByFloor": true,
+        "unknownControlRemainsUnknown": true
+      }
+    },
+    {
+      "frame": "frame_00357",
+      "depthSHA256": "cc2282608bc1f34157c2504d8058baf7af43db786067210aad0569f2c190708f",
+      "intrinsics": {
+        "fl_x": 807.4520260304396,
+        "fl_y": 807.4520260304396,
+        "cx": 367.7223205566406,
+        "cy": 504.64886474609375
+      },
+      "acceptedPoints": 465044,
+      "zeroPixels": 0,
+      "rangeExcludedPixels": 268528,
+      "pointsFloat64SHA256": "3cbaa3c72c6094b83c0f76d4dc4b56e6efeea32619035a14ae09c7632815294e",
+      "diagnostic": {
+        "tablePoints": 144,
+        "floorPoints": 195,
+        "floorNormalCameraCV": [
+          0.025857142531483582,
+          -0.999186163973957,
+          -0.030958325263409574
+        ],
+        "floorOffset": 1.3737691295709349,
+        "floorSingularValues": [
+          2.3651241316512737,
+          0.853892323155967,
+          0.01955894925375184
+        ],
+        "floorResidualMax": 0.005313542859821885,
+        "tableSignedDistanceMedian": 0.6310732555255074,
+        "tableSignedDistanceMin": 0.6088910702779338,
+        "tableSignedDistanceMax": 0.6335778820703978,
+        "floorFitIsEvaluatorOnly": true
+      },
+      "native": {
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "insertion": {
+          "frame": 0,
+          "originalPoints": 465044,
+          "occupiedKeys": 7170,
+          "representativeRays": 7170,
+          "freeKeys": 51955,
+          "treeNodes": 70509,
+          "conflictKeys": 0
+        },
+        "endpointCount": 465044,
+        "distinctEndpointKeys": 7170,
+        "tableEndpointCount": 2100,
+        "distinctTableKeys": 37,
+        "allTableKeysOccupied": true,
+        "float32MaxAbsoluteConversionMetres": 1.182556150780556e-07,
+        "keysSHA256": "c439e3c44163cb4c22dc493fb0a4daa38057340986c82c5ffe4dc70735977267",
+        "tableKeysSHA256": "8220197a8f7605a94e110a6ae4131bf5ca08d63d0822d040803bf936a14a0369",
+        "independentTrees": true,
+        "rawHitsNotClearedByFloor": true,
+        "unknownControlRemainsUnknown": true
+      }
+    },
+    {
+      "frame": "frame_00391",
+      "depthSHA256": "42e35845a580ec2b66a5d6741b0973eea173c10d92a8f6b3b0758da4c4e0c2c9",
+      "intrinsics": {
+        "fl_x": 807.4880072029434,
+        "fl_y": 807.4880072029434,
+        "cx": 367.6266784667969,
+        "cy": 504.643798828125
+      },
+      "acceptedPoints": 733572,
+      "zeroPixels": 0,
+      "rangeExcludedPixels": 0,
+      "pointsFloat64SHA256": "58046f2550b0898f47d6569ef5389238b56fbf7f8700c68e220d6c664ffc1dab",
+      "diagnostic": {
+        "tablePoints": 260,
+        "floorPoints": 480,
+        "floorNormalCameraCV": [
+          0.001953145655049578,
+          -0.9999471620823859,
+          0.010092485592415473
+        ],
+        "floorOffset": 1.4218186579804024,
+        "floorSingularValues": [
+          3.8301834048671872,
+          1.9812635215225618,
+          0.026949490013237563
+        ],
+        "floorResidualMax": 0.003821785955381074,
+        "tableSignedDistanceMedian": 0.6207033297953506,
+        "tableSignedDistanceMin": 0.5907397277801006,
+        "tableSignedDistanceMax": 0.6265799648020187,
+        "floorFitIsEvaluatorOnly": true
+      },
+      "native": {
+        "defaults": {
+          "resolution": 0.05,
+          "hit": 0.69999999724559,
+          "miss": 0.40000000284949333,
+          "occupancy": 0.5,
+          "clampMin": 0.1191999932599187,
+          "clampMax": 0.9710000010045966
+        },
+        "insertion": {
+          "frame": 0,
+          "originalPoints": 733572,
+          "occupiedKeys": 8822,
+          "representativeRays": 8822,
+          "freeKeys": 94974,
+          "treeNodes": 120524,
+          "conflictKeys": 0
+        },
+        "endpointCount": 733572,
+        "distinctEndpointKeys": 8822,
+        "tableEndpointCount": 4000,
+        "distinctTableKeys": 20,
+        "allTableKeysOccupied": true,
+        "float32MaxAbsoluteConversionMetres": 1.182556150780556e-07,
+        "keysSHA256": "fd69abc2acfcf87bdfcd4693159ed838141b4197f9fdb07d0abcb486e9651485",
+        "tableKeysSHA256": "e2e88aed627302fbd9fa3640a8c69b980d2411f2cb720c588ca8f1eba2f0e490",
+        "independentTrees": true,
+        "rawHitsNotClearedByFloor": true,
+        "unknownControlRemainsUnknown": true
+      }
+    }
+  ],
+  "cameraConvention": "CV x-right y-down z-forward, independent camera-local frames",
+  "suppliedCalibrationNotAutolocation": true,
+  "nativeConfidenceAvailable": false,
+  "processedExportNotNativeDepth": true,
+  "physicalAuthority": false,
+  "meshRegistration": "unverified; Stage C absent",
+  "geometryFilter": "full original raster, positive axial depth strictly below 4m; no floor filter",
+  "rangeExcludedIsUnknown": true,
+  "evaluatorAnnotationsCannotChangeMapperInput": true,
+  "sourceSHA256": "52027afeb32a38f49d69e25713fa434d01291e4fc8a75d111daf151b5f44d7d4",
+  "posesSHA256": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+  "selectionSHA256": "7e938424d28ae9b3a64480c2629aacd422a75d00cb8087cbfc0724fd99b81497",
+  "peakRSSKiB": 173584
+}

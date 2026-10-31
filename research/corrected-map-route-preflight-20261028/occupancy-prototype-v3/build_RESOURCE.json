@@ -1,0 +1,417 @@
+{
+  "command": [
+    "g++",
+    "-std=c++11",
+    "-O1",
+    "-ffp-contract=off",
+    "-fPIC",
+    "-shared",
+    "-fno-rtti",
+    "-fno-exceptions",
+    "-Wall",
+    "-Wextra",
+    "-I../native/upstream/Recast/Include",
+    "-I../native/upstream/Detour/Include",
+    "-I../native/upstream/DetourCrowd/Include",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/Recast.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastAlloc.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastArea.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastAssert.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastContour.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastFilter.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastLayers.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastMesh.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastMeshDetail.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastRasterization.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Recast/Source/RecastRegion.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourAlloc.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourAssert.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourCommon.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMeshBuilder.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMeshQuery.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNode.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/DetourCrowd/Source/DetourCrowd.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/DetourCrowd/Source/DetourPathCorridor.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/DetourCrowd/Source/DetourPathQueue.cpp",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/DetourCrowd/Source/DetourProximityGrid.cpp",
+    "occupancy_adapter.cpp",
+    "-o",
+    "liboccupancy.so"
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "elapsedSeconds": 5.28212755200002,
+  "peakSampledAggregateRSSBytes": 66977792,
+  "cpuAffinity": [
+    0
+  ],
+  "samples": [
+    {
+      "elapsed": 0.0024092860003293026,
+      "processTreeRSS": 0,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.0,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.10521299899846781,
+      "processTreeRSS": 30801920,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.09,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.20596487800139585,
+      "processTreeRSS": 12451840,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.19,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.306728244999249,
+      "processTreeRSS": 26738688,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.28,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.40907736100052716,
+      "processTreeRSS": 19398656,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.38,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.5098539370010258,
+      "processTreeRSS": 35127296,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.47000000000000003,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.6108001270004024,
+      "processTreeRSS": 41291776,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.5800000000000001,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.7131678920013655,
+      "processTreeRSS": 43966464,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.68,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.8141506169995409,
+      "processTreeRSS": 46981120,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.77,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 0.9174303770014376,
+      "processTreeRSS": 9437184,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.89,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.0182490160004818,
+      "processTreeRSS": 31981568,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 0.98,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.1192802039986418,
+      "processTreeRSS": 15466496,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.08,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.2201773109991336,
+      "processTreeRSS": 33947648,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.1800000000000002,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.3212232109981414,
+      "processTreeRSS": 38375424,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.28,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.4252024250017712,
+      "processTreeRSS": 43347968,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.3800000000000001,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.5260700430008,
+      "processTreeRSS": 22151168,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.49,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.6268580559990369,
+      "processTreeRSS": 35389440,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.5899999999999999,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.7276358829985838,
+      "processTreeRSS": 38772736,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.69,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.8288688700013154,
+      "processTreeRSS": 44658688,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.79,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 1.9330533719985397,
+      "processTreeRSS": 4325376,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.89,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.0338713150013064,
+      "processTreeRSS": 30932992,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 1.99,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.134678326001449,
+      "processTreeRSS": 22675456,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.0799999999999996,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.235434261001501,
+      "processTreeRSS": 36044800,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.19,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.336262925000483,
+      "processTreeRSS": 40869888,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.29,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.4410313250009494,
+      "processTreeRSS": 43446272,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.3899999999999997,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.5418299340017256,
+      "processTreeRSS": 48881664,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.4899999999999998,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.64258011900165,
+      "processTreeRSS": 51109888,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.59,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.743389274000947,
+      "processTreeRSS": 8519680,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.69,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.8444207920001645,
+      "processTreeRSS": 29097984,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.7800000000000002,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 2.9453061819986033,
+      "processTreeRSS": 25821184,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.88,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 3.049083177000284,
+      "processTreeRSS": 35651584,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 2.9899999999999998,
+      "stageDiskBytes": 32942
+    },
+    {
+      "elapsed": 3.1499330929982534,
+      "processTreeRSS": 39047168,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.09,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.250837750998471,
+      "processTreeRSS": 30277632,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.19,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.3516634709994833,
+      "processTreeRSS": 9699328,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.3,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.4524978539993754,
+      "processTreeRSS": 33030144,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.39,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.5570480880014657,
+      "processTreeRSS": 41025536,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.5,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.657909595000092,
+      "processTreeRSS": 44695552,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.59,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.7586776210009702,
+      "processTreeRSS": 47316992,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.69,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.8595324179987074,
+      "processTreeRSS": 49152000,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.79,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 3.9605094190010277,
+      "processTreeRSS": 20971520,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.89,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.065040244000556,
+      "processTreeRSS": 22937600,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 3.9899999999999998,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.165814870000759,
+      "processTreeRSS": 34734080,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.09,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.266584008000791,
+      "processTreeRSS": 39321600,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.1899999999999995,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.367578219000279,
+      "processTreeRSS": 11272192,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.29,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.468371833001584,
+      "processTreeRSS": 31981568,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.390000000000001,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.573420797001745,
+      "processTreeRSS": 25821184,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.489999999999999,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.674201492998691,
+      "processTreeRSS": 12582912,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.59,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.7754460539981665,
+      "processTreeRSS": 16121856,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.699999999999999,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.876220455000293,
+      "processTreeRSS": 17825792,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.79,
+      "stageDiskBytes": 42784
+    },
+    {
+      "elapsed": 4.977002892999735,
+      "processTreeRSS": 42336256,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.89,
+      "stageDiskBytes": 43391
+    },
+    {
+      "elapsed": 5.081029902001319,
+      "processTreeRSS": 56229888,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 4.99,
+      "stageDiskBytes": 43391
+    },
+    {
+      "elapsed": 5.181881049000367,
+      "processTreeRSS": 8519680,
+      "wrapperPeakRSS": 10747904,
+      "processGroupCPUSecondsIncludingReaped": 5.09,
+      "stageDiskBytes": 43391
+    }
+  ]
+}

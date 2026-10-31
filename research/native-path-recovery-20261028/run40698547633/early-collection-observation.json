@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "sourceCommit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+  "runID": 40698547633,
+  "jobID": 122851765905,
+  "observedAtUTC": "2026-10-28T13:56:58Z",
+  "nativeRunTerminal": false,
+  "hostedUnitStep": "failure",
+  "uiStep": "in_progress",
+  "artifact": {
+    "id": 12820674857,
+    "name": "native-unit-case-statuses-40698547633-1",
+    "zipBytes": 1025,
+    "zipSHA256": "2dae669b21355e20685f7315fe9a0cbd2d698b9185837205ac061dfc042da54d",
+    "recordFile": "early-unit-case-statuses.json"
+  },
+  "collection": {
+    "complete": false,
+    "sourceVerified": false,
+    "error": "FileNotFoundError: unit-summary.json is absent",
+    "routeDiagnosticEvidenceStatus": "source_or_cases_unverified",
+    "cause": "The early export step requires unit-summary.json, but native-apple.sh generates it only during final summary after UI.",
+    "repairDirection": "Invoke existing bounded export-native-unit-statuses.py --summary before early unit-case export; preserve actual test verdicts."
+  },
+  "access": {
+    "activeJobLogs": "GitHub BlobNotFound 404 at 2026-10-28T13:55:54Z; retry after terminal",
+    "checkRunAnnotationsCount": 0,
+    "directAnnotationsEndpoint": "GitHub connector rejected as unsupported endpoint400"
+  },
+  "limits": [
+    "Actual hosted test failure cause not yet available.",
+    "No exact metadata, collision or original route attachment recovered at this checkpoint.",
+    "No rerun, new workflow or push performed."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "limits": {
+    "CPUCount": 1,
+    "RSSBytes": 536870912,
+    "cpuSeconds": 60,
+    "outputBytes": 104857600,
+    "wallSeconds": 120
+  },
+  "aggregateCPUSeconds": 10.015913,
+  "elapsedSeconds": 10.046673136006575,
+  "peakConservativeAggregateRSSBytes": 121880576,
+  "verifiedPinnedFileCount": 56,
+  "allPinnedInputsReverifiedAfterWorker": true,
+  "resourceEnforcement": "single CPU affinity; aggregate sampling with fast-exit rusage; child CPU/FSIZE rlimits; wall alarm",
+  "physicalAuthority": false,
+  "compileAttempts": 1,
+  "comparisonAttempts": 1,
+  "compileReturncode": 0,
+  "comparisonReturncode": 0,
+  "totals": {
+    "legacyGroups": 20,
+    "adapterParityCases": 1033,
+    "capturedProfiles": 6,
+    "authoredScaleFields": 2,
+    "oracleChecks": 159647360
+  },
+  "routesExecuted": false,
+  "SwiftExecuted": false,
+  "allPinsUnchangedAfter": true,
+  "finalOutputBytes": 4330611,
+  "aggregateOnly": true,
+  "differentWorkUnits": true
+}

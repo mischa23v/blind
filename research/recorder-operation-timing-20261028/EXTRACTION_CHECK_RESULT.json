@@ -1,0 +1,15 @@
+{
+  "checks_passed": 8,
+  "checks": [
+    "helper diff exactly approved three extraction lines; existing scene extraction preserved",
+    "eight-line cap",
+    "1500-character cap",
+    "unrelated private/model/near-prefix lines excluded",
+    "existing failure status65 preserved",
+    "missing matches cannot abort later extraction",
+    "real helper emits probe excerpt only on failure",
+    "real helper preserves status0 and status65"
+  ],
+  "apple_ci_executed": false,
+  "fragment_applied_to_helper": true
+}

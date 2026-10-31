@@ -1,0 +1,11 @@
+--- attempt001/run_aggregate.py
++++ compact002/run_aggregate.py
+@@ -18,7 +18,7 @@
+         signal.signal(sig,lambda s,_f: (_ for _ in ()).throw(SystemExit('Supervisor interrupted: '+str(s))))
+     manifestBytes=(H/'RUN_PINS.json').read_bytes();manifestSHA=hashlib.sha256(manifestBytes).hexdigest()
+     pins=json.loads(manifestBytes)
+-    if pins['protocol']!='detour-height-follow-v1-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
++    if pins['protocol']!='detour-height-follow-compact-v2-managed-sandbox': raise RuntimeError('Wrong real-room protocol')
+     if pins['limits']!={'cpuSeconds':CPU,'wallSeconds':WALL,'observedRSSBytes':RSS,
+                        'outputBytes':OUTPUT,'maximumVTKQueries':29568,'triangleCandidates':30000000,'nativeBuilds':2,'nativeBeginCalls':4,'nativeStepCalls':3696}:
+         raise RuntimeError('Frozen limits changed')

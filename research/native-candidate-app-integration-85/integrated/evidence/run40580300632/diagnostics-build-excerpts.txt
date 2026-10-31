@@ -1,0 +1,32 @@
+2026-10-27T20:41:39.6316740Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +1658cf257d03a9be15ab68dea79b6339e433f529:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-27T20:41:52.6128660Z  * [new ref]         1658cf257d03a9be15ab68dea79b6339e433f529 -> origin/codex/recovery-hazard-order-20261027
+2026-10-27T20:41:52.6346830Z 1658cf257d03a9be15ab68dea79b6339e433f529
+2026-10-27T20:41:54.1744260Z 1658cf257d03a9be15ab68dea79b6339e433f529
+2026-10-27T20:41:55.2063650Z   "sourceChecksPassed": 28,
+2026-10-27T20:41:55.2064250Z     "integrated pin ios/BlindAssist/NavigationModel.swift",
+2026-10-27T20:41:55.2064840Z     "integrated pin ios/BlindAssist.xcodeproj/project.pbxproj",
+2026-10-27T20:41:55.2065360Z     "integrated pin ios/BlindAssist/MeshCandidateDiagnostics.swift",
+2026-10-27T20:41:55.2065800Z     "integrated pin tools/ci/native-apple.sh",
+2026-10-27T20:41:55.2066300Z     "integrated pin .github/workflows/native-apple.yml",
+2026-10-27T20:41:55.2066780Z     "integrated pin .github/workflows/native-candidate-app-integration.yml",
+2026-10-27T20:41:55.2067330Z     "integrated pin research/native-candidate-app-integration-85/integrated/check.py",
+2026-10-27T20:41:55.2068080Z     "integrated pin research/native-candidate-app-integration-85/integrated/README.md",
+2026-10-27T20:41:55.2069330Z     "integrated pin research/native-candidate-app-integration-85/app-integration.patch",
+2026-10-27T20:41:55.2070000Z     "integrated pin research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift",
+2026-10-27T20:41:55.2070590Z     "exact original recovered ios/BlindAssist/NavigationModel.swift",
+2026-10-27T20:41:55.2071180Z     "exact original recovered ios/BlindAssist.xcodeproj/project.pbxproj",
+2026-10-27T20:41:55.2072910Z     "no copy or geometry ingest",
+2026-10-27T20:41:55.2079110Z   "runtimeOptIn": false,
+2026-10-27T20:41:55.2079920Z   "geometryCopyEnabled": false,
+2026-10-27T20:41:55.2080640Z   "experimental128MiBCapCompliance": "not claimed"
+2026-10-27T20:41:55.2340070Z 1658cf257d03a9be15ab68dea79b6339e433f529
+2026-10-27T20:41:55.3039120Z 5aa44c32a0692dd650823d85f89b8334d59e9dd8a2d0c21900f82be14ce10614  ios/BlindAssist.xcodeproj/project.pbxproj
+2026-10-27T20:41:55.3040110Z 6b65f27032bc4f2f112e2e71da5483b949e443501b9a0cf2f92ffbc0ca0f65cb  ios/BlindAssist.xcodeproj/xcshareddata/xcschemes/BlindAssist.xcscheme
+2026-10-27T20:41:55.3040880Z 9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f  BlindCore/Package.swift
+2026-10-27T20:41:55.3041530Z 119060ea110b7cd06a2c6b4f68c125b51489bc2d9a4385e1b1af53df30ef3115  BlindMemory/Package.swift
+2026-10-27T20:41:58.8109140Z Xcode 27.0
+2026-10-27T20:41:58.8214460Z Build version 27A266a
+2026-10-27T20:42:07.2897840Z ##[group]Run bash tools/ci/native-apple.sh diagnostics-build
+2026-10-27T20:42:07.2898330Z [36;1mbash tools/ci/native-apple.sh diagnostics-build[0m
+2026-10-27T20:45:32.6034970Z diagnostics-build exit status: 0
+2026-10-27T20:45:32.6845810Z ** BUILD SUCCEEDED **

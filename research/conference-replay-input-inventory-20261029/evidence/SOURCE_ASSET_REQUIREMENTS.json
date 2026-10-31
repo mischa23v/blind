@@ -1,0 +1,44 @@
+{
+  "includedLargeDerivedAssets": [
+    {
+      "bytes": 1449098,
+      "path": "workspaces/blind-koivu-game-07/map/run-01/map/SURFACE.json",
+      "sha256": "1311d3e49f1ac39cdea6dfe28943808aae37fc41322ea7f546062d5478446da3"
+    },
+    {
+      "bytes": 14921426,
+      "path": "workspaces/blind-koivu-game-07/map/run-01/map/MAP.npz",
+      "sha256": "1961eef94bc98f5d89d4986c8b62d7352d0e2046e1dbfa3e6baf767a54e7646d"
+    }
+  ],
+  "omitted": [
+    {
+      "bytes": 67180136,
+      "files": 294,
+      "hashManifest": "workspaces/blind-koivu-game-07/map/depths/DEPTH_INPUT_MANIFEST.json",
+      "path": "blind-koivu-game-07/map/depths/*.png",
+      "reason": "Full raw depth collection kept out of Git; recover exact selection from source archive."
+    },
+    {
+      "bytes": 239937,
+      "path": "blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json",
+      "reason": "Full original associated pose/intrinsic metadata excluded; pinned by FROZEN.json and available from original archive.",
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3"
+    },
+    {
+      "path": "blind-koivu-game-07/* outside map/",
+      "reason": "Sibling game/evaluator/controller/Swift-worker source and compiled artifacts are outside this map/diagnosis scope; no real-room game execution claimed."
+    }
+  ],
+  "scope": "Raw dependencies excluded from this additive map/diagnosis Git packet; exact selected hashes remain in manifests",
+  "sourceArchive": {
+    "bytes": 146575749,
+    "filename": "koivu_iphone.tar.gz",
+    "license": "CC BY 4.0",
+    "maintainerReportsAlreadyPublishedAsReleaseAsset": true,
+    "publisherDOI": "10.5281/zenodo.10230733",
+    "releaseURL": null,
+    "releaseURLNote": "No exact maintainer release URL was supplied to this packaging task; none is invented.",
+    "sha256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518"
+  }
+}

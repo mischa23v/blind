@@ -1,0 +1,1530 @@
+{
+  "configuration": {
+    "radius": 0.24,
+    "height": 1.2,
+    "cell_size": 0.04,
+    "cell_height": 0.02,
+    "max_climb": 0.0,
+    "max_slope": 5.0,
+    "max_cells": 250000,
+    "max_nodes": 4096
+  },
+  "syntheticBody": true,
+  "profileMeasured": false,
+  "results": [
+    {
+      "stats": {
+        "rows": 3680,
+        "occupied": 3680,
+        "free": 0,
+        "ground": 2400,
+        "other": 1280,
+        "width": 121,
+        "depth": 81,
+        "insertions": 32284,
+        "provisionalSpans": 9408,
+        "obstacleSpans": 393
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            2.5199999809265137,
+            0.01999998837709427,
+            1.6799999475479126
+          ],
+          [
+            2.9600000381469727,
+            0.01999998837709427,
+            1.8399999141693115
+          ],
+          [
+            3.1599998474121094,
+            0.01999998837709427,
+            1.8399999141693115
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          1.62,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          1.62,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          1.619999885559082,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          1.619999885559082,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 1.1777009052632041e-07,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1444091807533141e-07
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.9221920383523775e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1444091807533141e-07
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            1.619999885559082,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            1.619999885559082,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2440,
+        "occupied": 2440,
+        "free": 0,
+        "ground": 2400,
+        "other": 40,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21358,
+        "provisionalSpans": 9558,
+        "obstacleSpans": 243
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            2.119999885559082,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2440,
+        "occupied": 2440,
+        "free": 0,
+        "ground": 2400,
+        "other": 40,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21358,
+        "provisionalSpans": 9558,
+        "obstacleSpans": 243
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            2.119999885559082,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2440,
+        "occupied": 2440,
+        "free": 0,
+        "ground": 2400,
+        "other": 40,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21358,
+        "provisionalSpans": 9558,
+        "obstacleSpans": 243
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            2.119999885559082,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2402,
+        "occupied": 2400,
+        "free": 2,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          0.15,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          0.2800000011920929,
+          0.01999998837709427,
+          1.6000001430511475
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.13000000119217212,
+          "horizontalMetres": 0.13000000119217162,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            0.2800000011920929,
+            0.01999998837709427,
+            1.6000001430511475
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2440,
+        "occupied": 2440,
+        "free": 0,
+        "ground": 2400,
+        "other": 40,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21358,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 243
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            2.119999885559082,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 10800,
+        "occupied": 10800,
+        "free": 0,
+        "ground": 10800,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 47630,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 3040,
+        "occupied": 3040,
+        "free": 0,
+        "ground": 2400,
+        "other": 640,
+        "width": 121,
+        "depth": 81,
+        "insertions": 26644,
+        "provisionalSpans": 9603,
+        "obstacleSpans": 198
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 3040,
+        "occupied": 3040,
+        "free": 0,
+        "ground": 2400,
+        "other": 640,
+        "width": 121,
+        "depth": 81,
+        "insertions": 26644,
+        "provisionalSpans": 9603,
+        "obstacleSpans": 198
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            2.1599998474121094,
+            0.01999998837709427,
+            1.6399999856948853
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.15,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.2800000011920929,
+          0.01999998837709427,
+          1.6000001430511475
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 0.13000000119217212,
+          "horizontalMetres": 0.13000000119217162,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.2800000011920929,
+            0.01999998837709427,
+            1.6000001430511475
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2440,
+        "occupied": 2440,
+        "free": 0,
+        "ground": 2400,
+        "other": 40,
+        "width": 121,
+        "depth": 83,
+        "insertions": 22360,
+        "provisionalSpans": 9396,
+        "obstacleSpans": 415
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.019999980926513672,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.019999980926513672,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.3717478751799376e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.9073486328541334e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.556126488234585e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.9073486328541334e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.019999980926513672,
+            1.600000023841858
+          ],
+          [
+            2.0799999237060547,
+            0.019999980926513672,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2440,
+        "occupied": 2440,
+        "free": 0,
+        "ground": 2400,
+        "other": 40,
+        "width": 121,
+        "depth": 83,
+        "insertions": 22360,
+        "provisionalSpans": 9396,
+        "obstacleSpans": 415
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.019999980926513672,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.019999980926513672,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.3717478751799376e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.9073486328541334e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.556126488234585e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.9073486328541334e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.019999980926513672,
+            1.600000023841858
+          ],
+          [
+            2.0799999237060547,
+            0.019999980926513672,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "subcellUnknownGapMetres": 0.010000228881835938,
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2401,
+        "occupied": 2400,
+        "free": 1,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2080,
+        "occupied": 2080,
+        "free": 0,
+        "ground": 2080,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 18172,
+        "provisionalSpans": 8586,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.02,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 3.013573344551375e-08,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            1.8399999141693115,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "stats": {
+        "rows": 2400,
+        "occupied": 2400,
+        "free": 0,
+        "ground": 2400,
+        "other": 0,
+        "width": 121,
+        "depth": 81,
+        "insertions": 21004,
+        "provisionalSpans": 9801,
+        "obstacleSpans": 0
+      },
+      "result": {
+        "projectedCorridorComplete": true,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.64,
+          0.25,
+          1.6
+        ],
+        "requestedGoal": [
+          4.16,
+          0.02,
+          1.6
+        ],
+        "projectedStart": [
+          0.6399999856948853,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "projectedGoal": [
+          4.159999847412109,
+          0.01999998837709427,
+          1.600000023841858
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 0.2300000116229074,
+          "horizontalMetres": 2.780414524226539e-08,
+          "verticalMetres": -0.23000001162290573
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 1.5487604892550052e-07,
+          "horizontalMetres": 1.5443930391298702e-07,
+          "verticalMetres": -1.1622905731617506e-08
+        },
+        "path": [
+          [
+            0.6399999856948853,
+            0.01999998837709427,
+            1.600000023841858
+          ],
+          [
+            4.159999847412109,
+            0.01999998837709427,
+            1.600000023841858
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    }
+  ],
+  "recordedRoutesExecuted": 0,
+  "physicalAuthority": false
+}

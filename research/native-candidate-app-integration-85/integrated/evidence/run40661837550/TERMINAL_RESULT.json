@@ -1,0 +1,35 @@
+{
+  "run": 40661837550,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40661837550",
+  "commit": "ac56c97861d23888c24f13d2482055f9302d5ea0",
+  "conclusion": "failure",
+  "defaultBuild": "failed",
+  "diagnosticsBuild": "failed",
+  "buildFailure": {
+    "file": "ios/BlindAssist/PlaceStore.swift",
+    "line": 88,
+    "error": "cannot use mutating member on immutable value: 'directory' is a 'let' constant"
+  },
+  "core": {
+    "executed": 1434,
+    "skipped": 1,
+    "failed": 0,
+    "individualNewCoreCaseStatusesExported": false
+  },
+  "memory": {
+    "executed": 58,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "status": "skipped_after_app_build_failure",
+    "executed": 0,
+    "overlayProviderAssociationTestsExecuted": false
+  },
+  "ui": {
+    "status": "skipped_after_app_build_failure",
+    "executed": 0
+  },
+  "artifactsDownloaded": false,
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false
+}

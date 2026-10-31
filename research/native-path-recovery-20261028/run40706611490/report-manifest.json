@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "sourceCommit": "43e33d4b8a59a2a0431ab514c8821fabcf622a08",
+  "sourceVerified": true,
+  "runID": 40706611490,
+  "jobID": 122880338505,
+  "artifactID": 12824364131,
+  "artifactSHA256": "6c80909ef0713cf86974a5a0a2171743cff41d52aaba723b848587c7d9068019",
+  "extraction": "Exact original early status JSON from bounded artifact. Named report files are semantic reserializations, not raw xcresult attachment bytes.",
+  "reports": [
+    {
+      "attachmentName": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+      "status": "collected",
+      "testResult": "Failed",
+      "bytes": 2481,
+      "sha256": "e933185d19639c9a0df60ab50e4c3535f65385c4d858ddac9cd11a81c2f52d65"
+    },
+    {
+      "attachmentName": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+      "status": "collected",
+      "testResult": "Failed",
+      "bytes": 1704,
+      "sha256": "48cbb4aa5c08e53096439cfb775fd38826a749b530686b755691c949a3184148"
+    },
+    {
+      "attachmentName": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "testIdentifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+      "status": "collected",
+      "testResult": "Failed",
+      "bytes": 3973,
+      "sha256": "1c7fd67d45536b4c7d8f149f847b6d8158aa9fc4254e3ab0d75a1701e91355ff"
+    },
+    {
+      "attachmentName": "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory()",
+      "status": "collected",
+      "testResult": "Failed",
+      "bytes": 21375,
+      "sha256": "be943280c76fc00e89b88a4d9c6427b3814bd2ba8cccbbdfe0153fd43771ed9c"
+    },
+    {
+      "attachmentName": "SavedRoomCollisionBackendMatrix-v1.json",
+      "testIdentifier": "SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl()",
+      "status": "collected",
+      "testResult": "Passed",
+      "bytes": 14550,
+      "sha256": "86419e0783f75edce22cb9cbfa358066c8a4a0a690bb793a7078d6d4411f697d"
+    }
+  ],
+  "sourceSHA256": {
+    "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROTOCOL.json": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+    "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+    "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/JOURNEY_ADDENDUM.json": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+    "ios/BlindAssistTests/Fixtures/RoomPlanApple/Hallway2.capturedRoom.json": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+    "ios/BlindAssistTests/Fixtures/RoomPlanApple/Bedroom3.capturedRoom.json": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+    "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift": "30385ac82baf712393cc479e802db2c49b0ddf0d798c173a36f024b801f403b0",
+    "ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift": "94e8e2ea83e212d3557b1f974d935404b0a79fa6e6f7d62d7a1dc16ad85e8b73",
+    "ios/BlindAssistTests/SavedRoomRouteMeshAppleFixtureTests.swift": "3111662d934b662ea7701a01b001c9876fe927672e6433684f3246ce48b52967",
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift": "64affe88925c19a97af9227291824890e5c34beffaebe43d806ae9b6a777e814",
+    "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "5954b3e7d2da4cf2ce2c0cbd85f80c52524a8282d1abac73d504a8f12d810d51",
+    "ios/BlindAssist/SavedRoomRouteMeshAdapter.swift": "8402e8846b3b199349a254e4c7d57b0663ca0ff3da34394454e74e70fd80dbe3",
+    "BlindCore/Sources/BlindCore/SpatialFacts.swift": "c99d1ffa433ca6b6688c09c7e995667b04a44b80fb8ed62a6b5f94d7e25e96c3",
+    "BlindCore/Sources/BlindCore/GuidanceCadence.swift": "b9c93fdda0216862ad06f1c0a46755894e07fc2ddaea4b1976edca68965baf2f"
+  },
+  "provenance": {
+    "actual_head": "43e33d4b8a59a2a0431ab514c8821fabcf622a08",
+    "tracked_source_clean": true,
+    "untracked_scopes": [
+      "ios",
+      "BlindCore",
+      "BlindMemory",
+      "tools/ci",
+      ".github/workflows"
+    ],
+    "generated_metadata": [
+      {
+        "path": "BlindMemory/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      },
+      {
+        "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "d11cb7a41a81538c6dac3ffac3b8187ff08abdec9bdae64e6f53c51cf5c8ad69",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "rawAttachmentBytes": 44083
+}

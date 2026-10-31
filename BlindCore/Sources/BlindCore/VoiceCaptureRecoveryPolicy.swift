@@ -14,13 +14,18 @@ public struct VoiceCaptureRecoveryPolicy: Sendable {
     public private(set) var continuous = false
     public private(set) var interrupted = false
     public private(set) var mediaServicesAvailable = true
+    /// Terminal capture failure/private-route loss requires an explicit user restart.
+    /// Foreground, language changes and automatic answer windows are not consent.
+    public private(set) var requiresExplicitRestart = false
     public private(set) var attempts = 0
     private var pendingRetry: UUID?
     private var healthySince: TimeInterval?
 
     public init() {}
 
-    @discardableResult public mutating func begin(continuous: Bool) -> UUID {
+    @discardableResult public mutating func begin(continuous: Bool, explicitlyRequested: Bool = false) -> UUID {
+        guard !requiresExplicitRestart || explicitlyRequested else { return session }
+        requiresExplicitRestart = false
         cancel()
         requested = true
         self.continuous = continuous
@@ -36,7 +41,13 @@ public struct VoiceCaptureRecoveryPolicy: Sendable {
 
     /// A disconnected private audio route is an explicit privacy stop, not a
     /// recoverable interruption. Only a new user-started session may listen again.
-    public mutating func privateRouteLost() { cancel() }
+    public mutating func privateRouteLost() { requireExplicitRestart() }
+
+    /// Keep the hold through cancel/background/media reset until a user restarts.
+    public mutating func requireExplicitRestart() {
+        cancel()
+        requiresExplicitRestart = true
+    }
 
     public func allowsCapture(session: UUID, inBackground: Bool, backgroundAllowed: Bool) -> Bool {
         requested && self.session == session && !interrupted && mediaServicesAvailable &&
@@ -56,7 +67,7 @@ public struct VoiceCaptureRecoveryPolicy: Sendable {
         if let healthySince, now.isFinite, now - healthySince >= 30 { attempts = 0 }
         healthySince = nil
         pendingRetry = nil
-        guard attempts < 3 else { cancel(); return nil }
+        guard attempts < 3 else { requireExplicitRestart(); return nil }
         attempts += 1
         let token = UUID(); pendingRetry = token
         return Retry(session: session, token: token, delay: pow(2, Double(attempts - 1)))
@@ -77,7 +88,7 @@ public struct VoiceCaptureRecoveryPolicy: Sendable {
 
     @discardableResult public mutating func interruptionEnded(shouldResume: Bool) -> Bool {
         guard requested, interrupted else { return false }
-        guard continuous, shouldResume else { cancel(); return false }
+        guard continuous, shouldResume else { requireExplicitRestart(); return false }
         interrupted = false
         return true
     }

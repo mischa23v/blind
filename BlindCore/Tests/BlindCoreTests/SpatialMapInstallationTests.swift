@@ -84,4 +84,58 @@ final class SpatialMapInstallationTests: XCTestCase {
         let installation = try F.installation()
         XCTAssertThrowsError(try SpatialMapInstallation(envelope: installation.envelope, sha256: { _ in "not-a-sha" }))
     }
+    private func referenceFixture() throws -> (SavedWorldFrame, Data, Data) {
+        // Authored byte-binding fixture only, NOT an archived ARWorldMap/RoomPlan scan.
+        let world = Data("authored-local-world-pair".utf8), room = Data("authored-room-pair".utf8)
+        return (SavedWorldFrame(placeID: UUID().uuidString, revision: UUID().uuidString,
+            worldMapSHA256: try F.sha256(world), roomCaptureSHA256: try F.sha256(room),
+            originAnchorID: UUID().uuidString, capturedAt: Date(timeIntervalSince1970: 1)), world, room)
+    }
+    func testLocalSavedReferenceRetainsExactPairButNoNodesEdgesFloorOrMovement() throws {
+        let (frame, world, room) = try referenceFixture()
+        let reference = try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: world, roomCaptureBytes: room, sha256: F.sha256)
+        XCTAssertEqual(reference.map.purpose, .localizationReferenceOnly)
+        XCTAssertFalse(reference.map.permitsRoutePlanning)
+        XCTAssertTrue(reference.map.nodes.isEmpty); XCTAssertTrue(reference.map.edges.isEmpty)
+        XCTAssertNil(reference.map.surfaces); XCTAssertNil(reference.map.keepOutZones)
+        let record = try reference.registry.map(for: reference.binding)
+        XCTAssertEqual(record.savedWorldFrame, frame); XCTAssertTrue(record.floorLevels.isEmpty)
+        XCTAssertEqual(reference.registry.snapshot.nodes.map(\.kind), [.world, .place])
+        XCTAssertTrue(reference.registry.snapshot.links.isEmpty)
+        XCTAssertTrue(reference.registry.snapshot.transitions.isEmpty)
+        let restored = try SpatialMapInstallation(data: reference.encoded(), sha256: F.sha256)
+        XCTAssertEqual(restored.artifact, reference.artifact)
+        XCTAssertEqual(restored.map.purpose, .localizationReferenceOnly)
+        // Reject even same-node shortcut and direct route-owner adoption.
+        XCTAssertThrowsError(try restored.map.route(from: "same", to: "same"))
+        XCTAssertThrowsError(try restored.map.route(from: "a", to: "b"))
+        var owner = try SpatialRouteOwner(body: F.body, limits: F.limits)
+        XCTAssertThrowsError(try owner.restoreValidated(restored))
+        XCTAssertThrowsError(try owner.install(restored, persist: { _ in XCTFail("must not persist navigation") }))
+        XCTAssertNil(owner.installation)
+        XCTAssertThrowsError(try ConnectedJourneyCatalog(registry: restored.registry, installations: [restored], portals: []))
+    }
+    func testReferenceConstructorRejectsWrongPrivatePairAndInvalidGraphPromotion() throws {
+        let (frame, world, room) = try referenceFixture()
+        XCTAssertThrowsError(try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: room, roomCaptureBytes: room, sha256: F.sha256))
+        XCTAssertThrowsError(try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: world, roomCaptureBytes: world, sha256: F.sha256))
+        let reference = try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: world, roomCaptureBytes: room, sha256: F.sha256)
+        var injected = reference.map
+        injected.nodes = [.init(id: "table-centre", name: "Not a waypoint", level: "guessed", position: .init(0, 1, 0))]
+        XCTAssertThrowsError(try injected.validate())
+        injected = reference.map; injected.purpose = nil
+        XCTAssertThrowsError(try injected.validate()) // Empty legacy graph stays invalid.
+        var legacy = F.map()
+        XCTAssertNil(legacy.purpose); XCTAssertTrue(legacy.permitsRoutePlanning)
+        let oldBytes = try SpatialMapInstallation.canonicalMapBytes(legacy)
+        XCTAssertFalse(String(decoding: oldBytes, as: UTF8.self).contains("purpose"))
+        legacy = try JSONDecoder().decode(IndoorMap.self, from: oldBytes)
+        XCTAssertNil(legacy.purpose); XCTAssertTrue(legacy.permitsRoutePlanning)
+        XCTAssertNoThrow(try legacy.route(from: "start", to: "end", body: F.body))
+    }
+
 }

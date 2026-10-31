@@ -1,6 +1,10 @@
 import SwiftUI
 import ARKit
+#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+import LiveMeshClassifiedBench
+#endif
 import AVFoundation
+import MessageUI
 import CoreImage
 import ImageIO
 import CryptoKit
@@ -52,7 +56,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var assistantSession = AssistantSession() {
         didSet {
             if oldValue.generation != assistantSession.generation { lastCapturedTextPlaybackReceipt = nil }
-            if oldValue.generation != assistantSession.generation { clearSelectedDocument() }
+            if oldValue.generation != assistantSession.generation {
+                clearLocalEmailDraft()
+                clearLocalRecipe()
+                clearSelectedDocument()
+                revalidateModelDisplays(); feedback.revalidateModelReply()
+            }
         }
     }
     @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {
@@ -69,6 +78,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") == nil
         ? true : UserDefaults.standard.bool(forKey: "camera-awareness") {
         didSet {
+            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+            if !oldValue && cameraAwareness && seatedMeshDiagnostic == nil { seatedDiagnosticHold = false }
+            #endif
             UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")
             if cameraAwareness && assistantSession.foregroundActive && !textOnly {
                 cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false; start()
@@ -76,6 +88,264 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             else if !cameraAwareness { stopCameraMonitoring() }
         }
     }
+    /// Model text keeps its original request owner through display, repeat and playback.
+    /// Code receipts are a separate producer, not a Boolean a model callback can set.
+    private enum ConversationContent {
+        case model(ModelResponseAuthority.Lease)
+        case codeReply(String)
+        var text: String { switch self { case .model(let lease): return lease.text; case .codeReply(let text): return text } }
+        var modelReply: ModelResponseAuthority.Lease? { if case .model(let lease) = self { return lease }; return nil }
+    }
+    #if DEBUG
+    private var debugModelResponseTesting = false
+    private var debugModelResponseNow: Double?
+    #endif
+    private var modelResponseAuthority = ModelResponseAuthority()
+    private var latestModelReports: [String] = []
+    private var latestModelEvidence: [CompanionEvidence] = []
+    private struct ModelDisplayReceipt {
+        let lease: ModelResponseAuthority.Lease
+        let revision: UUID
+        let text: String
+        let historical: Bool
+    }
+    private var sceneModelDisplay: ModelDisplayReceipt?
+    private var currentModelDisplay: ModelDisplayReceipt?
+    private var modelDisplayExpiryTimer: Timer?
+    private var modelDisplayTimerOwner = UUID()
+    private var silentModelTestDelivery: Bool {
+        #if DEBUG
+        return debugModelResponseTesting
+        #else
+        return false
+        #endif
+    }
+    private func beginModelResponse(question: String, producer: ModelResponseAuthority.Producer = .conversation) {
+        modelResponseAuthority.begin(question: question, binding: modelResponseBinding, producer: producer, at: modelResponseNow)
+        revalidateModelDisplays()
+        feedback.revalidateModelReply()
+    }
+    private var modelResponseNow: Double {
+        #if DEBUG
+        if let debugModelResponseNow { return debugModelResponseNow }
+        #endif
+        return ProcessInfo.processInfo.systemUptime
+    }
+    private var lastSceneModelReply: ModelResponseAuthority.Lease?
+    private var modelSceneCapture: (id: UUID, capturedAt: Double, origin: Point3, forward: Point3, generation: UUID, sessionGeneration: UInt64)?
+    private var modelResponseBinding: ModelResponseAuthority.Binding {
+        .init(requestID: requestID, sessionGeneration: assistantSession.generation, goalRevision: companionWorkingState.goalRevision)
+    }
+    private func modelReplyAllowed(_ lease: ModelResponseAuthority.Lease, text: String) -> Bool {
+        guard modelResponseAuthority.permits(lease, text: text, binding: modelResponseBinding,
+            now: modelResponseNow) else { return false }
+        if lease.producer == .sceneDescription {
+            guard running, !simulation, !places.scanning, let capture = modelSceneCapture, capture.id == lease.id,
+                  let frame = session.currentFrame, let current = captureObjectView(frame),
+                  current.generation == capture.generation, current.sessionGeneration == capture.sessionGeneration else { return false }
+            return RequestedVisualCapturePose.sceneDeliveryAllowed(capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime,
+                origin: capture.origin, current: current.origin, currentFrameAt: current.capturedAt,
+                hazard: detection.hazard, tracking: lastObservation?.trackingNormal == true,
+                originForward: capture.forward, currentForward: current.forward)
+        }
+        guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: lease.reports, evidence: lease.evidence) else { return false }
+        let captures = required.compactMap { conversationEvidenceCaptures[$0.id] }
+        return captures.count == required.count && captures.allSatisfy(conversationCaptureIsCurrent)
+    }
+    private func retainedModelReply(for text: String) -> ModelResponseAuthority.Lease? {
+        // A same-text code/document replacement has a new display revision and
+        // must not inherit an older model's provenance or retirement callback.
+        if let display = sceneModelDisplay, display.revision == sceneAnswerRevision,
+           (display.text.utf8.elementsEqual(text.utf8) || display.lease.text.utf8.elementsEqual(text.utf8)) { return display.lease }
+        if let display = currentModelDisplay, display.revision == currentReplyRevision,
+           (display.text.utf8.elementsEqual(text.utf8) || display.lease.text.utf8.elementsEqual(text.utf8)) { return display.lease }
+        return nil
+    }
+    private func retainedNarrationModelReply(for text: String) -> ModelResponseAuthority.Lease? {
+        retainedModelReply(for: text) ?? lastSceneModelReply.flatMap { $0.text.utf8.elementsEqual(text.utf8) ? $0 : nil }
+    }
+    private func modelHistoryLabel(_ lease: ModelResponseAuthority.Lease) -> String {
+        if lease.producer == .sceneDescription {
+            return (arabic ? "وصف سابق، وليس ملاحظة حالية أو إرشاداً للحركة: " : "Earlier description, not a current observation or movement guidance: ") + lease.text
+        }
+        return (arabic ? "محادثة سابقة، وليست إرشاداً حالياً للحركة: " : "Earlier conversation, not current movement guidance: ") + lease.text
+    }
+    /// Retire only the exact model-owned display revision. Keep ordinary chat
+    /// readable as explicit history; never clear a newer code/document/OCR reply.
+    private func revalidateModelDisplays() {
+        if let display = sceneModelDisplay {
+            if display.revision != sceneAnswerRevision { sceneModelDisplay = nil }
+            else if !display.historical, !modelReplyAllowed(display.lease, text: display.lease.text) {
+                sceneAnswer = modelHistoryLabel(display.lease)
+                sceneModelDisplay = .init(lease: display.lease, revision: sceneAnswerRevision, text: sceneAnswer, historical: true)
+            }
+        }
+        if let display = currentModelDisplay {
+            if display.revision != currentReplyRevision { currentModelDisplay = nil }
+            else if !display.historical, !modelReplyAllowed(display.lease, text: display.lease.text) {
+                currentReply = modelHistoryLabel(display.lease)
+                currentModelDisplay = .init(lease: display.lease, revision: currentReplyRevision, text: currentReply, historical: true)
+            }
+        }
+        armModelDisplayExpiry()
+    }
+    private func armModelDisplayExpiry() {
+        modelDisplayExpiryTimer?.invalidate(); modelDisplayExpiryTimer = nil
+        let owner = UUID(); modelDisplayTimerOwner = owner
+        let live = [(sceneModelDisplay, sceneAnswerRevision), (currentModelDisplay, currentReplyRevision)]
+            .compactMap { pair -> ModelDisplayReceipt? in
+                let (display, revision) = pair
+                guard let display, display.revision == revision, !display.historical else { return nil }
+                return display
+            }
+        guard let deadline = live.map({ $0.lease.expiresAt }).min() else { return }
+        // Independent of camera operation. The exact deadline wins over the
+        // short revalidation interval; all callbacks are revision/owner checked.
+        let timer = Timer(timeInterval: max(0.001, min(0.25, deadline - modelResponseNow)), repeats: false) { [weak self] _ in
+            self?.modelDisplayExpiryFired(owner: owner)
+        }
+        modelDisplayExpiryTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+    private func modelDisplayExpiryFired(owner: UUID) {
+        guard modelDisplayTimerOwner == owner else { return }
+        revalidateModelDisplays()
+    }
+    #if DEBUG
+    /// Bounded injected-result seam for native hosted tests. No model, camera,
+    /// microphone, route activation or AVSpeech playback is invoked. These tests
+    /// exercise actual display/queue/drain/Feedback methods with a silent sink;
+    /// they are not proof of platform audio delivery or physical safety.
+    @discardableResult func debugBeginModelResponseTest(question: String, at now: Double) -> Bool {
+        guard textOnly, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil,
+              now.isFinite, now >= 0, feedback.debugEnableSilentModelTestTransport() else { return false }
+        debugModelResponseTesting = true; debugModelResponseNow = now
+        companion = CompanionAttention()
+        assistantSession.start()
+        requestID = UUID()
+        modelResponseAuthority.begin(question: question, binding: modelResponseBinding, at: now)
+        revalidateModelDisplays()
+        return true
+    }
+    @discardableResult func debugInjectModelResponse(_ text: String, settled: Bool = true, enqueue: Bool = true) -> Bool {
+        guard debugModelResponseTesting else { return false }
+        let shown = showModelConversationReply(text, settled: settled, reports: [], evidence: [])
+        if shown && enqueue {
+            queueModelConversationSpeech(text, request: requestID, generation: assistantSession.generation, reports: [], evidence: [])
+        }
+        return shown
+    }
+    func debugAdvanceModelResponseTime(to now: Double, revalidate: Bool = true) {
+        guard debugModelResponseTesting, now.isFinite else { return }
+        debugModelResponseNow = now
+        if revalidate { revalidateModelDisplays(); feedback.revalidateModelReply() }
+    }
+    func debugCancelModelResponseTest() {
+        guard debugModelResponseTesting else { return }
+        cancelDescription()
+    }
+    func debugInterruptModelResponseTest() {
+        guard debugModelResponseTesting else { return }
+        interruptOrdinaryConversation(origin: .unverifiedMicrophone)
+    }
+    func debugReplaceModelDisplayWithCode(_ text: String) {
+        guard debugModelResponseTesting else { return }
+        _ = showConversationReply(text, settled: true)
+    }
+    func debugReplaceModelDisplayWithDocument(_ text: String) {
+        guard debugModelResponseTesting else { return }
+        showSelectedDocumentReply(text)
+    }
+    func debugReplaceModelDisplayWithOCR(_ text: String) {
+        guard debugModelResponseTesting else { return }
+        // The captured-page callback uses these same published properties.
+        sceneAnswer = text; currentReply = text
+    }
+    func debugStartModelResponsePlayback() -> Bool {
+        debugModelResponseTesting && feedback.debugStartModelTestPlayback()
+    }
+    var debugModelDisplayTimerOwner: UUID { modelDisplayTimerOwner }
+    func debugFireModelDisplayExpiry(owner: UUID) {
+        guard debugModelResponseTesting else { return }
+        modelDisplayExpiryFired(owner: owner)
+    }
+    // Opt-in hosted app adapter: real controller and real model, silent output.
+    // No synthetic clock, generated answer, tool result or pose is injected.
+    private var debugHostedJourneyEnabled = false
+    private var debugHostedJourneyResults: [[String: Any]] = []
+    private var debugHostedJourneyDisplays: [[String: Any]] = []
+    private var debugHostedNarrationReceipts: [[String: Any]] = []
+    func debugBeginHostedJourney() -> Bool {
+        #if targetEnvironment(simulator)
+        guard textOnly, ProcessInfo.processInfo.environment["BLIND_J01_HOSTED"] == "1",
+              ProcessInfo.processInfo.environment["BLIND_J01_EPHEMERAL_SIMULATOR"] == "1",
+              ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil,
+              !debugModelResponseTesting, feedback.debugEnableSilentModelTestTransport() else { return false }
+        debugHostedJourneyEnabled = true; debugHostedJourneyResults = []; debugHostedJourneyDisplays = []; debugHostedNarrationReceipts = []
+        assistantSession.start()
+        return true
+        #else
+        return false
+        #endif
+    }
+    func debugHostedJourneyControl(_ operation: String) -> Bool {
+        guard debugHostedJourneyEnabled, textOnly, ProcessInfo.processInfo.environment["BLIND_J01_HOSTED"] == "1",
+              ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else { return false }
+        switch operation {
+        case "continue": return true // no invented user utterance or completion
+        case "interrupt": interruptOrdinaryConversation(origin: .trustedInterface); return true
+        case "replace_request": cancelDescription(); return true
+        default: return false
+        }
+    }
+    var debugHostedJourneySnapshot: [String: Any] {
+        var current: [String:Any]? = nil
+        if let display=currentModelDisplay, !display.historical,
+           display.revision==currentReplyRevision, display.text==currentReply,
+           modelReplyAllowed(display.lease,text:display.text) {
+            current=["request_id":display.lease.binding.requestID.uuidString,
+                "session_generation":display.lease.binding.sessionGeneration,
+                "lease_id":display.lease.id.uuidString,"revision":display.revision.uuidString,
+                "text":String(display.text.prefix(4096)),"text_truncated":display.text.count>4096]
+        }
+        return ["request_id":requestID.uuidString,"busy":busy,"reply":currentReply,
+         "reply_revision":currentReplyRevision.uuidString,"scene_reply":sceneAnswer,
+         "session_generation":assistantSession.generation,"model_returns":debugHostedJourneyResults,
+         "accepted_displays":debugHostedJourneyDisplays,"current_accepted_display":current.map { $0 as Any } ?? NSNull(),
+         "accepted_display_cap_reached":debugHostedJourneyDisplays.count>=64,
+         "queued_count":feedback.debugModelTestQueued.count,
+         "started_count":feedback.debugModelTestStarted.count,
+         "pending_count":conversationSpeech.count,
+         "physical_authority":false,"audio_delivered":false,
+         "narration_receipts":debugHostedNarrationReceipts,
+         "narration_receipt_cap_reached":debugHostedNarrationReceipts.count>=16,
+         "narration_enabled":ambientDescriptions,"session_state":assistantSession.state.rawValue,
+         "session_may_respond":assistantSession.mayRespond,
+         "session_should_listen":assistantSession.shouldListen,
+         "private_audio_held":assistantSession.privateAudioHeld,
+         "ordinary_audio_permitted":assistantSession.maySpeakOrdinary,
+         "speech_priority":feedback.speechPriority.map { String(describing:$0) } ?? "none"]
+    }
+    private func debugRecordHostedNarration(_ operation: String) {
+        guard debugHostedJourneyEnabled, debugHostedNarrationReceipts.count<16 else { return }
+        debugHostedNarrationReceipts.append(["operation":operation,
+            "uptime":ProcessInfo.processInfo.systemUptime,"request_id":requestID.uuidString,
+            "session_generation":assistantSession.generation,"session_state":assistantSession.state.rawValue,
+            "narration_enabled":ambientDescriptions,"should_listen":assistantSession.shouldListen,
+            "audio_delivered":false,"physical_authority":false])
+    }
+    func debugEndHostedJourney() {
+        guard textOnly,ProcessInfo.processInfo.environment["BLIND_J01_HOSTED"] == "1" else{return}
+        debugHostedJourneyEnabled = false
+        cancelDescription();assistantSession.end();voice.cancel()
+        _ = feedback.stopInformation(announceCancellation:false)
+    }
+    var debugModelResponseSinkSnapshot: (queued: [String], started: [String], active: Bool, pending: Int) {
+        (feedback.debugModelTestQueued, feedback.debugModelTestStarted,
+         feedback.debugModelTestHasActiveAttempt, conversationSpeech.count)
+    }
+    #endif
+
     private struct ConversationSpeech {
         let id: UUID
         let text: String
@@ -85,7 +355,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let reports: [String]
         let evidence: [CompanionEvidence]
         let captures: [ConversationCapture]
-        var codeOwned = false
+        let content: ConversationContent
+        var codeOwned: Bool { content.modelReply == nil }
         var clockReceipt: CompanionClockDeliveryReceipt? = nil
         var origin: CompanionCommandOrigin = .trustedInterface
         var searchAreaQuestionID: UUID? = nil
@@ -184,6 +455,32 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     private var practiceTimer: Timer?
+    #if DEBUG
+    private var practiceRuntimeDiagnostic: PracticeRuntimeDiagnostic?
+    private var practiceDiagnosticSubscriptions = Set<AnyCancellable>()
+    private func beginPracticeRuntimeDiagnosticIfRequested() {
+        let process = ProcessInfo.processInfo
+        guard process.arguments.contains("--ui-testing"),
+              process.arguments.contains("--practice-runtime-diagnostic"),
+              process.environment["BLIND_PRACTICE_TRACE_TEST"] == PracticeRuntimeDiagnostic.testID,
+              let runID = UUID(uuidString: process.environment["BLIND_PRACTICE_TRACE_RUN"] ?? "") else { return }
+        practiceDiagnosticSubscriptions.removeAll()
+        let trace = PracticeRuntimeDiagnostic(runID: runID)
+        practiceRuntimeDiagnostic = trace
+        let publishers: [(String, ObservableObjectPublisher)] = [
+            ("model", objectWillChange), ("places", places.objectWillChange),
+            ("indoor", indoor.objectWillChange), ("outdoor", outdoor.objectWillChange),
+            ("mapping", mapping.objectWillChange), ("journeys", journeys.objectWillChange),
+            ("voice", voice.objectWillChange), ("survey", survey.objectWillChange),
+            ("visualStairs", visualStairs.objectWillChange), ("peopleTracking", peopleTracking.objectWillChange)
+        ]
+        for (source, publisher) in publishers {
+            publisher.sink { [weak trace] _ in trace?.publication(source) }.store(in: &practiceDiagnosticSubscriptions)
+        }
+        $detection.dropFirst().sink { [weak trace] _ in trace?.publication("detection") }.store(in: &practiceDiagnosticSubscriptions)
+        $calibrationProgress.dropFirst().sink { [weak trace] _ in trace?.publication("calibrationProgress") }.store(in: &practiceDiagnosticSubscriptions)
+    }
+    #endif
     private var cameraInterrupted = false
     private var lastCameraRestart = -Double.infinity
     private var lastLiveActivityUpdate = -Double.infinity
@@ -212,9 +509,30 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         didSet {
             if oldValue.goalRevision != companionWorkingState.goalRevision {
                 withObservedScene { $0.bindGoalRevision(companionWorkingState.goalRevision) }
+                revalidateModelDisplays(); feedback.revalidateModelReply()
             }
         }
     }
+    @Published private(set) var localEmailDraft = LocalEmailDraft()
+    @Published private(set) var localEmailStatus = ""
+    private var emailSpeechResponse: LocalEmailDraft.Response?
+    private var emailSpeechID: UUID?
+    private var emailSpeechIDs = Set<UUID>()
+    private var emailExpiry: Task<Void, Never>?
+    private var emailDisplay: String?
+    private var emailDisplayRevisions: (reply: UUID, scene: UUID)?
+    @Published private(set) var localRecipe = LocalRecipeCompanion()
+    private struct RecipePlayback {
+        let response: LocalRecipeCompanion.Response
+        var index = 0
+        var pendingID: UUID?
+    }
+    private var recipeImportOwner: (id: UUID, generation: UInt64)?
+    private var recipePlayback: RecipePlayback?
+    private var recipeSpeechIDs = Set<UUID>()
+    private var recipeExpiry: Task<Void, Never>?
+    private var recipeDisplay: String?
+    private var recipeDisplayRevisions: (reply: UUID, scene: UUID)?
     @Published private(set) var assistantDialogue = AssistantDialogue()
     @Published private(set) var assistantPreferences = AssistantPreferences()
     private var preferencesRevision = UUID()
@@ -289,6 +607,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var serviceURL = UserDefaults.standard.string(forKey: "scene-service") ?? "" {
         didSet { UserDefaults.standard.set(serviceURL, forKey: "scene-service") }
     }
+    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    private let meshCandidateDiagnostics = MeshCandidateDiagnostics()
+    #endif
     let session = ARSession()
     let places = PlaceStore()
     let indoor = IndoorNavigator()
@@ -296,7 +617,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     let feedback = Feedback()
     let wearables = BeltLink()
     let mapping = NativeMapping()
-    private let nativeObservations = NativeARObservationBridge()
+    private lazy var nativeObservations: NativeARObservationBridge = {
+        let bridge = NativeARObservationBridge()
+        bridge.onClassifiedHits = { [weak self] evidence, session, capturedAt in
+            guard let self, self.running, self.cameraAwareness, self.assistantSession.foregroundActive,
+                  !self.simulation, !self.places.scanning,
+                  UUID(uuidString: self.observationFrameID) == session else { return }
+            self.withObservedScene { $0.offerClassifiedHits(evidence, session: session, capturedAt: capturedAt) }
+        }
+        return bridge
+    }()
     private lazy var observedSceneRuntime = MainActor.assumeIsolated {
         let runtime = ObservedSceneRuntime()
         runtime.bindGoalRevision(companionWorkingState.goalRevision)
@@ -312,12 +642,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             return arabic ? "لم تتوفر مشاهدات هندسية حالية بعد." : "No current observed scene yet."
         }
         let state = withObservedScene { $0.liveStatus }
+        let classified = withObservedScene { $0.classifiedHitStatus }
         let bodyPreview = bodyWarningProfile?.recordedBoundsPreview()
         let bodyBasis = bodyPreview.map { "\($0.dimensionSource.rawValue), \($0.missingEvidence.count) unknown bounds" }
             ?? "body profile unavailable"
         return arabic
             ? "خريطة تجريبية: \(snapshot.cells.count) خلايا سطح مرصودة. الحالة: \(state). الجسم: \(bodyBasis). ليست إرشاداً للمشي."
-            : "Scene preview: \(snapshot.cells.count) observed surface cells. Planner: \(state). Body: \(bodyBasis). Not walking guidance."
+            : "Scene preview: \(snapshot.cells.count) observed surface cells. Planner: \(state). Body: \(bodyBasis). \(classified) Not walking guidance."
     }
     let journeys = JourneyStore()
     let voice = VoiceInput()
@@ -433,6 +764,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private var observationDeletionCutoffs = ObservationDeletionCutoffs()
     private var observedObjects = ObservedObjectMemory()
+    private var currentNavigationHazards = CurrentNavigationHazards()
     private var observationFrameID = UUID().uuidString
     private var nativeLocalizationMount = UUID()
     // Diagnostic marker only: no measured calibration/error/support provider exists.
@@ -442,17 +774,27 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             previewContext: { [weak self] in self?.indoor.nativePreviewLocalizationContext },
             withholdPreview: { [weak self] session, artifact in
                 self?.indoor.withholdNativePreviewEvidence(session: session, artifact: artifact)
+            }, savedFrameContext: { [weak self] in
+                guard let self, let sessionID = UUID(uuidString: self.observationFrameID) else { return nil }
+                return self.places.nativeSavedFrameReferenceContext(sessionID: sessionID)
             })
     }
     private func withNativeLocalization<T>(_ operation: @MainActor (NativeLocalizationRouter) throws -> T) rethrows -> T {
         try MainActor.assumeIsolated {
+            // A selected journey/preview never falls back to the local reference
+            // when unavailable. Goal-free local association has no route authority.
+            let hasLocalReference = UUID(uuidString: observationFrameID).flatMap {
+                places.nativeSavedFrameReferenceContext(sessionID: $0)
+            } != nil
             let selected: NativeLocalizationRouter.Selection = connectedJourneyOwnsNavigation ? .connectedJourney :
-                (indoorGuidanceOwner == .legacyPreview ? .registeredPreview : .none)
+                (indoorGuidanceOwner == .legacyPreview ? .registeredPreview :
+                    (hasLocalReference ? .localSavedFrameReference : .none))
             nativeLocalizationRouter.select(selected)
             return try operation(nativeLocalizationRouter)
         }
     }
     private func invalidateNativeLocalization(_ reason: NativeLocalizationNotReady) {
+        currentNavigationHazards.invalidate()
         withNativeLocalization { $0.invalidate(reason) }
     }
     private func offerNativeLocalization(_ frame: ARFrame, now: Double) {
@@ -467,13 +809,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         withNativeLocalization { router in
             router.offer(arSession: arSession, calibrationRevision: nativeLocalizationCalibrationRevision,
                 mountRevision: nativeLocalizationMount, capturedAt: frame.timestamp, cameraToWorld: matrix,
-                trackingNormal: normal, recovered: places.currentWorldFrame(sessionID: arSession, now: now), now: now)
+                trackingNormal: normal,
+                association: places.cameraWorldFrameAssociation(sessionID: arSession,
+                    capturedAt: frame.timestamp, now: now), now: now)
         }
     }
     private func revalidateNativeLocalization(now: Double) {
+        _ = revalidateCurrentNavigationHazards(now: now)
         guard let arSession = UUID(uuidString: observationFrameID) else { invalidateNativeLocalization(.ownerChanged); return }
-        withNativeLocalization { $0.watchdog(arSession: arSession,
-            calibrationRevision: nativeLocalizationCalibrationRevision, mountRevision: nativeLocalizationMount, now: now) }
+        withNativeLocalization { router in
+            let association = router.candidate.flatMap {
+                places.cameraWorldFrameAssociation(sessionID: arSession, capturedAt: $0.capturedAt, now: now)
+            }
+            router.watchdog(arSession: arSession, calibrationRevision: nativeLocalizationCalibrationRevision,
+                mountRevision: nativeLocalizationMount, association: association, now: now)
+        }
     }
     private func retireBodyWarning(publishChange: Bool = true) {
         bodyWarningAssessment = nil
@@ -583,9 +933,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         selectedDocumentImportOwner != nil || selectedDocument.ownsAttention
     }
     private var selectedPhoto = SelectedPhotoReference()
-    // Retained until actual transfer/decode/Vision completion, even after UI
-    // cancellation. Never clear this lease merely because a result is stale.
-    private var selectedPhotoNativeLease: UUID?
+    // Shared by selected-library and captured-camera pictures. Retained until
+    // actual transfer/decode/Vision completion, even after UI cancellation.
+    // Never clear this lease merely because a result is stale.
+    @MainActor private var selectedPhotoNativeLease: UUID?
     private var selectedPhotoSpeechIDs = Set<UUID>()
     private var photoExpiryTask: Task<Void, Never>?
     private var selectedPhotoTask: Task<Void, Never>?
@@ -683,6 +1034,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         spatialRouteOutput.stopBeacon = { [weak self] id in self?.feedback.stopSpatialRouteBeacon(id) }
         indoor.onSpatialOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
         journeys.withConnectedJourney { runtime in
+            let originalOnChange = runtime.onChange
+            runtime.onChange = { [weak self] in
+                originalOnChange?()
+                self?.syncNavigationTestPlan()
+            }
             runtime.onOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
             runtime.onClarificationRetired = { [weak self] id in self?.feedback.stopRequestedSpeech(id) }
         }
@@ -706,6 +1062,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.spatialRoutePermission = { [weak self] id in
             self?.spatialRouteOutput.validateForStart(id) == true
+        }
+        feedback.spatialRouteSpeechPermission = { [weak self] id, text in
+            self?.spatialRouteOutput.validateSpeechStart(id, text: text) == true
+        }
+        feedback.modelReplyPermission = { [weak self] lease, text in
+            self?.modelReplyAllowed(lease, text: text) == true
         }
         #if DEBUG
         NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
@@ -764,11 +1126,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let at = Date()
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
-        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedDocumentSpeechPermission(id: id, text: text) ?? false) && (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
+        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.emailSpeechPermission(id: id, text: text) ?? false) && (self?.recipeSpeechPermission(id: id, text: text) ?? false) && (self?.selectedDocumentSpeechPermission(id: id, text: text) ?? false) && (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
             (self?.boardingSpeechPermission(id: id, text: text) ?? false) &&
             (self?.capturedTextSpeechPermission(id: id, text: text) ?? false) }
         feedback.onRequestedSpeechStarted = { [weak self] id, text in
             guard let self else { return }
+            if self.emailSpeechIDs.contains(id) {
+                if self.emailSpeechPermission(id: id, text: text) { self.showLocalEmailReply(text) }
+                return
+            }
+            if self.recipeSpeechIDs.contains(id) {
+                if self.recipeSpeechPermission(id: id, text: text) { self.showRecipeReply(text) }
+                return
+            }
             if self.selectedDocumentSpeechIDs.contains(id) {
                 if let context = self.selectedDocumentContext(), self.selectedDocument.started(id: id, text: text, context: context) {
                     self.showSelectedDocumentReply(text)
@@ -780,6 +1150,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.finishEmailSpeech(id: id, text: text, outcome: outcome) { return }
+            if self.finishRecipeSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishSelectedDocumentSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishCapturedTextSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishBoardingSpeech(id: id, text: text, outcome: outcome) { return }
@@ -840,6 +1212,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.drainConversationSpeech()
         }
         feedback.onIdle = { [weak self] in
+            self?.speakNextRecipePart()
             self?.speakNextSelectedDocumentPhrase()
             self?.drainConversationSpeech()
             self?.speakNextSelectedPhotoPhrase()
@@ -956,7 +1329,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
         }
         places.onScanFinished = { [weak self] in
-            guard let self else { return }
+            guard let self, self.normalCameraSessionAllowed else { return }
+            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+            self.meshCandidateDiagnostics.beginEpoch(); self.meshCandidateDiagnostics.stop()
+            #endif
             self.session.delegate = self; self.detector.reset(); self.phoneDetection = Detection(.needsCalibration)
             if self.running {
                 let configuration = ARWorldTrackingConfiguration()
@@ -968,6 +1344,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     self.withObservedScene { $0.begin(session: sessionID, capturedAfter: ProcessInfo.processInfo.systemUptime) }
                 }
                 self.retireCapturedTextSource()
+                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+                self.meshCandidateDiagnostics.beginEpoch()
+                #endif
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
@@ -977,8 +1356,105 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
     }
+    // A camera owner fence, not a guidance/readiness permission. Release stays unchanged.
+    private var normalCameraSessionAllowed: Bool {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        return !seatedDiagnosticHold && seatedMeshDiagnostic == nil
+        #else
+        return true
+        #endif
+    }
+    private var normalCameraCallbackAllowed: Bool {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        return normalCameraSessionAllowed && session.delegate === self && session.delegateQueue === DispatchQueue.main
+        #else
+        return true
+        #endif
+    }
+    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    @Published private(set) var seatedMeshDiagnostic: SeatedMeshDiagnosticController?
+    private var seatedDiagnosticHold = false
+    private var seatedDiagnosticPresentation = SeatedMeshPresentationLease()
+    // RoomPlan has no acknowledged native drain in the current owner API. Do not
+    // reinterpret cancelScan() as one. This first checkpoint refuses reuse until
+    // app relaunch if this ARSession has ever been handed to RoomPlan.
+    private var seatedDiagnosticRoomPlanTouched = false
+    func openSeatedMeshDiagnosticView() -> UUID { seatedDiagnosticPresentation.open() }
+    func confirmSeatedMeshDiagnostic(viewID: UUID) -> UUID? {
+        guard assistantSession.foregroundActive, seatedMeshDiagnostic == nil else { return nil }
+        return seatedDiagnosticPresentation.confirm(view: viewID)
+    }
+    func cancelSeatedMeshDiagnosticConfirmation() { seatedDiagnosticPresentation.cancelConfirmation() }
+    func closeSeatedMeshDiagnosticView(_ viewID: UUID) {
+        guard seatedDiagnosticPresentation.close(view: viewID) else { return }
+        stopSeatedMeshDiagnostic()
+    }
+    func beginSeatedMeshDiagnostic(viewID: UUID, confirmationID: UUID, restoreSelectedWorld: Bool = false) -> String? {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard seatedDiagnosticPresentation.consume(view: viewID, confirmation: confirmationID) else {
+            return "Confirmation expired. Reopen the seated diagnostic and confirm again."
+        }
+        guard seatedMeshDiagnostic == nil, !places.scanning, !places.finishing,
+              !seatedDiagnosticRoomPlanTouched else {
+            return "Unavailable while a room scan owns or has used this session. Close the app and reopen before this diagnostic."
+        }
+        guard assistantSession.foregroundActive, !textOnly,
+              AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
+              ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification),
+              session.delegate === self, session.delegateQueue === DispatchQueue.main else {
+            return "Requires foreground camera permission and a LiDAR iPhone with classified mesh support."
+        }
+        var savedWorldRequest: SeatedMeshDiagnosticController.SavedWorldRequest?
+        if restoreSelectedWorld {
+            guard let destination=journeys.withConnectedJourney({$0.diagnosticDestination}),
+                  let frame=destination.mapRevision.savedWorldFrame,
+                  let source=MainActor.assumeIsolated({ places.diagnosticGeometrySource(for:frame) }) else {
+                return "Selected destination has no available paired saved world. No camera handoff or guessed alignment occurred."
+            }
+            savedWorldRequest = .init(destination:destination,source:source,isCurrent:{[weak self] in
+                guard let self else{return false}
+                guard MainActor.assumeIsolated({ self.places.ownsDiagnosticGeometrySource(source) }),
+                      let current=self.journeys.withConnectedJourney({$0.diagnosticDestination}) else{return false}
+                // Goal edits within this exact installed world retire the preview,
+                // not the recovered coordinate frame. Map/store replacement does.
+                return current.artifact==destination.artifact && current.mapRevision==destination.mapRevision
+                    && current.ownerID==destination.ownerID && current.catalogRevision==destination.catalogRevision
+                    && current.registryInstallationID==destination.registryInstallationID
+            })
+        }
+        guard meshCandidateDiagnostics.canYieldCamera else {
+            return "Release the normal-camera full-mesh diagnostic first and wait for its ownership acknowledgement, then re-confirm. No camera handoff occurred."
+        }
+        seatedDiagnosticHold = true // Before cleanup can trigger late completions.
+        stop()
+        do {
+            let controller = try SeatedMeshDiagnosticController(session: session, expectedDelegate: self,
+                destinationProvider: { [weak self] in self?.journeys.withConnectedJourney { $0.diagnosticDestination } },
+                savedWorldRequest:savedWorldRequest) { [weak self] in
+                // Remain stopped after native drain. Foreground/conversation never
+                // clears the hold; only an explicit normal-camera action may do so.
+                self?.seatedMeshDiagnostic = nil
+            }
+            seatedMeshDiagnostic = controller
+            try controller.activate()
+            return nil
+        } catch {
+            seatedMeshDiagnostic?.stop()
+            return "Diagnostic could not acquire the camera. Normal camera remains stopped."
+        }
+    }
+    func stopSeatedMeshDiagnostic() { seatedDiagnosticPresentation.cancelConfirmation(); seatedMeshDiagnostic?.stop() }
+    func resumeNormalCameraAfterMeshDiagnostic(viewID: UUID) {
+        guard seatedDiagnosticPresentation.owns(view: viewID), assistantSession.foregroundActive,
+              seatedMeshDiagnostic == nil, seatedDiagnosticHold else { return }
+        seatedDiagnosticHold = false
+        cameraAwareness = true
+        start()
+    }
+    #endif
     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
     func start() {
+        guard normalCameraSessionAllowed else { return }
         defer { updateLiveActivity() }
         guard !running, !places.scanning, assistantSession.foregroundActive, cameraAwareness, !textOnly else { return }
         guard ARWorldTrackingConfiguration.isSupported else {
@@ -994,7 +1470,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
-                    guard let self, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
+                    guard let self, self.normalCameraSessionAllowed, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
                     if granted { self.outdoor.requestCoarseLocation(); self.launchWithNearbyPlace() } else { self.cameraPermissionNeeded() }
                 }
             }
@@ -1007,12 +1483,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         speakOperation(message)
     }
     private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID(), announceCalibration: Bool = true, recoveryAttempt: Bool = false) {
+        guard normalCameraSessionAllowed else { return }
         retireBodyWarning(publishChange: false)
         guard assistantSession.foregroundActive, cameraAwareness, !textOnly,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
               ARWorldTrackingConfiguration.isSupported, !cameraRecovery.blocked,
               !cameraRecovery.exhausted || recoveryAttempt else { return }
         observationFrameID = worldSessionID.uuidString
+        currentNavigationHazards.begin(sessionID: worldSessionID)
         if map == nil { places.invalidateWorldMapRecovery() }
         observedObjects.invalidateGeometry()
         defer { updateLiveActivity() }
@@ -1043,6 +1521,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         nativeObservations.begin(sessionID: worldSessionID, memory: places.memory)
         withObservedScene { $0.begin(session: worldSessionID, capturedAfter: ProcessInfo.processInfo.systemUptime) }
         retireCapturedTextSource()
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.beginEpoch()
+        #endif
         session.delegate = self; session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         if buildPrivateMap { mapping.start() }
         UIApplication.shared.isIdleTimerDisabled = true
@@ -1062,10 +1543,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        seatedDiagnosticPresentation.cancelConfirmation()
+        if let seatedMeshDiagnostic { seatedMeshDiagnostic.stop(); return }
+        #endif
         nativeObservations.stop()
         voiceRoomScan.cancel()
         retireBodyWarning(publishChange: false)
         withObservedScene { $0.stop() }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         cameraRecovery.pause()
         cancelAutomaticRoomRecovery()
         interruptedSearch.cancel()
@@ -1109,9 +1597,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func calibrateBelt() { wearables.send(WearableCommand.calibrate) }
     func identifyBelt() { wearables.send(WearableCommand.identify) }
     private func startWatchdog() {
+        guard normalCameraSessionAllowed else { return }
         watchdog?.invalidate()
         watchdog = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self else { return }
+            #if DEBUG
+            let diagnosticTickStart = self.practiceRuntimeDiagnostic.map { _ in ProcessInfo.processInfo.systemUptime }
+            defer {
+                if let diagnosticTickStart {
+                    self.practiceRuntimeDiagnostic?.tick(start: diagnosticTickStart,
+                        finish: ProcessInfo.processInfo.systemUptime, hazard: self.detection.hazard)
+                }
+            }
+            #endif
             // Held route output expires even if no sensor callback arrives.
             self.indoor.revalidateSpatialOutput(now: ProcessInfo.processInfo.systemUptime)
             self.journeys.withConnectedJourney { $0.revalidate(now: ProcessInfo.processInfo.systemUptime) }
@@ -1128,6 +1626,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.speakMobility(self.placeRecoveryQuestion)
             }
             let now = ProcessInfo.processInfo.systemUptime
+            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+            if !self.simulation && now - self.lastFrameWallTime > 0.5 { self.meshCandidateDiagnostics.stop() }
+            self.meshCandidateDiagnostics.revalidate()
+            #endif
             self.expireBackgroundPerception(now: now)
             self.expireItemAppearanceLookup(now: now)
             self.expireRequestedColor(now: now)
@@ -1162,7 +1664,91 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         if let watchdog { RunLoop.main.add(watchdog, forMode: .common) }
     }
+    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    // Internal developer-only control; no persisted setting or normal-build API.
+    func setMeshCandidateDiagnosticsEnabled(_ enabled: Bool) {
+        meshCandidateDiagnostics.onChange = { [weak self] in self?.objectWillChange.send() }
+        meshCandidateDiagnostics.setEnabled(enabled)
+    }
+    var meshCandidateDiagnosticsEnabled: Bool { meshCandidateDiagnostics.enabled }
+    var meshCandidateDiagnosticsCanEnable: Bool { meshCandidateDiagnostics.canEnable }
+    var meshCandidateDiagnosticsCanRelease: Bool { !meshCandidateDiagnostics.canYieldCamera && !meshCandidateDiagnostics.isReleasing }
+    func releaseFullObservedMeshDiagnostic() {
+        meshCandidateDiagnostics.discard { [weak self] in self?.objectWillChange.send() }
+    }
+    var fullObservedMeshDiagnosticStatus: String {
+        meshCandidateDiagnostics.displayStatus
+    }
+    var fullObservedMeshDiagnosticPoints: [String] {
+        meshCandidateDiagnostics.displayPoints.enumerated().map {
+            "Historical native point \($0.offset): \($0.element) metres (not movement guidance)"
+        }
+    }
+    /// Explicit historical look-ahead inspection only. No body-foot/location claim,
+    /// normal guidance output, model decision or old map registration is issued.
+    func checkFullObservedMeshCandidate() {
+        meshCandidateDiagnostics.retireRequestedPreview()
+        guard normalCameraCallbackAllowed, running, !simulation, !places.scanning,
+              !phoneDetection.hazard.requiresImmediateAttention,
+              let sessionID = UUID(uuidString: observationFrameID),
+              let frame = meshCandidateDiagnostics.latestFrame, frame.session == sessionID,
+              let plan = observedScenePlan, plan.sessionID == sessionID,
+              withObservedScene({ $0.diagnosticIntentIsCurrent(session: sessionID, revision: plan.goalRevision) }),
+              plan.local.state == .candidatePath,
+              let start = plan.local.points.first, let goal = plan.local.points.last,
+              let capturedAt = plan.capturedAt,
+              let profile = bodyWarningProfile?.recordedBoundsPreview(), let body = profile.envelope else { return }
+        let goalRevision = companionWorkingState.goalRevision
+        let request = MeshCandidateDiagnostics.Request(id: UUID(), frame: frame,
+            goalRevision: plan.goalRevision, profileRevision: profile.profileRevision, mountRevision: profile.mountRevision,
+            sceneRevision: plan.sceneRevision, sceneCapturedAt: capturedAt,
+            start: [Float(start.x),Float(start.y),Float(start.z)], goal: [Float(goal.x),Float(goal.y),Float(goal.z)],
+            radius: Float(body.radius), height: Float(body.height), margin: Float(body.margin))
+        meshCandidateDiagnostics.check(request) { [weak self] in
+            guard let self, self.normalCameraCallbackAllowed, self.running, !self.simulation, !self.places.scanning,
+                  self.observationFrameID == sessionID.uuidString,
+                  self.companionWorkingState.goalRevision == goalRevision,
+                  self.withObservedScene({ $0.diagnosticIntentIsCurrent(session: sessionID, revision: plan.goalRevision) }),
+                  !self.phoneDetection.hazard.requiresImmediateAttention,
+                  let current = self.bodyWarningProfile?.recordedBoundsPreview(),
+                  current.profileRevision == profile.profileRevision, current.mountRevision == profile.mountRevision,
+                  current.envelope == body else { return false }
+            return true
+        }
+    }
+    func discardMeshCandidateDiagnostics(completion: @escaping () -> Void) {
+        meshCandidateDiagnostics.discard(completion: completion)
+    }
+    func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        for anchor in anchors where anchor is ARMeshAnchor {
+            meshCandidateDiagnostics.observe(.added, anchorID: anchor.identifier,
+                receiptUptime: ProcessInfo.processInfo.systemUptime)
+        }
+    }
+    func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        for anchor in anchors where anchor is ARMeshAnchor {
+            meshCandidateDiagnostics.observe(.updated, anchorID: anchor.identifier,
+                receiptUptime: ProcessInfo.processInfo.systemUptime)
+        }
+    }
+    func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        for anchor in anchors where anchor is ARMeshAnchor {
+            meshCandidateDiagnostics.observe(.removed, anchorID: anchor.identifier,
+                receiptUptime: ProcessInfo.processInfo.systemUptime)
+        }
+    }
+    #endif
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        // Record only nonnormal tracking before throttling. This constant-work
+        // hook preserves a real relocalizing callback without inspecting anchors.
+        if let worldSessionID = UUID(uuidString: observationFrameID) {
+            places.observeWorldMapTrackingInterruption(frame: frame, sessionID: worldSessionID,
+                now: ProcessInfo.processInfo.systemUptime)
+        }
         // Tracking loss retires selected-owner evidence even on throttled frames.
         if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }
         // Tracking loss retires the issuer even when this frame is throttled below.
@@ -1176,6 +1762,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // category does not change. This runs before frame throttling.
             if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }
         }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }
+        #endif
         if places.scanning, let scanSession = UUID(uuidString: observationFrameID) {
             places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)
         }
@@ -1202,17 +1791,23 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if running, !simulation, !places.scanning, assistantSession.foregroundActive, cameraAwareness,
                let nativeSessionID = UUID(uuidString: observationFrameID) {
                 nativeObservations.offer(frame, sessionID: nativeSessionID,
-                    mapTarget: indoor.registeredObservationMapTarget, receivedAt: receivedAt, receivedDate: receivedDate)
+                    mapTarget: indoor.registeredObservationMapTarget,
+                    sameFrameAssociation: places.cameraWorldFrameAssociation(sessionID: nativeSessionID,
+                        capturedAt: frame.timestamp, now: ProcessInfo.processInfo.systemUptime),
+                    receivedAt: receivedAt, receivedDate: receivedDate)
             }
         }
         lastProcessed = frame.timestamp; lastFrameWallTime = frame.timestamp
         if case .normal = frame.camera.trackingState { cameraRecovery.observeHealthyFrame(now: receivedAt) }
         // RGB classification runs separately; its task never blocks depth processing.
         visualStairs.consume(frame, at: lastFrameWallTime)
+        if awaitingPlace != nil {
+            processRecoveryHazards(frame, receivedAt: receivedAt)
+        }
         probeAutomaticRoomAppearance(frame: frame)
         if let place = awaitingPlace {
             let recoveredFrame = UUID(uuidString: observationFrameID).flatMap {
-                places.observeWorldMapRecovery(for: place, frame: frame, sessionID: $0, now: lastFrameWallTime)
+                places.observeWorldMapRecovery(for: place, frame: frame, sessionID: $0, now: receivedAt)
             }
             let normal: Bool
             if case .normal = frame.camera.trackingState {
@@ -1235,12 +1830,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     message = "Saved map matched: \(place.name). Recalibrate the floor."
                     if !automaticRoomRecoveryEnabled { speakOperation(message) }
             }
-            phoneDetection = Detection(.uncertain, reason: .localizing); publish()
+            // The independent warning/status was published before recovery work.
             updateNonspatialObjectMemory(frame: frame)
             return
         }
         if let place = recognizedPlace, let sessionID = UUID(uuidString: observationFrameID) {
-            let verifiedFrame = places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: lastFrameWallTime)
+            let verifiedFrame = places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: receivedAt)
             if place.worldFrame != nil, verifiedFrame == nil {
                 journeys.breakTracking()
                 beginAutomaticRecoveryAfterLoss()
@@ -1276,18 +1871,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // An unanswered retry prompt expires without starting another capture or blocking ambience.
         if let deadline = currencyRetake.expiresAt, lastFrameWallTime >= deadline { currencyRetake.clear() }
         if !attention.stationary, currencyActive || currencyRetake.isPending { cancelDescription() }
-        let legacyDetection = detector.process(observation)
-        if legacyDetection.hazard.isUrgent {
-            // Never delay an existing urgent alert for supplemental geometry work.
-            bodyWarningAssessment = nil; phoneDetection = legacyDetection
-        } else {
-            let bodyAssessment = BodyCollisionWarning.assess(observation,
-                cameraToWorld: DepthSampler.cameraToWorld(from: frame), profile: bodyWarningProfile,
-                fixedMount: fixedBodyMount && !mountSlipAnnounced && !bodyHeadingEstimator.mountSlipSuspected,
-                now: receivedAt, floorHeight: detector.floorHeight)
-            bodyWarningAssessment = bodyAssessment
-            phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
-        }
+        processDepthHazards(observation, frame: frame, receivedAt: receivedAt)
         // Nonurgent scene adaptation follows immediate hazard processing. The
         // profile preview retains unknown bounds; missing/withdrawn/invalid profiles
         // accumulate geometry without a plan, never fall back to a smaller body.
@@ -1295,6 +1879,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             withObservedScene { $0.offer(observation, session: sceneSession, floor: detector.floorHeight,
                 body: bodyWarningProfile?.recordedBoundsPreview()?.envelope, now: ProcessInfo.processInfo.systemUptime, hazard: phoneDetection.hazard) }
         }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        // Opted-in complete-anchor capture follows urgent hazards; native buffers
+        // stay in this serialized callback. Sparse history capture is unchanged.
+        if !phoneDetection.hazard.requiresImmediateAttention, let meshSession = UUID(uuidString: observationFrameID) {
+            meshCandidateDiagnostics.observe(frame: frame, session: meshSession, now: ProcessInfo.processInfo.systemUptime)
+        } else { meshCandidateDiagnostics.stop() }
+        #endif
         survey.observe(observation, floor: detector.floorHeight)
         calibrationProgress = detector.calibrationProgress; publish()
         #if DEBUG
@@ -1341,6 +1932,74 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             readScene(cloud: false, automatic: true)
         }
     }
+    /// Recovery owns map matching, not independent warning admission. Never expose
+    /// this frame to route/scene consumers or revive a pre-restart mount/floor.
+    private func processRecoveryHazards(_ frame: ARFrame, receivedAt: Double) {
+        bodyWarningAssessment = nil
+        // Retire pose-owned state even when the same frame has no usable depth.
+        if case .normal = frame.camera.trackingState {} else {
+            invalidatePerceptionWork(preserveRGBHistoryWork: true)
+            invalidateRecognizedRoom()
+            detector.reset(); recognizedPlace = nil; indoor.invalidatePosition(); fixedBodyMount = false
+            invalidateReturn()
+        }
+        if let observation = DepthSampler.observation(from: frame) {
+            processDepthHazards(observation, frame: frame, receivedAt: receivedAt)
+        } else {
+            if lastObservation != nil { invalidatePerceptionWork(preserveRGBHistoryWork: true) }
+            invalidateRecognizedRoom()
+            detector.invalidateRecentEvidence()
+            phoneDetection = Detection(.uncertain, reason: DepthSampler.unavailableReason(from: frame))
+        }
+        // Recovery never supplies route progress or support, even on a normal frame.
+        lastObservation = nil
+        withObservedScene { $0.suspendLive(at: frame.timestamp) }
+        survey.invalidate()
+        // Journey authority was withdrawn at recovery entry; do not retire a
+        // new clarification or emit camera-restart changes on every normal frame.
+        invalidateReturn()
+        if !phoneDetection.hazard.isUrgent {
+            phoneDetection = Detection(.uncertain, reason: .localizing)
+        }
+        // Must precede recovery acceptance/rejection and optional furniture/history.
+        publish()
+    }
+
+    /// Additional veto only. Existing localization/body/support/map and route
+    /// output gates remain mandatory; no observed-status grant is issued here.
+    @discardableResult private func revalidateCurrentNavigationHazards(now: Double) -> Bool {
+        let accepted = running && cameraAwareness && assistantSession.foregroundActive && !simulation &&
+            UUID(uuidString: observationFrameID).map {
+                currentNavigationHazards.state(sessionID: $0, now: now).permitsFurtherIndependentChecks
+            } == true
+        if !accepted {
+            spatialRouteOutput.retire()
+            journeys.withConnectedJourney { $0.retireCurrentObstacleEvidence() }
+        }
+        return accepted
+    }
+
+    private func processDepthHazards(_ observation: Observation, frame: ARFrame, receivedAt: Double) {
+        let legacyDetection = detector.process(observation)
+        if legacyDetection.hazard.isUrgent {
+            // Never delay an existing urgent alert for supplemental geometry work.
+            bodyWarningAssessment = nil; phoneDetection = legacyDetection
+        } else {
+            let bodyAssessment = BodyCollisionWarning.assess(observation,
+                cameraToWorld: DepthSampler.cameraToWorld(from: frame), profile: bodyWarningProfile,
+                fixedMount: fixedBodyMount && !mountSlipAnnounced && !bodyHeadingEstimator.mountSlipSuspected,
+                now: receivedAt, floorHeight: detector.floorHeight)
+            bodyWarningAssessment = bodyAssessment
+            phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
+        }
+        if let sessionID = UUID(uuidString: observationFrameID) {
+            currentNavigationHazards.consume(sessionID: sessionID, capturedAt: frame.timestamp,
+                receivedAt: receivedAt, trackingNormal: observation.trackingNormal,
+                detection: phoneDetection, estimatedFloorHeight: detector.floorHeight)
+        } else { currentNavigationHazards.invalidate() }
+        _ = revalidateCurrentNavigationHazards(now: receivedAt)
+    }
+
     #if BLIND_FAMILIAR_PEOPLE
     @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
         guard let command = FamiliarPeopleCommand.parse(text) else { return false }
@@ -1440,6 +2099,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        retireEmailOutput()
+        retireRecipePlayback()
+        modelResponseAuthority.invalidate()
+        latestModelReports = []; latestModelEvidence = []
+        // Preserve explicit history but retire its current-observation authority.
+        revalidateModelDisplays()
+        feedback.revalidateModelReply()
         companionWorkingState.searchAreaClue.retireAnswerWindow()
         if let id = passiveSceneDelivery.cancelPending() {
             companion.release("passive-scene:" + id.uuidString)
@@ -1480,7 +2146,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let now = ProcessInfo.processInfo.systemUptime
         let previousHazard = detection.hazard
         let visual = !simulation ? visualStairs.detection(at: now).map { [$0] } ?? [] : []
-        detection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
+        let nextDetection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
+        // Practice keeps processing every tick, but identical presentation values
+        // must not invalidate the whole accessibility tree ten times per second.
+        // Live publication and all safety/policy work below remain unchanged.
+        if !simulation || detection != nextDetection { detection = nextDetection }
         // Retire route IDs before independent hazard/status sinks run. Never stop
         // a newer sensor alert when an old route callback arrives later.
         spatialRouteOutput.revalidate()
@@ -1528,6 +2198,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        places.invalidateWorldMapRecovery()
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         withObservedScene { $0.stop() }
@@ -1541,9 +2213,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         detector.reset(); phoneDetection = Detection(.uncertain, reason: .frameUnavailable); recognizedPlace = nil
         indoor.invalidatePosition()
         publish()
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
     }
     private func requestCameraRecovery(now: Double) {
+        guard normalCameraSessionAllowed else { return }
         guard running, !simulation, !places.scanning, assistantSession.foregroundActive, cameraAwareness else { return }
         let authorized = AVCaptureDevice.authorizationStatus(for: .video) == .authorized
         if let retry = cameraRecovery.pendingRetry {
@@ -1566,9 +2242,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func sessionWasInterrupted(_ session: ARSession) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        places.invalidateWorldMapRecovery()
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         withObservedScene { $0.stop() }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         cameraRecovery.pause()
         invalidatePerceptionWork()
         peopleTracking.reset()
@@ -1586,12 +2267,23 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if UIApplication.shared.applicationState == .active { _ = speakMobility(message) }
     }
     func sessionInterruptionEnded(_ session: ARSession) {
+        guard session === self.session, normalCameraCallbackAllowed else { return }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         cameraInterrupted = false
         guard running, assistantSession.foregroundActive, cameraAwareness else { return }
         awaitingPlace = nil
         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
     }
     func scanPlace(name: String, compare: Bool = false) {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        guard meshCandidateDiagnostics.canYieldCamera else {
+            message = "Release the normal-camera full-mesh diagnostic and wait for acknowledgement before RoomPlan. No camera handoff occurred."
+            return
+        }
+        #endif
+        guard normalCameraSessionAllowed else { return }
         guard running, !simulation, !places.scanning else { message = "Start the live camera first."; return }
         guard !compare || recognizedPlace != nil else { message = "Recognize a saved place before comparing."; return }
         outdoor.requestCoarseLocation()
@@ -1603,9 +2295,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
         nativeObservations.stop()
         withObservedScene { $0.stop() }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.scanStarted()
+        #endif
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        seatedDiagnosticRoomPlanTouched = true
+        #endif
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil, registrationSessionID: UUID(uuidString: observationFrameID))
     }
     func recognize(_ place: SavedPlace) {
+        guard normalCameraSessionAllowed else { return }
         guard supported, AVCaptureDevice.authorizationStatus(for: .video) == .authorized, !places.scanning else {
             message = "Start the live camera before recognizing a place."; return
         }
@@ -1614,6 +2313,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let sessionID = UUID()
             let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID)
             importFurnitureHistory(place)
+            // Entry must withdraw live journey authority even if launch is refused.
+            journeys.breakTracking()
             recognizedPlace = nil; awaitingPlace = place
             placeRecovery.begin(candidate: place.id.uuidString, now: ProcessInfo.processInfo.systemUptime)
             placeRecoveryQuestion = ""
@@ -1625,6 +2326,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func continueWithoutPlaceMatch() {
+        guard normalCameraSessionAllowed else { return }
         guard running, !simulation, supported, !places.scanning,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
         cancelAutomaticRoomRecovery()
@@ -1666,6 +2368,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               now >= lastFrameWallTime, now - lastFrameWallTime < 0.5,
               detection.hazard == .observing else { return false }
         guard connectedJourneyOwnsNavigation else { return false }
+        // Feedback invokes this permission again at actual delayed speech/beacon
+        // start. Pure inspection only: retirement here would re-enter this gate.
+        guard let hazardSession = UUID(uuidString: observationFrameID),
+              currentNavigationHazards.state(sessionID: hazardSession, now: now).permitsFurtherIndependentChecks else { return false }
         return journeys.withConnectedJourney { $0.goal?.revision == ticket.goalRevision && $0.permits(ticket, now: now) }
     }
     /// A selected connected owner remains selected after arrival/cancellation.
@@ -2362,11 +3068,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     func readScene(cloud: Bool, question: String = "Describe what is in front of me.", automatic: Bool = false, focus: String = "surroundings") {
-        if automatic, contextualTask != nil || !contextualOutstanding.isEmpty { return }
         #if !BLIND_DEVELOPER_CLOUD
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        // The research/helper question field is not the private command ingress.
+        // Reject this namespace before any diagnostics, model prompt or observed
+        // scene route; never promote automatic/observed text into draft authority.
+        if LocalEmailDraftCommand.isPrivateInput(question) {
+            if assistantQuestion == question { assistantQuestion = "" }
+            if !automatic {
+                message = arabic ? "استخدم محرر البريد المحلي أو أوامر المسودة المكتوبة في المحادثة." : "Use the local email editor or typed companion draft commands."
+            }
+            return
+        }
+        if automatic, contextualTask != nil || !contextualOutstanding.isEmpty { return }
         if !automatic, routeSelectedDocumentCommand(question, origin: .trustedInterface) { return }
         if !automatic { clearSelectedDocument() }
         if !automatic, routeCapturedTextReview(question, origin: .trustedInterface) { return }
@@ -2424,16 +3140,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         guard !cloud || !offlineOnly else { message = "Offline mode is enabled."; return }
         guard running, !simulation, !places.scanning, !busy, detection.hazard == .observing,
-              let origin = lastObservation?.camera,
-              let originForward = lastObservation?.forward,
-              let frame = session.currentFrame, ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5 else {
+              let frame = session.currentFrame, let capture = captureObjectView(frame) else {
             if !automatic {
                 answerConversation(question)
             }
             return
         }
+        // Pixels, timestamp and full optical pose come from the SAME admitted
+        // ARFrame, never a newer delegate callback clock or another observation.
+        let origin = capture.origin, originForward = capture.forward
+        guard let originHeading = NativeDepthObservationPolicy.horizontalForward(
+            opticalX: Float(originForward.x), opticalZ: Float(originForward.z)) else { return }
         if !automatic, !feedback.canSpeakAmbient {
-            queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward)
+            queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originHeading)
             return
         }
         voice.endManualTurn()
@@ -2461,10 +3180,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let visualTracks = peopleTracking.snapshot(at: ProcessInfo.processInfo.systemUptime)
         initialSituation["visualTracks"] = visualTracks
         let situationCreatedAt = ProcessInfo.processInfo.systemUptime
-        let image = frame.capturedImage, capturedAt = lastFrameWallTime
+        let image = frame.capturedImage, capturedAt = capture.capturedAt
         let passiveOwner = passiveSceneOwner
         busy = true; questionIsAutomatic = automatic; questionIsChat = false
         let currentRequest = UUID(); requestID = currentRequest
+        beginModelResponse(question: question, producer: .sceneDescription)
         questionTask = Task { @MainActor [weak self] in
             guard let self else { return }
             let timing = AssistantPerformance.signposter.beginInterval("SceneResponse", id: AssistantPerformance.signposter.makeSignpostID())
@@ -2486,9 +3206,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 for _ in 0..<2 {
                     try await Task.sleep(for: .milliseconds(150))
                     guard self.requestID == currentRequest, let laterFrame = self.session.currentFrame,
+                          let laterCapture = self.captureObjectView(laterFrame),
+                          laterCapture.generation == capture.generation,
+                          laterCapture.sessionGeneration == capture.sessionGeneration,
                           laterFrame.timestamp > frame.timestamp,
                           !groundingTimestamps.contains(laterFrame.timestamp),
-                          ProcessInfo.processInfo.systemUptime - self.lastFrameWallTime < 0.5 else { break }
+                          RequestedVisualCapturePose.poseStable(origin: origin, current: laterCapture.origin,
+                            originForward: originForward, currentForward: laterCapture.forward) else { break }
                     groundingTimestamps.insert(laterFrame.timestamp)
                     let later = laterFrame.capturedImage
                     if let extra = try? await Task.detached(priority: .userInitiated, operation: {
@@ -2554,7 +3278,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     }
                 }
                 try Task.checkCancellation()
-                guard self.requestID == currentRequest, self.assistantDialogue.goalRevision == dialogue.goalRevision,
+                guard self.requestID == currentRequest,
+                      self.passiveObservationGeneration == capture.generation,
+                      self.assistantSession.generation == capture.sessionGeneration,
+                      self.assistantDialogue.goalRevision == dialogue.goalRevision,
                       self.preferencesRevision == interestRevision,
                       self.indoor.revision == mapRevision, self.indoor.alignmentRevision == alignmentRevision else { return }
                 guard self.recognizedPlace?.id == preview?.id else { return }
@@ -2568,10 +3295,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     self.message = arabic ? "تغيرت قراءات الحساسات أو انقطع وصولها. اطلب وصفاً جديداً." : "Sensor readings changed or became unavailable. Request a new description."
                     return
                 }
-                guard SceneDelivery.allowed(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime,
-                    origin: origin, current: self.lastObservation?.camera, currentFrameAt: self.lastFrameWallTime,
-                    hazard: self.detection.hazard, tracking: self.lastObservation?.trackingNormal == true,
-                    originForward: originForward, currentForward: self.lastObservation?.forward) else {
+                guard let deliveryFrame = self.session.currentFrame,
+                      let deliveryCapture = self.captureObjectView(deliveryFrame),
+                      deliveryCapture.generation == capture.generation,
+                      deliveryCapture.sessionGeneration == capture.sessionGeneration,
+                      RequestedVisualCapturePose.sceneDeliveryAllowed(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime,
+                        origin: origin, current: deliveryCapture.origin, currentFrameAt: deliveryCapture.capturedAt,
+                        hazard: self.detection.hazard, tracking: self.lastObservation?.trackingNormal == true,
+                        originForward: originForward, currentForward: deliveryCapture.forward) else {
                     self.message = "The view changed before the answer was ready. Request a new description."; return
                 }
                 // Generic VLM and OCR summaries cannot bypass dedicated money recognition.
@@ -2612,6 +3343,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                       words <= self.narrationBudget.allowance(limit: self.wordsPerMinute, now: now) else {
                     if !automatic { self.message = "The answer exceeded your word allowance. Request a shorter answer or increase the allowance." }; return
                 }
+                let modelReply: ModelResponseAuthority.Lease?
+                if fromModel {
+                    guard let lease = self.modelResponseAuthority.admit(answer, producer: .sceneDescription,
+                        binding: self.modelResponseBinding, createdAt: capturedAt, now: now) else { return }
+                    self.modelSceneCapture = (lease.id, capturedAt, origin, originForward, capture.generation, capture.sessionGeneration)
+                    modelReply = lease
+                } else { modelReply = nil }
                 // Novelty belongs to independent observations and completed playback, not
                 // model wording or companion admission. All existing budget/priority gates remain.
                 if automatic {
@@ -2623,14 +3361,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     kind: automatic ? .discovery : .answer, text: answer, words: words,
                     revision: currentRequest.uuidString,
                     createdAt: capturedAt, expiresAt: capturedAt + 6, requested: !automatic)
-                let spoken = self.deliverCandidate(candidate, narrationID: currentRequest)
+                let spoken = self.deliverCandidate(candidate, narrationID: currentRequest, modelReply: modelReply)
                 guard spoken else {
                     if automatic {
                         self.passiveSceneDelivery.finish(id: currentRequest, completed: false,
                                                          currentOwner: self.passiveSceneOwner)
                         self.companion.release(candidate.key)
                     }
-                    if !automatic { self.queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward) }
+                    if !automatic { self.queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originHeading) }
                     return
                 }
                 let sessionID = self.narrationSession, at = Date()
@@ -2640,6 +3378,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     goalRevision: dialogue.goalRevision, snapshotID: snapshotID, sourceIDs: sourceIDs, text: answer, at: at) }
                 self.narrationBudget.charge(words: words, limit: self.wordsPerMinute, now: now)
                 self.sceneAnswer = answer; self.currentReply = answer
+                self.sceneModelDisplay = modelReply.map { .init(lease: $0, revision: self.sceneAnswerRevision, text: answer, historical: false) }
+                self.currentModelDisplay = modelReply.map { .init(lease: $0, revision: self.currentReplyRevision, text: answer, historical: false) }
+                self.lastSceneModelReply = modelReply
+                self.armModelDisplayExpiry()
                 self.lastSceneContent = answer; self.lastSceneSpoken = ProcessInfo.processInfo.systemUptime
                 if !automatic {
                     self.requestedVisualDialogue = (currentRequest, self.assistantSession.generation)
@@ -2656,8 +3398,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// One admission point for new candidates; approved producers use the private
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
-        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
-        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) || selectedDocumentSpeechIDs.contains($0) } ?? false
+        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
+        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) || selectedDocumentSpeechIDs.contains($0) || recipeSpeechIDs.contains($0) || emailSpeechIDs.contains($0) } ?? false
         #if DEBUG
         var debugDelivered = false
         defer {
@@ -2666,7 +3408,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
         #endif
-        guard !textOnly else { return false }
+        // Only an XCTest-installed silent transport may exercise text-only
+        // delivery. The production property is always false.
+        guard !textOnly || silentModelTestDelivery else { return false }
+        if let modelReply {
+            guard candidate.kind == .answer || candidate.kind == .discovery,
+                  alert == nil, spatialRouteID == nil, modelReplyAllowed(modelReply, text: candidate.text) else { return false }
+        }
         // A disconnected private audio route cannot leak names, goals or replies
         // through the speaker. Independent hazard/mobility cues remain available.
         let independentAlert = alert != nil && (candidate.kind == .hazard || candidate.kind == .mobility)
@@ -2695,11 +3443,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         if let spatialRouteID {
             guard candidate.kind == .mobility, alert == nil,
-                  spatialRouteOutput.validateForStart(spatialRouteID) else { return false }
+                  spatialRouteOutput.validateSpeechStart(spatialRouteID, text: candidate.text) else { return false }
         }
         let admitted = AdmittedSpeech(candidate, privateReference: privateReference)
         let spoken = feedback.deliver(admitted, narrationID: narrationID, speechID: speechID, alert: alert,
-            independentAlert: independentAlert, spatialRouteID: spatialRouteID)
+            independentAlert: independentAlert, spatialRouteID: spatialRouteID, modelReply: modelReply)
         #if DEBUG
         debugDelivered = spoken
         #endif
@@ -2711,18 +3459,29 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     @discardableResult private func dispatchText(_ text: String, kind: InformationCandidate.Kind,
         requested: Bool = false, replace: Bool = false, revision: String = UUID().uuidString,
-        narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
         let now = ProcessInfo.processInfo.systemUptime
         let candidate = InformationCandidate(key: "speech:" + revision, kind: kind, text: text,
             words: Self.wordCount(text), revision: revision, createdAt: now, expiresAt: now + 2,
             requested: requested)
         if replace { _ = feedback.stopInformation(announceCancellation: false) }
-        let delivered = deliverCandidate(candidate, narrationID: narrationID, speechID: speechID, alert: alert)
+        let delivered = deliverCandidate(candidate, narrationID: narrationID, speechID: speechID, alert: alert, modelReply: modelReply)
         if replace && !delivered && !assistantSession.privateAudioHeld { feedback.requestCancellationAnnouncement() }
         return delivered
     }
     /// Descriptive answers and repeats retain normal information budgets.
-    @discardableResult func speakRequested(_ text: String, replace: Bool = true, narrationID: UUID? = nil, speechID: UUID? = nil) -> Bool {
+    @discardableResult func speakRequested(_ text: String, replace: Bool = true, narrationID: UUID? = nil, speechID: UUID? = nil, modelReply suppliedReply: ModelResponseAuthority.Lease? = nil) -> Bool {
+        // Only unowned UI repeats recover provenance by exact displayed text.
+        // Document/OCR and other independently owned speech IDs keep their own gates.
+        let modelReply = suppliedReply ?? (speechID == nil && narrationID == nil ? retainedModelReply(for: text) : nil)
+        if let modelReply {
+            guard modelReplyAllowed(modelReply, text: text) else { return false }
+            if speechID == nil && narrationID == nil {
+                enqueueConversationSpeech(.model(modelReply), request: modelReply.binding.requestID,
+                    generation: modelReply.binding.sessionGeneration, reports: modelReply.reports, evidence: modelReply.evidence)
+                return false // Repeats retain the original lease, never mint a fresh one.
+            }
+        }
         // Prefer the ORIGINAL displayed receipt. Admission against a newer equal
         // minute read cannot refresh a repeated answer.
         let retained = [sceneClockReceipt, currentClockReceipt].compactMap { $0 }.first { $0.text == text }
@@ -2730,11 +3489,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             revalidateClockReplies(); return false
         }
         if !receipt.replyIDs.isEmpty, speechID == nil {
-            queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
-                codeOwned: true, origin: ([sceneClockReceipt, currentClockReceipt].enumerated().contains { index, value in value?.text == text && (index == 0 ? sceneClockOrigin : currentClockOrigin) == .unverifiedMicrophone } ? .unverifiedMicrophone : .trustedInterface), clockReceipt: receipt)
+            queueCodeConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+                origin: ([sceneClockReceipt, currentClockReceipt].enumerated().contains { index, value in value?.text == text && (index == 0 ? sceneClockOrigin : currentClockOrigin) == .unverifiedMicrophone } ? .unverifiedMicrophone : .trustedInterface), clockReceipt: receipt)
             return false // queue admission is not proof of audible delivery
         }
-        return dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID, speechID: speechID)
+        return dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID, speechID: speechID, modelReply: modelReply)
     }
     /// Only short current-action consent/progress/confirmation/error, never scene descriptions.
     @discardableResult func speakOperation(_ text: String, replace: Bool = true, revision: String = UUID().uuidString) -> Bool {
@@ -2860,6 +3619,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         searchInFlight = false; trackLookInFlight = false
     }
     func clearAssistantConversation() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         pendingScopedReview = nil; completedScopedReview = nil; scopedReviewError = ""
         clearExploreSnapshot()
         #if DEBUG
@@ -3105,6 +3866,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func clearNarrationHistory() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         clearSelectedDocument()
         purgeCapturedTextPlayback()
         #if DEBUG
@@ -3116,7 +3879,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func receiveCompanionUtterance(_ text: String, fromVoice: Bool = false) {
         recordingCompanionTurn = true; recordedCompanionSourceID = nil
         defer { recordingCompanionTurn = false; recordedCompanionSourceID = nil }
+        let privateDraftInput = text
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if LocalEmailDraftCommand.isPrivateInput(text) {
+            guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
+                  !fromVoice || assistantSession.shouldListen else { return }
+            let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
+            routePrivateEmailDraftInput(privateDraftInput, origin: origin)
+            return // private namespace never enters diagnostics, dialogue, or model fallback
+        }
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
               !fromVoice || assistantSession.shouldListen else {
             #if DEBUG
@@ -3144,6 +3915,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // A read-only clock question needs conversation authority, not goal authority.
         // Intercept before cancellation, everyday-task mutation or camera work.
         if origin == .trustedInterface {
+            if routeLocalRecipeCommand(text, origin: origin) { return }
             if routeSelectedDocumentCommand(text, origin: origin) { return }
             clearSelectedDocument() // before early clock/history/model routes
         }
@@ -3173,8 +3945,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Narration hold preserves the conversation and retained goal. It is not
         // microphone mute, camera off, task cancellation, or inferred addressee detection.
         if AssistantControl.parse(text) == .quiet { _ = handleAssistantControl(text); return }
-        if !ambientDescriptions,
-           text.trimmingCharacters(in: .punctuationCharacters).lowercased() == "continue" {
+        if AssistantControl.resumesHeldNarration(text, isHeld: !ambientDescriptions) {
             _ = handleAssistantControl("resume descriptions"); return
         }
 
@@ -3347,11 +4118,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     private func queueModelConversationSpeech(_ phrase: String, request: UUID, generation: UInt64,
                                                reports: [String], evidence: [CompanionEvidence]) {
+        guard modelResponseAuthority.owner == .conversation else { return }
         if let id = activeModelClockReplyID {
             guard modelClockSpeechQueuedID != id, let receipt = modelClockReceipt(),
                   let lease = clockReplies[id] else { return }
-            queueConversationSpeech(receipt.text, request: request, generation: generation,
-                evidence: [lease.evidence], codeOwned: true, clockReceipt: receipt)
+            queueCodeConversationSpeech(receipt.text, request: request, generation: generation,
+                evidence: [lease.evidence], clockReceipt: receipt)
             modelClockSpeechQueuedID = id
         } else {
             queueConversationSpeech(phrase, request: request, generation: generation,
@@ -3375,15 +4147,36 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     /// Both streaming previews and settled replies keep their original receipt.
     /// An unrelated later screen update is never overwritten by clock expiry.
-    @discardableResult private func showConversationReply(_ text: String, settled: Bool, origin: CompanionCommandOrigin = .trustedInterface) -> Bool {
+    @discardableResult private func showConversationReply(_ text: String, settled: Bool, origin: CompanionCommandOrigin = .trustedInterface, modelReply: ModelResponseAuthority.Lease? = nil) -> Bool {
+        if let modelReply, !modelReplyAllowed(modelReply, text: text) { return false }
         guard let receipt = clockDeliveryReceipt(text) else { return false }
         sceneAnswer = text; sceneClockOrigin = origin
+        sceneModelDisplay = modelReply.map { .init(lease: $0, revision: sceneAnswerRevision, text: text, historical: false) }
         sceneClockReceipt = receipt.replyIDs.isEmpty ? nil : receipt
         if settled {
             currentReply = text; currentClockOrigin = origin
+            currentModelDisplay = modelReply.map { .init(lease: $0, revision: currentReplyRevision, text: text, historical: false) }
             currentClockReceipt = receipt.replyIDs.isEmpty ? nil : receipt
         }
+        armModelDisplayExpiry()
+        #if DEBUG
+        if debugHostedJourneyEnabled, let lease=modelReply, debugHostedJourneyDisplays.count<64 {
+            debugHostedJourneyDisplays.append([
+                "request_id":lease.binding.requestID.uuidString,"session_generation":lease.binding.sessionGeneration,
+                "lease_id":lease.id.uuidString,"revision":(settled ? currentReplyRevision:sceneAnswerRevision).uuidString,
+                "settled":settled,"text":String(text.prefix(4096)),"text_truncated":text.count>4096,
+                "accepted_at_uptime":ProcessInfo.processInfo.systemUptime,"audio_delivered":false])
+        }
+        #endif
         return true
+    }
+
+    @discardableResult private func showModelConversationReply(_ text: String, settled: Bool, origin: CompanionCommandOrigin = .trustedInterface,
+        reports: [String], evidence: [CompanionEvidence]) -> Bool {
+        let now = modelResponseNow
+        guard let lease = modelResponseAuthority.admit(text, binding: modelResponseBinding,
+            reports: reports, evidence: evidence, createdAt: now, now: now) else { return false }
+        return showConversationReply(text, settled: settled, origin: origin, modelReply: lease)
     }
 
     /// Pure information lane: no goal/search/route/report or camera mutation.
@@ -3397,12 +4190,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               showConversationReply(lease.reply, settled: true, origin: origin) else {
             let unavailable = arabic ? "تعذر قراءة ساعة الجهاز. حاول مرة أخرى." : "I couldn't read the device clock. Please ask again."
             sceneAnswer = unavailable; currentReply = unavailable
-            queueConversationSpeech(unavailable, request: requestID, generation: assistantSession.generation,
-                codeOwned: true, origin: origin)
+            queueCodeConversationSpeech(unavailable, request: requestID, generation: assistantSession.generation,
+                origin: origin)
             return true
         }
-        queueConversationSpeech(lease.reply, request: requestID, generation: assistantSession.generation,
-            evidence: [lease.evidence], codeOwned: true, origin: origin, clockReceipt: receipt)
+        queueCodeConversationSpeech(lease.reply, request: requestID, generation: assistantSession.generation,
+            evidence: [lease.evidence], origin: origin, clockReceipt: receipt)
         return true
     }
 
@@ -3456,6 +4249,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// and perception identities unchanged so ongoing sensor work is not retired.
     private func interruptOrdinaryConversation(origin: CompanionCommandOrigin) {
         guard CommandAuthority.permits(.interruptOrdinarySpeech, from: origin) else { return }
+        retireEmailOutput() // interruption is not a draft edit, undo or discard
+        retireRecipePlayback() // interruption retires only speech, not source/step/timer
+        modelResponseAuthority.invalidateConversation()
+        revalidateModelDisplays()
+        feedback.revalidateModelReply()
         if CommandAuthority.permits(.changeGoal, from: origin) { clearBoardingReading() }
         unverifiedConversationID = UUID()
         unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
@@ -3475,8 +4273,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     private func unverifiedConversationReply(_ text: String) {
         sceneAnswer = text; currentReply = text
-        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
-            codeOwned: true, origin: .unverifiedMicrophone)
+        queueCodeConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+            origin: .unverifiedMicrophone)
     }
 
     /// Release fallback, not verified-speaker recognition. Free-form chat has its
@@ -3520,6 +4318,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // No speaker binding exists yet: prior microphone speakers are not context.
         let dialogue = VoiceConversationPrivacy.anonymousTurn(text)
         let id = unverifiedConversationID, generation = assistantSession.generation, request = requestID
+        beginModelResponse(question: text)
         unverifiedConversationTimeout = Task { @MainActor [weak self] in
             do { try await Task.sleep(for: .seconds(30)) } catch { return }
             guard let self, self.unverifiedConversationID == id else { return }
@@ -3538,13 +4337,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                   self.requestID == request, ConversationDomainPolicy.allowsModelResponse(to: text) else { return }
             self.unverifiedConversationTimeout?.cancel(); self.unverifiedConversationTimeout = nil
             self.unverifiedConversationTask = nil
+            if let fallback = answer.conversationOperationalFallback {
+                self.unverifiedConversationReply(fallback)
+                return
+            }
             guard let reply = answer.text,
                   !SpatialClaimGuard.containsSpatialClaim(reply),
                   CompanionEvidenceGuard.allows(reply, reports: dialogue.userRecords.map(\.text), evidence: [], now: Date()) else {
                 self.unverifiedConversationReply(self.arabic ? "لم أتمكن من إعداد رد موثوق. حاول بطريقة أخرى." : "I couldn't prepare a supported reply. Try asking another way.")
                 return
             }
-            guard self.showConversationReply(reply, settled: true, origin: origin) else {
+            guard self.showModelConversationReply(reply, settled: true, origin: origin,
+                reports: dialogue.userRecords.map(\.text), evidence: []) else {
                 self.unverifiedConversationReply(CompanionEvidenceGuard.unavailableReply(arabic: self.arabic))
                 return
             }
@@ -3734,11 +4538,24 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return true
     }
 
-    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
+    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], origin: CompanionCommandOrigin = .trustedInterface) {
+        let now = modelResponseNow
+        guard let lease = modelResponseAuthority.admit(text, binding: modelResponseBinding, reports: reports,
+            evidence: evidence, createdAt: now, now: now) else { return }
+        enqueueConversationSpeech(.model(lease), request: request, generation: generation,
+            reports: reports, evidence: evidence, origin: origin)
+    }
+    private func queueCodeConversationSpeech(_ text: String, request: UUID, generation: UInt64, evidence: [CompanionEvidence] = [], origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
+        enqueueConversationSpeech(.codeReply(text), request: request, generation: generation,
+            evidence: evidence, origin: origin, clockReceipt: clockReceipt, searchAreaQuestionID: searchAreaQuestionID)
+    }
+    private func enqueueConversationSpeech(_ content: ConversationContent, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
+        let text = content.text, codeOwned = content.modelReply == nil
+        if let lease = content.modelReply, !modelReplyAllowed(lease, text: text) { return }
         #if DEBUG
         let trace = DebugNativeSessionTrace(requestID: origin == .unverifiedMicrophone || codeOwned ? nil : request)
         #endif
-        guard !textOnly, assistantSession.state == .active,
+        guard (!textOnly || silentModelTestDelivery), assistantSession.state == .active,
               assistantSession.accepts(generation: generation), requestID == request,
               (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else {
             #if DEBUG
@@ -3754,7 +4571,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         // Only receipts actually used by this sentence retain a visual lease.
         let current: [CompanionEvidence]
-        if codeOwned { current = [] }
+        if codeOwned || content.modelReply?.producer == .sceneDescription { current = [] }
         else {
             guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: reports, evidence: evidence) else {
                 #if DEBUG
@@ -3779,7 +4596,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         conversationSpeech.append(ConversationSpeech(id: speechID, text: text, request: request,
             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
-            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, clockReceipt: receipt.replyIDs.isEmpty ? nil : receipt, origin: origin, searchAreaQuestionID: searchAreaQuestionID))
+            reports: reports, evidence: evidence, captures: captures, content: content, clockReceipt: receipt.replyIDs.isEmpty ? nil : receipt, origin: origin, searchAreaQuestionID: searchAreaQuestionID))
         drainConversationSpeech()
     }
 
@@ -3801,11 +4618,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard requestID == next.request, assistantSession.state == .active,
                   assistantSession.accepts(generation: next.generation),
                   ProcessInfo.processInfo.systemUptime - next.createdAt < 30,
-                  (next.codeOwned || CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date())) else { continue }
+                  (next.codeOwned || next.content.modelReply?.producer == .sceneDescription || CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date())) else { continue }
             if let receipt = next.clockReceipt, !clockDeliveryIsCurrent(receipt, text: next.text) { continue }
             guard next.captures.allSatisfy(conversationCaptureIsCurrent) else { continue }
+            if let lease = next.content.modelReply, !modelReplyAllowed(lease, text: next.text) { continue }
             activeConversationSpeech = next
-            if speakRequested(next.text, replace: false, speechID: next.id) {
+            if speakRequested(next.text, replace: false, speechID: next.id, modelReply: next.content.modelReply) {
                 #if DEBUG
                 debugDispatched = true
                 #endif
@@ -3820,6 +4638,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// Ordinary conversation without visual evidence is independent of this gate.
     private func revalidateConversationSpeech() {
         revalidateClockReplies()
+        revalidateModelDisplays()
+        feedback.revalidateModelReply()
         guard let active = activeConversationSpeech, !active.captures.isEmpty else { return }
         guard active.captures.allSatisfy(conversationCaptureIsCurrent) else {
             #if DEBUG
@@ -4179,14 +4999,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         // Code-owned receipts use the same bounded queue and delivery completion ledger.
         // Only this controller can set codeOwned; model callbacks always use the guarded default.
-        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
-            codeOwned: true, searchAreaQuestionID: searchAreaQuestionID)
+        queueCodeConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+            searchAreaQuestionID: searchAreaQuestionID)
     }
 
     /// A recognized physical-action request cannot fall through to a plausible model
     /// instruction, a bare yes/no, or a model's own assertion that it verified the target.
     @discardableResult private func routeUnverifiedPhysicalRequest(_ question: String, searchClueInput: CompanionSearchClue? = nil) -> Bool {
         guard ConversationDomainPolicy.requiresPhysicalVerification(for: question) else { return false }
+        defer { beginModelResponse(question: question) }
         if RoadCrossingPolicy.requiresCodeOwnedReply(question) {
             cancelDescription(); stopReturn(); indoor.invalidatePosition()
             deliverConversationReply(RoadCrossingPolicy.reply(audience: assistantAudience, arabic: arabic))
@@ -4271,6 +5092,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         ]
         let id = UUID()
         requestID = id; busy = true; sceneAnswer = ""; questionIsChat = true
+        latestModelReports = []; latestModelEvidence = []
+        beginModelResponse(question: question)
         questionTimeoutTask?.cancel()
         questionTimeoutTask = Task { @MainActor [weak self] in
             do { try await Task.sleep(for: .seconds(30)) } catch { return }
@@ -4306,6 +5129,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                           self.companionWorkingState.goalRevision == revision, self.conversationMemoryRevision == memoryRevision,
                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
                           self.assistantSession.generation == sessionGeneration else { return }
+                    self.latestModelReports = reports; self.latestModelEvidence = evidence
                     self.queueModelConversationSpeech(phrase, request: id, generation: sessionGeneration,
                                                       reports: reports, evidence: evidence)
                 }) { @MainActor [weak self] phrase in
@@ -4316,9 +5140,23 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     guard let rendered = self.modelReplyText(phrase) else { return }
                     let displayed = self.activeModelClockReplyID != nil ? rendered
                         : self.streamedConversationText + (self.streamedConversationText.isEmpty ? "" : " ") + rendered
-                    guard self.showConversationReply(displayed, settled: false) else { return }
+                    let reports = self.latestModelReports, evidence = self.latestModelEvidence
+                    let shown = self.activeModelClockReplyID != nil
+                        ? self.showConversationReply(displayed, settled: false)
+                        : self.showModelConversationReply(displayed, settled: false, reports: reports, evidence: evidence)
+                    guard shown else { return }
                     self.streamedConversationText = displayed
                 }
+            #if DEBUG
+            if self.debugHostedJourneyEnabled, self.debugHostedJourneyResults.count < 8 {
+                self.debugHostedJourneyResults.append([
+                    "request_id":id.uuidString,"returned_at_uptime":ProcessInfo.processInfo.systemUptime,
+                    "text_present":answer.text != nil,"text":answer.text.map { String($0.prefix(4096)) } ?? "",
+                    "text_truncated":(answer.text?.count ?? 0)>4096,"status":String(answer.status.prefix(512)),
+                    "runtime_failure":answer.conversationRuntimeFailure.map { String(describing:$0) } ?? "none",
+                    "cancelled":Task.isCancelled,"current_request":self.requestID == id])
+            }
+            #endif
             // Re-evaluate the action prerequisites after inference; a new request or
             // changed objective invalidates the old decision before it can act.
             let admission = CompanionReactiveSequence.tick([
@@ -4330,8 +5168,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.questionTimeoutTask?.cancel(); self.questionTimeoutTask = nil
             self.busy = false; self.questionIsChat = false
             guard let rawText = answer.text else {
-                self.sceneAnswer = answer.status; self.currentReply = answer.status
-                if self.assistantSession.state == .active { self.speakOperation(answer.status) }
+                let fallback = answer.conversationOperationalFallback ?? answer.status
+                self.sceneAnswer = fallback; self.currentReply = fallback
+                if self.assistantSession.state == .active { self.speakOperation(fallback) }
                 return
             }
             // Metadata generation may outlast the read. Recheck the original
@@ -4360,7 +5199,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
             // Publication stays after the existing proposal gate. Validate again
             // at this display boundary without reacquiring or renewing the read.
-            guard self.showConversationReply(text, settled: true) else {
+            let shown = self.activeModelClockReplyID != nil
+                ? self.showConversationReply(text, settled: true)
+                : self.showModelConversationReply(text, settled: true, reports: self.latestModelReports, evidence: self.latestModelEvidence)
+            guard shown else {
                 self.revalidateClockReplies()
                 self.deliverConversationReply(CompanionEvidenceGuard.unavailableReply(arabic: self.arabic))
                 return
@@ -4419,11 +5261,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             goalRevision: companionWorkingState.goalRevision, origin: .trustedInterface)
         interruptedSearch.cancel()
         cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false
+        #if DEBUG
+        debugRecordHostedNarration("hold")
+        #endif
     }
     func resumeDescriptions() {
         ambientDescriptions = true
         heldSearchIntent.resume(origin: .trustedInterface)
         resumeHeldSearchIfPossible()
+        #if DEBUG
+        debugRecordHostedNarration("resume")
+        #endif
     }
     private func resumeHeldSearchIfPossible() {
         guard assistantSession.state == .active, running, !busy, !voice.awaitingUtterance,
@@ -4479,6 +5327,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let englishPrefix = "Earlier description; the scene may have changed: ", arabicPrefix = "وصف سابق وقد تغير المشهد: "
         var original = record.text
         for prefix in [englishPrefix, arabicPrefix] where original.hasPrefix(prefix) { original = String(original.dropFirst(prefix.count)) }
+        if let lease = retainedNarrationModelReply(for: original) {
+            // A live model repeat uses its original request/capture lease, not a
+            // history prefix that could launder it into a new code-owned answer.
+            guard modelReplyAllowed(lease, text: original) else { return }
+            _ = speakRequested(original, modelReply: lease)
+            return
+        }
+        // Legacy persisted descriptions have no producer receipt. They remain
+        // labelled history, never a source of replayed movement/geometry advice.
+        guard !SpatialClaimGuard.containsSpatialClaim(original) else { return }
         let text = (arabic ? arabicPrefix : englishPrefix) + original
         let tokenizer = NLTokenizer(unit: .word); tokenizer.string = text
         let count = tokenizer.tokens(for: text.startIndex..<text.endIndex).count
@@ -4603,6 +5461,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         stopReturn()
     }
+    @MainActor private lazy var savedRoomDiagnosticGeometry = SavedRoomDiagnosticGeometryProvider(places: places)
+    @MainActor func makeNavigationTestRecordingView() -> NavigationTestRecordingView {
+        NavigationTestRecordingView(bridge: nativeObservations, geometryProvider: savedRoomDiagnosticGeometry, arabic: arabic,
+            onRecordingStarted: { [weak self] in self?.syncNavigationTestPlan() })
+    }
+    @MainActor private func syncNavigationTestPlan() {
+        guard nativeObservations.navigationTestSnapshot().recording?.status == .recording else { return }
+        let route = journeys.withConnectedJourney { $0.diagnosticOwnedRoute }
+        _ = nativeObservations.recordOwnedNavigationTestPlan(route)
+    }
     /// Explicit calibrated-adapter seam. No current camera/room-recognition path
     /// calls this, and retained history is never promoted to a localization capture.
     func configureConnectedJourney(body: BodyEnvelope, limits: SpatialLocalizationLimits,
@@ -4645,21 +5513,23 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private func connectedJourneyBeacon(automatic: Bool) {
         let now = ProcessInfo.processInfo.systemUptime
+        guard revalidateCurrentNavigationHazards(now: now) else { return }
         journeys.withConnectedJourney { $0.revalidate(now: now) }
         guard let held = try? journeys.withConnectedJourney({ try $0.next(now: now) }),
               let cue = held.route.directionalCue() else { return }
         let ticket = held.route, revision = ticket.goalRevision.uuidString
         let key = "\(ticket.routeID):\(ticket.target.id):\(cue.sector):\(cue.distance <= 1)"
         if automatic, key == lastIndoorCueKey { return }
-        let text = arabic ? "\(ticket.target.localizedName(arabic: true))، على بعد نحو \(String(format: "%.1f", cue.distance)) متر."
-            : "\(ticket.target.name), approximately \(String(format: "%.1f", cue.distance)) meters."
-        if spatialRouteOutput.deliver(ticket: ticket, goalRevision: revision, speech: { id in
+        guard let speech = SpatialRouteSpeech(ticket: ticket, arabic: arabic) else { return }
+        if spatialRouteOutput.deliver(message: speech, goalRevision: revision, speech: { id, text in
+            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return false }
             let candidate = InformationCandidate(key: "spatial-route:" + id.uuidString, kind: .mobility,
                 text: text, words: Self.wordCount(text), revision: id.uuidString,
                 createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
             return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
         }, beacon: { id in
-            self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
+            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return false }
+            return self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
         }) {
             lastIndoorAnnouncement = now; lastIndoorCueKey = key
         }
@@ -4701,19 +5571,65 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func startSimulation() {
-        stopCameraMonitoring(); feedback.stop(includingAlerts: true)
+        guard normalCameraSessionAllowed else { return }
+        #if DEBUG
+        beginPracticeRuntimeDiagnosticIfRequested()
+        practiceRuntimeDiagnostic?.mark(.startEntered)
+        defer { practiceRuntimeDiagnostic?.mark(.startReturned) }
+        #endif
+        stopCameraMonitoring()
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.cameraStopped)
+        #endif
+        feedback.stop(includingAlerts: true)
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.feedbackStopped)
+        #endif
         simulation = true; running = true; detector.beginCalibration()
         demonstrationTime = 0; demonstrationHazard = .observing; policy = AlertPolicy(); continuity = MonitoringContinuity()
         for _ in 0..<15 { demoFrame() }
-        startWatchdog(); message = arabic ? "المحاكاة تستخدم عمقاً مولداً. لا يوجد استشعار حقيقي." : "Simulation uses generated depth. No live sensing is active."
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.calibrationGenerated)
+        #endif
+        startWatchdog()
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.watchdogStarted)
+        #endif
+        message = arabic ? "المحاكاة تستخدم عمقاً مولداً. لا يوجد استشعار حقيقي." : "Simulation uses generated depth. No live sensing is active."
         _ = speakMobility(arabic ? "تدريب. الحساسات الحقيقية متوقفة لمدة دقيقتين." : "Practice. Live sensors are paused for two minutes.")
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.speechHandedOff)
+        #endif
         // Practice ends automatically; this does not promise calibrated live sensing.
-        practiceTimer = Timer.scheduledTimer(withTimeInterval: 120, repeats: false) { [weak self] _ in self?.endPractice() }
+        practiceTimer = Timer.scheduledTimer(withTimeInterval: 120, repeats: false) { [weak self] _ in
+            #if DEBUG
+            self?.practiceRuntimeDiagnostic?.mark(.expiryFired)
+            #endif
+            self?.endPractice()
+        }
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.expiryArmed)
+        #endif
     }
     /// Ends practice and returns to live camera and sensors.
     func endPractice() {
         guard simulation else { return }
-        stopCameraMonitoring(); feedback.stop(includingAlerts: true)
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.endEntered)
+        defer {
+            practiceRuntimeDiagnostic?.mark(.endReturned)
+            practiceDiagnosticSubscriptions.removeAll()
+            practiceRuntimeDiagnostic = nil
+        }
+        #endif
+        stopCameraMonitoring()
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.endCameraStopped)
+        #endif
+        feedback.stop(includingAlerts: true)
+        #if DEBUG
+        practiceRuntimeDiagnostic?.mark(.endFeedbackStopped)
+        #endif
         if cameraAwareness && assistantSession.foregroundActive && !textOnly { start() }
         _ = speakMobility(arabic ? "انتهى التدريب. تحتاج تنبيهات الكاميرا إلى تشغيلها وإعادة المعايرة." : "Practice ended. Camera alerts require the camera to be on and the floor recalibrated.")
     }
@@ -4734,7 +5650,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         phoneDetection = detector.process(Observation(timestamp: demonstrationTime, camera: Point3(0, 1.3, 0),
                                                       forward: Point3(0, 0, -1), samples: samples))
-        calibrationProgress = detector.calibrationProgress
+        if calibrationProgress != detector.calibrationProgress {
+            calibrationProgress = detector.calibrationProgress
+        }
     }
 }
 
@@ -4788,6 +5706,8 @@ extension NavigationModel {
 
     /// Camera work always stops in the background; listening follows explicit opt-in.
     func suspendExperience() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         voiceRoomScan.cancel()
         clearSelectedDocument()
         defer { updateLiveActivity() }
@@ -4817,11 +5737,13 @@ extension NavigationModel {
         cancelDescription()
         voice.setBackgroundAllowed(backgroundConversation)
         if cameraAwareness && assistantSession.foregroundActive && !textOnly && !running { start() }
-        if !textOnly && assistantSession.shouldListen { voice.startContinuous(arabic: arabic) }
+        if !textOnly && assistantSession.shouldListen { voice.startContinuous(arabic: arabic, explicitlyRequested: true) }
         message = arabic ? "المحادثة الصوتية مفعلة." : "Voice conversation is on."
     }
 
     func muteConversation() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
         voiceRoomScan.cancel()
         clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
@@ -4831,10 +5753,18 @@ extension NavigationModel {
         interruptedSearch.cancel()
         cancelDescription(); voice.cancel()
         _ = feedback.stopInformation(announceCancellation: false)
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        if seatedMeshDiagnostic != nil { message = "Microphone muted. Seated mesh diagnostic has no phone hazard monitoring."; return }
+        #endif
         message = arabic ? "الميكروفون مكتوم. الكتابة متاحة وتنبيهات الخطر لا تتوقف." : "Microphone muted. You can still type; hazard alerts are not disabled."
     }
 
     func endConversation() {
+        clearLocalEmailDraft()
+        clearLocalRecipe()
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        stopSeatedMeshDiagnostic()
+        #endif
         voiceRoomScan.cancel()
         clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
@@ -4851,6 +5781,10 @@ extension NavigationModel {
     func reconnectListening() { startConversation() }
 
     func startExperience() {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        guard seatedMeshDiagnostic == nil else { return }
+        seatedDiagnosticHold = false
+        #endif
         automaticStartupAllowed = true
         cameraAwareness = true
         startConversation()
@@ -4866,6 +5800,7 @@ extension NavigationModel {
     }
 
     func toggleHomeDescriptions() {
+        guard normalCameraSessionAllowed else { return }
         if ambientDescriptions {
             stopDescriptions()
             speakOperation(arabic ? "سأتوقف عن الوصف. تبقى تنبيهات المسار مفعلة." : "I'll be quiet. Path alerts stay on.")
@@ -4876,6 +5811,19 @@ extension NavigationModel {
     }
 
     func repeatHomeInformation() {
+        if emailDisplay != nil {
+            // Repeats use the original exact draft receipt, never renew its deadline.
+            if let response = emailSpeechResponse, emailOutputAllowed,
+               localEmailDraft.validates(response, generation: assistantSession.generation,
+                                         uptime: ProcessInfo.processInfo.systemUptime) {
+                presentLocalEmailResponse(response)
+            } else { retireEmailOutput() }
+            return
+        }
+        if recipeDisplay != nil {
+            _ = routeLocalRecipeCommand("read recipe step", origin: .trustedInterface)
+            return // private source repeats never fall through to ordinary history
+        }
         if selectedDocument.selection != nil || selectedDocumentImportOwner != nil || selectedDocumentDisplay != nil {
             repeatSelectedDocumentGuidance(); return
         }
@@ -4934,6 +5882,7 @@ extension NavigationModel {
 
     /// Start ordinary capture, then try bounded saved-map candidates without a room picker.
     private func launchWithNearbyPlace() {
+        guard normalCameraSessionAllowed else { return }
         cancelAutomaticRoomRecovery()
         automaticRoomRecoveryEnabled = true
         launch()
@@ -4981,6 +5930,7 @@ extension NavigationModel {
     }
 
     private func tickAutomaticRoomRecovery(now: Double) {
+        guard normalCameraSessionAllowed else { return }
         guard automaticRoomRecoveryEnabled, running, !simulation, !places.scanning,
               assistantSession.foregroundActive, UIApplication.shared.applicationState == .active,
               recognizedPlace == nil, alignedRoomID == nil,
@@ -4998,6 +5948,8 @@ extension NavigationModel {
             do {
                 let sessionID = UUID()
                 let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID, now: now)
+                // Entry must withdraw live journey authority even if launch is refused.
+                journeys.breakTracking()
                 automaticRoomAttempt = next; awaitingPlace = place
                 placeRecovery.begin(candidate: next.placeID, now: now)
                 launch(map: map, worldSessionID: sessionID, announceCalibration: false)
@@ -5017,6 +5969,7 @@ extension NavigationModel {
 
     /// Appearance is a short-lived search clue, even without depth/calibration. It is never pose.
     private func probeAutomaticRoomAppearance(frame: ARFrame) {
+        guard normalCameraSessionAllowed else { return }
         let capturedAt = lastFrameWallTime
         guard automaticRoomRecoveryEnabled, awaitingPlace == nil, recognizedPlace == nil,
               alignedRoomID == nil, !recoveryProbeInFlight, !recallInFlight,
@@ -5028,7 +5981,7 @@ extension NavigationModel {
         lastRecoveryProbe = capturedAt; recoveryProbeInFlight = true
         let episode = recoveryProbeEpisode, frameID = observationFrameID
         roomRecall.evidence(image: frame.capturedImage, candidates: candidates) { [weak self] evidence, _ in
-            guard let self, self.recoveryProbeEpisode == episode else { return }
+            guard let self, self.normalCameraSessionAllowed, self.recoveryProbeEpisode == episode else { return }
             self.recoveryProbeInFlight = false
             let now = ProcessInfo.processInfo.systemUptime
             guard self.running, !self.places.scanning, self.automaticRoomRecoveryEnabled,
@@ -5432,8 +6385,8 @@ extension NavigationModel {
         let reply = Self.wordCount(summary) <= 30 ? summary : fallback
         message = reply; sceneAnswer = reply; currentReply = reply
         interruptOrdinaryConversation(origin: origin)
-        queueConversationSpeech(reply,
-            request: requestID, generation: assistantSession.generation, codeOwned: true)
+        queueCodeConversationSpeech(reply,
+            request: requestID, generation: assistantSession.generation)
         return true
     }
 
@@ -5445,8 +6398,8 @@ extension NavigationModel {
         let reply = Self.wordCount(summary) <= 30 ? summary : fallback
         message = reply; sceneAnswer = reply; currentReply = reply
         interruptOrdinaryConversation(origin: .trustedInterface)
-        queueConversationSpeech(reply,
-            request: requestID, generation: assistantSession.generation, codeOwned: true)
+        queueCodeConversationSpeech(reply,
+            request: requestID, generation: assistantSession.generation)
         // Ambiguous cross-place history asks a question instead of selecting an
         // instance. A single history clue does not suppress an available fresh look.
         if allowNewSensorWork,
@@ -6107,6 +7060,7 @@ extension NavigationModel {
     /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
     /// room record, and the current-place state if it was this place.
     func deletePlace(_ place: SavedPlace) {
+        places.retireDiagnosticGeometry(for: place)
         places.retireRegistration(for: place)
         companionWorkingState.retireSearchClue(placeID: place.id.uuidString)
         retireHeldSearchForPrivacyDeletion()
@@ -6791,7 +7745,23 @@ extension NavigationModel {
     }
 
     /// Captured pictures are explicitly snapshots, never evidence of the current room or path.
-    func captureExploreSnapshot() {
+    @MainActor func captureExploreSnapshot() {
+        // Cancellation retires output, not synchronous Vision. Reuse the photo
+        // worker lease so repeated capture/clear/picker actions cannot retain an
+        // unbounded backlog of camera buffers and preview images.
+        guard selectedPhotoNativeLease == nil else {
+            speakOperation(arabic ? "لا تزال الصورة السابقة قيد المعالجة. حاول مجدداً بعد قليل." : "The previous picture is still processing. Please try again shortly.")
+            return
+        }
+        // Actor-isolated acquisition precedes invalidation and image allocation.
+        // Early failures release here; an admitted task owns the same slot until
+        // its noncancellable native reader has really finished.
+        let nativeLease = UUID()
+        selectedPhotoNativeLease = nativeLease
+        var handedToNativeTask = false
+        defer {
+            if !handedToNativeTask, selectedPhotoNativeLease == nativeLease { selectedPhotoNativeLease = nil }
+        }
         clearSelectedDocument()
         clearExploreSnapshot()
         cancelDescription()
@@ -6805,6 +7775,10 @@ extension NavigationModel {
         guard let cg = CIContext().createCGImage(oriented, from: oriented.extent) else { return }
         let image = UIImage(cgImage: cg), token = exploreRequest, generation = assistantSession.generation
         exploreTask = Task { @MainActor [weak self] in
+            defer {
+                if self?.selectedPhotoNativeLease == nativeLease { self?.selectedPhotoNativeLease = nil }
+            }
+            guard !Task.isCancelled else { return }
             let regions = await Task.detached(priority: .userInitiated) {
                 (try? VisionService.exploreRegions(image: pixels, orientation: .right, arabic: arabic)) ?? []
             }.value
@@ -6816,6 +7790,7 @@ extension NavigationModel {
                 ? (arabic ? "الصورة الملتقطة جاهزة. لم أتعرف على مناطق فيها." : "Captured picture ready. I didn't recognize any regions in it.")
                 : (arabic ? "الصورة الملتقطة جاهزة. استكشف المناطق باللمس. هذه صورة سابقة وليست وصفاً حياً." : "Captured picture ready. Explore the regions by touch. This is a snapshot, not a live view."))
         }
+        handedToNativeTask = true
     }
     func clearExploreSnapshot() {
         photoReferenceFailed = false
@@ -6846,7 +7821,7 @@ extension NavigationModel {
         guard photoViewID == id else { return }
         clearExploreSnapshot(); photoViewID = nil; photoPickerRequested = false
     }
-    func beginSelectedPhoto(viewID: UUID) -> SelectedPhotoReference.Selection? {
+    @MainActor func beginSelectedPhoto(viewID: UUID) -> SelectedPhotoReference.Selection? {
         guard photoViewID == viewID, assistantSession.foregroundActive, selectedPhotoNativeLease == nil else { return nil }
         clearSelectedPhotoReference()
         let selection = selectedPhoto.select(viewID: viewID, generation: assistantSession.generation,
@@ -6855,7 +7830,7 @@ extension NavigationModel {
         startSelectedPhotoExpiry()
         return selection
     }
-    func finishSelectedPhotoNativeWork(_ selection: SelectedPhotoReference.Selection) {
+    @MainActor func finishSelectedPhotoNativeWork(_ selection: SelectedPhotoReference.Selection) {
         if selectedPhotoNativeLease == selection.id { selectedPhotoNativeLease = nil }
     }
     func selectedPhotoLoadIsCurrent(_ selection: SelectedPhotoReference.Selection) -> Bool {
@@ -6930,7 +7905,7 @@ extension NavigationModel {
 
     /// User-selected library photo, entirely on-device and separate from current
     /// camera/room evidence. Ownership was assigned before asynchronous loading.
-    @discardableResult func explorePhoto(_ image: UIImage, selection: SelectedPhotoReference.Selection, sha256: String) -> Bool {
+    @MainActor @discardableResult func explorePhoto(_ image: UIImage, selection: SelectedPhotoReference.Selection, sha256: String) -> Bool {
         guard selectedPhotoNativeLease == selection.id, selectedPhotoLoadIsCurrent(selection), let cg = image.cgImage else { return false }
         let orientation = CGImagePropertyOrientation(image.imageOrientation), arabic = self.arabic
         let token = selection.id, generation = assistantSession.generation
@@ -7355,3 +8330,438 @@ extension NavigationModel {
         if feedback.speechPriority == nil { selectedDocumentNotice(text) }
     }
 }
+
+#if DEBUG
+/// Synthetic UI-test metadata only. No UI signals, content, geometry or speech.
+/// Every engine tick still runs; writes are bounded and never occur on the tick's thread.
+private final class PracticeRuntimeDiagnostic {
+    static let testID = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
+    enum Phase: String, Codable {
+        case startEntered, cameraStopped, feedbackStopped, calibrationGenerated
+        case watchdogStarted, speechHandedOff, expiryArmed, startReturned
+        case expiryFired, endEntered, endCameraStopped, endFeedbackStopped, endReturned
+    }
+    private struct Event: Codable { var phase: Phase; var elapsedMS: Double }
+    private struct Snapshot: Codable {
+        var schema = 1
+        var scope = "synthetic-practice-runtime"
+        var testID = PracticeRuntimeDiagnostic.testID
+        var runID: String
+        var events: [Event] = []
+        var ticks = 0
+        var totalTickMS = 0.0
+        var maxTickMS = 0.0
+        var maxTickGapMS = 0.0
+        var lastTickMS = 0.0
+        var hazard = "stopped"
+        var hazardTransitions = 0
+        var publications: [String: Int] = [:]
+        var snapshots = 0
+        var truncated = false
+    }
+    private let lock = NSLock()
+    private let queue = DispatchQueue(label: "blind.synthetic-practice-diagnostic", qos: .utility)
+    private let started = ProcessInfo.processInfo.systemUptime
+    private let destination: URL
+    private var state: Snapshot
+    private var previousTick: Double?
+    private var nextTickSnapshot = 0.0
+    init(runID: UUID) {
+        state = Snapshot(runID: runID.uuidString)
+        destination = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("BlindPracticeRuntime", isDirectory: true)
+            .appendingPathComponent(runID.uuidString + ".json")
+    }
+    private func persistLocked() {
+        guard state.snapshots < 32 else { state.truncated = true; return }
+        state.snapshots += 1
+        if state.snapshots == 32 { state.truncated = true }
+        guard let data = try? JSONEncoder().encode(state), data.count <= 16 * 1024 else { return }
+        let target = destination
+        queue.async {
+            do {
+                try FileManager.default.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try data.write(to: target, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            } catch {
+                // Diagnostic failure must not alter engine operation or test verdicts.
+            }
+        }
+    }
+    func mark(_ phase: Phase) {
+        lock.lock(); defer { lock.unlock() }
+        if state.events.count < 16 {
+            state.events.append(Event(phase: phase, elapsedMS: max(0, (ProcessInfo.processInfo.systemUptime - started) * 1000)))
+        } else { state.truncated = true }
+        persistLocked()
+    }
+    func publication(_ source: String) {
+        lock.lock(); defer { lock.unlock() }
+        // Source names are hard-coded at subscription sites, never app content.
+        state.publications[source, default: 0] = min(1_000_000, state.publications[source, default: 0] + 1)
+    }
+    func tick(start: Double, finish: Double, hazard: Hazard) {
+        lock.lock(); defer { lock.unlock() }
+        guard start.isFinite, finish.isFinite, finish >= start else { return }
+        state.ticks = min(1_000_000, state.ticks + 1)
+        let duration = (finish - start) * 1000
+        state.totalTickMS += duration; state.maxTickMS = max(state.maxTickMS, duration)
+        if let previousTick { state.maxTickGapMS = max(state.maxTickGapMS, (start - previousTick) * 1000) }
+        previousTick = start; state.lastTickMS = max(0, (finish - started) * 1000)
+        if state.hazard != hazard.rawValue { state.hazardTransitions += 1; state.hazard = hazard.rawValue }
+        if finish >= nextTickSnapshot {
+            nextTickSnapshot = finish + 10
+            persistLocked()
+        }
+    }
+}
+#endif
+
+
+#if DEBUG
+extension NavigationModel {
+    /// Exercises the real authority boundary without starting the microphone or model.
+    @discardableResult func debugRouteLocalRecipeCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard textOnly, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else { return false }
+        return routeLocalRecipeCommand(text, origin: origin)
+    }
+}
+#endif
+
+// MARK: - Explicitly selected recipe -> trusted companion command adapter.
+// No model tool or raw microphone can read/mutate this private source.
+extension NavigationModel {
+    private var recipeOutputAllowed: Bool {
+        assistantSession.foregroundActive && assistantSession.mayRespond &&
+            !assistantSession.privateAudioHeld && !detection.hazard.isUrgent && ambientDescriptions
+    }
+    func beginLocalRecipeSelection() -> UUID? {
+        clearLocalRecipe()
+        guard assistantSession.foregroundActive else { return nil }
+        let id = UUID(); recipeImportOwner = (id, assistantSession.generation)
+        return id
+    }
+    func ownsLocalRecipeSelection(_ owner: UUID) -> Bool {
+        recipeImportOwner?.id == owner && recipeImportOwner?.generation == assistantSession.generation &&
+            assistantSession.foregroundActive
+    }
+    @discardableResult func selectLocalRecipe(_ data: Data, owner: UUID) -> Bool {
+        guard ownsLocalRecipeSelection(owner) else { return false }
+        clearLocalRecipe() // replacement/failure cannot retain an older revision
+        do {
+            let source = try LocalRecipeReference.decode(data)
+            let hash = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            return localRecipe.select(source, sha256: hash, generation: assistantSession.generation,
+                                      origin: .trustedInterface) != nil
+        } catch { return false }
+    }
+    @discardableResult func enableLocalRecipeCommands(_ selected: LocalRecipeCompanion.Selection) -> Bool {
+        guard assistantSession.foregroundActive else { return false }
+        return localRecipe.enable(selected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func clearLocalRecipe() {
+        recipeImportOwner = nil
+        localRecipe.clear()
+        retireRecipePlayback()
+    }
+    func cancelLocalRecipeSelection(_ owner: UUID) {
+        guard recipeImportOwner?.id == owner else { return }
+        clearLocalRecipe()
+    }
+    func localRecipeReaderDisappeared() {
+        // A presented picker may temporarily cover the reader. Its own current
+        // owner/generation gates the eventual import; Stop/background retires it.
+        guard recipeImportOwner == nil else { return }
+        if localRecipe.enabled {
+            // Explicit opt-in retains the bounded source, not a hidden page timer.
+            localRecipe.cancelTimer(); retireRecipePlayback()
+        } else { clearLocalRecipe() }
+    }
+    func tickLocalRecipe() {
+        guard assistantSession.foregroundActive else { clearLocalRecipe(); return }
+        localRecipe.tick(uptime: ProcessInfo.processInfo.systemUptime)
+    }
+    func localRecipeReaderCommand(_ command: LocalRecipeCommand) {
+        retireRecipePlayback()
+        guard let selected = localRecipe.selection, assistantSession.foregroundActive else { return }
+        _ = localRecipe.execute(command, selection: selected, generation: assistantSession.generation,
+            origin: .trustedInterface, uptime: ProcessInfo.processInfo.systemUptime,
+            arabic: arabic, readerControl: true)
+        // Buttons edit/display the same source state; they do not grant companion access.
+        localRecipe.retireResponse()
+    }
+    @discardableResult private func routeLocalRecipeCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard origin == .trustedInterface, let command = LocalRecipeCommand.parse(text) else { return false }
+        interruptOrdinaryConversation(origin: origin)
+        clearSelectedDocument(); purgeCapturedTextPlayback(); clearExploreSnapshot()
+        retireRecipePlayback()
+        if command == .forget {
+            clearLocalRecipe()
+            if recipeOutputAllowed { deliverConversationReply(arabic ? "نسيت الوصفة وألغيت مؤقتها." : "Forgot the recipe and cancelled its timer.") }
+            return true
+        }
+        guard recipeOutputAllowed else { return true }
+        guard localRecipe.enabled, let selected = localRecipe.selection else {
+            deliverConversationReply(arabic ? "اختر وصفة محلية وفعل أوامر المحادثة المكتوبة أولاً." : "Select a local recipe and enable typed companion commands first.")
+            return true
+        }
+        guard let response = localRecipe.execute(command, selection: selected,
+            generation: assistantSession.generation, origin: origin,
+            uptime: ProcessInfo.processInfo.systemUptime, arabic: arabic) else { return true }
+        recipePlayback = RecipePlayback(response: response)
+        let owner = response.id
+        recipeExpiry = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(LocalRecipeCompanion.responseLifetime)) } catch { return }
+            guard let self, self.recipePlayback?.response.id == owner else { return }
+            self.retireRecipePlayback()
+        }
+        if textOnly {
+            // Private source output is volatile: never dialogue/model context/history.
+            showRecipeReply(response.parts.joined(separator: "\n"))
+        } else { speakNextRecipePart() }
+        return true
+    }
+    private func showRecipeReply(_ text: String) {
+        recipeDisplay = text; currentReply = text; sceneAnswer = text
+        recipeDisplayRevisions = (currentReplyRevision, sceneAnswerRevision)
+    }
+    private func retireRecipePlayback() {
+        let pending = recipePlayback?.pendingID
+        recipePlayback = nil; localRecipe.retireResponse()
+        recipeExpiry?.cancel(); recipeExpiry = nil
+        if let display = recipeDisplay, let revisions = recipeDisplayRevisions {
+            if currentReplyRevision == revisions.reply, currentReply == display { currentReply = "" }
+            if sceneAnswerRevision == revisions.scene, sceneAnswer == display { sceneAnswer = "" }
+        }
+        recipeDisplay = nil; recipeDisplayRevisions = nil
+        // Retain callback tombstones; late completions never enter ordinary history.
+        if let pending { feedback.stopRequestedSpeech(pending) }
+    }
+    private func recipeSpeechPermission(id: UUID, text: String) -> Bool {
+        guard recipeSpeechIDs.contains(id) else { return true }
+        guard recipeOutputAllowed, let playback = recipePlayback, playback.pendingID == id,
+              playback.response.parts.indices.contains(playback.index),
+              playback.response.parts[playback.index].utf8.elementsEqual(text.utf8) else { return false }
+        return localRecipe.validates(playback.response, generation: assistantSession.generation,
+                                     uptime: ProcessInfo.processInfo.systemUptime)
+    }
+    private func speakNextRecipePart() {
+        guard !textOnly, recipeOutputAllowed, feedback.speechPriority == nil, !voice.awaitingUtterance,
+              let playback = recipePlayback, playback.pendingID == nil,
+              playback.response.parts.indices.contains(playback.index), recipeSpeechIDs.count < 16,
+              localRecipe.validates(playback.response, generation: assistantSession.generation,
+                                    uptime: ProcessInfo.processInfo.systemUptime) else { return }
+        let id = UUID(), text = playback.response.parts[playback.index]
+        recipeSpeechIDs.insert(id); recipePlayback?.pendingID = id
+        if !speakRequested(text, replace: false, speechID: id) {
+            recipeSpeechIDs.remove(id); retireRecipePlayback() // no pretend delivery or endless budget retry
+        }
+    }
+    @discardableResult private func finishRecipeSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard recipeSpeechIDs.contains(id) else { return false }
+        let valid = recipeSpeechPermission(id: id, text: text)
+        recipeSpeechIDs.remove(id)
+        guard recipePlayback?.pendingID == id else { return true }
+        guard valid, outcome == .completed else { retireRecipePlayback(); return true }
+        recipePlayback?.pendingID = nil; recipePlayback?.index += 1
+        // Only real completion advances speech; source-step/cooking completion is unchanged.
+        // Feedback's normal idle callback dispatches another bounded part if allowed.
+        return true
+    }
+}
+
+// MARK: - Private user-authored email draft, trusted commands and native review only.
+extension NavigationModel {
+    private var emailOutputAllowed: Bool {
+        assistantSession.foregroundActive && assistantSession.mayRespond &&
+            !assistantSession.privateAudioHeld && !detection.hazard.isUrgent && ambientDescriptions
+    }
+    @discardableResult func openLocalEmailDraft() -> UUID? {
+        guard assistantSession.foregroundActive else { return nil }
+        return localEmailDraft.open(generation: assistantSession.generation, origin: .trustedInterface)?.id
+    }
+    @discardableResult func enableLocalEmailCommands(_ expected: LocalEmailDraft.Snapshot) -> Bool {
+        guard assistantSession.foregroundActive else { return false }
+        return localEmailDraft.enable(expected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func clearLocalEmailDraft() {
+        localEmailDraft.clear(); localEmailStatus = ""
+        retireEmailOutput()
+    }
+    func discardLocalEmailDraft(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive,
+              localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        clearLocalEmailDraft()
+    }
+    func localEmailReaderDisappeared(owner: UUID?) {
+        guard let owner, localEmailDraft.snapshot?.id == owner else { return }
+        if !localEmailDraft.commandsEnabled && localEmailDraft.handoff == nil { clearLocalEmailDraft() }
+        else { retireEmailOutput() }
+    }
+    func editLocalEmailField(_ field: LocalEmailDraft.Field, text: String, expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive,
+              localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        retireEmailOutput()
+        if !localEmailDraft.edit(field, value: text, expected: expected, generation: assistantSession.generation,
+                                origin: .trustedInterface) {
+            localEmailStatus = arabic ? "لم يُطبق التعديل. تحقق من حدود النص وعدم فتح البريد." : "Edit not applied. Check text limits and close Mail review first."
+        } else { localEmailStatus = "" }
+    }
+    func checkpointLocalEmailDraft(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive, localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        _ = localEmailDraft.saveCheckpoint(expected: expected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func undoLocalEmailDraft(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive, localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        retireEmailOutput()
+        _ = localEmailDraft.undo(expected: expected, generation: assistantSession.generation, origin: .trustedInterface)
+    }
+    func requestLocalEmailMailReview(expected: LocalEmailDraft.Snapshot) {
+        guard assistantSession.foregroundActive,
+              localEmailDraft.owns(expected, generation: assistantSession.generation) else { return }
+        prepareLocalEmailMailReview(expected, available: MFMailComposeViewController.canSendMail())
+    }
+    private func prepareLocalEmailMailReview(_ expected: LocalEmailDraft.Snapshot, available: Bool) {
+        retireEmailOutput()
+        guard available else {
+            localEmailStatus = arabic ? "فتح البريد غير متاح. بقيت المسودة محلية ولم تُرسل." : "Mail review unavailable. The draft remains local and was not sent."
+            return
+        }
+        guard localEmailDraft.beginHandoff(expected: expected, generation: assistantSession.generation,
+            origin: .trustedInterface) != nil else {
+            localEmailStatus = arabic ? "راجع المستلم والموضوع والنص قبل فتح البريد. لم تُرسل رسالة." : "Check the recipient, subject and body before Mail review. No message was sent."
+            return
+        }
+        localEmailStatus = arabic ? "فُتح البريد للمراجعة. لا يرسل التطبيق تلقائياً." : "Opened Mail for your review. This app does not send automatically."
+    }
+    func ownsLocalEmailHandoff(_ handoff: LocalEmailDraft.Handoff) -> Bool {
+        assistantSession.foregroundActive && localEmailDraft.ownsHandoff(handoff, generation: assistantSession.generation)
+    }
+    func finishLocalEmailHandoff(_ id: UUID, outcome: LocalEmailDraft.MailOutcome) {
+        guard let handoff = localEmailDraft.handoff, handoff.id == id,
+              localEmailDraft.finishHandoff(handoff, generation: assistantSession.generation) else { return }
+        switch outcome {
+        case .cancelled: localEmailStatus = arabic ? "أُلغي في البريد. لم يتأكد إرسال." : "Cancelled in Mail. No send confirmed."
+        case .saved: localEmailStatus = arabic ? "أفاد البريد بحفظ المسودة. لم تُرسل." : "Mail reports the draft saved. Not sent."
+        case .queued: localEmailStatus = arabic ? "قبل البريد الرسالة للإرسال. لم يتأكد التسليم أو الاستلام." : "Mail accepted the message for sending. Delivery and receipt are not confirmed."
+        case .failed: localEmailStatus = arabic ? "أبلغ البريد عن خطأ. لم يتأكد إرسال ناجح." : "Mail reported a failure. No successful send confirmed."
+        case .unknown: localEmailStatus = arabic ? "نتيجة البريد غير معروفة. لم يتأكد إرسال." : "Mail outcome unknown. No send confirmed."
+        }
+    }
+    private func routePrivateEmailDraftInput(_ text: String, origin: CompanionCommandOrigin) {
+        // This boundary intentionally precedes the ordinary input logger and the
+        // unverified model path: even rejected draft literals stay private.
+        guard origin == .trustedInterface else {
+            interruptOrdinaryConversation(origin: origin)
+            if origin == .unverifiedMicrophone {
+                unverifiedConversationReply(arabic ? "تتطلب أوامر المسودة الخاصة استخدام الكتابة." : "Private draft commands require typed controls.")
+            }
+            return
+        }
+        interruptOrdinaryConversation(origin: origin)
+        clearSelectedDocument(); purgeCapturedTextPlayback(); clearExploreSnapshot()
+        guard let command = LocalEmailDraftCommand.parse(text) else {
+            if emailOutputAllowed { deliverConversationReply(arabic ? "استخدم صيغة أوامر المسودة المعروضة في محرر البريد." : "Use the draft-command syntax shown in the local email editor.") }
+            return
+        }
+        if command == .discard {
+            clearLocalEmailDraft()
+            if emailOutputAllowed { deliverConversationReply(arabic ? "حُذفت المسودة المحلية ونقاط التراجع. هذا لا يلغي رسالة أرسلتها في البريد." : "Local draft and checkpoints discarded. This cannot undo a message you sent in Mail.") }
+            return
+        }
+        guard emailOutputAllowed else { return }
+        guard localEmailDraft.commandsEnabled, let expected = localEmailDraft.snapshot else {
+            deliverConversationReply(arabic ? "افتح محرر البريد المحلي وفعل أوامر المسودة المكتوبة أولاً." : "Open the local email editor and enable typed draft commands first.")
+            return
+        }
+        let generation = assistantSession.generation
+        let changed: Bool
+        switch command {
+        case .recipient(let literal): changed = localEmailDraft.edit(.recipient, value: literal, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .subject(let literal): changed = localEmailDraft.edit(.subject, value: literal, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .body(let literal): changed = localEmailDraft.edit(.body, value: literal, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .append(let literal):
+            let combined = expected.content.body.isEmpty ? literal : expected.content.body + "\n\n" + literal
+            changed = localEmailDraft.edit(.body, value: combined, expected: expected, generation: generation, origin: origin, checkpoint: true)
+        case .checkpoint: changed = localEmailDraft.saveCheckpoint(expected: expected, generation: generation, origin: origin)
+        case .undo: changed = localEmailDraft.undo(expected: expected, generation: generation, origin: origin)
+        case .handoff: requestLocalEmailMailReview(expected: expected); return
+        case .readRecipient, .readSubject, .readBody, .nextPart, .previousPart:
+            if let response = localEmailDraft.read(command, expected: expected, generation: generation,
+                origin: origin, uptime: ProcessInfo.processInfo.systemUptime, arabic: arabic) {
+                presentLocalEmailResponse(response)
+            } else {
+                localEmailStatus = arabic ? "لا يوجد جزء قابل للقراءة لهذا الطلب. راجع الحقل والجزء في المحرر." : "No readable part for that request. Check the field and review position in the editor."
+                deliverConversationReply(localEmailStatus)
+            }
+            return
+        case .discard: return
+        }
+        localEmailStatus = changed
+            ? (arabic ? "حُدثت المسودة المحلية فقط. لم تُرسل رسالة." : "Local draft state updated only. No message was sent.")
+            : (arabic ? "لم يتغير النص. تحقق من الحدود ونقاط التراجع وإغلاق البريد." : "Draft unchanged. Check limits, checkpoints and whether Mail review is open.")
+        deliverConversationReply(localEmailStatus) // fixed status, never the private literal
+    }
+    private func showLocalEmailReply(_ text: String) {
+        emailDisplay = text; currentReply = text; sceneAnswer = text
+        emailDisplayRevisions = (currentReplyRevision, sceneAnswerRevision)
+    }
+    private func presentLocalEmailResponse(_ response: LocalEmailDraft.Response) {
+        guard emailOutputAllowed, localEmailDraft.validates(response, generation: assistantSession.generation,
+            uptime: ProcessInfo.processInfo.systemUptime) else { return }
+        // Retire an old transport without replacing the source receipt or its deadline.
+        if let old = emailSpeechID { emailSpeechID = nil; feedback.stopRequestedSpeech(old) }
+        emailSpeechResponse = response
+        emailExpiry?.cancel()
+        let owner = response.id
+        let remaining = max(0, LocalEmailDraft.responseLifetime - (ProcessInfo.processInfo.systemUptime - response.issuedAt))
+        emailExpiry = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(remaining)) } catch { return }
+            guard let self, self.emailSpeechResponse?.id == owner else { return }
+            self.retireEmailOutput()
+        }
+        if textOnly { showLocalEmailReply(response.text); return }
+        guard feedback.speechPriority == nil, emailSpeechIDs.count < 16 else { retireEmailOutput(); return }
+        let id = UUID(); emailSpeechID = id; emailSpeechIDs.insert(id)
+        if !speakRequested(response.text, replace: false, speechID: id) {
+            emailSpeechIDs.remove(id); retireEmailOutput()
+        }
+    }
+    private func retireEmailOutput() {
+        let pending = emailSpeechID
+        emailSpeechID = nil; emailSpeechResponse = nil; localEmailDraft.retireResponse()
+        emailExpiry?.cancel(); emailExpiry = nil
+        if let display = emailDisplay, let revisions = emailDisplayRevisions {
+            if currentReplyRevision == revisions.reply, currentReply == display { currentReply = "" }
+            if sceneAnswerRevision == revisions.scene, sceneAnswer == display { sceneAnswer = "" }
+        }
+        emailDisplay = nil; emailDisplayRevisions = nil
+        if let pending { feedback.stopRequestedSpeech(pending) }
+    }
+    private func emailSpeechPermission(id: UUID, text: String) -> Bool {
+        guard emailSpeechIDs.contains(id) else { return true }
+        guard emailOutputAllowed, emailSpeechID == id, let response = emailSpeechResponse,
+              response.text.utf8.elementsEqual(text.utf8) else { return false }
+        return localEmailDraft.validates(response, generation: assistantSession.generation,
+                                        uptime: ProcessInfo.processInfo.systemUptime)
+    }
+    @discardableResult private func finishEmailSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard emailSpeechIDs.contains(id) else { return false }
+        let valid = emailSpeechPermission(id: id, text: text)
+        emailSpeechIDs.remove(id)
+        guard emailSpeechID == id else { return true } // retired callback remains private
+        emailSpeechID = nil
+        if !valid || outcome != .completed { retireEmailOutput() }
+        return true // never pass private text to dialogue, task completion or logging
+    }
+}
+#if DEBUG
+extension NavigationModel {
+    /// No UIView/controller is created; this executes only the real ownership
+    /// policy with a synthetic Mail availability result in an isolated test model.
+    func debugPrepareLocalEmailHandoff(available: Bool) {
+        guard textOnly, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil,
+              let expected = localEmailDraft.snapshot else { return }
+        prepareLocalEmailMailReview(expected, available: available)
+    }
+}
+#endif

@@ -1,0 +1,58 @@
+{
+  "createdUTC": "2026-10-27T22:15:23.962142+00:00",
+  "scope": "Explicit text-only local publication allowlist; no upload/push executed",
+  "files": [
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/.gitignore",
+      "bytes": 354,
+      "sha256": "d6a6216b36c368a10337ee199adc64e20c0f9c5e998292063191e2d87c8068a5"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/PUBLIC_SUMMARY.md",
+      "bytes": 5080,
+      "sha256": "2b024a6510920e266be5f0459c3bea05aae513bf4f40753792026cd89733962e"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/PUBLIC_RESULT.json",
+      "bytes": 5296,
+      "sha256": "7758a150c9736419f54c889af66ac9e7ebff89ab4a32183b2db79acaff32dbb2"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/TRANSFER_RECEIPT.json",
+      "bytes": 8127,
+      "sha256": "29556c3ac25799ef098700a4d3150a753fee091b8eb7da76ef6e08c2b6d7b168"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/FINAL_ACCOUNTING.json",
+      "bytes": 992,
+      "sha256": "adba57f9e29e608fb473b09cb82006aa0f22ba1e1043a4198e85685ccbee5a9a"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/COORDINATE_PROVENANCE_REVIEW.md",
+      "bytes": 7816,
+      "sha256": "e5e17f4602a5ce8c698f942d3fc5e72ef4711bafb6023f14498c9553490b628e"
+    },
+    {
+      "path": "research/journey-benchmark-readiness-84/analysis/phone-recorded-stops-20261027/COORDINATE_PROVENANCE_REVIEW.json",
+      "bytes": 7753,
+      "sha256": "80f5bcab98e2b39f9613e23c75e6d60ab003c242a8b3733695d5da97f9808356"
+    }
+  ],
+  "excluded": [
+    "images/*.jpg",
+    "depth/*.png",
+    "transformations_colmap.json",
+    "RESULT.json (contains local pixel patches)",
+    "RESULT_THIRD_VIEW.json (contains local pixel patches)",
+    "TERMINAL_RECEIPT.json",
+    "README.md (preserved historical local account)",
+    "inspect_original.py",
+    "inspect_third_view.py",
+    "SELECTION_BEFORE_PIXELS.json",
+    "THIRD_SELECTION_BEFORE_PIXELS.json",
+    "all original archives, frozen inputs/runtime/cache files"
+  ],
+  "rawPixelsOrFullPoseMetadataIncluded": false,
+  "physicalAuthority": false,
+  "coordinateProvenanceQualificationAdded": true
+}

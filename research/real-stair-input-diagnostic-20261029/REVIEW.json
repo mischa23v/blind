@@ -1,0 +1,56 @@
+{
+  "review_utc": "2026-10-29T04:54:00Z",
+  "reviewer": "independent documentation/evidence lane",
+  "scope": "Source inspection, byte hashes, four decoded masks and small pose matrices; no full geometry rerun or detector execution",
+  "checks": {
+    "original_five_package_hashes_verified": true,
+    "twelve_source_input_hashes_verified": true,
+    "four_valid_invalid_pixel_denominators_recounted": true,
+    "scheduled_pixels": 1228800,
+    "four_rotation_residuals_recomputed": true,
+    "all_four_orthogonality_and_determinant_failures_preserved": true,
+    "zero_and_65535_unknown": true,
+    "uncalibrated_default_intrinsics_explicit": true,
+    "column_camera_to_world_row_vector_implementation_consistent": true,
+    "general_inverse_distinct_from_transpose": true,
+    "no_temporal_or_detector_performance_claim": true
+  },
+  "limitations": [
+    "Full point-cloud algebra and resource timings read from original receipts, not independently rerun",
+    "Supplementary transpose-errors not independently rerun",
+    "Original first-abort attempt is producer-reported; no original terminal log inspected here",
+    "Missing raw inputs intentionally not published; README provides explicit local staging contract"
+  ],
+  "files": [
+    {
+      "file": "INPUT_MANIFEST.json",
+      "bytes": 1959,
+      "sha256": "3e6260c4afdd6a8de2925b1dce97bb553518aaacf9840c3962c4395eb49ce416"
+    },
+    {
+      "file": "POSE_FOLLOWUP.json",
+      "bytes": 1032,
+      "sha256": "a7085acf43374f81128ec4dfb4960c971cd652014894d845ba2d05408bf2e691"
+    },
+    {
+      "file": "README.md",
+      "bytes": 7061,
+      "sha256": "d404f10f6b674b2bb0f12f55ff9b328a4e0be8b4a72cdd06f9cd194e16dff182"
+    },
+    {
+      "file": "STATIC_DIAGNOSTIC.json",
+      "bytes": 7859,
+      "sha256": "2695da78dba125c94466aa3c368ea0b6876094a77fee1baa3d4f6ea59c56b042"
+    },
+    {
+      "file": "pose_followup.py",
+      "bytes": 1288,
+      "sha256": "65d2e2775d4ce2a71c601a561bab1632cc089801d69f9888a3fcb673c90e13a3"
+    },
+    {
+      "file": "static_diagnostic.py",
+      "bytes": 5767,
+      "sha256": "d0a0d298750a0d2ed099dac36d806dab76fc55511589b0a2644e2e8174997815"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "archiveVersion": "1",
+  "objectVersion": "56",
+  "rootObject": "project",
+  "objects": {
+    "BlindAssist-Debug": {
+      "isa": "XCBuildConfiguration",
+      "name": "Debug",
+      "buildSettings": {
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) DEBUG"
+      }
+    },
+    "BlindAssist-Release": {
+      "isa": "XCBuildConfiguration",
+      "name": "Release",
+      "buildSettings": {
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited)"
+      }
+    },
+    "BlindAssist-list": {
+      "isa": "XCConfigurationList",
+      "buildConfigurations": [
+        "BlindAssist-Debug",
+        "BlindAssist-Release"
+      ],
+      "defaultConfigurationName": "Debug"
+    },
+    "BlindAssist": {
+      "isa": "PBXNativeTarget",
+      "name": "BlindAssist",
+      "productName": "BlindAssist",
+      "productType": "com.apple.product-type.application",
+      "buildConfigurationList": "BlindAssist-list"
+    },
+    "BlindAssistTests-Debug": {
+      "isa": "XCBuildConfiguration",
+      "name": "Debug",
+      "buildSettings": {
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) DEBUG",
+        "OTHER_SWIFT_FLAGS": "$(inherited) -D BLIND_COLLISION_ORACLE_TESTS",
+        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist",
+        "BUNDLE_LOADER": "$(TEST_HOST)"
+      }
+    },
+    "BlindAssistTests-Release": {
+      "isa": "XCBuildConfiguration",
+      "name": "Release",
+      "buildSettings": {
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited)",
+        "OTHER_SWIFT_FLAGS": "$(inherited) -D BLIND_COLLISION_ORACLE_TESTS",
+        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist",
+        "BUNDLE_LOADER": "$(TEST_HOST)"
+      }
+    },
+    "BlindAssistTests-list": {
+      "isa": "XCConfigurationList",
+      "buildConfigurations": [
+        "BlindAssistTests-Debug",
+        "BlindAssistTests-Release"
+      ],
+      "defaultConfigurationName": "Debug"
+    },
+    "BlindAssistTests": {
+      "isa": "PBXNativeTarget",
+      "name": "BlindAssistTests",
+      "productName": "BlindAssistTests",
+      "productType": "com.apple.product-type.bundle.unit-test",
+      "buildConfigurationList": "BlindAssistTests-list"
+    },
+    "BlindAssistUITests-Debug": {
+      "isa": "XCBuildConfiguration",
+      "name": "Debug",
+      "buildSettings": {
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) DEBUG"
+      }
+    },
+    "BlindAssistUITests-Release": {
+      "isa": "XCBuildConfiguration",
+      "name": "Release",
+      "buildSettings": {
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited)"
+      }
+    },
+    "BlindAssistUITests-list": {
+      "isa": "XCConfigurationList",
+      "buildConfigurations": [
+        "BlindAssistUITests-Debug",
+        "BlindAssistUITests-Release"
+      ],
+      "defaultConfigurationName": "Debug"
+    },
+    "BlindAssistUITests": {
+      "isa": "PBXNativeTarget",
+      "name": "BlindAssistUITests",
+      "productName": "BlindAssistUITests",
+      "productType": "com.apple.product-type.bundle.ui-testing",
+      "buildConfigurationList": "BlindAssistUITests-list"
+    },
+    "project": {
+      "isa": "PBXProject",
+      "targets": [
+        "BlindAssist",
+        "BlindAssistUITests",
+        "BlindAssistTests"
+      ],
+      "buildConfigurationList": "BlindAssist-list",
+      "attributes": {
+        "TargetAttributes": {
+          "BlindAssistTests": {
+            "TestTargetID": "BlindAssist"
+          }
+        }
+      }
+    }
+  }
+}

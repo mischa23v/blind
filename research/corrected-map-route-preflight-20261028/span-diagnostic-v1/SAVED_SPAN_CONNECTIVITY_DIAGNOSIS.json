@@ -1,0 +1,216 @@
+{
+  "lowHeadRejectedCount": 11300,
+  "nextOccupiedSpanClassAndClearanceHistogram": {
+    "occupiedObstaclePriority:40to80cm": 3545,
+    "occupiedObstaclePriority:4to8cm": 1078,
+    "occupiedObstaclePriority:0to4cm": 1133,
+    "occupiedObstaclePriority:16to40cm": 2481,
+    "occupiedObstaclePriority:8to16cm": 692,
+    "occupiedObstaclePriority:80to123cm": 1023,
+    "groundHypothesis:0to4cm": 247,
+    "groundHypothesis:4to8cm": 200,
+    "groundHypothesis:16to40cm": 334,
+    "groundHypothesis:8to16cm": 128,
+    "groundHypothesis:40to80cm": 417,
+    "groundHypothesis:80to123cm": 22
+  },
+  "clearanceQuantilesMetres": [
+    0.019999999552965164,
+    0.11999999731779099,
+    0.3399999924004078,
+    0.5799999870359898,
+    1.1999999731779099
+  ],
+  "preErosionCompactSpanCount": 13652,
+  "directionalConnectivityReasons": {
+    "neighborGroundRemovedForHeadroom": 5634,
+    "neighborOnlyObstaclePrioritySpans_noGroundHypothesis": 1748,
+    "connected": 45440,
+    "neighborGroundRemovedForLedge": 1784,
+    "neighborSurvivesButVerticalOverlapTooSmall": 2
+  },
+  "blockedHeightJumpCellsHistogram": {},
+  "connectedComponentsBeforeErosion": 464,
+  "largestComponentSizes": [
+    4404,
+    4058,
+    782,
+    585,
+    391,
+    301,
+    277,
+    273,
+    206,
+    191,
+    177,
+    160,
+    117,
+    110,
+    85,
+    63,
+    57,
+    54,
+    42,
+    39
+  ],
+  "singletonComponents": 262,
+  "componentsAtMost25Spans": 440,
+  "spansInComponentsAtMost25": 1156,
+  "anchorWindows": [
+    {
+      "anchorIndex": 0,
+      "fixedWindowColumns": [
+        41,
+        33
+      ],
+      "windowMetres": [
+        1.6399999633431435,
+        1.3199999704957008
+      ],
+      "groundHypotheses": 940,
+      "afterLedge": 934,
+      "afterHeadroom": 771,
+      "directionalConnectionReasons": {
+        "neighborGroundRemovedForHeadroom": 138,
+        "connected": 2909,
+        "neighborOnlyObstaclePrioritySpans_noGroundHypothesis": 35,
+        "neighborGroundRemovedForLedge": 2
+      },
+      "distinctNativeConnectivityComponentsTouchingWindow": 2,
+      "largestWholeComponentSizesTouchingWindow": [
+        4404,
+        1
+      ]
+    },
+    {
+      "anchorIndex": 1,
+      "fixedWindowColumns": [
+        41,
+        33
+      ],
+      "windowMetres": [
+        1.6399999633431435,
+        1.3199999704957008
+      ],
+      "groundHypotheses": 800,
+      "afterLedge": 796,
+      "afterHeadroom": 494,
+      "directionalConnectionReasons": {
+        "connected": 1850,
+        "neighborGroundRemovedForLedge": 2,
+        "neighborGroundRemovedForHeadroom": 99,
+        "neighborOnlyObstaclePrioritySpans_noGroundHypothesis": 25
+      },
+      "distinctNativeConnectivityComponentsTouchingWindow": 2,
+      "largestWholeComponentSizesTouchingWindow": [
+        4404,
+        273
+      ]
+    },
+    {
+      "anchorIndex": 2,
+      "fixedWindowColumns": [
+        41,
+        33
+      ],
+      "windowMetres": [
+        1.6399999633431435,
+        1.3199999704957008
+      ],
+      "groundHypotheses": 849,
+      "afterLedge": 796,
+      "afterHeadroom": 693,
+      "directionalConnectionReasons": {
+        "neighborGroundRemovedForHeadroom": 69,
+        "neighborOnlyObstaclePrioritySpans_noGroundHypothesis": 36,
+        "connected": 2544,
+        "neighborGroundRemovedForLedge": 123
+      },
+      "distinctNativeConnectivityComponentsTouchingWindow": 9,
+      "largestWholeComponentSizesTouchingWindow": [
+        4058,
+        25,
+        5,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "anchorIndex": 3,
+      "fixedWindowColumns": [
+        41,
+        33
+      ],
+      "windowMetres": [
+        1.6399999633431435,
+        1.3199999704957008
+      ],
+      "groundHypotheses": 937,
+      "afterLedge": 897,
+      "afterHeadroom": 455,
+      "directionalConnectionReasons": {
+        "connected": 1471,
+        "neighborGroundRemovedForHeadroom": 178,
+        "neighborOnlyObstaclePrioritySpans_noGroundHypothesis": 100,
+        "neighborGroundRemovedForLedge": 71
+      },
+      "distinctNativeConnectivityComponentsTouchingWindow": 15,
+      "largestWholeComponentSizesTouchingWindow": [
+        4404,
+        191,
+        117,
+        57,
+        25,
+        9,
+        5,
+        4,
+        3,
+        3
+      ]
+    },
+    {
+      "anchorIndex": 4,
+      "fixedWindowColumns": [
+        41,
+        33
+      ],
+      "windowMetres": [
+        1.6399999633431435,
+        1.3199999704957008
+      ],
+      "groundHypotheses": 724,
+      "afterLedge": 664,
+      "afterHeadroom": 489,
+      "directionalConnectionReasons": {
+        "neighborGroundRemovedForHeadroom": 94,
+        "neighborOnlyObstaclePrioritySpans_noGroundHypothesis": 16,
+        "connected": 1694,
+        "neighborGroundRemovedForLedge": 152
+      },
+      "distinctNativeConnectivityComponentsTouchingWindow": 10,
+      "largestWholeComponentSizesTouchingWindow": [
+        782,
+        585,
+        36,
+        4,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "method": "Read-only diagnostic graph reproduces released compact heightfield overlap/climb predicate; scipy.sparse.csgraph.connected_components, not a new planner",
+  "scipyVersion": "1.17.0",
+  "thresholdsChanged": false,
+  "mappingOrNativeQueriesRerun": false,
+  "physicalAuthority": false,
+  "elapsedSeconds": 0.9766661440007738,
+  "peakSelfRSSBytes": 71696384
+}

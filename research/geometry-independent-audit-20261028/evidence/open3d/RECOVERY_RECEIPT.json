@@ -1,0 +1,47 @@
+{
+  "PLY": {
+    "author-style-initialization-cloud.ply": {
+      "bytes": 27000210,
+      "header": "ply\nformat binary_little_endian 1.0\ncomment Created by Open3D\nelement vertex 1000000\nproperty double x\nproperty double y\nproperty double z\nproperty uchar red\nproperty uchar green\nproperty uchar blue\nend_header\n",
+      "sha256": "052518207750369556da9f3253f473a5d8776df228a35aaec8eee9498d0c2c1a"
+    },
+    "unfiltered-tsdf-mesh.ply": {
+      "bytes": 12538508,
+      "header": "ply\nformat binary_little_endian 1.0\ncomment Created by Open3D\nelement vertex 242293\nproperty double x\nproperty double y\nproperty double z\nproperty uchar red\nproperty uchar green\nproperty uchar blue\nelement face 461256\nproperty list uchar uint vertex_indices\nend_header\n",
+      "sha256": "5a75ebce93a3c65928344ce486223aa17a01a2c196982fc97edff8c41dd56e2e"
+    }
+  },
+  "authorStyleCloudPoints": 1000000,
+  "frameRecount": 265,
+  "frozenSHA256": "89e4f8add800d85b772a5314f88c45dbecb1dd5536c0b61c9f5f533727f942d4",
+  "nativeModuleHashesReverified": 5,
+  "navigationRuns": 0,
+  "noFusionRerun": true,
+  "noSourceOrOriginalResultModified": true,
+  "originalRawStdoutSHA256": "cc6d0e9cd9a4ba7cb351862fa57c826a686c3ae1f0e5e61497cd31996fee4f08",
+  "originalWrapperFailureSHA256": "c26e7d6948c792b1700349d6fe3b726f5f3a61e9669590f4a9d3c73c3ae8a56e",
+  "phase": {
+    "command": [
+      "$PYTHON_EXECUTABLE",
+      "$WORKSPACE/blind-open3d-author-baseline-10/koivu_author_fusion.py",
+      "--worker",
+      "$WORKSPACE/blind-open3d-author-baseline-10/KOIVU_FROZEN.json",
+      "$WORKSPACE/blind-open3d-author-baseline-10/koivu",
+      "89e4f8add800d85b772a5314f88c45dbecb1dd5536c0b61c9f5f533727f942d4"
+    ],
+    "cpuSeconds": 105.25,
+    "exitCode": 0,
+    "wallSeconds": 67.4224461880076
+  },
+  "physicalAuthority": false,
+  "preservedNativeWarning": "\u001b[1;33m[Open3D WARNING] Write Ply clamped color value to valid range\u001b[0;m",
+  "recoveredResultSHA256": "efdaac0ba0446bfa404af5a6c42f443243ad7323ae586073a2e069611c6f3190",
+  "recoveryWallSeconds": 0.5940902150032343,
+  "resourceEvidence": "The original watcher returned from the child phase after its cap check; peak RSS was not serialized before the reporting failure. No exact peak is claimed.",
+  "sampledPeakRSSBytes": null,
+  "sourceInputPinsReverified": 545,
+  "status": "fusion-worker-completed; wrapper-report-parse-failed; saved-report-recovered",
+  "triangles": 461256,
+  "vertices": 242293,
+  "warningEffect": "Native PLY writer reported color clamping; original warning and serialized outputs retained. No geometry thresholds or fusion parameters changed."
+}

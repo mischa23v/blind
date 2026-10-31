@@ -1,0 +1,154 @@
+{
+  "sourceOnly": true,
+  "requests": [
+    {
+      "scene": "conference",
+      "name": "table_92_to_120",
+      "requestedStartXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ],
+      "requestedGoalXYZ": [
+        -0.9024902299197737,
+        -4.96541132373185e-05,
+        3.796214880284393
+      ],
+      "selected": false,
+      "status": "unexecuted_in_this_diagnostic",
+      "originalChainSHA256": "29598bdd547a5364d80df941a643cf782a6ef89e18b422466d730dc9171ad34b",
+      "originalEventCount": 1844
+    },
+    {
+      "scene": "conference",
+      "name": "table_120_to_200",
+      "requestedStartXYZ": [
+        -0.9024902299197737,
+        -4.96541132373185e-05,
+        3.796214880284393
+      ],
+      "requestedGoalXYZ": [
+        0.9934880108773039,
+        -0.0002434645272815228,
+        1.4958630505636947
+      ],
+      "selected": true,
+      "status": "selected_source_only",
+      "originalChainSHA256": "64b7dcb050214a23e19ff7383ec793e6afe03d8d9e93be2bf6090a2d7a9f2374",
+      "originalEventCount": 2052
+    },
+    {
+      "scene": "conference",
+      "name": "table_200_to_220",
+      "requestedStartXYZ": [
+        0.9934880108773039,
+        -0.0002434645272815228,
+        1.4958630505636947
+      ],
+      "requestedGoalXYZ": [
+        0.22096444884248076,
+        0.00039939608658245973,
+        -0.6243468497785633
+      ],
+      "selected": false,
+      "status": "unexecuted_in_this_diagnostic",
+      "originalChainSHA256": "b50cd446fd132662beb4333ff6626e2d9d571de8a7a6e4f2fdca48a99d485b2a",
+      "originalEventCount": 1530
+    },
+    {
+      "scene": "conference",
+      "name": "table_220_to_20",
+      "requestedStartXYZ": [
+        0.22096444884248076,
+        0.00039939608658245973,
+        -0.6243468497785633
+      ],
+      "requestedGoalXYZ": [
+        -1.5490112358410875,
+        0.001570562930891306,
+        -3.8460671468402805
+      ],
+      "selected": false,
+      "status": "unexecuted_in_this_diagnostic",
+      "originalChainSHA256": "23c7ff54181053f2e77886e88879a88e54f7d2493f7c50acbaf59c83cf69fe76",
+      "originalEventCount": 1555
+    },
+    {
+      "scene": "conference",
+      "name": "table_20_to_92",
+      "requestedStartXYZ": [
+        -1.5490112358410875,
+        0.001570562930891306,
+        -3.8460671468402805
+      ],
+      "requestedGoalXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ],
+      "selected": false,
+      "status": "unexecuted_in_this_diagnostic",
+      "originalChainSHA256": "fa6c11b24ce2ec58fe4e503c7da62fb7f5b75a4f76bd32801975809f273c20ff",
+      "originalEventCount": 2863
+    },
+    {
+      "scene": "conference",
+      "name": "varpu_130_to_160",
+      "requestedStartXYZ": [
+        1.395818598103762,
+        -0.0007736767463522032,
+        3.6596092445038324
+      ],
+      "requestedGoalXYZ": [
+        4.559319120668386,
+        -0.0011885450791200292,
+        0.3174664138967077
+      ],
+      "selected": false,
+      "status": "unexecuted_in_this_diagnostic",
+      "originalChainSHA256": "ae99f1e372f0fc6720ad3415c3b1d8825041592db057962f8a538d02f8cb46dc",
+      "originalEventCount": 1923
+    },
+    {
+      "scene": "conference",
+      "name": "varpu_160_to_130",
+      "requestedStartXYZ": [
+        4.559319120668386,
+        -0.0011885450791200292,
+        0.3174664138967077
+      ],
+      "requestedGoalXYZ": [
+        1.395818598103762,
+        -0.0007736767463522032,
+        3.6596092445038324
+      ],
+      "selected": false,
+      "status": "unexecuted_in_this_diagnostic",
+      "originalChainSHA256": "51731d24ad24e18b4b028ebccbee22139e9879e2e95448f59ec22633262096c8",
+      "originalEventCount": 1937
+    },
+    {
+      "scene": "coffee",
+      "name": "0_to_8",
+      "requestedStartXYZ": [
+        -1.79842655,
+        -1.6301633051396203,
+        -2.1218404
+      ],
+      "requestedGoalXYZ": [
+        1.84154755,
+        -1.6301633051396203,
+        2.3337883999999995
+      ],
+      "selected": true,
+      "status": "selected_source_only",
+      "originalEventCount": 1644
+    }
+  ],
+  "allOtherOriginalRequests": "not executed or replaced; see original source publications",
+  "totalSelectedEvents": 3696,
+  "maximumVTKQueries": 29568,
+  "xzNumericalToleranceMetres": 1e-06,
+  "bodyFootOffsetMetres": 0.0,
+  "arrivalClaimed": false
+}

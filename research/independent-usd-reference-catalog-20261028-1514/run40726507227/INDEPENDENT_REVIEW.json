@@ -1,0 +1,17 @@
+{
+  "reviewer": "review_openusd_wrapper",
+  "basis": "direct independent official OpenUSD re-import of both original SHA-verified USDZs, separately from reporting wrapper",
+  "source_commit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "native_run": 40726507227,
+  "manifestSHA256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2",
+  "confirmed": [
+    "Both author metersPerUnit = 1 and upAxis = Y",
+    "All 24 feature world transforms and tight world vertex bounds match retained reports",
+    "All 24 world transforms equal original Float32 source transforms",
+    "All 3 furniture cuboids exactly match source half-dimensions",
+    "Both floor polygons expand about 0.16 m on all four planar sides plus 0.08 m depth",
+    "First native wall bound deltas: 4.0514246535394705e-7 m and 2.832447592027165e-7 m"
+  ],
+  "qualification": "Not only thickness: lateral wall and floor expansion also violates original plane bounds. Native parity remains first probed wall only; physical accuracy unknown",
+  "files_changed_by_reviewer": false
+}

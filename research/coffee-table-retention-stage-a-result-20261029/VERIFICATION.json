@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "reviewDateUTC": "2026-10-29",
+  "sourceCommit": "e99637111a1c895b26c9bd1d7eaf76cc2813b714",
+  "method": "Independent existing-receipt/source/log recount and input-byte hashing; no numerical projection rerun or native execution by reviewer",
+  "stageAStatus": "completed",
+  "stageAExitCode": 0,
+  "controlsExitCode": 0,
+  "actualControlsPassed": 8,
+  "actualControlNames": [
+    "test_empty_floor_evaluator_rejected",
+    "test_full_raster_unselected_pixels_survive",
+    "test_intrinsic_invalid_rejected",
+    "test_missing_zero_and_far_are_not_endpoints",
+    "test_original_intrinsics_no_axis_flip",
+    "test_original_shape_and_dtype_required",
+    "test_patch_bounds_half_open",
+    "test_semantic_evaluator_not_mapper_argument"
+  ],
+  "controlInventoryExactlyMatchesSource": true,
+  "frameCount": 3,
+  "frameChecks": [
+    {
+      "frame": "frame_00290",
+      "originalPNGBytes": 230562,
+      "originalPNGWidth": 738,
+      "originalPNGHeight": 994,
+      "PNGSampleBitDepth": 16,
+      "PNGColourType": 0,
+      "originalDepthHashMatches": true,
+      "originalIntrinsicValuesMatch": true,
+      "originalIntrinsicRasterMatches": true,
+      "rasterCountsReconcile": true,
+      "historicalMedianAbsoluteDifferenceMetres": 1.1102230246251565e-16,
+      "historicalNumericalTolerancePass": true,
+      "nativeResultAbsent": true
+    },
+    {
+      "frame": "frame_00357",
+      "originalPNGBytes": 238412,
+      "originalPNGWidth": 738,
+      "originalPNGHeight": 994,
+      "PNGSampleBitDepth": 16,
+      "PNGColourType": 0,
+      "originalDepthHashMatches": true,
+      "originalIntrinsicValuesMatch": true,
+      "originalIntrinsicRasterMatches": true,
+      "rasterCountsReconcile": true,
+      "historicalMedianAbsoluteDifferenceMetres": 1.1102230246251565e-16,
+      "historicalNumericalTolerancePass": true,
+      "nativeResultAbsent": true
+    },
+    {
+      "frame": "frame_00391",
+      "originalPNGBytes": 162521,
+      "originalPNGWidth": 738,
+      "originalPNGHeight": 994,
+      "PNGSampleBitDepth": 16,
+      "PNGColourType": 0,
+      "originalDepthHashMatches": true,
+      "originalIntrinsicValuesMatch": true,
+      "originalIntrinsicRasterMatches": true,
+      "rasterCountsReconcile": true,
+      "historicalMedianAbsoluteDifferenceMetres": 4.440892098500626e-16,
+      "historicalNumericalTolerancePass": true,
+      "nativeResultAbsent": true
+    }
+  ],
+  "totals": {
+    "acceptedPoints": 1822012,
+    "rangeExcludedPixels": 378704,
+    "zeroPixels": 0,
+    "rasterPixels": 2200716
+  },
+  "sourcePinsSHA256": "05c55d197d3e50b9a0d192ca5e33238c742064de6119f50d40184f4772bb5382",
+  "stageAReceiptSHA256": "4d1360780619477f123e69f53ea6d655eab4ef1abb997ddd17a87b2c7b603f1a",
+  "controlLogSHA256": "21eef5665501c2af70ef16741621496c575823ec22c543df50cb6e576e0fd288",
+  "controlsExitEvidenceSHA256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "stageExitEvidenceSHA256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "verifiedInputSHA256": {
+    "retention.py": "ced6ab06a578f7b211d532d978827b8583656a8f3b638d87f368b7cb8ec81e7c",
+    "test_retention.py": "47d361544b2d45284554082bcd575d014bbbe6697ab7dbb39288ddeb833e4406",
+    "originalTransformations": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+    "frozenPatchSelection": "7e938424d28ae9b3a64480c2629aacd422a75d00cb8087cbfc0724fd99b81497",
+    "frame_00290.png": "333eeb023a27656ae4f313db27a6b4ecee72acfff4cf8691a769aa92117ac38e",
+    "frame_00357.png": "cc2282608bc1f34157c2504d8058baf7af43db786067210aad0569f2c190708f",
+    "frame_00391.png": "42e35845a580ec2b66a5d6741b0973eea173c10d92a8f6b3b0758da4c4e0c2c9"
+  },
+  "stageBExecutedAtReview": false,
+  "stageCImplemented": false,
+  "physicalAuthority": false,
+  "collisionOrReadinessClaim": false
+}

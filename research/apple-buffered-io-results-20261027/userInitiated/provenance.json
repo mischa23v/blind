@@ -1,0 +1,34 @@
+{
+  "arm": "userInitiated",
+  "fresh_simulator": true,
+  "warmups": 0,
+  "retries": 0,
+  "source_sha": "e9e18d15fe1fdac1ff1487b3c2a8a2e731607427",
+  "harness_sha": "1c53f27b2a3b9497bec269af1fd9a843d6fe7600",
+  "helper_sha256": "6fc781ff63379fc3c3cb75a97e81f9ddc1bfbee6ef95daf3fe3005685de3eedc",
+  "recorder_sha256": "a1736b6d84556ac5d1ace5179b6368744c9d0e9522a00b68dcf316b1bd3ee16e",
+  "refine_sha256": "98cf1aa9a8821e2420ef20fc7bf4d8c52230d31c9cb191e76ebf56b37f19bcd9",
+  "resolution_sha256": "6590d0a2c60c3675cb131c4f8be2766c51147f0f3f009f40b41bc5db4801a740",
+  "instrument_sha256": "f29025ff30a1b7fdcf1a4a288d8d222ce6d66ff084fc65b2636fb0ca863abd49",
+  "macos": "27.0.1",
+  "macos_build": "26A434",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "simulator_sdk": "27.0",
+  "simulator": {
+    "name": "IndoorIO-buffered-userInitiated-43219",
+    "runtime": "iOS 27.0",
+    "udid": "CFA556D1-4693-4ECE-8A46-CF5BFE9A29E5"
+  },
+  "source_sha256": {
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "ae6019c332ab26081523defd8d97f0d728163171026cf70dcb00cdf4ad80ae67",
+    "ios/BlindAssist.xcodeproj/xcshareddata/xcschemes/BlindAssist.xcscheme": "6b65f27032bc4f2f112e2e71da5483b949e443501b9a0cf2f92ffbc0ca0f65cb",
+    "BlindCore/Package.swift": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f",
+    "BlindMemory/Package.swift": "119060ea110b7cd06a2c6b4f68c125b51489bc2d9a4385e1b1af53df30ef3115",
+    "ios/BlindAssistTests/CommunityTests.swift": "24930b5106810a9a6929e08243ce4164cb0cb40693259e5e93a788cc593cf7b6",
+    "ios/BlindAssist/IndoorNavigator.swift": "6790f5cfb8976dbc3616490c35ae05442277ca9e6cb419e6d1fa12fc8c252789",
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift": "e60e60dd80d791a0e2a8b1a147e671f72052e6b678a5cdd0ca8ce8d0c3467656",
+    "ios/BlindAssist/SpatialMapIO.swift": "7db70037087b1421d6b0188dc061f3d5f2e4b320f43d14c36f9aed6a00fda8be",
+    "ios/BlindAssist/NavigationModel.swift": "6193f6c5ee09e5ac572532fff7fc4f6ea6ae31aeec1b24957eb380ed6fe07d9a"
+  }
+}

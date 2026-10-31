@@ -1,0 +1,293 @@
+import Foundation
+import MeshSnapshot82
+import BlindRoomMesh
+
+/// Candidate-only owner. The lock is the serialized ingress/lifecycle boundary;
+/// it is deliberately entered BEFORE synchronous native-buffer copying.
+public final class MeshCandidateIngress83 {
+    public enum Failure: Error { case unavailable, stale, runtime(MeshCandidateError) }
+    public struct Candidate {
+        public let route: MeshCandidateRoute
+        fileprivate let epoch: UUID, token: UInt64
+        public var physicalAuthority: Bool { false }
+        public var coverageKnown: Bool { false }
+    }
+    public enum SourceSnapshotFailure: Error { case unavailable, stale, runtime(MeshSourceSnapshotError) }
+    public struct SourceSnapshot {
+        public let geometry: MeshSourceGeometrySnapshot
+        fileprivate let epoch: UUID, token: UInt64
+        public var physicalAuthority: Bool { false }
+        public var coverageKnown: Bool { false }
+    }
+    private var sourceSnapshotPending = false
+    private let lock = NSLock()
+    private let worker: DispatchQueue
+    private let runtime: RoomMeshCandidateRuntime
+    private let supportPolicy: MeshSupportPolicy
+    private let deliveryPolicy: MeshDeliveryRecoveryPolicy
+    private let maxAnchors: Int, maxCopies: Int
+    private var epoch: UUID
+    private var token: UInt64 = 0
+    private var stopped = false, copies = 0
+    private var discarding = false, runtimeDiscarded = false, discarded = false
+    private var discardWaiters: [() -> Void] = []
+    // Only the decode job reads/releases contents. Clearing this box also releases
+    // the ingress stack's reference even if a fast worker finishes before return.
+    private final class OwnedCopy {
+        var value: MeshSnapshot82.Capture?
+        init(_ value: MeshSnapshot82.Capture) { self.value = value }
+    }
+    private var receipt: Double = -1
+    // Tombstones remain until reset; no eviction that could permit anchor ABA.
+    private var revisions: [UUID: UInt64] = [:]
+    /// Opt-in source classification only, NOT measured physical support. Legacy
+    /// callers retain slope-based diagnostic behavior; policy is fixed across reset.
+    /// Explicit endpoint policy is forwarded unchanged to75 and also survives reset.
+    /// The default preserves legacy replay; strict XZ admission is not clearance.
+    public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                supportPolicy: MeshSupportPolicy = .legacySlope,
+                endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+                deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+        guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+        self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+        self.supportPolicy = supportPolicy; self.deliveryPolicy = deliveryRecoveryPolicy
+        let initialEpoch = UUID(); epoch = initialEpoch
+        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+                                               supportPolicy: supportPolicy, endpointPolicy: endpointPolicy, deliveryRecoveryPolicy: deliveryRecoveryPolicy)
+    }
+#if DEBUG
+    /// Explicit synthetic-test timing only; the ordinary initializer and release
+    /// API remain unchanged. No geometry or session/anchor identity is recorded.
+    public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                supportPolicy: MeshSupportPolicy = .legacySlope,
+                endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+                deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+                captureSyntheticTestTiming: Bool,
+                syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
+                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+        guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+        self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+        self.supportPolicy = supportPolicy; self.deliveryPolicy = deliveryRecoveryPolicy
+        let initialEpoch = UUID(); epoch = initialEpoch
+        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+            supportPolicy: supportPolicy, endpointPolicy: endpointPolicy, deliveryRecoveryPolicy: deliveryRecoveryPolicy,
+            captureSyntheticTestTiming: captureSyntheticTestTiming,
+            syntheticTimingCompletion: syntheticTimingCompletion)
+    }
+    public var diagnosticReceiptID: UUID? { runtime.diagnosticReceiptID }
+    public var diagnosticStageReceipts: [RoomMeshCandidateRuntime.DiagnosticStageReceipt] {
+        runtime.diagnosticStageReceipts
+    }
+#endif
+    /// Read-only latest-revision delivery metadata from the existing runtime.
+    /// The owner lock keeps reset/stop from mixing epochs; no geometry is exposed.
+    public var anchorDeliveryReceipts: [MeshAnchorDeliveryReceipt] {
+        locked { stopped ? [] : runtime.anchorDeliveryReceipts }
+    }
+    private func locked<T>(_ body: () throws -> T) rethrows -> T {
+        lock.lock(); defer { lock.unlock() }; return try body()
+    }
+    private func advance() -> Bool {
+        guard token < UInt64.max else { stopped = true; runtime.stop(); return false }
+        token += 1; return true
+    }
+    private func gap() { runtime.invalidate() } // ONLY loss/failure, never ordinary updates.
+    private func anchorIssue(_ context: MeshSnapshot82.Context, _ anchor: UUID, _ issue: MeshAnchorDeliveryIssue) {
+        if deliveryPolicy == .latestValidatedAnchorRevision {
+            runtime.markAnchorDeliveryIssue(sessionID: context.sessionID.uuidString, generation: Int(context.generation),
+                anchorID: anchor.uuidString, revision: Int(context.revision), receiptUptime: context.receiptUptime, issue: issue)
+        } else { gap() }
+    }
+    private func admit(_ anchor: UUID, _ time: Double, removed: Bool = false) -> MeshSnapshot82.Context? {
+        // Even malformed/newer/overflow callbacks retire the outer result immediately.
+        guard advance(), !stopped else { return nil }
+        guard time.isFinite, time >= 0, time > receipt else { gap(); return nil }
+        receipt = time
+        guard revisions[anchor] != nil || revisions.count < maxAnchors else { gap(); return nil }
+        let revision = revisions[anchor, default: 0]
+        guard revision < UInt64(Int.max) else { stopped = true; runtime.stop(); return nil }
+        revisions[anchor] = revision + 1
+        if deliveryPolicy == .latestValidatedAnchorRevision {
+            guard runtime.noteAnchorRevision(sessionID: epoch.uuidString, generation: 1, anchorID: anchor.uuidString,
+                revision: Int(revision + 1), receiptUptime: time, removed: removed) else { gap(); return nil }
+        }
+        return .init(sessionID: epoch, generation: 1, revision: revision + 1, receiptUptime: time)
+    }
+    /// Call on the owning AR callback queue AFTER independent hazards. `capture` is
+    /// nonescaping: do not send anchors/Metal/raw pointers to the decode worker.
+    /// Explicit receipt uptime must increase; it is NEVER sensor capture freshness.
+    @discardableResult public func ingest(anchorID: UUID, receiptUptime: Double,
+        capture: (MeshSnapshot82.Context) -> MeshSnapshot82.Capture) -> Bool {
+        let context: MeshSnapshot82.Context? = locked {
+            guard let c = admit(anchorID, receiptUptime) else { return nil }
+            guard copies < maxCopies else { anchorIssue(c, anchorID, .copyBudget); return nil }
+            copies += 1; return c
+        }
+        guard let context else { return false }
+        let owned = OwnedCopy(capture(context)) // token retired and aggregate slot reserved BEFORE copy
+        worker.async { [self] in
+            install(owned, context: context, anchorID: anchorID)
+            owned.value = nil
+            locked { copies -= 1; acknowledgeDiscardIfDrained() }
+        }
+        return true
+    }
+    // Separate scope releases decoded geometry/event temporaries before the slot.
+    private func install(_ owned: OwnedCopy, context: MeshSnapshot82.Context, anchorID: UUID) {
+            // A lifecycle fence before expensive decode, then again at install.
+            let eligible = locked { !stopped && epoch == context.sessionID && revisions[anchorID] == context.revision }
+            let decoded = eligible ? MeshSnapshot82.decode(owned.value!) : nil
+            locked {
+                guard !stopped, epoch == context.sessionID else { return }
+                // A newer accepted update/removal subsumes this copy. Any refusal
+                // already marked its own gap at ingress; stale completion adds none.
+                guard revisions[anchorID] == context.revision else { return }
+                guard let decoded else { anchorIssue(context, anchorID, .bufferValidation); return }
+                switch decoded {
+                case .unknownGap(let loss):
+                    // Capture-provided identity and context are not trusted to
+                    // discharge or scope a different owner's delivery obligation.
+                    guard loss.anchorID == anchorID, loss.context.sessionID == context.sessionID,
+                          loss.context.generation == context.generation, loss.context.revision == context.revision,
+                          loss.context.receiptUptime == context.receiptUptime else { gap(); return }
+                    if case .invalidContext = loss.reason { gap() }
+                    else { anchorIssue(context, anchorID, .bufferValidation) }
+                case .revision(let c, let id, let mesh):
+                    guard id == anchorID, c.sessionID == context.sessionID,
+                          c.generation == context.generation, c.revision == context.revision,
+                          c.receiptUptime == context.receiptUptime,
+                          mesh.revision == context.revision,
+                          mesh.triangleIndices.allSatisfy({ $0 <= UInt32(Int32.max) }) else { gap(); return }
+                    var triangleSupport: [MeshTriangleSupport]?
+                    var sourceComplete = true
+                    if supportPolicy == .classifiedFloorOnly {
+                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { anchorIssue(context, anchorID, .classificationUnavailable); return }
+                        // ARMeshClassification.floor raw value is 2. Only that label
+                        // is eligible floor; all other faces still rasterize as obstacles.
+                        // No slope/height fallback and no discarded obstacle geometry.
+                        triangleSupport = mesh.classifications.map { $0 == 2 ? .floor : .obstacle }
+                        // Missing, malformed, unsupported and explicit .none labels
+                        // remain unknown even when another classified floor can route.
+                        // Install the replacement below: never retain its prior floor
+                        // merely because current classifications are absent.
+                        if !mesh.classificationDiagnostics.isEmpty ||
+                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) {
+                            anchorIssue(context, anchorID, .classificationUnavailable)
+                            sourceComplete = deliveryPolicy == .legacyStickyGap
+                        }
+                    }
+                    // Local vertices and unmodified column-major transform: package applies ONCE.
+                    let event = MeshAnchorEvent(sessionID: epoch.uuidString, generation: 1,
+                        anchorID: id.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
+                        vertices: mesh.localVertices.map(Double.init), triangles: mesh.triangleIndices.map(Int32.init),
+                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: sourceComplete,
+                        triangleSupport: triangleSupport)
+                    // Runtime itself marks a rejected offer as sticky unknown coverage.
+                    _ = runtime.offer(event)
+                }
+            }
+    }
+    @discardableResult public func remove(anchorID: UUID, receiptUptime: Double) -> Bool {
+        locked {
+            guard let c = admit(anchorID, receiptUptime, removed: true) else { return false }
+            return runtime.offer(.init(sessionID: epoch.uuidString, generation: 1,
+                anchorID: anchorID.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
+                vertices: [], triangles: [], columnMajorTransform: [], complete: false, removed: true))
+        }
+    }
+    /// Fences only; NOT a privacy purge or acknowledgement that native work drained.
+    public func stop() { locked { _ = advance(); stopped = true; runtime.stop() } }
+    /// Terminal stop and acknowledged release of this owner's retained copies and
+    /// runtime geometry. Does not erase ARKit/caller/system allocations. Captures
+    /// already admitted must return; no slot is released early and no reset/restart
+    /// is permitted after this call. Completion runs asynchronously outside locks.
+    public func stopAndDiscard(completion: @escaping () -> Void) {
+        locked {
+            if discarded { DispatchQueue.global(qos: .utility).async { completion() }; return }
+            discardWaiters.append(completion)
+            guard !discarding else { return }
+            discarding = true; _ = advance(); stopped = true
+            revisions.removeAll(keepingCapacity: false); receipt = -1
+            runtime.stopAndDiscard { [self] in
+                locked { runtimeDiscarded = true; acknowledgeDiscardIfDrained() }
+            }
+        }
+    }
+    // Under ingress lock; runtime completion never calls back while holding its lock.
+    private func acknowledgeDiscardIfDrained() {
+        guard discarding, !discarded, runtimeDiscarded, copies == 0 else { return }
+        discarded = true
+        let waiters = discardWaiters; discardWaiters.removeAll(keepingCapacity: false)
+        for waiter in waiters { DispatchQueue.global(qos: .utility).async { waiter() } }
+    }
+    /// Fresh UUID epoch prevents A->B->A generation reuse. Outstanding copies still
+    /// consume their original aggregate slots until they actually return/drain.
+    public func reset() throws {
+        try locked {
+            guard !discarding, advance() else { throw Failure.unavailable }
+            let next = UUID()
+            try runtime.reset(sessionID: next.uuidString, generation: 1)
+            epoch = next; revisions.removeAll(keepingCapacity: false); receipt = -1; stopped = false
+        }
+    }
+    public func isCurrent(_ candidate: Candidate) -> Bool {
+        locked { !stopped && copies == 0 && epoch == candidate.epoch && token == candidate.token && runtime.isCurrent(candidate.route) }
+    }
+    /// Read-only retained source inspection. Incomplete delivery is visible, not
+    /// repaired; no snapshot is a current sensor/body/support/route authority.
+    public func requestSourceSnapshot(limits: MeshSourceSnapshotLimits = .init(),
+        completion: @escaping (Result<SourceSnapshot, SourceSnapshotFailure>) -> Void) {
+        let accepted: Bool = locked {
+            guard !stopped, copies == 0, !sourceSnapshotPending else { return false }
+            sourceSnapshotPending = true
+            let e = epoch, t = token
+            runtime.requestSourceSnapshot(limits: limits) { [self] result in
+                defer { locked { sourceSnapshotPending = false } }
+                let value: Result<SourceSnapshot, SourceSnapshotFailure> = locked {
+                    guard !stopped, copies == 0, epoch == e, token == t else { return .failure(.stale) }
+                    switch result {
+                    case .failure(let error): return .failure(.runtime(error))
+                    case .success(let geometry):
+                        guard runtime.isCurrent(geometry) else { return .failure(.stale) }
+                        return .success(SourceSnapshot(geometry: geometry, epoch: e, token: t))
+                    }
+                }
+                completion(value) // consumers recheck at display/use, not just completion
+            }
+            return true
+        }
+        if !accepted { completion(.failure(.unavailable)) }
+    }
+    public func isCurrent(_ snapshot: SourceSnapshot) -> Bool {
+        locked { !stopped && copies == 0 && epoch == snapshot.epoch && token == snapshot.token && runtime.isCurrent(snapshot.geometry) }
+    }
+    public func request(start: [Float], goal: [Float], body: MeshCandidateBody,
+                        expectedSource: SourceSnapshot? = nil,
+                        completion: @escaping (Result<Candidate, Failure>) -> Void) {
+        let accepted: Bool = locked {
+            // Atomic source-to-query admission: do not race a main-thread snapshot
+            // check against a newer anchor revision before advancing the query token.
+            if let expectedSource {
+                guard !stopped, copies == 0, epoch == expectedSource.epoch,
+                      token == expectedSource.token, runtime.isCurrent(expectedSource.geometry) else { return false }
+            }
+            guard advance(), !stopped, copies == 0 else { return false }
+            let e = epoch, t = token
+            runtime.request(start: start, goal: goal, body: body) { [self] result in
+                let value: Result<Candidate, Failure> = locked {
+                    guard !stopped, copies == 0, epoch == e, token == t else { return .failure(.stale) }
+                    switch result {
+                    case .failure(let error): return .failure(.runtime(error))
+                    case .success(let route):
+                        guard runtime.isCurrent(route) else { return .failure(.stale) }
+                        return .success(Candidate(route: route, epoch: e, token: t))
+                    }
+                }
+                completion(value) // consumers MUST recheck isCurrent at use, not only callback
+            }
+            return true
+        }
+        if !accepted { completion(.failure(.unavailable)) }
+    }
+}

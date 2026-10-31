@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-28T17:42:45Z",
+  "appliedCandidateBase": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "publicationParent": "3f01d4a285878c0cba5d307fd3ae2920de7a79b7",
+  "sourceChecks": 32,
+  "collectorTests": 77,
+  "sameExportIntegrationTests": 17,
+  "routeContractTests": 9,
+  "projectInventoryChecks": 18,
+  "projectMutationTests": 3,
+  "cumulativeIntegrationSourceChecks": 70,
+  "nativeSwiftTestsExecuted": 0,
+  "nativeCompile": "pending",
+  "directCombinedNodeRun": {
+    "passed": 10,
+    "failed": 1,
+    "cause": "canonical-project test enumerates partial local checkout (5 app Swift sources) against full 65-source project; no project edited to hide this",
+    "separateCheck": "existing verified 65-name inventory regenerated unchanged canonical project successfully"
+  },
+  "initialRootCheckCommand": "first source-check invocation used wrong working directory after successful application; rerun from blind succeeded",
+  "physicalAuthority": false
+}

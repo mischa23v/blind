@@ -1,0 +1,659 @@
+{
+  "reviewScope": "stdlib-only recovery/review of retained bytes; no native execution or rerun; original attempt unchanged",
+  "sourceCommit": "05e68926f69fa4dfd2566fb50c9e22453cd4e568",
+  "aggregateStatus": "failed",
+  "aggregateError": "RuntimeError: Aggregate CPU breach",
+  "aggregateCPUSeconds": 120.07595599999999,
+  "wallSeconds": 120.16253953300111,
+  "peakObservedAggregateRSS": 208371712,
+  "controlsExecuted": 67,
+  "commands": [
+    {
+      "label": "compile",
+      "exitCode": 0,
+      "groupRetired": true
+    },
+    {
+      "label": "dependency-elf",
+      "exitCode": 0,
+      "groupRetired": true
+    },
+    {
+      "label": "wrapper-elf",
+      "exitCode": 0,
+      "groupRetired": true
+    },
+    {
+      "label": "controls",
+      "exitCode": 0,
+      "groupRetired": true
+    },
+    {
+      "label": "comparison",
+      "exitCode": -9,
+      "groupRetired": true
+    }
+  ],
+  "guardReceiptSHA256": "e7ee53ceba593dceedaf68695606995c3547313271eb8f27aa12d98b045ab09e",
+  "manifestSHA256": "b2356f81f9ec41c2501ea47853b8dcb3201b2f3a0f27dbf10216d5e1e8de67df",
+  "wrapperSHA256": "5c1313ec27fe701e6d2b7f83a53eaf9c4c4013d2532bd19247de54a9e6e4e561",
+  "controlsLogSHA256": "6505af148e238daf79e149d517dc10030ffe32f68a0aa3cda5701145825c0a03",
+  "all28FinalPayloadFileHashesMatch": true,
+  "all65BeforeAfterInputHashesEqual": true,
+  "nativeBoundaryStages": [
+    "before-build",
+    "before-controls",
+    "after-controls",
+    "before-comparison",
+    "final"
+  ],
+  "workerReceiptExists": false,
+  "recoveredStream": {
+    "compressedBytes": 896592,
+    "expandedBytes": 34758259,
+    "gzipTerminalEOFAndCRCValidated": false,
+    "expandedRecoveredSHA256": "b459c60c134adc1d2588a7fbe2600fd799bc8c0cf5d67af3fc413599cca784f9",
+    "completeJSONLines": 11188,
+    "unterminatedTailBytes": 0,
+    "sha256": "ca81ea3fb60f67998d872ade2ca05df968d3b8d2b4e80f77672544d60a8f0c6e"
+  },
+  "recordCounts": {
+    "A_raw_identity": 5348,
+    "B_initial": 16,
+    "B_translated_labels_only": 5312,
+    "C_start": 15,
+    "C_ground_follow": 497
+  },
+  "aBCountEqualityRecordsChecked": 5312,
+  "completedDiagnosticTerminalPaths": 15,
+  "completedAPaths": 16,
+  "completedBPaths": 15,
+  "fullCSchedulesObserved": 0,
+  "unknownPaths": 5,
+  "priorExactXYZGuardSHA256": "8b2d029a46024309bfb342acdd54c784a23801aa41a6b6fbb05c9653ea30471c",
+  "priorExactXYZStream": {
+    "compressedBytes": 855708,
+    "expandedBytes": 34619940,
+    "gzipTerminalEOFAndCRCValidated": true,
+    "expandedRecoveredSHA256": "052f0c38ccdfca0e66c01bf33c1b433edc4f60f8735151f9b7589cc845f02901",
+    "completeJSONLines": 12152,
+    "unterminatedTailBytes": 0,
+    "sha256": "a0493b7dc367b4fa34da57604386df9b3524d660260fd4de6cefd1310d10951a"
+  },
+  "priorACompleteEvents": 6874,
+  "nativeARecordsEqualPriorExceptTwoPolicyLabels": 5348,
+  "paths": [
+    {
+      "path": [
+        0,
+        1
+      ],
+      "expectedScheduleEvents": 342,
+      "aRecords": 342,
+      "bRecords": 342,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 11,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 10,
+      "terminalCEventKind": "turn",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          27557
+        ],
+        [
+          null,
+          27557
+        ]
+      ]
+    },
+    {
+      "path": [
+        0,
+        6
+      ],
+      "expectedScheduleEvents": 280,
+      "aRecords": 280,
+      "bRecords": 280,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 11,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 10,
+      "terminalCEventKind": "turn",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          27557
+        ],
+        [
+          null,
+          27557
+        ]
+      ]
+    },
+    {
+      "path": [
+        0,
+        7
+      ],
+      "expectedScheduleEvents": 455,
+      "aRecords": 455,
+      "bRecords": 455,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 11,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 10,
+      "terminalCEventKind": "turn",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          27557
+        ],
+        [
+          null,
+          27557
+        ]
+      ]
+    },
+    {
+      "path": [
+        0,
+        8
+      ],
+      "expectedScheduleEvents": 585,
+      "aRecords": 585,
+      "bRecords": 585,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 11,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 10,
+      "terminalCEventKind": "turn",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          27557
+        ],
+        [
+          null,
+          27557
+        ]
+      ]
+    },
+    {
+      "path": [
+        1,
+        0
+      ],
+      "expectedScheduleEvents": 342,
+      "aRecords": 342,
+      "bRecords": 342,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 220,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 219,
+      "terminalCEventKind": "turn",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          27577
+        ],
+        [
+          null,
+          27577
+        ]
+      ]
+    },
+    {
+      "path": [
+        1,
+        6
+      ],
+      "expectedScheduleEvents": 312,
+      "aRecords": 312,
+      "bRecords": 312,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 118,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 117,
+      "terminalCEventKind": "translate",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          null
+        ],
+        [
+          null,
+          12275
+        ]
+      ]
+    },
+    {
+      "path": [
+        1,
+        7
+      ],
+      "expectedScheduleEvents": 323,
+      "aRecords": 323,
+      "bRecords": 323,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 54,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 53,
+      "terminalCEventKind": "translate",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          25
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          235
+        ],
+        [
+          null,
+          28353
+        ]
+      ]
+    },
+    {
+      "path": [
+        1,
+        8
+      ],
+      "expectedScheduleEvents": 353,
+      "aRecords": 353,
+      "bRecords": 353,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 54,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 53,
+      "terminalCEventKind": "translate",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          25
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          235
+        ],
+        [
+          null,
+          28353
+        ]
+      ]
+    },
+    {
+      "path": [
+        6,
+        0
+      ],
+      "expectedScheduleEvents": 280,
+      "aRecords": 280,
+      "bRecords": 280,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          29484,
+          29512
+        ]
+      ]
+    },
+    {
+      "path": [
+        6,
+        1
+      ],
+      "expectedScheduleEvents": 322,
+      "aRecords": 322,
+      "bRecords": 322,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          29484,
+          29512
+        ]
+      ]
+    },
+    {
+      "path": [
+        6,
+        7
+      ],
+      "expectedScheduleEvents": 230,
+      "aRecords": 230,
+      "bRecords": 230,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          29484,
+          29512
+        ]
+      ]
+    },
+    {
+      "path": [
+        6,
+        8
+      ],
+      "expectedScheduleEvents": 315,
+      "aRecords": 315,
+      "bRecords": 315,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          29484,
+          29512
+        ]
+      ]
+    },
+    {
+      "path": [
+        7,
+        0
+      ],
+      "expectedScheduleEvents": 384,
+      "aRecords": 384,
+      "bRecords": 384,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          33098
+        ]
+      ]
+    },
+    {
+      "path": [
+        7,
+        1
+      ],
+      "expectedScheduleEvents": 323,
+      "aRecords": 323,
+      "bRecords": 323,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          33098
+        ]
+      ]
+    },
+    {
+      "path": [
+        7,
+        6
+      ],
+      "expectedScheduleEvents": 230,
+      "aRecords": 230,
+      "bRecords": 230,
+      "bInitialRecords": 1,
+      "cStartRecords": 1,
+      "cRecords": 1,
+      "classification": "diagnosticTerminalContactStop",
+      "successfulJourneyClaimed": false,
+      "terminalCEvent": 0,
+      "terminalCEventKind": "initial",
+      "terminalCNonGroundCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "terminalCFailure": null,
+      "terminalCWitnessFaceIDsBodyMargin": [
+        [
+          null,
+          33098
+        ]
+      ]
+    },
+    {
+      "path": [
+        7,
+        8
+      ],
+      "expectedScheduleEvents": 272,
+      "aRecords": 272,
+      "bRecords": 236,
+      "bInitialRecords": 1,
+      "cStartRecords": 0,
+      "cRecords": 0,
+      "classification": "ACompleteBPartialCNotStartedUnknown",
+      "successfulJourneyClaimed": false
+    },
+    {
+      "path": [
+        8,
+        0
+      ],
+      "expectedScheduleEvents": 585,
+      "aRecords": 0,
+      "bRecords": 0,
+      "bInitialRecords": 0,
+      "cStartRecords": 0,
+      "cRecords": 0,
+      "classification": "notStartedUnknown",
+      "successfulJourneyClaimed": false
+    },
+    {
+      "path": [
+        8,
+        1
+      ],
+      "expectedScheduleEvents": 353,
+      "aRecords": 0,
+      "bRecords": 0,
+      "bInitialRecords": 0,
+      "cStartRecords": 0,
+      "cRecords": 0,
+      "classification": "notStartedUnknown",
+      "successfulJourneyClaimed": false
+    },
+    {
+      "path": [
+        8,
+        6
+      ],
+      "expectedScheduleEvents": 315,
+      "aRecords": 0,
+      "bRecords": 0,
+      "bInitialRecords": 0,
+      "cStartRecords": 0,
+      "cRecords": 0,
+      "classification": "notStartedUnknown",
+      "successfulJourneyClaimed": false
+    },
+    {
+      "path": [
+        8,
+        7
+      ],
+      "expectedScheduleEvents": 273,
+      "aRecords": 0,
+      "bRecords": 0,
+      "bInitialRecords": 0,
+      "cStartRecords": 0,
+      "cRecords": 0,
+      "classification": "notStartedUnknown",
+      "successfulJourneyClaimed": false
+    }
+  ],
+  "physicalAuthority": false,
+  "originalTwentyPathAggregateCompleted": false,
+  "gzipRecoveryIsNotAnIntactGzipArchive": true
+}

@@ -81,7 +81,8 @@ class ScopeTests(unittest.TestCase):
             # Test shim only: force a real subprocess timeout promptly while the
             # production runner still records its unchanged 600-second build cap.
             shim = root / 'timeout-shim.py'
-            shim.write_text('''import importlib.util,sys
+            shim.write_text('''import importlib.util,sys,time
+from pathlib import Path
 spec=importlib.util.spec_from_file_location('runner',sys.argv[1]);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 original=m.subprocess.Popen
 class Proxy:
@@ -90,6 +91,15 @@ class Proxy:
  def wait(self,timeout=None):
   if self.build and self.first:
    self.first=False
+   # Wait for the synthetic fixture to emit its flushed startup marker.
+   # This only removes interpreter-startup races; native budgets are unchanged.
+   ready=Path(m.os.environ['RUNNER_TEMP'])/'blind-camera-audit-scope-control/local-logs/build.log'
+   deadline=time.monotonic()+5
+   while time.monotonic()<deadline:
+    if ready.exists() and 'SwiftCompile' in ready.read_text(): break
+    if self.p.poll() is not None: break
+    time.sleep(0.01)
+   else: raise RuntimeError('Synthetic build did not emit readiness marker')
    return self.p.wait(timeout=0.1)
   return self.p.wait(timeout=timeout)
 m.subprocess.Popen=Proxy

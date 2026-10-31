@@ -1,0 +1,40 @@
+name: Candidate native mesh buffer decoder
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/native-mesh-decoder-81/**'
+      - '.github/workflows/native-mesh-decoder.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-mesh-decoder-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  decoder:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 18
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Compile public module, run fresh host fixtures, compile simulator only
+        timeout-minutes: 16
+        run: python3 research/native-mesh-decoder-81/apple/ci.py
+      - name: Preserve bounded source-only proof receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-mesh-decoder-81-receipts
+          path: |
+            ${{ runner.temp }}/blind-mesh-decoder-81/*-receipt.json
+            ${{ runner.temp }}/blind-mesh-decoder-81/RESULT.json
+          if-no-files-found: warn
+          retention-days: 3

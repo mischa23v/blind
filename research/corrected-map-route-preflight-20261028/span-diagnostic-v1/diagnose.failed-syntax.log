@@ -1,0 +1,4 @@
+  File "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/span-diagnostic-v1/diagnose_recorded.py", line 25
+    col=columns[(x,z)];pos=col.index(i);ceiling=int(sp[col[pos+1],2])if pos+1<len(col)else65535
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: expected 'else' after 'if' expression

@@ -1,0 +1,58 @@
+{
+  "scope": "Portable Swift source contracts and adversarial source mutations only; no native execution/build or physical safety claim.",
+  "preintegrationNavigationSHA256": "6193f6c5ee09e5ac572532fff7fc4f6ea6ae31aeec1b24957eb380ed6fe07d9a",
+  "publishedStage85NavigationSHA256": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307",
+  "exactBaselineRecovery": "Original app-integration.patch reversed only in disposable Nav copy; originalApp digest verified.",
+  "runs": [
+    {
+      "name": "preintegration, original contracts",
+      "passed": 36,
+      "failed": 5,
+      "total": 41,
+      "log": "preintegration-original-contracts.log"
+    },
+    {
+      "name": "stage85, original contracts",
+      "passed": 35,
+      "failed": 6,
+      "total": 41,
+      "log": "stage85-original-contracts.log"
+    },
+    {
+      "name": "stage85, revised contracts (expected negative control)",
+      "passed": 40,
+      "failed": 3,
+      "total": 43,
+      "log": "stage85-revised-contracts-negative-control.log"
+    },
+    {
+      "name": "repaired, revised contracts",
+      "passed": 43,
+      "failed": 0,
+      "total": 43,
+      "skipped": 0,
+      "log": "repaired-revised-contracts.log"
+    }
+  ],
+  "command": "node --test --test-concurrency=1 tools/test/contextual-capabilities.test.mjs tools/test/observed-scene.test.mjs tools/test/spatial-review-regressions.test.mjs",
+  "changedInputSHA256": {
+    "ios/BlindAssist/NavigationModel.swift": "ef35a58edbebd33f5d30ef4921169227ec1dfe2e9fb06664ba5a520687684c14",
+    "tools/test/contextual-capabilities.test.mjs": "9b77099fcaab36325f9c050f5ab8788b676ee5336315c6fb16e45463837587ce",
+    "tools/test/observed-scene.test.mjs": "05640abe5d1621aaa3a2984d9636b1de417b49daed8b483e77c6fc44afdc49e9",
+    "tools/test/spatial-review-regressions.test.mjs": "2a0fd1b9335b3b802232e0ecebba1b7c69ebd65b240bde0bb73ac10d2bfc3ee7",
+    "tools/test/helpers/navigation-source-contract.mjs": "b8e31de82c035d4fa9ffc2d6a772d7cee3ef6e2e48e06dc50cc2e62eece2b432",
+    "research/native-candidate-app-integration-85/integrated/critical-order.patch": "8f298574cd79ff3e86f0a5ef124824686b2d9a95e96d3ca273d697f97e1d9efa"
+  },
+  "logSHA256": {
+    "preintegration-original-contracts.log": "cab069c6c922babe17b401e1387930dbba9a50c043128b5aef5c380f75f5b85f",
+    "stage85-original-contracts.log": "5179926f679977cd4b133f12cdf080c89daf6b86f83fcbc9da3bdae08ac96ccb",
+    "stage85-revised-contracts-negative-control.log": "c43f3bd403f3d8abce12281c0d6cd93dcd82922aad93ceed3daf144ea993d6f7",
+    "repaired-revised-contracts.log": "1170f6a5cc934d77f291d46c5be68928313a325a689ac36258ff2ffe83ec1001"
+  },
+  "historicalPatchChanged": false,
+  "sessionOwnershipChanged": false,
+  "diagnosticActivationChanged": false,
+  "queueOrGeometryCopyChanged": false,
+  "appleBuildRun": false,
+  "githubWritePerformed": false
+}

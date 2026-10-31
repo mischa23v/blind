@@ -1,0 +1,50 @@
+name: Review full-app Practice endpoint reachability
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - '.github/workflows/practice-endpoint-control-20261027.yml'
+      - 'research/practice-endpoint-control-20261027/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: review-practice-endpoint-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  endpoints:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fb879d235f38a3f0121b69b023e8ee14c0ded61c
+          path: pinned-practice-source
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Validate instrumentation and bounded collector fixtures
+        run: python3 research/practice-endpoint-control-20261027/verify.py pinned-practice-source
+      - name: Observe current full-app footer-end reachability
+        run: python3 research/practice-endpoint-control-20261027/run.py pinned-practice-source
+      - name: Preserve bounded synthetic evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: practice-endpoint-control-20261027
+          path: |
+            ${{ runner.temp }}/blind-practice-endpoint-control/artifacts/**/*.png
+            ${{ runner.temp }}/blind-practice-endpoint-control/artifacts/**/*.json
+            ${{ runner.temp }}/blind-practice-endpoint-provenance/*.json
+          if-no-files-found: error
+          retention-days: 3

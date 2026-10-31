@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { assertDepthHazardsBefore } from './helpers/navigation-source-contract.mjs';
 const model = readFileSync(new URL('../../ios/BlindAssist/NavigationModel.swift', import.meta.url), 'utf8');
 const vision = readFileSync(new URL('../../ios/BlindAssist/VisionService.swift', import.meta.url), 'utf8');
 const section = (start, end) => model.slice(model.indexOf(start), model.indexOf(end, model.indexOf(start)));
@@ -50,9 +51,7 @@ function assertTrustedScanEntry(source) {
 
 test('foreground frame loop schedules contextual capabilities without a mode command', () => {
   assert.match(model, /updateBackgroundPerception\(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal\)/);
-  const detector = model.indexOf('let legacyDetection = detector.process(observation)');
-  const background = model.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)');
-  assert.ok(detector >= 0 && background > detector);
+  assertDepthHazardsBefore(model, 'updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)');
   assert.match(contextual, /ContextualCapabilityScheduler.Goal.infer\(from: contextualGoalText\)/);
   assert.doesNotMatch(section("private var contextualGoalText", "private func cancelVoiceRoomScanConfirmation"), /startReadingTool\(|routeSaudiBanknoteCommand\(|routeClothingColorCommand\(|cancelDescription\(/);
 });
@@ -156,6 +155,46 @@ test('room-scan lifecycle prefix contracts reject missing, reordered or asynchro
     'voiceRoomScan.cancel()\n        nativeObservations.stop()');
   assert.notEqual(reversed, model);
   assert.throws(() => assertScanCancellationPrefixes(reversed));
+});
+
+test('optional mesh diagnostics follow critical lifecycle retirement and precede pause or recovery', () => {
+  const hook = '#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n        meshCandidateDiagnostics.stop()\n        #endif';
+  const entries = [
+    ['private func stopCameraMonitoring()', 'nativeObservations.stop()\n        voiceRoomScan.cancel()\n        retireBodyWarning(publishChange: false)\n        withObservedScene { $0.stop() }', 'cameraRecovery.pause()'],
+    ['func sessionWasInterrupted(_ session: ARSession)', 'retireBodyWarning(publishChange: false)\n        nativeObservations.stop()\n        withObservedScene { $0.stop() }', 'cameraRecovery.pause()'],
+    ['func session(_ session: ARSession, didFailWithError error: Error)', 'retireBodyWarning(publishChange: false)\n        nativeObservations.stop()\n        withObservedScene { $0.stop() }', 'requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)']
+  ];
+  const normalize = value => value.replace(/\s+/g, ' ').trim();
+  const assertLifecycle = source => {
+    for (const [signature, prefix, after] of entries) {
+      const scoped = declaration(source, signature);
+      const body = scoped.slice(scoped.indexOf('{') + 1, -1);
+      assert.ok(normalize(body).startsWith(normalize(prefix)), `${signature}: critical retirement stays first`);
+      assert.equal(body.split(hook).length, 2, `${signature}: one exact fenced synchronous hook`);
+      if (signature.includes('didFailWithError')) {
+        assert.ok(normalize(body).endsWith(normalize(`publish()\n${hook}\n${after}`)),
+          'Failure publishes retired authority before optional diagnostics and bounded recovery');
+      } else {
+        assert.ok(normalize(body).startsWith(normalize(`${prefix}\n${hook}\n${after}`)),
+          `${signature}: diagnostic hook cannot delay critical retirement or follow pause`);
+      }
+    }
+  };
+  assertLifecycle(model);
+  for (const [signature, , after] of entries) {
+    const original = declaration(model, signature);
+    const mutations = [
+      original.replace(hook, '').replace('{', `{\n${hook}`),
+      original.replace(hook, '').replace(after, `${after}\n${hook}`),
+      original.replace('meshCandidateDiagnostics.stop()', 'Task { meshCandidateDiagnostics.stop() }'),
+      original.replace('nativeObservations.stop()', 'Task { nativeObservations.stop() }'),
+      original.replace('withObservedScene { $0.stop() }', '')
+    ];
+    for (const changed of mutations) {
+      assert.notEqual(changed, original);
+      assert.throws(() => assertLifecycle(model.replace(original, changed)), { name: 'AssertionError' });
+    }
+  }
 });
 
 test('room-scan entry contract rejects microphone promotion, missing denial return and routes before the gate', () => {

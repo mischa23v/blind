@@ -1,0 +1,38 @@
+{
+  "NOT_accuracy_or_room_coverage": "24.63% is raster acceptance under this fixed mask/range contract, not detector accuracy, room coverage, map completeness, free floor or safe navigation.",
+  "accepted_endpoint_ledger_samples": {
+    "count": 726447,
+    "fraction_of_all_raster": 0.24632670084635416,
+    "fraction_of_contract_eligible_in_range_high_confidence": 1.0,
+    "fraction_of_numeric_valid_high_confidence_before_clip": 0.8138003271122264,
+    "interpretation": "All eligible samples were entered into observed-endpoint ledger. Not a claim every sample creates a mesh vertex or native TSDF weight."
+  },
+  "all_raster_samples": {
+    "count": 2949120,
+    "meaning": "60 x192 x256 exported depth pixels; NOT independently sampled geometry or room area"
+  },
+  "disjoint_partition_of_all_raster": {
+    "confidence0_excluded": 1890261,
+    "confidence1_excluded": 166199,
+    "high_confidence_in_range_accepted": 726447,
+    "high_confidence_outside_4m": 166213
+  },
+  "eligible_in_range_high_confidence": {
+    "count": 726447,
+    "definition": "confidence==2 and0<raw<4000; raw65535 excluded; scale.001 is inferred"
+  },
+  "high_confidence_removed_by_fixed_4m_limit": {
+    "count": 166213,
+    "fraction_of_all_raster": 0.05636020236545139,
+    "fraction_of_high_confidence_before_clip": 0.18619967288777362
+  },
+  "numeric_invalid_and_unknown_code_counts": {
+    "code65535_depth": 0,
+    "unrecognized_confidence_codes": 0,
+    "zero_depth": 0
+  },
+  "numeric_valid_high_confidence_before_range_clip": {
+    "count": 892660,
+    "fraction_of_all_raster": 0.3026869032118056
+  }
+}

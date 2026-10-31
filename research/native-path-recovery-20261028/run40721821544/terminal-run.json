@@ -1,0 +1,59 @@
+{
+  "id": 40721821544,
+  "name": "Candidate room mesh SwiftPM proof",
+  "head_sha": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+  "head_tree": "7b7074133c219b83c3d919bfa48aeac1d5da49f1",
+  "run_attempt": 1,
+  "status": "completed",
+  "conclusion": "success",
+  "updated_at": "2026-10-28T16:02:27Z",
+  "html_url": "https://github.com/mischa23v/blind/actions/runs/40721821544",
+  "jobs": [
+    {
+      "id": 122934453607,
+      "name": "package",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40721821544,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Build isolated SwiftPM product and public client; compile simulator only",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Preserve bounded public proof receipts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ]
+    }
+  ]
+}

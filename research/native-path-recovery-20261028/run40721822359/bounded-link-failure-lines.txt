@@ -1,0 +1,15 @@
+2026-10-28T16:11:48.5684340Z Undefined symbols for architecture arm64:
+2026-10-28T16:11:48.5685640Z   "nominal type descriptor for MeshBufferDecoder81.MeshBufferDecoder.ValidatedRevision", referenced from:
+2026-10-28T16:11:48.5688410Z       _symbolic _____7context______8anchorID_____4mesht 14MeshSnapshot82AAO7ContextV 10Foundation4UUIDV 0A15BufferDecoder810aF7DecoderO17ValidatedRevisionV in ClassificationIngressTests.o
+2026-10-28T16:11:48.5691040Z   "nominal type descriptor for MeshBufferDecoder81.MeshBufferDecoder.ClassificationDiagnostic", referenced from:
+2026-10-28T16:11:48.5693240Z       _symbolic Say_____G 19MeshBufferDecoder810aB7DecoderO24ClassificationDiagnosticO in ClassificationIngressTests.o
+2026-10-28T16:11:48.5696040Z   "MeshBufferDecoder81.MeshBufferDecoder.Limits.init(vertices: Swift.Int, faces: Swift.Int, inputBytes: Swift.Int, decodedBytes: Swift.Int) -> MeshBufferDecoder81.MeshBufferDecoder.Limits", referenced from:
+2026-10-28T16:11:48.5706650Z       default argument 4 of static MeshSnapshot82.MeshSnapshot82.preflight(context: MeshSnapshot82.MeshSnapshot82.Context, vertices: MeshSnapshot82.MeshSnapshot82.Descriptor, indices: MeshSnapshot82.MeshSnapshot82.Descriptor, classification: MeshSnapshot82.MeshSnapshot82.Descriptor?, limits: MeshBufferDecoder81.MeshBufferDecoder.Limits) throws -> MeshSnapshot82.MeshSnapshot82.Plan in ClassificationIngressTests.o
+2026-10-28T16:11:48.5711270Z ld: symbol(s) not found for architecture arm64
+2026-10-28T16:11:48.5712920Z /Users/runner/work/blind/blind/ios/BlindAssist.xcodeproj: BlindAssistTests: clang: error: linker command failed with exit code 1 (use -v to see invocation)
+2026-10-28T16:11:48.5739790Z 	Testing cancelled because the build failed.
+2026-10-28T16:11:51.1556660Z unit xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793203871.879, "finishTime": 1793203907.696}
+2026-10-28T16:11:51.7263940Z PUBLIC_APPLE_SAME_EXPORT=unverified_case_evidence
+2026-10-28T16:12:08.3556720Z 	Testing cancelled because the build failed.
+2026-10-28T16:12:10.6517260Z unit xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793203871.879, "finishTime": 1793203907.696}
+2026-10-28T16:12:10.8091260Z ui xcresult: {"result": "unknown", "totalTestCount": 0, "passedTests": 0, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1793203923.395, "finishTime": 1793203928.112}

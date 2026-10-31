@@ -1,0 +1,3 @@
+from pathlib import Path
+import json,subprocess,os
+S=Path(__file__).resolve().parent;H=S.parent;P=H/'prefix';a=json.loads((H/'ADAPTER_CONFIGURE_COMMAND.json').read_text());a[a.index('-S')+1]=str(S/'adapter');a[a.index('-B')+1]=str(S/'adapter-build');a=[('-DRTABMap_DIR='+str(S/'build'))if x.startswith('-DRTABMap_DIR=')else x for x in a];env=os.environ.copy();env['LD_LIBRARY_PATH']=str(P/'usr/lib/x86_64-linux-gnu')+':'+str(P/'usr/lib');(S/'ADAPTER_CONFIGURE_COMMAND.json').write_text(json.dumps(a,indent=2)+'\n');r=subprocess.run(a,env=env,stdout=(S/'logs/adapter-configure.log').open('w'),stderr=subprocess.STDOUT,timeout=120);print(r.returncode);print((S/'logs/adapter-configure.log').read_text()[-1500:]);raise SystemExit(r.returncode)

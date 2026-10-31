@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "9284719fe477135d4bcd85b2cbd2a587609ed428",
+  "runID": 40710093201,
+  "jobID": 122892704410,
+  "conclusion": "failure",
+  "cause": "APPLE_SOURCE_PINS.json SHA256 mismatch for BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift; before build/test",
+  "lines": [
+    "2026-10-28T14:51:51.6921980Z Traceback (most recent call last):",
+    "2026-10-28T14:51:51.7023430Z   File \"/Users/runner/work/blind/blind/research/room-mesh-package-75/apple/ci.py\", line 133, in <module>",
+    "2026-10-28T14:51:51.7083710Z     if __name__=='__main__':main()",
+    "2026-10-28T14:51:51.7185440Z                             ~~~~^^",
+    "2026-10-28T14:51:51.7186170Z   File \"/Users/runner/work/blind/blind/research/room-mesh-package-75/apple/ci.py\", line 93, in main",
+    "2026-10-28T14:51:51.7300000Z     for name,digest in pins.items():assert sha(H/name)==digest,name",
+    "2026-10-28T14:51:51.7405790Z                                            ^^^^^^^^^^^^^^^^^^^",
+    "2026-10-28T14:51:51.7657130Z AssertionError: BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+    "2026-10-28T14:51:51.7768880Z ##[error]Process completed with exit code 1.",
+    "2026-10-28T14:51:51.7881760Z with:",
+    "2026-10-28T14:51:51.7882000Z   name: candidate-room-mesh-75-receipts",
+    "2026-10-28T14:51:51.7882970Z   path: /Users/runner/work/_temp/blind-room-mesh-75/*-receipt.json",
+    "/Users/runner/work/_temp/blind-room-mesh-75/RESULT.json",
+    "/Users/runner/work/_temp/blind-room-mesh-75/RUNTIME_RESULT.json",
+    "/Users/runner/work/_temp/blind-room-mesh-75/ROUTE_DIAGNOSTIC.json"
+  ]
+}

@@ -1,0 +1,370 @@
+{
+  "scope": "saved record inspection only; no physics rerun or semantic hazard classification",
+  "checksPassed": [
+    "terminal equals final saved tick",
+    "801 tick records, terminal tick800",
+    "rejected state uncommitted, last commit799",
+    "only second guard half hits",
+    "exact recorded face10277130",
+    "main body halves clear",
+    "zero committed body contact and one underbody rejection",
+    "five conditions share plan/cache hashes"
+  ],
+  "pose": {
+    "kind": "simulated-physics-body-pose",
+    "position": [
+      -1.050240211579818,
+      -0.005245624160079686,
+      -3.3180180881497807
+    ],
+    "yaw": -2.8552145992668923,
+    "capturedAt": 153.33333333333334,
+    "capturedTick": 800,
+    "generation": 0,
+    "mapRevision": "4503f5cf067d4a7108bfe71f128a2740c778a8d051bb6c08aeae2eaebb9cfadb",
+    "sessionID": "stage84-pair11-command_delay-seed72011"
+  },
+  "appliedCommand": {
+    "forward_metres": 0.0,
+    "yaw_radians": 0.017453292519943295,
+    "applied_tick": 800,
+    "issued_tick": 797,
+    "source_captured_at": 153.13333333333333,
+    "stop_reason": "boundedNativeCandidate",
+    "forced_wrong_turn": false,
+    "translation_clipped": false,
+    "reaction_delay_ticks": 3
+  },
+  "proposedYawRadiansDerived": -2.837761306746949,
+  "proposedPosition": [
+    -1.050240211579818,
+    -0.0052202266716296075,
+    -3.3180180881497807
+  ],
+  "attemptedVerticalDisplacementMetres": 2.5397488450078914e-05,
+  "derivedSecondGuardOBB": {
+    "coordinateFrame": "model",
+    "midpointYawRadians": -2.8421246298769347,
+    "halfExtentsForwardLateral": [
+      0.15117991295974822,
+      0.22617991295974824
+    ],
+    "cornersVTKOrder": [
+      [
+        -0.9725145546252146,
+        -0.029148656434453496,
+        -3.0573047563848483
+      ],
+      [
+        -1.261417422206996,
+        -0.029148656434453496,
+        -3.1465045177807838
+      ],
+      [
+        -1.261417422206996,
+        -0.0032202266716296075,
+        -3.1465045177807838
+      ],
+      [
+        -0.9725145546252146,
+        -0.0032202266716296075,
+        -3.0573047563848483
+      ],
+      [
+        -0.8390630009526397,
+        -0.029148656434453496,
+        -3.4895316585187777
+      ],
+      [
+        -1.1279658685344212,
+        -0.029148656434453496,
+        -3.578731419914713
+      ],
+      [
+        -1.1279658685344212,
+        -0.0032202266716296075,
+        -3.578731419914713
+      ],
+      [
+        -0.8390630009526397,
+        -0.0032202266716296075,
+        -3.4895316585187777
+      ]
+    ],
+    "newCollisionQueryPerformed": false
+  },
+  "stationaryXZRows": {
+    "firstTick": 692,
+    "lastTick": 800,
+    "count": 109,
+    "yawChangeRadians": 1.8675022996339115
+  },
+  "underbodyGuard": {
+    "contact": true,
+    "halfSegments": [
+      {
+        "contact": false,
+        "raw": {
+          "contact": false,
+          "candidateTriangles": 13294,
+          "firstReferenceCellID": null,
+          "reason": "noNonGroundReferenceSurfaceContact",
+          "closedBoundaries": true,
+          "closedSolidContainmentClassified": false,
+          "measuredCoverageEstablished": false,
+          "physicalClearanceEstablished": false,
+          "physicalAuthority": false,
+          "groundContactCount": null,
+          "nonGroundContactCount": 0,
+          "groundContactEvent": null,
+          "groundContactFaceIDsFirst16": null,
+          "groundContactFaceIDsTruncated": null,
+          "groundContactMeasurement": "unmeasured: classified ground skipped before GetCell and exact intersection",
+          "skippedGroundCandidateCount": 13293,
+          "skippedGroundCandidateIDsFirst16": [
+            10243923,
+            10243938,
+            10243951,
+            10243977,
+            10243989,
+            10244039,
+            10244046,
+            10244435,
+            10244444,
+            10244580,
+            10244598,
+            10244599,
+            10244633,
+            10244646,
+            10244649,
+            10244663
+          ],
+          "skippedGroundCandidateIDsTruncated": true,
+          "skippedGroundCandidatesAreContacts": false,
+          "exactNonGroundTriangleTests": 0,
+          "completeCandidateContactCounts": false,
+          "completeNonGroundCandidateContactCounts": true,
+          "groundExemption": "confirmed immutable original face-ID component only",
+          "lowHeightAloneExcluded": false,
+          "groundComponentDoesNotEstablishSemanticFloor": true,
+          "rejectedNonGroundBoundsCandidates": 1,
+          "nonGroundBoundsFilter": {
+            "kind": "all-three-vertices separated from one padded affine box axis",
+            "vtkVersion": "9.3.1",
+            "outsideParamTolerance": 1e-06,
+            "newtonConvergence": 1e-05,
+            "source": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkHexahedron.cxx",
+            "chunkTriangles": 32768,
+            "originalGeometryChanged": false,
+            "meshArrayCopies": false,
+            "fallbackAllExact": false,
+            "referencePadding": 8.766767329258766e-06,
+            "numericalPadding": 3.6810696634956286e-13,
+            "parametricPadding": [
+              3.261580443847306e-05,
+              0.0003482218463728636,
+              2.1190644502538465e-05
+            ],
+            "paddingRule": "(1e-6+1e-5)*sum(referenceEdgeLengths)+256*float64eps*coordinateScale; inverse-row L1 mapping"
+          }
+        },
+        "lowerY": -0.029248159099168607,
+        "upperY": -0.0032213738514467304,
+        "observedSupportMinimumY": -0.009248159099168606,
+        "observedSupportMaximumY": -0.0052213738514467305,
+        "existingSupportAssociationEnvelopeMetres": 0.02,
+        "actualHalfSegmentEnclosed": true,
+        "onlySameFloorMembershipExempted": true,
+        "globalPlaneUsed": false,
+        "continuousSupportProven": false
+      },
+      {
+        "contact": true,
+        "raw": {
+          "contact": true,
+          "candidateTriangles": 13294,
+          "firstReferenceCellID": 10277130,
+          "reason": "boundaryIntersection",
+          "closedBoundaries": true,
+          "closedSolidContainmentClassified": false,
+          "measuredCoverageEstablished": false,
+          "physicalClearanceEstablished": false,
+          "physicalAuthority": false,
+          "firstTriangleModelHeightRange": [
+            -0.005879931180409605,
+            -0.005761934247913474
+          ],
+          "heightRangeIsWholeTriangleNotContactPoint": true,
+          "groundContactCount": null,
+          "nonGroundContactCount": 1,
+          "groundContactEvent": null,
+          "groundContactFaceIDsFirst16": null,
+          "groundContactFaceIDsTruncated": null,
+          "groundContactMeasurement": "unmeasured: classified ground skipped before GetCell and exact intersection",
+          "skippedGroundCandidateCount": 13293,
+          "skippedGroundCandidateIDsFirst16": [
+            10270714,
+            10271287,
+            10270899,
+            10270405,
+            10272778,
+            10270903,
+            10270450,
+            10270350,
+            10270710,
+            10270897,
+            10270399,
+            10271380,
+            10271383,
+            10271389,
+            10270330,
+            10271392
+          ],
+          "skippedGroundCandidateIDsTruncated": true,
+          "skippedGroundCandidatesAreContacts": false,
+          "exactNonGroundTriangleTests": 1,
+          "completeCandidateContactCounts": false,
+          "completeNonGroundCandidateContactCounts": true,
+          "groundExemption": "confirmed immutable original face-ID component only",
+          "lowHeightAloneExcluded": false,
+          "groundComponentDoesNotEstablishSemanticFloor": true,
+          "rejectedNonGroundBoundsCandidates": 0,
+          "nonGroundBoundsFilter": {
+            "kind": "all-three-vertices separated from one padded affine box axis",
+            "vtkVersion": "9.3.1",
+            "outsideParamTolerance": 1e-06,
+            "newtonConvergence": 1e-05,
+            "source": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkHexahedron.cxx",
+            "chunkTriangles": 32768,
+            "originalGeometryChanged": false,
+            "meshArrayCopies": false,
+            "fallbackAllExact": false,
+            "referencePadding": 8.765662925095659e-06,
+            "numericalPadding": 3.6810696634956286e-13,
+            "parametricPadding": [
+              3.283110783023063e-05,
+              0.000349498737971259,
+              2.1325849296719642e-05
+            ],
+            "paddingRule": "(1e-6+1e-5)*sum(referenceEdgeLengths)+256*float64eps*coordinateScale; inverse-row L1 mapping"
+          }
+        },
+        "lowerY": -0.029148656434453496,
+        "upperY": -0.0032202266716296075,
+        "observedSupportMinimumY": -0.009148656434453496,
+        "observedSupportMaximumY": -0.0052202266716296075,
+        "existingSupportAssociationEnvelopeMetres": 0.02,
+        "actualHalfSegmentEnclosed": true,
+        "onlySameFloorMembershipExempted": true,
+        "globalPlaneUsed": false,
+        "continuousSupportProven": false
+      }
+    ],
+    "actualMidpointCovered": true,
+    "checkedHalfSegments": 2
+  },
+  "samePairComparisons": [
+    {
+      "episode": 55,
+      "condition": "nominal",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "distanceMetres": 5.724347533808979,
+      "ticks": 494,
+      "underbodyRejections": 0,
+      "nearestSavedActualPose": {
+        "tick": 443.0,
+        "x": -1.0425099700032334,
+        "y": -0.005937724608264177,
+        "z": -3.317548844417732,
+        "yaw": -1.7976151679239374
+      },
+      "nearestHorizontalDistanceMetres": 0.007744470576638726
+    },
+    {
+      "episode": 56,
+      "condition": "command_delay",
+      "status": "rejectedPredictedUnderbodyObstacle",
+      "distanceMetres": 5.4405245444021055,
+      "ticks": 801,
+      "underbodyRejections": 1,
+      "nearestSavedActualPose": {
+        "tick": 692.0,
+        "x": -1.050240211579818,
+        "y": -0.005833586862007637,
+        "z": -3.3180180881497807,
+        "yaw": -4.722716898900804
+      },
+      "nearestHorizontalDistanceMetres": 0.0
+    },
+    {
+      "episode": 57,
+      "condition": "temporal_jitter",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "distanceMetres": 5.818473438947424,
+      "ticks": 654,
+      "underbodyRejections": 0,
+      "nearestSavedActualPose": {
+        "tick": 586.0,
+        "x": -1.041205087787329,
+        "y": -0.0058919420414225605,
+        "z": -3.3160256082867434,
+        "yaw": -1.8365144360154857
+      },
+      "nearestHorizontalDistanceMetres": 0.009252212597547188
+    },
+    {
+      "episode": 58,
+      "condition": "extra_translation",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "distanceMetres": 5.718407770622472,
+      "ticks": 453,
+      "underbodyRejections": 0,
+      "nearestSavedActualPose": {
+        "tick": 406.0,
+        "x": -1.0451535301988997,
+        "y": -0.005887747826537469,
+        "z": -3.3290382009443746,
+        "yaw": -1.7979807276768272
+      },
+      "nearestHorizontalDistanceMetres": 0.01213743026659899
+    },
+    {
+      "episode": 59,
+      "condition": "tracking_interruption",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "distanceMetres": 5.72434753380898,
+      "ticks": 517,
+      "underbodyRejections": 0,
+      "nearestSavedActualPose": {
+        "tick": 466.0,
+        "x": -1.0425099700032334,
+        "y": -0.005937724608264177,
+        "z": -3.317548844417732,
+        "yaw": -1.7976151679239374
+      },
+      "nearestHorizontalDistanceMetres": 0.007744470576638726
+    }
+  ],
+  "inputSHA256": {
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/FROZEN.json": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/MATRIX.json": "27fb3411a7ebd6e5f5001d3849244b3ff989edae4ce58d0c93ae8d3a04f4ec74",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/CACHE_MANIFEST.json": "01fd57f962f2c57ee8e7aae8f60504ec1bc3514d2a01650e3b9374345152c6b6",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/episodes/episode-056/result/TICK_EVIDENCE.jsonl.xz": "59a07426106a3ecc0f895bad4cf6775c69f5811d1840cf533acf10d83db91115",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/local_support.py": "1699ddcef1f5fd22bed1ebdf049fdcaae43a7ab80596925b47b96066eff6ab5c",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/oriented_ground_obb_container.py": "9f42c2e09fd53fb2a5778ad0ba965fd3cf1b9a5167e2f91f3161575908ec55d3",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/run_episode.py": "3a6e903dbb7c8a7b69e4f9f54e2a6d5fa0657ca71765eb5c57cc643a71842de6",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/oriented_container.py": "b10cc8f78894c173f48c0cdc3978ce56fb0a3eae8682434db493f432e3d50978",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/episodes/episode-055/result/RESULT.json": "632cb198ec39eca1c0ee89621c56942839b441b81da63ed3ab6b407a733e1b24",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/episodes/episode-056/result/RESULT.json": "0f6e050af9cebe6323ee227bfe94a2b29069eafd38fb9845416af0d45fa51e74",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/episodes/episode-057/result/RESULT.json": "9219d1b2e96b8371d5ac6497312d19587da38128f0227acf390c35ab0703c7c3",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/episodes/episode-058/result/RESULT.json": "384af1c8de9390cd2d8395ce293a7254abd42bdf49337fd0e2f51bd1b571008c",
+    "research/journey-benchmark-readiness-84/evaluator-forward-recovery-05/episodes/episode-059/result/RESULT.json": "d5d3f6eef258e9705a34a28fc5c03322e18a94216a9fa2197f7b33ab87da8516"
+  },
+  "limitations": [
+    "reference collision veto, not phone hazard detection",
+    "conservative sweep may overcount; exact triangle surface intersection with enclosure is not an exact swept-body collision",
+    "triangle vertices/contact point/semantic identity not established",
+    "nearest recorded position is not identical orientation or clearance proof",
+    "ground contacts unmeasured"
+  ]
+}

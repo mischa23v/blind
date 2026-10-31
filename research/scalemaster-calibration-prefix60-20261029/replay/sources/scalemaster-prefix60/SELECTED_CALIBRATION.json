@@ -1,0 +1,69 @@
+{
+  "status": "conditional_inferred_export_calibration_only",
+  "optical_to_recorded_camera": [
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1
+    ]
+  ],
+  "meters_per_raw_unit": 0.001,
+  "K_depth": [
+    [
+      212.69021333333333,
+      0.0,
+      127.66499999999999
+    ],
+    [
+      0.0,
+      212.69021333333333,
+      95.634472
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "released_K": [
+    [
+      1595.1766,
+      0.0,
+      957.4875
+    ],
+    [
+      0.0,
+      1595.1766,
+      717.25854
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "K_derivation": "pinned camera_matrix.csv left-scaled1920x1440->256x192; no pixel-center adjustment; conditional",
+  "pose_direction": "world_from_recorded_camera assumed; raw odometry only",
+  "documented_by_author": false,
+  "independently_calibrated": false,
+  "metric_accuracy_proven": false,
+  "RGB_synchronization": "unresolved; not used",
+  "candidate_selection": "finite24 proper-axis family and scale fitted on4development pairs; then2once-scored holdouts",
+  "critical_field_warning": "Do NOT use prior diagnostic-result.geometry_assumptions.optical_to_arkit_camera: it retains originalF control. This contract uses the selected/locked identity candidate.",
+  "provenance_sha256": {
+    "diagnostic-result.json": "9840945112cead2da8790c9d25578bc6495f86e53f4bc2a885527385616358dd",
+    "development-candidate-lock.json": "40a7f1ffe9de9179020e569a35f1d715ac4d8c9883b3508ee1077be7a8e82f5e",
+    "execution-receipt.json": "035312dd23926775606e214a0f3741a265e6a67cce6d2890021642114f7117c3",
+    "interpretation.json": "9724918433539c10aec52e2284e95199aab6a5d66b9d52502dd048be0c4bb62a"
+  }
+}

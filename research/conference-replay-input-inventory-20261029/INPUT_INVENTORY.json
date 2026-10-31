@@ -1,0 +1,73 @@
+{
+  "status": "BLOCKED_ON_RAW_SOURCE_MATERIALIZATION_AND_REPLAY_ADAPTER_REVIEW",
+  "inspectionRepositoryRevision": "1882514d76452b15107bb61ca192533052dd64ed",
+  "scope": "Source, manifest, archive-member and filesystem inventory only; no native imports/builds/routes/tests/depth decoding. No downloaded bytes obtained.",
+  "source": {
+    "attribution": "Xuqian Ren et al. / MuSHRoom",
+    "license": "CC BY 4.0",
+    "record": "https://zenodo.org/records/10230733",
+    "officialArchiveURL": "https://zenodo.org/api/records/10230733/files/koivu_iphone.tar.gz/content",
+    "archiveBytes": 146575749,
+    "archiveSHA256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518",
+    "archivePublishedMD5": "a359dba714e7829be11747ce5dee141c",
+    "archivePresentInSuppliedWorkspace": false
+  },
+  "requiredRawInputs": [
+    {
+      "role": "author Polycam mesh",
+      "member": "room_datasets/koivu/iphone/long_capture/polycam_mesh/textured.obj",
+      "bytes": 3465360,
+      "sha256": "79cfd017b9c88dca840c8ec969208a93593b03f600303d70cc6777b7c55438a1",
+      "vertices": 18398,
+      "triangles": 29366,
+      "materialized": false
+    },
+    {
+      "role": "original associated camera poses and per-frame intrinsics",
+      "member": "room_datasets/koivu/iphone/long_capture/transformations.json",
+      "bytes": 239937,
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+      "materialized": false
+    },
+    {
+      "role": "294 original processed depth PNGs, not raw ARDepth/confidence",
+      "count": 294,
+      "bytes": 67180136,
+      "perFileHashManifest": "evidence/DEPTH_INPUT_MANIFEST.json",
+      "perFileHashManifestSHA256": "8795ad2625e49336031a6a826e8247b6cbcc8bb3867f7c27a640a89ee049c82c",
+      "selectionSHA256": "125bdbe6831cb4e58c4ffe16b4c31d65463104d695758f68cf7339c59b8a811c",
+      "materialized": false
+    }
+  ],
+  "retainedRegistration": {
+    "resultPath": "evidence/REGISTRATION_RESULT.json",
+    "resultSHA256": "89653e85c7686aea4aef67b440d72d01d25494ebeea8891ef232be6b935592cb",
+    "properRigidScale": 1,
+    "transformNPZMember": "blind-polycam-rigid-registration-37/run-01/CANDIDATE_RIGID_TRANSFORM.npz",
+    "transformNPZSHA256": "4085c76c14e1e97acd939a302daf1a9cd1f258b86d97e8e08ea6e6e9aae8da8f",
+    "availableInRetainedZip": true,
+    "newFitNeededForSourceComparator": false,
+    "physicalRegistrationCertified": false,
+    "reservedSameCaptureP90Metres": 0.06050503128675313
+  },
+  "optionalIndependentReference": {
+    "member": "room_datasets/koivu/gt_mesh.ply",
+    "bytes": 660550085,
+    "sha256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+    "archiveBytes": 455583916,
+    "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+    "officialArchiveURL": "https://zenodo.org/api/records/10222321/files/koivu_mesh_pd.tar.gz/content",
+    "license": "CC BY 4.0",
+    "presentHere": false,
+    "caveat": "Cleaned/hole-completed FARO-derived reference, no verified measured-versus-edited mask; source-only ranking must not consume it."
+  },
+  "trueMissingEvidence": [
+    "Raw Koivu archive/OBJ/original pose/depth bytes absent in supplied workspace; archive is not tracked in current Git tree.",
+    "Original confidence and tracking state are unavailable, not recoverable by inventing values.",
+    "A complete source-derived floor/body/head obstacle projection with coverage and uncertainty has not been retained as an accepted physical oracle.",
+    "Actual body pose, heading, calibrated dimensions and live localization are not provided by camera anchors.",
+    "Current Coffee worker is mesh/path/hash hardcoded; a minimal reviewed Koivu input-mapping worker is not yet written.",
+    "Fullbody/support policy must be selected and frozen consistently with current Coffee result; historical evaluator assistance and zero-margin successes cannot silently replace .15 m-margin source comparison."
+  ],
+  "inspectionCaveat": "Initial git ls-tree -l invoked partial-clone lazy fetch, failed Proxy CONNECT aborted and was interrupted. Subsequent Git reads used GIT_NO_LAZY_FETCH=1. No successful source network acquisition occurred."
+}
