@@ -80,6 +80,11 @@ public final class MeshCandidateIngress83 {
         runtime.diagnosticStageReceipts
     }
 #endif
+    /// Read-only latest-revision delivery metadata from the existing runtime.
+    /// The owner lock keeps reset/stop from mixing epochs; no geometry is exposed.
+    public var anchorDeliveryReceipts: [MeshAnchorDeliveryReceipt] {
+        locked { stopped ? [] : runtime.anchorDeliveryReceipts }
+    }
     private func locked<T>(_ body: () throws -> T) rethrows -> T {
         lock.lock(); defer { lock.unlock() }; return try body()
     }

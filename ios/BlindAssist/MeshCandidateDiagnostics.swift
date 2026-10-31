@@ -142,6 +142,26 @@ final class MeshCandidateDiagnostics {
             dirty.remove(selected.identifier)
         }
     }
+    /// Copy admission alone does not prove that the bounded native mailbox
+    /// installed it. Retry only explicit failed delivery from a later actual frame.
+    /// Pending rows are left alone; old bytes are never replayed as a new revision.
+    private func refreshFailedDeliveries() {
+        guard let owner else{return}
+        for row in owner.anchorDeliveryReceipts {
+            guard let id=UUID(uuidString:row.anchorID),present.contains(id),
+                  let issue=row.issue,issue != .pending,issue != .removed else{continue}
+            dirty.insert(id)
+        }
+    }
+    /// Synthetic inspection only. This observes real native installation, not
+    /// decoder completion, and grants no source/collision/physical authority.
+    func hasInstalledOwnedAnchorForTesting(_ id:UUID) -> Bool {
+        requireMain()
+        guard enabled,!stopped,!terminal,present.contains(id),!dirty.contains(id),!missing.contains(id),let owner else{return false}
+        return owner.anchorDeliveryReceipts.contains {
+            $0.anchorID == id.uuidString && $0.issue == nil && $0.installedRevision == $0.requiredRevision
+        }
+    }
     /// Pure copied metadata seam shared by real capture and synthetic fixtures.
     /// Timestamp is a frame lease, NOT the capture time of all retained mesh faces.
     @discardableResult func admitInventory(_ entries: [(UUID,Size)], frame: Frame, now: Double) -> Bool {
@@ -174,6 +194,7 @@ final class MeshCandidateDiagnostics {
         if !invalidated.isEmpty {retire()}
         missing.formUnion(vanished);missing.subtract(ids)
         seen.formUnion(ids);present=ids;sizes=proposed;latestFrame=frame
+        refreshFailedDeliveries()
         revalidate()
         return true
     }

@@ -11,11 +11,11 @@
   "integrated": {
     "ios/BlindAssist/NavigationModel.swift": "a1f0b9ce8084a47378ecdae5e65ae3e64bd18236fb1846fa76ec6a4c1cdebd7d",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "f6c5b86e2fdb5ae9a6ef10283c218cd4ac7fe9fe2b928178224dae0e4b872f1c",
-    "ios/BlindAssist/MeshCandidateDiagnostics.swift": "5e87906063684f90e1e52c2f339dd4d0898fed7f2648d56d9d098e93df734e01",
+    "ios/BlindAssist/MeshCandidateDiagnostics.swift": "2bc0cee5ce01f53abc5c1ffebb7e5b790ccdeef2158ef362f4dc0036cddf117c",
     "tools/ci/native-apple.sh": "49e233866efa0cce408f9a779dbe0ff42c1a27939cc9d1698296ec5fa9a2b03f",
     ".github/workflows/native-apple.yml": "90b59756e593ce76bbcbf299799224f68286b10ab88b2fa9f202e49f7bdffbee",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "d93283d7e2f190469d0deb235fceef20ae74bcafd66477e4ab35e594eb4db918",
+    "research/native-candidate-app-integration-85/integrated/check.py": "b7f01023d8adfb9f916eb5a4f681b368b573008c6578c0147b0d8b4974ab6f6d",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -33,7 +33,7 @@
     "research/native-candidate-app-integration-85/integrated/apple-room-route-membership.patch": "26038f39ecc6ca83271c971f26d62b7a1dea2c0bcb4fd7b3fe59a6c099495f8e",
     "research/native-candidate-app-integration-85/integrated/classified-timing-ci-helper.patch": "34df77a7a9ba5ddbf6ef6a70beed03b48aaad43ed4bc935bcb4fa45ff92961b9",
     "research/native-candidate-app-integration-85/integrated/classification-ingress-membership.patch": "1268edf8dfa33164b03c3ca403d1cb3c5f9f05ea2b920435efe7d0abe7af402c",
-    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6",
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "a57e1c8e72e6e06ce6fda25ba34022a2f452a03573f14541ce80e8aa9a7929b4",
     "research/mesh-candidate-ingress-83/SOURCE_PINS.json": "5d54a3c436166fd1ee1568cc15f2c34ce724958eee6a630d006c1e448cd1663a",
     "ios/BlindAssistTests/ClassificationIngressTests.swift": "078af9324b47cf0fb75cecf511ef6c5ea6f93577ac734f32a13495ea80f7798b",
     "research/native-candidate-app-integration-85/integrated/hosted-decoder-link-membership.patch": "275ee7237a2e740250c9bf870157e0e91912d819932aa55332ae668aa30876ef",
@@ -83,7 +83,7 @@
     "tools/ci/test_live_mesh_session_initializer.py": "0512ec12df94c21af0f5b199b8893290ebaeea7ec56ee0d6f58214af04027040",
     "ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift": "df12572e95906fb794606e42cecd678d230e204c016ef88b15b17ea1f0d7fde3",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
-    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "3c60d732429988709fc54fbfc3e3711b08eb954a154fe1f51beded07ef551a80",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
@@ -91,7 +91,7 @@
     "tools/ci/test-collect-seed-radius.py": "61b0478a5376deee60154d151bd871e48a37d750e49b9c184c45283d7d05bd04",
     "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a",
     "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76",
-    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "128eaa7e0978569e17f6d9d3f214716761d4ca87ab7656ac65879801045378d1",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "f77cfc7a84429e16af7d5ab9b3a1621bdbc0db6a43515516be05deb30fc23293",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-ci-layer.patch": "15df8e9d41d0560c7d8bec363acb85eaa31d46f30edddfacbef8e431abddf5ad",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43",
     "tools/ci/export-seed-radius-diagnostics.py": "91600e8003140cafe936222d0721f9030af351c83e62a07ff983e31efcc0c760",
@@ -395,8 +395,8 @@
     "tools/test/familiar-people.test.mjs": "fa26c9c0fce5fb00ed74aa8c2ec557c2938412d84d1595f26224865a811bf352",
     "BlindCore/Sources/BlindCore/LocalEmailDraft.swift": "01f9f9d614d7275309317fb0e79d313b2501f78978593ed46134a107640a136f",
     "BlindCore/Tests/BlindCoreTests/LocalEmailDraftTests.swift": "4be674d0c2dbb8637870b930ee62e854fe5fa8c6aecfc0319e40eff5e3a9d3b5",
-    "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift": "1e466c2caf1119a91ecdb34bbaf123e2d533e37194952ebbf2b9d39ed06ffb1c",
-    "tools/test/normal-owner-mesh-current.test.py": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110",
+    "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift": "c2fb6db3d1822cd42736fe121a245da7e8c2af914dc14014c351cc4fba9b31a3",
+    "tools/test/normal-owner-mesh-current.test.py": "58d5deec36acbdfa05d7a3ac470b215ec27ee65a4bbf7937aee855f98df9fcaf",
     "research/native-candidate-app-integration-85/integrated/tracker-third-implementation-batch.patch": "22bb6e807150cccfc3bd4515bd3cd9d7cc8fc967e0b03abc76a8fade86a35f16",
     "tools/test/familiar-build-membership.test.mjs": "89cc72044832265d7ff1609f962027c1e73d29424af6449565c19fbebf2667bd",
     "tools/test/familiar-foreground-defaults.test.mjs": "032a989cebb957cd03f8ca5efba7008b67856159900ede54b9dc7b715661aa3b",
@@ -459,7 +459,8 @@
     "research/native-edt-historical-view-20261030/CURRENT_CONTACT_DELTA.patch": "f9c2315ce877e48e1f3bc64401969fb27b9e324ec674be8553cbee9f90111e90",
     "research/native-candidate-app-integration-85/integrated/edt-view-contact-composition-layer.patch": "1390ed77ff81a74fb0bfe817615bf848d5a9c3cd69346bfa8c558b1c7286af4c",
     "research/native-candidate-app-integration-85/integrated/j01-closed-failure-diagnostics-layer.patch": "f5e18ed4ed32b3f78804ba0194ceda4b2078ca6e3a4b0e64007783c393be0349",
-    "research/native-candidate-app-integration-85/integrated/j01-resolution-preparation-layer.patch": "14928e81b5ac7f720bfe69272178b2c8bad2466e2c738f888f5f7bc241c6f62d"
+    "research/native-candidate-app-integration-85/integrated/j01-resolution-preparation-layer.patch": "14928e81b5ac7f720bfe69272178b2c8bad2466e2c738f888f5f7bc241c6f62d",
+    "research/native-candidate-app-integration-85/integrated/normal-owner-delivery-retry-layer.patch": "ad0986b7deae69a0da0bac009248987fde01cff55b38bc756c78dfb460e25eda"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -1171,5 +1172,14 @@
     "tools/ci/j01-actual-model.py": "3f5c34a2197210170130d7f81e7b7794dd544d2f27729ffe48e4a7a2c2b1628a",
     "tools/ci/test_j01_actual_model.py": "6e65efd761c6933a1d5b6158f44502b763ca0d2f78f4b350523cc33e6a8e1388"
   },
-  "j01ResolutionPreparationNewFiles": []
+  "j01ResolutionPreparationNewFiles": [],
+  "beforeNormalOwnerDeliveryRetry": {
+    "ios/BlindAssist/MeshCandidateDiagnostics.swift": "5e87906063684f90e1e52c2f339dd4d0898fed7f2648d56d9d098e93df734e01",
+    "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift": "1e466c2caf1119a91ecdb34bbaf123e2d533e37194952ebbf2b9d39ed06ffb1c",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "128eaa7e0978569e17f6d9d3f214716761d4ca87ab7656ac65879801045378d1",
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5",
+    "tools/test/normal-owner-mesh-current.test.py": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110"
+  },
+  "normalOwnerDeliveryRetryNewFiles": []
 }

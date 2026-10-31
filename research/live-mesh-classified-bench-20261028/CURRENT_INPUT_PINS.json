@@ -905,8 +905,8 @@
     },
     {
       "path": "ios/BlindAssist/MeshCandidateDiagnostics.swift",
-      "bytes": 20256,
-      "sha256": "5e87906063684f90e1e52c2f339dd4d0898fed7f2648d56d9d098e93df734e01"
+      "bytes": 21434,
+      "sha256": "2bc0cee5ce01f53abc5c1ffebb7e5b790ccdeef2158ef362f4dc0036cddf117c"
     },
     {
       "path": "ios/BlindAssist/NativeARObservationBridge.swift",
@@ -1030,8 +1030,8 @@
     },
     {
       "path": "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift",
-      "bytes": 15038,
-      "sha256": "1e466c2caf1119a91ecdb34bbaf123e2d533e37194952ebbf2b9d39ed06ffb1c"
+      "bytes": 17587,
+      "sha256": "c2fb6db3d1822cd42736fe121a245da7e8c2af914dc14014c351cc4fba9b31a3"
     },
     {
       "path": "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
@@ -1320,8 +1320,8 @@
     },
     {
       "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
-      "bytes": 18230,
-      "sha256": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
+      "bytes": 18533,
+      "sha256": "a57e1c8e72e6e06ce6fda25ba34022a2f452a03573f14541ce80e8aa9a7929b4"
     },
     {
       "path": "research/mesh-candidate-ingress-83/apple/ci.py",
@@ -1550,8 +1550,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
-      "bytes": 41875,
-      "sha256": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5"
+      "bytes": 42239,
+      "sha256": "3c60d732429988709fc54fbfc3e3711b08eb954a154fe1f51beded07ef551a80"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
@@ -2050,8 +2050,8 @@
     },
     {
       "path": "tools/test/normal-owner-mesh-current.test.py",
-      "bytes": 7271,
-      "sha256": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110"
+      "bytes": 9732,
+      "sha256": "58d5deec36acbdfa05d7a3ac470b215ec27ee65a4bbf7937aee855f98df9fcaf"
     },
     {
       "path": "tools/test/repeat-answer-contrast.test.py",
@@ -2418,6 +2418,11 @@
   },
   "j01ResolutionPreparation": {
     "scope": "Bounded fixed dependency resolution before strict build attestation begin",
+    "nativeExecuted": false,
+    "physicalAuthority": false
+  },
+  "normalOwnerDeliveryRetry": {
+    "scope": "Read-only bounded delivery receipts; fresh-frame explicitly failed present anchors only",
     "nativeExecuted": false,
     "physicalAuthority": false
   }

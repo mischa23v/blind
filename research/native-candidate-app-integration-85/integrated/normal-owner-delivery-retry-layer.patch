@@ -1,0 +1,241 @@
+diff --git a/ios/BlindAssist/MeshCandidateDiagnostics.swift b/ios/BlindAssist/MeshCandidateDiagnostics.swift
+--- a/ios/BlindAssist/MeshCandidateDiagnostics.swift
++++ b/ios/BlindAssist/MeshCandidateDiagnostics.swift
+@@ -142,6 +142,26 @@
+             dirty.remove(selected.identifier)
+         }
+     }
++    /// Copy admission alone does not prove that the bounded native mailbox
++    /// installed it. Retry only explicit failed delivery from a later actual frame.
++    /// Pending rows are left alone; old bytes are never replayed as a new revision.
++    private func refreshFailedDeliveries() {
++        guard let owner else{return}
++        for row in owner.anchorDeliveryReceipts {
++            guard let id=UUID(uuidString:row.anchorID),present.contains(id),
++                  let issue=row.issue,issue != .pending,issue != .removed else{continue}
++            dirty.insert(id)
++        }
++    }
++    /// Synthetic inspection only. This observes real native installation, not
++    /// decoder completion, and grants no source/collision/physical authority.
++    func hasInstalledOwnedAnchorForTesting(_ id:UUID) -> Bool {
++        requireMain()
++        guard enabled,!stopped,!terminal,present.contains(id),!dirty.contains(id),!missing.contains(id),let owner else{return false}
++        return owner.anchorDeliveryReceipts.contains {
++            $0.anchorID == id.uuidString && $0.issue == nil && $0.installedRevision == $0.requiredRevision
++        }
++    }
+     /// Pure copied metadata seam shared by real capture and synthetic fixtures.
+     /// Timestamp is a frame lease, NOT the capture time of all retained mesh faces.
+     @discardableResult func admitInventory(_ entries: [(UUID,Size)], frame: Frame, now: Double) -> Bool {
+@@ -174,6 +194,7 @@
+         if !invalidated.isEmpty {retire()}
+         missing.formUnion(vanished);missing.subtract(ids)
+         seen.formUnion(ids);present=ids;sizes=proposed;latestFrame=frame
++        refreshFailedDeliveries()
+         revalidate()
+         return true
+     }
+diff --git a/ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift b/ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift
+--- a/ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift
++++ b/ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift
+@@ -42,6 +42,24 @@
+         if cleanup.acknowledged {XCTAssertTrue(cleanup.owner.canYieldCamera)}
+         return cleanup.acknowledged
+     }
++    @MainActor private func awaitInstalled(_ owner:MeshCandidateDiagnostics,_ id:UUID) async throws {
++        let observed=XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in owner.hasInstalledOwnedAnchorForTesting(id)},object:nil)
++        await fulfillment(of:[observed],timeout:10)
++        guard owner.hasInstalledOwnedAnchorForTesting(id) else {
++            XCTFail("Native anchor installation did not complete within original10s fixture budget")
++            throw MeshCandidateError.unavailable
++        }
++    }
++    @MainActor private func auditStage(_ owner:MeshCandidateDiagnostics) -> String {
++        // Closed labels only; do not emit geometry, IDs, arbitrary errors or status text.
++        if owner.audit != nil {return "completed"}
++        if owner.status == "Source refused/incomplete/retired" {return "source-refused"}
++        if owner.status == "Native query refused/retired" {return "native-refused"}
++        if owner.status == "Post-query original source refused/retired" {return "post-source-refused"}
++        if owner.status == "Collision audit unavailable/retired; not clear space" {return "audit-refused"}
++        if owner.request != nil {return "pending"}
++        return "not-admitted-or-retired"
++    }
+     private func frame(_ session:UUID,_ time:Double) -> MeshCandidateDiagnostics.Frame {
+         .init(session:session,id:UUID(),capturedAt:time)
+     }
+@@ -108,7 +126,7 @@
+         XCTAssertTrue(owner.admitInventory([(id,.init(vertices:8,triangles:4))],frame:frame(session,time.now),now:time.now))
+         let completed=XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in owner.audit != nil},object:nil)
+         await fulfillment(of:[completed],timeout:10)
+-        let audit=try XCTUnwrap(owner.audit)
++        let audit=try XCTUnwrap(owner.audit,"normal-owner-stage=\(auditStage(owner))")
+         XCTAssertEqual(owner.request?.frame,captured);XCTAssertEqual(audit.request.start,frozen.start)
+         XCTAssertEqual(audit.request.goal,frozen.goal);XCTAssertFalse(audit.raw.isEmpty)
+         XCTAssertEqual(audit.raw.count,audit.margin.count)
+@@ -131,8 +149,10 @@
+         decode.sync {}
+         XCTAssertTrue(owner.admitInventory([(id,.init(vertices:8,triangles:4))],frame:frame(session,10.12),now:10.12))
+         owner.check(request(try XCTUnwrap(owner.latestFrame)),stillCurrent:{true})
+-        let refused=XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in owner.status.contains("Source refused")},object:nil)
+-        await fulfillment(of:[refused],timeout:10)
++        // Failed delivery is now dirty before dispatch, so refuse synchronously
++        // rather than enqueueing an already-known incomplete source request.
++        XCTAssertEqual(owner.status,"Unavailable: incomplete inventory or retired frame/goal/body.")
++        XCTAssertNil(owner.request);XCTAssertFalse(owner.hasInstalledOwnedAnchorForTesting(id))
+         XCTAssertNil(owner.audit);XCTAssertTrue(owner.routePoints.isEmpty)
+         time.now=10.2;owner.observe(.removed,anchorID:id,receiptUptime:time.now)
+         time.now=10.3
+@@ -166,6 +186,7 @@
+             time.now=10+Double(index+1)/15
+             XCTAssertTrue(owner.admitInventory(inventory,frame:frame(session,time.now),now:time.now))
+             XCTAssertTrue(ownedFloor(owner,id));decode.sync {}
++            try await awaitInstalled(owner,id) // Sequential means native installation, not just decode return.
+         }
+         let captured=try XCTUnwrap(owner.latestFrame)
+         XCTAssertGreaterThan(captured.capturedAt-10,2)
+@@ -188,6 +209,21 @@
+         XCTAssertTrue(captureAgesUnknown)
+         XCTAssertEqual(owner.latestFrame,captured) // Snapshot did not rebind the capture.
+         XCTAssertNil(owner.audit) // Complete delivery alone never mints support/clearance.
++        // A real rejected decoder result must become retryable from a later frame,
++        // even though initial copy admission returned true and removed dirty state.
++        let rejected=ids[0]
++        time.now += 0.01;owner.observe(.updated,anchorID:rejected,receiptUptime:time.now)
++        decode.sync {};time.now += 0.01
++        XCTAssertTrue(owner.ingestOwnedForTesting(id:rejected) {context in
++            .unknownGap(.init(context:context,anchorID:rejected,reason:.invalidDescriptor))
++        });decode.sync {}
++        XCTAssertFalse(owner.hasInstalledOwnedAnchorForTesting(rejected))
++        time.now += 0.01
++        XCTAssertTrue(owner.admitInventory(inventory,frame:frame(session,time.now),now:time.now))
++        time.now += 0.001
++        XCTAssertTrue(ownedFloor(owner,rejected),"Later frame must retry an explicitly failed delivery")
++        decode.sync {};try await awaitInstalled(owner,rejected)
++        XCTAssertNil(owner.audit) // Recopy still supplies no route or support.
+         guard await awaitDrain(cleanup) else{return}
+     }
+     @MainActor func testActualAuditGoalRetirementAndStopWaitForOperationDisposal() async throws {
+diff --git a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -905,8 +905,8 @@
+     },
+     {
+       "path": "ios/BlindAssist/MeshCandidateDiagnostics.swift",
+-      "bytes": 20256,
+-      "sha256": "5e87906063684f90e1e52c2f339dd4d0898fed7f2648d56d9d098e93df734e01"
++      "bytes": 21434,
++      "sha256": "2bc0cee5ce01f53abc5c1ffebb7e5b790ccdeef2158ef362f4dc0036cddf117c"
+     },
+     {
+       "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+@@ -1030,8 +1030,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/NormalOwnerMeshConnectionTests.swift",
+-      "bytes": 15038,
+-      "sha256": "1e466c2caf1119a91ecdb34bbaf123e2d533e37194952ebbf2b9d39ed06ffb1c"
++      "bytes": 17587,
++      "sha256": "c2fb6db3d1822cd42736fe121a245da7e8c2af914dc14014c351cc4fba9b31a3"
+     },
+     {
+       "path": "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+@@ -1320,8 +1320,8 @@
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+-      "bytes": 18230,
+-      "sha256": "63bf17df474814b00bd4c54f5e0735458b3e8fc5107ff054ef1410febe09d9a6"
++      "bytes": 18533,
++      "sha256": "a57e1c8e72e6e06ce6fda25ba34022a2f452a03573f14541ce80e8aa9a7929b4"
+     },
+     {
+       "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+@@ -1550,8 +1550,8 @@
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+-      "bytes": 41875,
+-      "sha256": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5"
++      "bytes": 42239,
++      "sha256": "3c60d732429988709fc54fbfc3e3711b08eb954a154fe1f51beded07ef551a80"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+@@ -2050,8 +2050,8 @@
+     },
+     {
+       "path": "tools/test/normal-owner-mesh-current.test.py",
+-      "bytes": 7271,
+-      "sha256": "313417cb97b15372854107504195ea60ad19b4a2b28f7449e6842b5f5730c110"
++      "bytes": 9732,
++      "sha256": "58d5deec36acbdfa05d7a3ac470b215ec27ee65a4bbf7937aee855f98df9fcaf"
+     },
+     {
+       "path": "tools/test/repeat-answer-contrast.test.py",
+@@ -2420,5 +2420,10 @@
+     "scope": "Bounded fixed dependency resolution before strict build attestation begin",
+     "nativeExecuted": false,
+     "physicalAuthority": false
++  },
++  "normalOwnerDeliveryRetry": {
++    "scope": "Read-only bounded delivery receipts; fresh-frame explicitly failed present anchors only",
++    "nativeExecuted": false,
++    "physicalAuthority": false
+   }
+ }
+diff --git a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+--- a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
++++ b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+@@ -80,6 +80,11 @@
+         runtime.diagnosticStageReceipts
+     }
+ #endif
++    /// Read-only latest-revision delivery metadata from the existing runtime.
++    /// The owner lock keeps reset/stop from mixing epochs; no geometry is exposed.
++    public var anchorDeliveryReceipts: [MeshAnchorDeliveryReceipt] {
++        locked { stopped ? [] : runtime.anchorDeliveryReceipts }
++    }
+     private func locked<T>(_ body: () throws -> T) rethrows -> T {
+         lock.lock(); defer { lock.unlock() }; return try body()
+     }
+diff --git a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+--- a/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
++++ b/research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift
+@@ -243,6 +243,14 @@
+  private let maxDeliveryRecords=256
+  private struct DeliveryView {
+   let excluded:Set<String>,unknown:[String],receipts:[MeshAnchorDeliveryReceipt],complete:Bool,payloadBytes:Int
++ }
++ /// Bounded copied delivery bookkeeping only. No geometry, capture freshness,
++ /// footprint support or route authority. A pending copy is not an installed copy.
++ public var anchorDeliveryReceipts: [MeshAnchorDeliveryReceipt] {
++  locked {
++   guard !stopped,deliveryPolicy == .latestValidatedAnchorRevision else{return []}
++   return deliveryView().receipts
++  }
+  }
+  private func deliveryView()->DeliveryView {
+   guard deliveryPolicy == .latestValidatedAnchorRevision else {
+diff --git a/tools/test/normal-owner-mesh-current.test.py b/tools/test/normal-owner-mesh-current.test.py
+--- a/tools/test/normal-owner-mesh-current.test.py
++++ b/tools/test/normal-owner-mesh-current.test.py
+@@ -54,4 +54,17 @@
+ check('RoomPlan release guard precedes transfer',nav.index('guard meshCandidateDiagnostics.canYieldCamera else',nav.index('func scanPlace(')) < nav.index('places.startScan(',nav.index('func scanPlace(')))
+ check('held native ACK cannot yield camera','XCTAssertFalse(owner.canYieldCamera,"Disabled/stopped is not an exclusive-camera handoff permission")' in tests)
+ check('visible seated-only latency warning','Seated developer test only. Full-buffer copying and synchronous collision checks may delay camera alerts.' in view)
++runtime=read('research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift')
++ingress=read('research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift')
++check('delivery status is readonly bounded existing ledger', 'public var anchorDeliveryReceipts: [MeshAnchorDeliveryReceipt]' in runtime and 'guard !stopped,deliveryPolicy == .latestValidatedAnchorRevision else{return []}' in runtime and 'return deliveryView().receipts' in runtime)
++check('ingress fences delivery view by active epoch owner','locked { stopped ? [] : runtime.anchorDeliveryReceipts }' in ingress)
++check('retry only known present failed delivery',all(x in core for x in ['for row in owner.anchorDeliveryReceipts','present.contains(id)','let issue=row.issue,issue != .pending,issue != .removed else{continue}','dirty.insert(id)']))
++check('fresh inventory updates before failure retry',core.index('seen.formUnion(ids);present=ids;sizes=proposed;latestFrame=frame')<core.index('        refreshFailedDeliveries()'))
++check('no retry bypasses the native mailbox limit','private let maxPending=8, maxPendingScalars=900000' in runtime and 'pending<maxPending' in runtime)
++check('32 copies wait for native installation', 'try await awaitInstalled(owner,id) // Sequential means native installation, not just decode return.' in tests)
++check('installed checks exact revision and no known gaps',all(x in core for x in ['$0.issue == nil && $0.installedRevision == $0.requiredRevision','!dirty.contains(id),!missing.contains(id)']))
++check('installed wait retains original deadline and explicit failure','await fulfillment(of:[observed],timeout:10)' in tests.split('private func awaitInstalled',1)[1].split('private func auditStage',1)[0] and 'throw MeshCandidateError.unavailable' in tests)
++check('decoder rejection is retried only after fresh inventory',all(x in tests for x in ['let rejected=ids[0]','XCTAssertFalse(owner.hasInstalledOwnedAnchorForTesting(rejected))','Later frame must retry an explicitly failed delivery','decode.sync {};try await awaitInstalled(owner,rejected)']))
++check('first audit failure gets closed stage evidence',r'normal-owner-stage=\(auditStage(owner))' in tests and 'return "source-refused"' in tests and 'return "native-refused"' in tests and 'return "audit-refused"' in tests)
++check('first audit keeps nil refusal and10s wait','let audit=try XCTUnwrap(owner.audit,' in tests and 'await fulfillment(of:[completed],timeout:10)' in tests)
+ print(f'{len(checks)} source contracts passed; native fixtures UNRUN')

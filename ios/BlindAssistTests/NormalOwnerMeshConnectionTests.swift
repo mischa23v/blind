@@ -42,6 +42,24 @@ final class NormalOwnerMeshConnectionTests: XCTestCase {
         if cleanup.acknowledged {XCTAssertTrue(cleanup.owner.canYieldCamera)}
         return cleanup.acknowledged
     }
+    @MainActor private func awaitInstalled(_ owner:MeshCandidateDiagnostics,_ id:UUID) async throws {
+        let observed=XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in owner.hasInstalledOwnedAnchorForTesting(id)},object:nil)
+        await fulfillment(of:[observed],timeout:10)
+        guard owner.hasInstalledOwnedAnchorForTesting(id) else {
+            XCTFail("Native anchor installation did not complete within original10s fixture budget")
+            throw MeshCandidateError.unavailable
+        }
+    }
+    @MainActor private func auditStage(_ owner:MeshCandidateDiagnostics) -> String {
+        // Closed labels only; do not emit geometry, IDs, arbitrary errors or status text.
+        if owner.audit != nil {return "completed"}
+        if owner.status == "Source refused/incomplete/retired" {return "source-refused"}
+        if owner.status == "Native query refused/retired" {return "native-refused"}
+        if owner.status == "Post-query original source refused/retired" {return "post-source-refused"}
+        if owner.status == "Collision audit unavailable/retired; not clear space" {return "audit-refused"}
+        if owner.request != nil {return "pending"}
+        return "not-admitted-or-retired"
+    }
     private func frame(_ session:UUID,_ time:Double) -> MeshCandidateDiagnostics.Frame {
         .init(session:session,id:UUID(),capturedAt:time)
     }
@@ -108,7 +126,7 @@ final class NormalOwnerMeshConnectionTests: XCTestCase {
         XCTAssertTrue(owner.admitInventory([(id,.init(vertices:8,triangles:4))],frame:frame(session,time.now),now:time.now))
         let completed=XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in owner.audit != nil},object:nil)
         await fulfillment(of:[completed],timeout:10)
-        let audit=try XCTUnwrap(owner.audit)
+        let audit=try XCTUnwrap(owner.audit,"normal-owner-stage=\(auditStage(owner))")
         XCTAssertEqual(owner.request?.frame,captured);XCTAssertEqual(audit.request.start,frozen.start)
         XCTAssertEqual(audit.request.goal,frozen.goal);XCTAssertFalse(audit.raw.isEmpty)
         XCTAssertEqual(audit.raw.count,audit.margin.count)
@@ -131,8 +149,10 @@ final class NormalOwnerMeshConnectionTests: XCTestCase {
         decode.sync {}
         XCTAssertTrue(owner.admitInventory([(id,.init(vertices:8,triangles:4))],frame:frame(session,10.12),now:10.12))
         owner.check(request(try XCTUnwrap(owner.latestFrame)),stillCurrent:{true})
-        let refused=XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in owner.status.contains("Source refused")},object:nil)
-        await fulfillment(of:[refused],timeout:10)
+        // Failed delivery is now dirty before dispatch, so refuse synchronously
+        // rather than enqueueing an already-known incomplete source request.
+        XCTAssertEqual(owner.status,"Unavailable: incomplete inventory or retired frame/goal/body.")
+        XCTAssertNil(owner.request);XCTAssertFalse(owner.hasInstalledOwnedAnchorForTesting(id))
         XCTAssertNil(owner.audit);XCTAssertTrue(owner.routePoints.isEmpty)
         time.now=10.2;owner.observe(.removed,anchorID:id,receiptUptime:time.now)
         time.now=10.3
@@ -166,6 +186,7 @@ final class NormalOwnerMeshConnectionTests: XCTestCase {
             time.now=10+Double(index+1)/15
             XCTAssertTrue(owner.admitInventory(inventory,frame:frame(session,time.now),now:time.now))
             XCTAssertTrue(ownedFloor(owner,id));decode.sync {}
+            try await awaitInstalled(owner,id) // Sequential means native installation, not just decode return.
         }
         let captured=try XCTUnwrap(owner.latestFrame)
         XCTAssertGreaterThan(captured.capturedAt-10,2)
@@ -188,6 +209,21 @@ final class NormalOwnerMeshConnectionTests: XCTestCase {
         XCTAssertTrue(captureAgesUnknown)
         XCTAssertEqual(owner.latestFrame,captured) // Snapshot did not rebind the capture.
         XCTAssertNil(owner.audit) // Complete delivery alone never mints support/clearance.
+        // A real rejected decoder result must become retryable from a later frame,
+        // even though initial copy admission returned true and removed dirty state.
+        let rejected=ids[0]
+        time.now += 0.01;owner.observe(.updated,anchorID:rejected,receiptUptime:time.now)
+        decode.sync {};time.now += 0.01
+        XCTAssertTrue(owner.ingestOwnedForTesting(id:rejected) {context in
+            .unknownGap(.init(context:context,anchorID:rejected,reason:.invalidDescriptor))
+        });decode.sync {}
+        XCTAssertFalse(owner.hasInstalledOwnedAnchorForTesting(rejected))
+        time.now += 0.01
+        XCTAssertTrue(owner.admitInventory(inventory,frame:frame(session,time.now),now:time.now))
+        time.now += 0.001
+        XCTAssertTrue(ownedFloor(owner,rejected),"Later frame must retry an explicitly failed delivery")
+        decode.sync {};try await awaitInstalled(owner,rejected)
+        XCTAssertNil(owner.audit) // Recopy still supplies no route or support.
         guard await awaitDrain(cleanup) else{return}
     }
     @MainActor func testActualAuditGoalRetirementAndStopWaitForOperationDisposal() async throws {

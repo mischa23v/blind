@@ -244,6 +244,14 @@ public final class RoomMeshCandidateRuntime {
  private struct DeliveryView {
   let excluded:Set<String>,unknown:[String],receipts:[MeshAnchorDeliveryReceipt],complete:Bool,payloadBytes:Int
  }
+ /// Bounded copied delivery bookkeeping only. No geometry, capture freshness,
+ /// footprint support or route authority. A pending copy is not an installed copy.
+ public var anchorDeliveryReceipts: [MeshAnchorDeliveryReceipt] {
+  locked {
+   guard !stopped,deliveryPolicy == .latestValidatedAnchorRevision else{return []}
+   return deliveryView().receipts
+  }
+ }
  private func deliveryView()->DeliveryView {
   guard deliveryPolicy == .latestValidatedAnchorRevision else {
    return DeliveryView(excluded:[],unknown:[],receipts:[],complete:true,payloadBytes:0)
