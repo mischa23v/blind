@@ -43,12 +43,17 @@ test('native callbacks enforce the exact ARSession before recovery or lifecycle 
     'func sessionWasInterrupted(_ session: ARSession)',
     'func sessionInterruptionEnded(_ session: ARSession)']) {
     const body = withoutComments(declaration(navigation, signature));
-    assert.match(body.slice(body.indexOf('{') + 1), /^\s*guard session === self\.session else \{ return \}/);
+    const strictGuard = /^\s*guard session === self\.session, normalCameraCallbackAllowed else \{ return \}/;
+    const currentBody = body.slice(body.indexOf('{') + 1);
+    assert.match(currentBody, strictGuard);
+    // Neither exact ARSession identity nor the normal-camera owner may disappear.
+    assert.doesNotMatch(currentBody.replace('session === self.session, ', ''), strictGuard);
+    assert.doesNotMatch(currentBody.replace(', normalCameraCallbackAllowed', ''), strictGuard);
   }
   for (const signature of ['func session(_ session: ARSession, didFailWithError error: Error)',
     'func sessionWasInterrupted(_ session: ARSession)']) {
     const body = withoutComments(declaration(navigation, signature));
-    assert.match(body, /guard session === self\.session else \{ return \}\s*places\.invalidateWorldMapRecovery\(\)/);
+    assert.match(body, /guard session === self\.session, normalCameraCallbackAllowed else \{ return \}\s*places\.invalidateWorldMapRecovery\(\)/);
   }
   const frame = withoutComments(declaration(navigation, frameSignature));
   assert.ok(frame.indexOf('places.observeWorldMapTrackingInterruption(') < frame.indexOf('frame.timestamp - lastProcessed'));

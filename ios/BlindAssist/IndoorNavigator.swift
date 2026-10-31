@@ -184,11 +184,15 @@ final class IndoorNavigator: ObservableObject {
     /// Admit the user's replacement intent before the community cache awaits IO.
     /// Later cache callbacks cannot override a delete, import or newer selection.
     func beginCommunityImport(_ package: PlacePackage) -> CommunityImportIntent {
+        beginCommunityImport(packageID: package.id, revision: package.revision)
+    }
+    /// Withdraw the previous venue before the exact local package is asynchronously read.
+    func beginCommunityImport(packageID: String, revision packageRevision: String) -> CommunityImportIntent {
         invalidatePosition(); revision = UUID(); mapIOPending = true
         onJourneyMapOwnershipWithdrawn?(revision)
         registered?.suspendForExternalPreparation()
         message = t("Preparing community map. Guidance withdrawn.", "جارٍ تجهيز خريطة المجتمع. سُحب الإرشاد.")
-        return .init(revision: revision, packageID: package.id, packageRevision: package.revision)
+        return .init(revision: revision, packageID: packageID, packageRevision: packageRevision)
     }
     func ownsCommunityImport(_ intent: CommunityImportIntent) -> Bool { revision == intent.revision }
     func completeCommunityImport(_ package: PlacePackage, intent: CommunityImportIntent,

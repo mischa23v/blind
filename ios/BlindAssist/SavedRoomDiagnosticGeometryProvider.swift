@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import CryptoKit
 import RoomPlan
+import ARKit
 import BlindCore
 import BlindMemory
 
@@ -29,6 +30,31 @@ enum SavedRoomDiagnosticGeometryDecoder {
             return .success(geometry)
         } catch let failure as Failure { return .failure(failure) }
         catch let failure as SpatialMapIOError where failure == .oversized { return .failure(.unsupported) }
+        catch { return .failure(.unavailable) }
+    }
+    /// Exact local pair reference for the normal AR owner. This does not export
+    /// private bytes or install a walkable graph. Decode the actual saved RoomPlan
+    /// payload before accepting its hash-bound historical geometry identity.
+    static func localSavedFrameReference(_ source: SavedRoomDiagnosticGeometrySource,
+        worldMapURL: URL) -> Result<SpatialMapInstallation, Failure> {
+        do {
+            guard source.memory.writeOwner == source.memoryOwner,
+                  try !source.memory.isDeleted(room: source.frame.placeID) else { return .failure(.unavailable) }
+            let room = try SpatialMapFileStorage.readBounded(source.url, maximumBytes: maximumSourceBytes)
+            _ = try decode(room, frame: source.frame)
+            let world = try SpatialMapFileStorage.readBounded(worldMapURL, maximumBytes: 32 * 1024 * 1024)
+            let installation = try SpatialMapInstallation.localSavedFrameReference(frame: source.frame,
+                worldMapBytes: world, roomCaptureBytes: room, sha256: { bytes in
+                    SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
+                })
+            guard let map = try NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: world),
+                  map.anchors.contains(where: { PlaceStore.matchesOrigin($0, descriptor: source.frame) }) else {
+                return .failure(.sourceMismatch)
+            }
+            guard source.memory.writeOwner == source.memoryOwner,
+                  try !source.memory.isDeleted(room: source.frame.placeID) else { return .failure(.unavailable) }
+            return .success(installation)
+        } catch let failure as Failure { return .failure(failure) }
         catch { return .failure(.unavailable) }
     }
     static func decode(_ data: Data, frame: SavedWorldFrame) throws -> SavedRoomDiagnosticGeometry {

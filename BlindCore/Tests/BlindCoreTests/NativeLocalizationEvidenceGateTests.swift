@@ -23,9 +23,23 @@ final class NativeLocalizationEvidenceGateTests: XCTestCase {
         return (owner, .init(binding: binding, nodeID: "fixture-room", metersPerUnit: 1,
             floorLevels: ["ground": "fixture-floor"], savedWorldFrame: frame))
     }
+    private func association(_ owner: NativeLocalizationOwner, time: Double) -> SavedWorldFrameCameraAssociation {
+        // Authored callbacks exercise the real recovery gate, not device relocalization.
+        var recovery = SavedWorldFrameRecovery()
+        recovery.begin(frame: owner.descriptor, sessionID: owner.arSession, now: time - 0.3)
+        _ = recovery.observe(sessionID: owner.arSession, tracking: .relocalizing, mappingAvailable: false,
+            originAnchorMatches: false, frameTime: time - 0.3, now: time - 0.3)
+        for stamp in [time - 0.2, time - 0.1, time] {
+            _ = recovery.observe(sessionID: owner.arSession, tracking: .normal, mappingAvailable: true,
+                originAnchorMatches: true, frameTime: stamp, now: stamp)
+        }
+        return recovery.cameraAssociation(sessionID: owner.arSession, capturedAt: time, now: time)!
+    }
     private func candidate(_ owner: NativeLocalizationOwner, time: Double = 10,
-                           id: UUID = UUID(), matrix: [Double]? = nil) -> NativeLocalizationCandidate {
-        .init(id: id, owner: owner, capturedAt: time, cameraToWorld: matrix ?? identity, trackingNormal: true)
+                           id: UUID = UUID(), matrix: [Double]? = nil,
+                           association receipt: SavedWorldFrameCameraAssociation? = nil) -> NativeLocalizationCandidate {
+        .init(id: id, owner: owner, capturedAt: time, cameraToWorld: matrix ?? identity, trackingNormal: true,
+            association: receipt ?? association(owner, time: time))
     }
     private func record(time: Double = 10, expiry: Double = 11,
                         revision: String = "fixture-calibration", hash: String? = nil) -> NativeEvidenceRecord {
@@ -132,7 +146,7 @@ final class NativeLocalizationEvidenceGateTests: XCTestCase {
         var gate = NativeLocalizationEvidenceGate(), altered = identity
         altered[12] = 1
         try begin(&gate, c, map)
-        let forged = candidate(owner, id: c.id, matrix: altered)
+        let forged = candidate(owner, id: c.id, matrix: altered, association: c.association)
         expect(.supersededCandidate) { _ = try prepare(&gate, measurement(forged)) }
         XCTAssertEqual(gate.reason, .missingCalibration)
         XCTAssertNoThrow(try prepare(&gate, measurement(c)))
@@ -174,4 +188,32 @@ final class NativeLocalizationEvidenceGateTests: XCTestCase {
         expect(.staleCandidate) { _ = try prepare(&gate, measurement(c), now: 11) }
         XCTAssertEqual(gate.reason, .staleCandidate)
     }
+    func testExactCaptureSessionAndPrivatePairAreRequiredNotRecentDescriptorAlone() throws {
+        let (owner, map) = fixture(), (other, _) = fixture()
+        let receipt = association(owner, time: 10)
+        let wrongSession = NativeLocalizationOwner(arSession: UUID(), registeredSession: owner.registeredSession,
+            artifact: owner.artifact, descriptor: owner.descriptor, calibrationRevision: owner.calibrationRevision,
+            mountRevision: owner.mountRevision, selection: owner.selection)
+        for value in [candidate(owner, time: 10.1, association: receipt),
+                      candidate(wrongSession, association: receipt),
+                      candidate(owner, association: association(other, time: 10))] {
+            var gate = NativeLocalizationEvidenceGate()
+            expect(.descriptorMismatch) {
+                try gate.begin(value, installed: map, recovered: owner.descriptor, now: value.capturedAt)
+            }
+        }
+        // The durable map creation date is deliberately old; only this capture is fresh.
+        var gate = NativeLocalizationEvidenceGate()
+        try begin(&gate, candidate(owner, association: receipt), map)
+    }
+    func testRecoveryEpochSwapCannotReplacePendingCandidateWithSameIDPoseAndTime() throws {
+        let (owner, map) = fixture(), original = candidate(owner)
+        let otherEpoch = candidate(owner, id: original.id)
+        XCTAssertNotEqual(original.association.recoveryID, otherEpoch.association.recoveryID)
+        var gate = NativeLocalizationEvidenceGate()
+        try begin(&gate, original, map)
+        expect(.supersededCandidate) { _ = try prepare(&gate, measurement(otherEpoch)) }
+        XCTAssertNoThrow(try prepare(&gate, measurement(original)))
+    }
+
 }

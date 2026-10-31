@@ -140,6 +140,31 @@ public struct ConnectedJourneyCoordinator: Sendable {
               now.isFinite,now>=armedPortal.armedAt,now-armedPortal.armedAt<=120 else{return nil}
         return to
     }
+    /// A missing/expired departure receipt cannot complete a portal. If fresh
+    /// evidence independently establishes a destination-floor endpoint instead,
+    /// drop only the abandoned itinerary and let the existing planner start there.
+    /// Never record an unobserved crossing or recover a historical departure.
+    /// The runtime calls this only after its unique-endpoint association succeeds.
+    @discardableResult
+    public mutating func retireUnassociatedPortal(at endpoint: JourneyEndpoint, now: Double) throws -> Bool {
+        guard case .portal(_, let from, let to)? = currentLeg,
+              activeBinding == endpoint.binding, endpoint.binding == to.binding,
+              endpoint.floorID == to.floorID else { return false }
+        func matches(_ expected: JourneyEndpoint) -> Bool {
+            endpoint.binding == expected.binding && endpoint.floorID == expected.floorID &&
+                endpoint.nodeID == expected.nodeID &&
+                (expected.roomID == nil || endpoint.roomID == expected.roomID)
+        }
+        // Fresh source evidence still follows the existing source/rearm path.
+        // Same map IDs or floor numbers alone never imply the destination side.
+        guard !matches(from) else { return false }
+        _ = try requireEndpoint(endpoint, now: now)
+        if matches(to), pendingPortalDestination(now: now) != nil { return false }
+        // Also handles an independently localized, different destination node:
+        // reaching it cannot retroactively manufacture the missing portal endpoint.
+        retirePlan()
+        return true
+    }
     /// Reuses the existing planner after a NEW supported unique mapped endpoint.
     /// Never snap the current pose onto a route or silently bridge a blocked leg.
     public mutating func requireRouteReassociation() {retirePlan()}

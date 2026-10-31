@@ -23,7 +23,7 @@ final class NativeLocalizationIssuer {
         do {
             try gate.begin(value, installed: installed, recovered: recovered, now: now)
             candidate = value; deadline = value.capturedAt + SavedWorldFrameRecovery.maximumFrameAge
-            reason = .missingCalibration
+            reason = value.owner.selection.kind == .localSavedFrameReference ? .localReferenceOnly : .missingCalibration
             // Missing calibration is already known: do not leave any older route
             // pose/output alive. The retained candidate is diagnostic only;
             // exact-owner retirement leaves session identity and replay ledger intact.

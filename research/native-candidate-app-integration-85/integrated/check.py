@@ -18,13 +18,31 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Restore exact reviewed86 bytes only for historical provenance. Current source
+# gates below still read R and cannot pass against this recovered historical tree.
+pre_local_map_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-local-map-pipeline-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeLocalMapPipeline'])+manifest['localMapPipelineNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'local-map-pipeline-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeLocalMapPipeline'].items():
+        value=(root/name).read_bytes()
+        check('exact reviewed86 before local-map pipeline '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_local_map_source[name]=value
+    for name in manifest['localMapPipelineNewFiles']:
+        check('local-map continuation new file absent from reviewed86 '+name,not (root/name).exists())
+check('current local-map pipeline source and exact authored identities',subprocess.run([sys.executable,'-B',str(R/'tools/test/local-map-pipeline-current.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+check('current interrupted-portal producer consumer contracts',subprocess.run([sys.executable,'-B',str(R/'tools/test/connected-portal-recovery.test.py'),'--root',str(R)],cwd=R,capture_output=True,timeout=15).returncode==0)
+check('current exact ARSession and normal-camera ownership guards',subprocess.run(['node','--test','--test-concurrency=1',str(R/'tools/test/saved-frame-camera-association.test.mjs')],cwd=R,capture_output=True,timeout=15).returncode==0)
+
 # Carry only the published Boolean repair over the exact frozen future layers.
 # This temporary reversal is historical provenance, never current behavior.
-pre_beacon_carry_source={}
+pre_beacon_carry_source=dict(pre_local_map_source)
 with tempfile.TemporaryDirectory(prefix='stage85-published-beacon-carry-') as temp:
     root=Path(temp)
     for name in manifest['beforePublishedBeaconRepairCarry']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_local_map_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'published-beacon-repair-carry.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforePublishedBeaconRepairCarry'].items():
         value=(root/name).read_bytes();check('exact frozen83 before published Boolean carry '+name,hashlib.sha256(value).hexdigest()==digest);pre_beacon_carry_source[name]=value
@@ -644,5 +662,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
+    appleBuild='pending', localMapPipelineSourceApplied=True, localMapPipelineNativeExecuted=False, beaconBoolCompileRepairApplied=True, publishedFF0RepairReproducedExactly=True, failed119BuildPreserved=True, historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, secondImplementationBatchApplied=True, j01RealExecutionDefaultEnabled=False, j01SourceAttestationVerified=False, j01SameJobObservationLaneAvailable=True, j01ActualModelRunObserved=False, thirdImplementationBatchApplied=True, j01SelectedScriptCount=3, j01SupportedScriptCount=6, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit normal-owner enable or separately confirmed seated capture', meshDiagnosticGeometryCopyEnabled='opt-in normal-owner whole anchors after urgent work, or separately admitted seated owner; no physical authority',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

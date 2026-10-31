@@ -7,7 +7,7 @@ public enum NativeLocalizationNotReady: String, Error, Equatable, Sendable {
     case descriptorMismatch, invalidCandidate, trackingUnavailable, staleCandidate
     case ownerChanged, supersededCandidate, replayedCandidate, missingCalibration, missingSupport, missingErrorModel
     case unvalidatedEvidence, outOfDomain, invalidEvidence, evidenceExpired
-    case mountChanged, mountSlip, physicalReleaseNotApproved
+    case mountChanged, mountSlip, physicalReleaseNotApproved, localReferenceOnly
 }
 
 public struct NativeLocalizationOwner: Equatable, Sendable {
@@ -36,8 +36,13 @@ public struct NativeLocalizationCandidate: Equatable, Sendable {
     /// Full ARCamera camera-to-world 4x4, column-major; no yaw-only collapse.
     public let cameraToWorld: [Double]
     public let trackingNormal: Bool
+    /// Actual latest-capture receipt from the local paired-world recovery owner.
+    /// Includes the volatile recovery epoch, not just a historical map descriptor.
+    /// It does not measure camera/body calibration, floor support or pose error.
+    public let association: SavedWorldFrameCameraAssociation
     public init(id: UUID = UUID(), owner: NativeLocalizationOwner, capturedAt: Double,
-                cameraToWorld: [Double], trackingNormal: Bool) {
+                cameraToWorld: [Double], trackingNormal: Bool, association: SavedWorldFrameCameraAssociation) {
+        self.association = association
         self.id = id; self.owner = owner; self.capturedAt = capturedAt
         self.cameraToWorld = cameraToWorld; self.trackingNormal = trackingNormal
     }
@@ -152,6 +157,9 @@ public struct NativeLocalizationEvidenceGate: Sendable {
               installed.binding == candidate.owner.artifact.binding,
               installed.binding.frameID == saved.frameID, installed.binding.revision == saved.revision,
               NativeEvidenceRecord.digest(candidate.owner.artifact.sha256) else { throw fail(.descriptorMismatch) }
+        guard candidate.association.frame == recovered,
+              candidate.association.sessionID == candidate.owner.arSession,
+              candidate.association.capturedAt == candidate.capturedAt else { throw fail(.descriptorMismatch) }
         if owner != candidate.owner { owner = candidate.owner; lastTime = nil }
         guard candidate.trackingNormal else { throw fail(.trackingUnavailable) }
         guard NativeCameraTransform(columns: candidate.cameraToWorld).valid,
@@ -167,6 +175,9 @@ public struct NativeLocalizationEvidenceGate: Sendable {
         currentOwner: NativeLocalizationOwner, validator: any NativeLocalizationEvidenceValidator,
         now: Double) throws -> NativeLocalizationBenchPair {
         guard owner == currentOwner else { throw fail(.ownerChanged) }
+        // Goal-free reference observations can never mint a physical bench pair,
+        // even if a caller fabricates calibration/support/error inputs later.
+        guard currentOwner.selection.kind != .localSavedFrameReference else { throw fail(.physicalReleaseNotApproved) }
         // A completion for A must not consume the newer pending B, even in the
         // same owner epoch. Return a non-mutating rejection for obsolete work.
         guard measurement.candidate.owner == currentOwner,

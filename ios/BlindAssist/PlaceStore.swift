@@ -38,6 +38,20 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var scanID = UUID()
     private var processing: Task<Void, Never>?
     private var worldFrameRecovery = SavedWorldFrameRecovery()
+    private var worldFrameRecoveryMemoryOwner: UUID?
+    private var worldFrameRecoverySessionID: UUID?
+    private var localReferenceContext: NativeLocalizationRouteContext?
+    private var localReferenceRequest = UUID()
+    private var localReferenceWorker: UUID?
+    typealias LocalReferenceLoader = @Sendable (SavedRoomDiagnosticGeometrySource, URL) -> Result<SpatialMapInstallation, SavedRoomDiagnosticGeometryDecoder.Failure>
+    private let localReferenceLoader: LocalReferenceLoader
+    private struct LocalReferenceWork: Sendable {
+        let source: SavedRoomDiagnosticGeometrySource
+        let worldMapURL: URL
+        let sessionID: UUID
+        let request: UUID
+    }
+    private var pendingLocalReference: LocalReferenceWork?
     private var diagnosticGeometryDeletionGeneration = UUID()
     private var diagnosticGeometryBlockedPlaces = Set<UUID>()
     @Published private(set) var registration: RoomRegistrationAcquisition?
@@ -81,7 +95,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     }
     /// The default app destination is unchanged; tests can exercise the actual
     /// source/deletion owner against an isolated protected local directory.
-    init(directory: URL) {
+    init(directory: URL, localReferenceLoader: @escaping LocalReferenceLoader = SavedRoomDiagnosticGeometryDecoder.localSavedFrameReference) {
+        self.localReferenceLoader = localReferenceLoader
         self.directory = directory
         super.init()
         do {
@@ -281,15 +296,17 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         try worldMapArtifacts(for: place).map
     }
     private func worldMapArtifacts(for place: SavedPlace) throws -> (map: ARWorldMap, room: Data, descriptor: SavedWorldFrame?) {
-        guard let memory, try !memory.isDeleted(room: place.id.uuidString) else { throw MemoryError.missing }
-        let data = try Data(contentsOf: directory.appendingPathComponent("\(place.id).worldmap"))
+        guard let memory, !diagnosticGeometryBlockedPlaces.contains(place.id),
+              places.contains(where: { $0.id == place.id && $0.worldFrame == place.worldFrame }),
+              try !memory.isDeleted(room: place.id.uuidString) else { throw MemoryError.missing }
+        let data = try SpatialMapFileStorage.readBounded(directory.appendingPathComponent("\(place.id).worldmap"), maximumBytes: 32 * 1024 * 1024)
         guard let map = try NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: data) else {
             throw CocoaError(.fileReadCorruptFile)
         }
         // Legacy scans remain available for preview/semantic recognition. They do not
         // acquire a coordinate binding retroactively from matching names or filenames.
         guard let descriptor = place.worldFrame else { return (map, Data(), nil) }
-        let room = try Data(contentsOf: directory.appendingPathComponent("\(place.id).room.json"))
+        let room = try SpatialMapFileStorage.readBounded(directory.appendingPathComponent("\(place.id).room.json"), maximumBytes: Self.maximumRegistrationRoomBytes)
         guard descriptor.placeID == place.id.uuidString,
               descriptor.matches(worldMapSHA256: Self.sha256(data), roomCaptureSHA256: Self.sha256(room)),
               map.anchors.contains(where: { Self.matchesOrigin($0, descriptor: descriptor) }) else {
@@ -309,23 +326,88 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                artifacts.room.count <= Self.maximumRegistrationRoomBytes {
                 registrationBytes = RegistrationBytes(frame: descriptor, owner: owner, data: artifacts.room)
             }
+            worldFrameRecoveryMemoryOwner = memory?.writeOwner
+            worldFrameRecoverySessionID = sessionID
             worldFrameRecovery.begin(frame: descriptor, sessionID: sessionID, now: now)
+            prepareLocalSavedFrameReference(frame: descriptor, sessionID: sessionID)
         }
         return artifacts.map
     }
     func invalidateWorldMapRecovery() {
-        worldFrameRecovery.reset()
+        worldFrameRecovery.reset(); worldFrameRecoveryMemoryOwner = nil; worldFrameRecoverySessionID = nil
+        localReferenceContext = nil; pendingLocalReference = nil; localReferenceRequest = UUID()
+        // Keep the physical utility-worker lease until it completes: cancellation
+        // never starts overlapping pair readers or RoomPlan decoders.
         registrationBytes = nil
         registrationBaseline = nil
         registrationRequestID = UUID()
         registrationCapture.invalidate()
     }
+    /// Reference construction uses one utility worker and one latest lightweight
+    /// request. No pair reads, hashes or RoomPlan decode run in an AR callback.
+    private func prepareLocalSavedFrameReference(frame: SavedWorldFrame, sessionID: UUID) {
+        guard let memory, ownsWorldMapRecovery(frame), let id = UUID(uuidString: frame.placeID) else { return }
+        let source = SavedRoomDiagnosticGeometrySource(frame: frame,
+            url: directory.appendingPathComponent("\(id).room.json"), memory: memory,
+            memoryOwner: memory.writeOwner, deletionGeneration: diagnosticGeometryDeletionGeneration)
+        pendingLocalReference = .init(source: source, worldMapURL: directory.appendingPathComponent("\(id).worldmap"),
+            sessionID: sessionID, request: localReferenceRequest)
+        drainLocalSavedFrameReference()
+    }
+    private func drainLocalSavedFrameReference() {
+        guard localReferenceWorker == nil, let work = pendingLocalReference else { return }
+        pendingLocalReference = nil
+        let worker = UUID(); localReferenceWorker = worker
+        let loader = localReferenceLoader
+        Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .utility) {
+                loader(work.source, work.worldMapURL)
+            }.value
+            guard let self, self.localReferenceWorker == worker else { return }
+            self.localReferenceWorker = nil
+            defer { self.drainLocalSavedFrameReference() }
+            guard self.localReferenceRequest == work.request, self.worldFrameRecoverySessionID == work.sessionID,
+                  self.ownsWorldMapRecovery(work.source.frame), self.ownsDiagnosticGeometrySource(work.source) else { return }
+            guard case .success(let installation) = result,
+                  installation.map.purpose == .localizationReferenceOnly,
+                  let revision = try? installation.registry.map(for: installation.binding),
+                  revision.savedWorldFrame == work.source.frame, revision.floorLevels.isEmpty else {
+                self.localReferenceContext = nil; return
+            }
+            self.localReferenceContext = .init(sessionID: work.sessionID, artifact: installation.artifact,
+                revision: revision, goalRevision: nil, scope: .localSavedFrameReference)
+        }
+    }
+    /// Current local normal-AR owner only. This context requests association, not
+    /// a location claim. The exact-frame receipt is still required by the router.
+    func nativeSavedFrameReferenceContext(sessionID: UUID) -> NativeLocalizationRouteContext? {
+        guard worldFrameRecoverySessionID == sessionID, let context = localReferenceContext,
+              context.sessionID == sessionID, let frame = context.revision.savedWorldFrame,
+              ownsWorldMapRecovery(frame) else { return nil }
+        return context
+    }
+    #if DEBUG
+    /// Hosted scheduling seam only: starts UNKNOWN recovery; never observes
+    /// tracking, returns a camera receipt, sets a pose or enables physical output.
+    func debugRequestLocalReference(for place: SavedPlace, sessionID: UUID) {
+        invalidateWorldMapRecovery()
+        guard let frame = place.worldFrame, let memory,
+              places.contains(where: { $0.id == place.id && $0.worldFrame == frame }) else { return }
+        worldFrameRecoveryMemoryOwner = memory.writeOwner; worldFrameRecoverySessionID = sessionID
+        worldFrameRecovery.begin(frame: frame, sessionID: sessionID, now: 0)
+        prepareLocalSavedFrameReference(frame: frame, sessionID: sessionID)
+    }
+    var debugHasPendingLocalReferenceWork: Bool { localReferenceWorker != nil || pendingLocalReference != nil }
+    func debugReplaceLocalReferenceMemory(_ replacement: MemoryStore?) { memory = replacement }
+    #endif
     /// Observes ARKit's own relocalizing -> normal transition and the restored named
     /// anchor. No appearance match, user room-name answer or imported map can call this
     /// a restored coordinate frame. A returned frame does not authorize physical speech.
     @discardableResult func observeWorldMapRecovery(for place: SavedPlace, frame: ARFrame,
         sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
-        guard let descriptor = place.worldFrame else { return nil }
+        guard let descriptor = place.worldFrame, ownsWorldMapRecovery(descriptor) else {
+            invalidateWorldMapRecovery(); return nil
+        }
         let tracking: SavedWorldFrameRecovery.Tracking
         switch frame.camera.trackingState {
         case .normal: tracking = .normal
@@ -338,8 +420,18 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             frameTime: frame.timestamp, now: now)
         return recovered == descriptor ? recovered : nil
     }
+    /// In-memory local ownership check; no disk/hash/RoomPlan work on a callback.
+    /// Deletion admission blocks receipts even if the durable deletion later fails.
+    private func ownsWorldMapRecovery(_ frame: SavedWorldFrame) -> Bool {
+        guard let memory, worldFrameRecoveryMemoryOwner == memory.writeOwner,
+              let id = UUID(uuidString: frame.placeID),
+              !diagnosticGeometryBlockedPlaces.contains(id) else { return false }
+        return places.contains { $0.id == id && $0.worldFrame == frame }
+    }
     func currentWorldFrame(sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
-        worldFrameRecovery.current(sessionID: sessionID, now: now)
+        guard let frame = worldFrameRecovery.current(sessionID: sessionID, now: now),
+              ownsWorldMapRecovery(frame) else { return nil }
+        return frame
     }
     /// Constant-work native loss observation before the normal camera throttle.
     /// Never inspect anchors or authorize a new association on this path.
@@ -358,7 +450,9 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     /// unmeasured. No imported-map transform, body/support evidence or guidance.
     func cameraWorldFrameAssociation(sessionID: UUID, capturedAt: Double,
         now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrameCameraAssociation? {
-        worldFrameRecovery.cameraAssociation(sessionID: sessionID, capturedAt: capturedAt, now: now)
+        guard let association = worldFrameRecovery.cameraAssociation(sessionID: sessionID, capturedAt: capturedAt, now: now),
+              ownsWorldMapRecovery(association.frame) else { return nil }
+        return association
     }
     /// Read-only request preparation; byte reads, hashes and CapturedRoom decoding
     /// belong to the diagnostic provider's bounded utility worker, never a frame.
@@ -398,7 +492,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private static func sha256(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
-    private static func matchesOrigin(_ anchor: ARAnchor, descriptor: SavedWorldFrame) -> Bool {
+    static func matchesOrigin(_ anchor: ARAnchor, descriptor: SavedWorldFrame) -> Bool {
         guard anchor.identifier.uuidString == descriptor.originAnchorID,
               anchor.name == descriptor.originAnchorName else { return false }
         // The marker was created at identity in the saved world. If setWorldOrigin

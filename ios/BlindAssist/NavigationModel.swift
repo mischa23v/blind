@@ -774,12 +774,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             previewContext: { [weak self] in self?.indoor.nativePreviewLocalizationContext },
             withholdPreview: { [weak self] session, artifact in
                 self?.indoor.withholdNativePreviewEvidence(session: session, artifact: artifact)
+            }, savedFrameContext: { [weak self] in
+                guard let self, let sessionID = UUID(uuidString: self.observationFrameID) else { return nil }
+                return self.places.nativeSavedFrameReferenceContext(sessionID: sessionID)
             })
     }
     private func withNativeLocalization<T>(_ operation: @MainActor (NativeLocalizationRouter) throws -> T) rethrows -> T {
         try MainActor.assumeIsolated {
+            // A selected journey/preview never falls back to the local reference
+            // when unavailable. Goal-free local association has no route authority.
+            let hasLocalReference = UUID(uuidString: observationFrameID).flatMap {
+                places.nativeSavedFrameReferenceContext(sessionID: $0)
+            } != nil
             let selected: NativeLocalizationRouter.Selection = connectedJourneyOwnsNavigation ? .connectedJourney :
-                (indoorGuidanceOwner == .legacyPreview ? .registeredPreview : .none)
+                (indoorGuidanceOwner == .legacyPreview ? .registeredPreview :
+                    (hasLocalReference ? .localSavedFrameReference : .none))
             nativeLocalizationRouter.select(selected)
             return try operation(nativeLocalizationRouter)
         }
@@ -800,14 +809,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         withNativeLocalization { router in
             router.offer(arSession: arSession, calibrationRevision: nativeLocalizationCalibrationRevision,
                 mountRevision: nativeLocalizationMount, capturedAt: frame.timestamp, cameraToWorld: matrix,
-                trackingNormal: normal, recovered: places.currentWorldFrame(sessionID: arSession, now: now), now: now)
+                trackingNormal: normal,
+                association: places.cameraWorldFrameAssociation(sessionID: arSession,
+                    capturedAt: frame.timestamp, now: now), now: now)
         }
     }
     private func revalidateNativeLocalization(now: Double) {
         _ = revalidateCurrentNavigationHazards(now: now)
         guard let arSession = UUID(uuidString: observationFrameID) else { invalidateNativeLocalization(.ownerChanged); return }
-        withNativeLocalization { $0.watchdog(arSession: arSession,
-            calibrationRevision: nativeLocalizationCalibrationRevision, mountRevision: nativeLocalizationMount, now: now) }
+        withNativeLocalization { router in
+            let association = router.candidate.flatMap {
+                places.cameraWorldFrameAssociation(sessionID: arSession, capturedAt: $0.capturedAt, now: now)
+            }
+            router.watchdog(arSession: arSession, calibrationRevision: nativeLocalizationCalibrationRevision,
+                mountRevision: nativeLocalizationMount, association: association, now: now)
+        }
     }
     private func retireBodyWarning(publishChange: Bool = true) {
         bodyWarningAssessment = nil

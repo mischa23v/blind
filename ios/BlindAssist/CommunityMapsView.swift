@@ -5,6 +5,11 @@ import BlindCore
 @MainActor struct CommunityMapsView: View {
     @ObservedObject var model: NavigationModel
     @StateObject private var library = CommunityLibrary()
+    @StateObject private var venueActivation = VenuePackageActivation()
+    @State private var importingDirectory = false
+    @State private var venueCandidate: VenuePackageReference?
+    @State private var nearbyOnly = false
+    @State private var selectedFloor = ""
     @State private var repository = ""
     @State private var filter = ""
     @State private var importing = false
@@ -58,8 +63,59 @@ import BlindCore
             }
         }
     }
+    private var venueReferences: [VenuePackageReference] {
+        let values: [VenuePackageReference]
+        if nearbyOnly {
+            if let fix = model.outdoor.location {
+                values = library.venueCatalog.candidates(latitude: fix.coordinate.latitude,
+                    longitude: fix.coordinate.longitude, accuracy: fix.horizontalAccuracy,
+                    age: Date().timeIntervalSince(fix.timestamp))
+            } else { values = [] }
+        } else { values = library.venueCatalog.references }
+        return values.filter { filter.isEmpty || $0.venue.name.localizedCaseInsensitiveContains(filter) || $0.googlePlaceID == filter }
+    }
     var body: some View {
         List {
+            Section(t("Choose a venue map", "اختر خريطة مكان")) {
+                Button(t("Import local venue directory", "استيراد دليل أماكن محلي")) { importingDirectory = true; importing = true }
+                    .accessibilityIdentifier("venue-directory-import")
+                Toggle(t("Show nearby candidates only", "عرض الأماكن القريبة المحتملة فقط"), isOn: $nearbyOnly)
+                if nearbyOnly {
+                    Button(t("Refresh phone location for candidates", "تحديث موقع الهاتف للأماكن المحتملة")) { model.outdoor.requestCoarseLocation() }
+                    Text(t("A fresh accurate phone fix only filters this list. It does not identify your building, floor or position indoors.", "الموقع الحديث الدقيق يرشح القائمة فقط، ولا يحدد مبناك أو طابقك أو موقعك داخله."))
+                }
+                ForEach(venueReferences) { reference in
+                    Button(reference.venue.name + " · " + reference.packageRevision) { venueCandidate = reference }
+                        .accessibilityHint(t("Choose this exact saved map revision. Previous navigation will be withdrawn.", "اختر هذه النسخة المحفوظة. سيُسحب التنقل السابق."))
+                }
+                if venueReferences.isEmpty { Text(t("No directory candidates. Import a directory or show all venues; no location is assumed.", "لا توجد أماكن محتملة. استورد دليلاً أو اعرض جميع الأماكن؛ لا يُفترض موقعك.")) }
+                Text(venueActivation.status)
+                if venueActivation.loading {
+                    Button(t("Cancel venue loading", "إلغاء تحميل المكان")) { venueActivation.cancel() }
+                }
+            }
+            if let package = venueActivation.package {
+                Section(t("Selected venue preview", "معاينة المكان المختار")) {
+                    Text(package.localizedName(arabic: model.arabic))
+                    Text(t("Live position and floor remain unknown.", "الموقع والطابق الحاليان غير معروفين."))
+                    Picker(t("Preview floor", "معاينة الطابق"), selection: $selectedFloor) {
+                        Text(t("All floors", "جميع الطوابق")).tag("")
+                        ForEach(package.floors) { Text($0.name).tag($0.id) }
+                    }
+                    ForEach(package.rooms.filter { selectedFloor.isEmpty || $0.floorID == selectedFloor }) { room in
+                        VStack(alignment: .leading) {
+                            Text(room.name)
+                            if let layout = room.layout {
+                                ForEach(layout.features) { feature in Text(feature.name(arabic: model.arabic)) }
+                            }
+                        }
+                    }
+                    if let route = package.routeMap {
+                        Text(t("Authored route destinations (not current guidance)", "وجهات المسار المرسومة (ليست إرشاداً حالياً)"))
+                        ForEach(route.nodes.filter { selectedFloor.isEmpty || $0.level == selectedFloor }, id: \.id) { Text($0.localizedName(arabic: model.arabic)) }
+                    }
+                }
+            }
             Section {
                 if library.installed.isEmpty { Text(t("No public maps saved yet.", "لا توجد خرائط عامة محفوظة بعد.")) }
                 ForEach(library.installed.filter { filter.isEmpty || $0.package.name.localizedCaseInsensitiveContains(filter) }) { item in
@@ -83,7 +139,7 @@ import BlindCore
                 Text(t("Saved maps work offline. A map does not tell me where you are.", "الخرائط المحفوظة تعمل دون إنترنت. الخريطة لا تخبرني بمكانك."))
             }
             Section {
-                Button(t("Import a place package from Files", "استيراد حزمة مكان من الملفات")) { importing = true }.disabled(library.busy)
+                Button(t("Import a place package from Files", "استيراد حزمة مكان من الملفات")) { importingDirectory = false; importing = true }.disabled(library.busy)
                     .accessibilityIdentifier("community-import")
                 TextField(t("Map library address (owner/name)", "عنوان مكتبة الخرائط (المالك/الاسم)"), text: $repository)
                     .textInputAutocapitalization(.never).autocorrectionDisabled()
@@ -194,9 +250,23 @@ import BlindCore
         .navigationTitle(t("Community maps", "خرائط المجتمع"))
         .onAppear { library.networkAllowed = !model.offlineOnly }
         .onChange(of: model.offlineOnly) { _, value in library.networkAllowed = !value }
-        .onDisappear { library.cancel() }
+        .onDisappear { library.cancel(); venueActivation.cancel() }
+        .confirmationDialog(t("Load this venue revision? Previous navigation will stop. This does not establish your location.", "تحميل نسخة هذا المكان؟ سيتوقف التنقل السابق، ولا يثبت هذا موقعك."), isPresented: Binding(get: { venueCandidate != nil }, set: { if !$0 { venueCandidate = nil } })) {
+            if let reference = venueCandidate {
+                Button(t("Load saved venue map", "تحميل خريطة المكان المحفوظة")) {
+                    preparationID = nil; model.stopReturn(); selectedFloor = ""
+                    venueActivation.select(reference, indoor: model.indoor); venueCandidate = nil
+                }
+            }
+        }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
-            switch result { case let .success(url): exportURL = nil; library.importFile(url); case let .failure(error): self.error = error.localizedDescription }
+            switch result {
+            case .success(let url):
+                exportURL = nil
+                if importingDirectory { library.importVenueCatalog(url) } else { library.importFile(url) }
+            case .failure(let failure): error = failure.localizedDescription
+            }
+            importingDirectory = false
         }
         .confirmationDialog(t("Share the entire reviewed package, including room names and geometry? Only share places you have permission to disclose.", "هل تريد مشاركة الحزمة المراجعة كاملة، بما فيها أسماء الغرف وقياساتها؟ شارك الأماكن التي لديك إذن بالكشف عنها فقط."), isPresented: $exportReview, titleVisibility: .visible) {
             Button(t("Prepare reviewed export", "إعداد التصدير المراجع")) {

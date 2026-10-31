@@ -1283,3 +1283,199 @@ private final class RoomImportSyntheticProbe: @unchecked Sendable {
     func run() { entered.fulfill(); _ = release.wait(timeout: .now() + 5) }
     func finish() { release.signal() }
 }
+
+/// Actual local package storage + IndoorNavigator import owner. Synthetic public
+/// fixtures contain authored layouts, not physical localization or safe routes.
+@MainActor final class VenuePackageActivationTests: XCTestCase {
+    private func fixture(_ id: String) throws -> PlacePackage {
+        let json = #"{"schemaVersion":1,"id":"venue-A","revision":"r1","name":"Public fixture A","description":"Synthetic test only; not surveyed.","author":"Test fixture","license":"CC0-1.0","createdAt":"2026-10-30T00:00:00Z","visibility":"public","provenance":"authored","coordinateSystem":"local-meters-y-up","localization":"manual-landmarks","coverageGaps":["No measured localization or support"],"floors":[{"id":"ground","name":"Ground","frameID":"frame-A"}],"rooms":[{"id":"room-A","name":"Room A","floorID":"ground","kind":"room","description":"Fixture room","layout":{"version":1,"name":"Layout A","features":[{"id":"table-A","kind":"furniture","category":"table","confidence":"high","corners":[{"x":1,"y":0.7,"z":1},{"x":2,"y":0.7,"z":1},{"x":2,"y":0.7,"z":2},{"x":1,"y":0.7,"z":2}]}]}}],"connections":[],"reviews":[],"routeMap":{"name":"Route A","nodes":[{"id":"entry","name":"Entry","level":"ground","position":{"x":0,"y":0,"z":0}},{"id":"exit","name":"Exit","level":"ground","position":{"x":0,"y":0,"z":3}}],"edges":[{"from":"entry","to":"exit","distance":3,"accessible":true}]}}"#
+        var package = try PlacePackage.decode(Data(json.utf8))
+        package.id = "venue-" + id; package.name = "Public fixture " + id
+        package.floors[0].frameID = "frame-" + id
+        package.rooms[0].id = "room-" + id; package.rooms[0].name = "Room " + id
+        package.rooms[0].layout?.features[0].id = "table-" + id
+        package.routeMap?.name = "Route " + id
+        return package
+    }
+    private func reference(_ package: PlacePackage) throws -> VenuePackageReference {
+        let digest = CommunityPackageStorage.digest(try package.encoded())
+        return VenuePackageReference(venue: Venue(id: package.id, name: package.name, latitude: 24.7,
+            longitude: 46.7, radiusMeters: 100, mapFile: digest + ".json"),
+            packageID: package.id, packageRevision: package.revision, digest: digest, googlePlaceID: "fixture-" + package.id)
+    }
+    private func settled(_ activation: VenuePackageActivation) async {
+        let done = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !activation.loading }, object: nil)
+        await fulfillment(of: [done], timeout: 10)
+        XCTAssertFalse(activation.loading)
+    }
+    private func navigator(_ directory: URL) async -> IndoorNavigator {
+        let ready = XCTestExpectation(description: "actual restore complete")
+        ready.assertForOverFulfill = true
+        let nav = IndoorNavigator(storage: directory.appendingPathComponent("route.json")) { _ in ready.fulfill() }
+        await fulfillment(of: [ready], timeout: 10)
+        return nav
+    }
+    func testLocalVenueAToBAndReturnPreservesLayoutsButNeverPose() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storage = CommunityPackageStorage(directory: directory.appendingPathComponent("packages"))
+        let a = try fixture("A"), b = try fixture("B")
+        _ = try await storage.install(a); _ = try await storage.install(b)
+        let nav = await navigator(directory), activation = VenuePackageActivation(storage: storage)
+        var withdrawals = 0; nav.onJourneyMapOwnershipWithdrawn = { _ in withdrawals += 1 }
+        for value in [a, b, a] {
+            activation.select(try reference(value), indoor: nav)
+            XCTAssertFalse(nav.isAligned); XCTAssertFalse(nav.hasActiveRoute); XCTAssertTrue(nav.mapIOPending)
+            await settled(activation)
+            XCTAssertEqual(activation.package?.id, value.id); XCTAssertEqual(nav.activePackage?.id, value.id)
+            XCTAssertEqual(activation.package?.floors.count, 1)
+            XCTAssertEqual(activation.package?.rooms.first?.layout?.features.first?.category, "table")
+            XCTAssertEqual(nav.map?.nodes.count, 2)
+            XCTAssertFalse(nav.isAligned); XCTAssertFalse(nav.hasActiveRoute)
+            XCTAssertNil(nav.registeredJourneyInstallation) // Authored package is not measured installation.
+        }
+        XCTAssertGreaterThanOrEqual(withdrawals, 3)
+    }
+    func testDelayedAReadCannotReplaceBAndCancelCannotPublish() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let a = try fixture("A"), b = try fixture("B"), ar = try reference(a), br = try reference(b)
+        let nav = await navigator(directory)
+        var held: CheckedContinuation<PlacePackage, Error>?
+        let entered = XCTestExpectation(description: "A loader held"); entered.assertForOverFulfill = true
+        var readCount = 0
+        let activation = VenuePackageActivation(loader: { digest in
+            readCount += 1
+            if digest == ar.digest { return try await withCheckedThrowingContinuation { held = $0; entered.fulfill() } }
+            return b
+        })
+        addTeardownBlock { @MainActor in
+            activation.cancel(); held?.resume(returning: a); held = nil
+            let drained = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !activation.operationInFlight }, object: nil)
+            await self.fulfillment(of: [drained], timeout: 10)
+        }
+        activation.select(ar, indoor: nav); await fulfillment(of: [entered], timeout: 10)
+        for _ in 0..<32 { activation.select(br, indoor: nav) }
+        XCTAssertEqual(readCount, 1); XCTAssertTrue(activation.operationInFlight)
+        held?.resume(returning: a); held = nil
+        await settled(activation)
+        XCTAssertEqual(readCount, 2) // One blocked A plus only the latest queued B.
+        XCTAssertEqual(nav.activePackage?.id, b.id); XCTAssertEqual(activation.package?.id, b.id)
+        let heldAgain = XCTestExpectation(description: "cancelled load entered")
+        var cancelled: CheckedContinuation<PlacePackage, Error>?
+        let other = VenuePackageActivation(loader: { _ in
+            try await withCheckedThrowingContinuation { cancelled = $0; heldAgain.fulfill() }
+        })
+        addTeardownBlock { @MainActor in
+            other.cancel(); cancelled?.resume(returning: a); cancelled = nil
+            let drained = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !other.operationInFlight }, object: nil)
+            await self.fulfillment(of: [drained], timeout: 10)
+        }
+        other.select(ar, indoor: nav); await fulfillment(of: [heldAgain], timeout: 10)
+        other.cancel(); cancelled?.resume(returning: a); cancelled = nil
+        await Task.yield()
+        XCTAssertNil(other.package); XCTAssertFalse(nav.mapIOPending)
+        XCTAssertFalse(nav.isAligned); XCTAssertFalse(nav.hasActiveRoute)
+    }
+    func testMissingWrongDigestAndPrivatePackageRefuseWithoutNetworkFallback() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let nav = await navigator(directory), a = try fixture("A"), ref = try reference(a)
+        let absent = VenuePackageActivation(storage: CommunityPackageStorage(directory: directory.appendingPathComponent("empty")))
+        absent.select(ref, indoor: nav); await settled(absent)
+        XCTAssertNil(absent.package); XCTAssertFalse(nav.mapIOPending); XCTAssertFalse(nav.isAligned)
+        var changed = a; changed.description = "Changed bytes under same revision"
+        let wrong = VenuePackageActivation(loader: { _ in changed })
+        wrong.select(ref, indoor: nav); await settled(wrong); XCTAssertNil(wrong.package)
+        var privateValue = a; privateValue.visibility = "private"
+        let privateRef = try reference(privateValue), denied = VenuePackageActivation(loader: { _ in privateValue })
+        denied.select(privateRef, indoor: nav); await settled(denied); XCTAssertNil(denied.package)
+        XCTAssertFalse(nav.isAligned); XCTAssertFalse(nav.hasActiveRoute)
+    }
+    func testCorruptDirectoryDoesNotHideInstalledPackages() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storage = CommunityPackageStorage(directory: directory), a = try fixture("A")
+        _ = try await storage.install(a)
+        let file = directory.appendingPathComponent("venue-directory.catalog")
+        try Data("not JSON".utf8).write(to: file)
+        let library = CommunityLibrary(storage: storage)
+        let done = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !library.busy }, object: nil)
+        await fulfillment(of: [done], timeout: 10)
+        XCTAssertEqual(library.installed.map { $0.package.id }, [a.id])
+        XCTAssertTrue(library.venueCatalog.references.isEmpty)
+        XCTAssertEqual(try Data(contentsOf: file), Data("not JSON".utf8))
+    }
+    func testRegisteredPoseWithdrawnBeforeHeldReadAndOrderedWriterCancellation() async throws {
+        typealias F = SpatialIntegrationFixture
+        let storage = ControlledSpatialStorage()
+        let restored = XCTestExpectation(description: "restore finished")
+        let nav = IndoorNavigator(storage: URL(fileURLWithPath: "/unused-venue-test"), storageIO: storage,
+            sha256: F.sha256, restoreCompletion: { _ in restored.fulfill() })
+        await fulfillment(of: [restored], timeout: 10)
+        try await awaitIndoorIOAsync { nav.loadImportedMap(try F.installation().encoded(), completion: $0) }
+        try nav.configureRegisteredNavigation(body: F.body, limits: F.limits)
+        try nav.plan(from: "start", to: "end", goalRevision: UUID())
+        let now = ProcessInfo.processInfo.systemUptime
+        let capture = SpatialLocalizationCapture(sessionID: try XCTUnwrap(nav.registeredSessionID),
+            binding: try F.installation().binding, floorID: "floor", position: Point3(1, 1.3, 3), bodyYaw: -.pi / 2,
+            source: .alignedMapPose, headingSource: .bodyAligned, trackingNormal: true,
+            positionUncertainty: 0.1, headingUncertainty: 0.1, capturedAt: now)
+        try nav.acceptRegisteredCapture(capture, support: F.support(capture), now: now)
+        XCTAssertNotNil(nav.next(camera: .init(0, 0, 0), forward: .init(0, 0, -1)))
+        let b = try fixture("B"), ref = try reference(b)
+        var held: CheckedContinuation<PlacePackage, Error>?
+        let entered = XCTestExpectation(description: "package read held")
+        let activation = VenuePackageActivation(loader: { _ in
+            try await withCheckedThrowingContinuation { held = $0; entered.fulfill() }
+        })
+        addTeardownBlock { @MainActor in
+            activation.cancel(); held?.resume(returning: b); held = nil
+            let drained = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !activation.operationInFlight }, object: nil)
+            await self.fulfillment(of: [drained], timeout: 10)
+        }
+        activation.select(ref, indoor: nav)
+        XCTAssertNil(nav.next(camera: .init(0, 0, 0), forward: .init(0, 0, -1)))
+        XCTAssertNil(nav.registeredJourneyInstallation); XCTAssertFalse(nav.hasActiveRoute)
+        await fulfillment(of: [entered], timeout: 10)
+        let writing = XCTestExpectation(description: "actual ordered writer held")
+        let release = storage.blockNextWrite(writing)
+        defer { release.signal() }
+        held?.resume(returning: b); held = nil
+        await fulfillment(of: [writing], timeout: 10)
+        activation.cancel() // Same method as disappearance, while actual writer owns work.
+        XCTAssertFalse(nav.mapIOPending); XCTAssertFalse(nav.isAligned)
+        let cancelledRevision = nav.revision
+        // A newer real import is an ordered worker barrier after the cancelled write.
+        let newer = try F.installation()
+        let done = XCTestExpectation(description: "newer owner completed after old writer")
+        var result: Result<Void, Error>?
+        nav.loadImportedMap(try newer.encoded()) { result = $0; done.fulfill() }
+        let newerRevision = nav.revision
+        XCTAssertNotEqual(cancelledRevision, newerRevision)
+        release.signal(); await fulfillment(of: [done], timeout: 10)
+        try XCTUnwrap(result).get()
+        XCTAssertEqual(nav.revision, newerRevision)
+        XCTAssertEqual(nav.registeredJourneyInstallation?.binding, newer.binding)
+        XCTAssertNil(nav.activePackage); XCTAssertFalse(nav.isAligned)
+        XCTAssertFalse(activation.loading)
+    }
+    func testDirectoryRoundTripAndCoarseFilteringDoNotActivatePackage() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storage = CommunityPackageStorage(directory: directory)
+        let ref = try reference(fixture("A")), catalog = VenuePackageCatalog(references: [ref])
+        try await storage.saveVenueCatalog(catalog)
+        let reopened = try await storage.venueCatalog()
+        XCTAssertEqual(reopened.references, [ref])
+        XCTAssertEqual(reopened.reference(googlePlaceID: "fixture-venue-A"), ref)
+        XCTAssertNil(reopened.reference(googlePlaceID: "unmapped-google-place"))
+        XCTAssertEqual(reopened.candidates(latitude: 24.7, longitude: 46.7, accuracy: 5, age: 1), [ref])
+        XCTAssertTrue(reopened.candidates(latitude: 24.7, longitude: 46.7, accuracy: 5, age: -1).isEmpty)
+        XCTAssertTrue(reopened.candidates(latitude: 24.7, longitude: 46.7, accuracy: 5, age: 11).isEmpty)
+        XCTAssertTrue(reopened.candidates(latitude: 24.7, longitude: 46.7, accuracy: 100, age: 1).isEmpty)
+        XCTAssertThrowsError(try VenuePackageCatalog(references: [ref, ref]).validate())
+        XCTAssertThrowsError(try ref.validate(package: fixture("B"), actualDigest: ref.digest))
+        let inventory = try await storage.list(); XCTAssertTrue(inventory.installed.isEmpty)
+    }
+}

@@ -337,6 +337,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     /// Installs source-known artifacts after the existing native atomic map import
     /// succeeds. A queued initial installation is one latest value, not a FIFO.
     public func install(_ installation: SpatialMapInstallation, portals: [JourneyPortal] = []) throws {
+        guard installation.map.permitsRoutePlanning else { throw JourneyRuntimeError.noRegisteredMap }
         retire(); coordinator?.loseTracking()
         if loading { pendingInstallation = (installation, portals); return }
         guard !storageError else { throw JourneyRuntimeError.storageUnavailable }
@@ -566,6 +567,12 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                 pendingStartOrigin = nil
             }
             if canOutput, snapshot.goal?.status == .active, !snapshot.returnClarificationPending {
+                if try coordinator?.retireUnassociatedPortal(at: endpoint, now: now) == true {
+                    // This capture established only the current endpoint. The
+                    // abandoned transition contributes no crossing/history fact.
+                    retireOutput(); routeReassociationReason = nil
+                    status = "Destination retained. Replanning from fresh current location; the earlier transition was not verified."
+                }
                 if coordinator?.currentLeg == nil, let target = snapshot.goal?.target.endpoint, sameLocation(endpoint, target) {
                     try mutate(retireClarification: false) { try $0.completeAtGoal(now: now, recordedAt: Date(), persist: { _ in }) }
                 } else if case .local(_, let to)? = coordinator?.currentLeg, sameLocation(endpoint, to) {

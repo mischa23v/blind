@@ -83,13 +83,27 @@ private actor ConnectedBenchIO: ConnectedJourneyRuntimeIO {
             supportHeightError: 0.02, coveredFootprintSHA256: digest,
             totalPositionError: 0.1, totalHeadingError: 0.1)
     }
+    private func authoredRecovery(_ saved: SavedWorldFrame, session: UUID, time: Double) throws -> SavedWorldFrameRecovery {
+        // Actual recovery owner with authored metadata only; no ARFrame/device accuracy claim.
+        var value = SavedWorldFrameRecovery()
+        value.begin(frame: saved, sessionID: session, now: time - 0.3)
+        _ = value.observe(sessionID: session, tracking: .relocalizing, mappingAvailable: false,
+            originAnchorMatches: false, frameTime: time - 0.3, now: time - 0.3)
+        for stamp in [time - 0.2, time - 0.1, time] {
+            _ = value.observe(sessionID: session, tracking: .normal, mappingAvailable: true,
+                originAnchorMatches: true, frameTime: stamp, now: stamp)
+        }
+        _ = try XCTUnwrap(value.cameraAssociation(sessionID: session, capturedAt: time, now: time))
+        return value
+    }
     private func supply(_ router: NativeLocalizationRouter, runtime: ConnectedJourneyRuntime,
                         installation: SpatialMapInstallation, arSession: UUID, mount: UUID,
                         x: Double, time: Double, omitSupport: Bool = false) throws {
         let record = try installation.registry.map(for: installation.binding)
+        let recovery = try authoredRecovery(XCTUnwrap(record.savedWorldFrame), session: arSession, time: time)
         router.offer(arSession: arSession, calibrationRevision: "fixture-calibration", mountRevision: mount,
             capturedAt: time, cameraToWorld: identity, trackingNormal: true,
-            recovered: record.savedWorldFrame, now: time)
+            association: recovery.cameraAssociation(sessionID: arSession, capturedAt: time, now: time), now: time)
         let candidate = try XCTUnwrap(router.candidate)
         XCTAssertEqual(router.reason, .missingCalibration)
         XCTAssertThrowsError(try runtime.next(now: time)) // offer alone never releases directions
@@ -178,10 +192,192 @@ private actor ConnectedBenchIO: ConnectedJourneyRuntimeIO {
         let router = NativeLocalizationRouter(journey: runtime, previewContext: { nil }, withholdPreview: { _, _ in XCTFail() })
         router.select(.connectedJourney)
         router.offer(arSession: UUID(), calibrationRevision: "NOT_MEASURED", mountRevision: UUID(),
-            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, recovered: nil, now: 10)
+            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: nil, now: 10)
         XCTAssertEqual(router.reason, .importedFrameNeedsMeasuredRegistration)
         XCTAssertNil(router.candidate)
         XCTAssertThrowsError(try runtime.next(now: 10))
         XCTAssertEqual(runtime.goal?.target.endpoint.nodeID, "anchor-1")
     }
+    func testCurrentOwnerRequiresExactLatestLocalCaptureNotPriorDescriptor() async throws {
+        let installation = try fixtureInstallation()
+        let (navigator, runtime, directory) = try await installed(installation)
+        defer { _ = navigator; try? FileManager.default.removeItem(at: directory) }
+        try runtime.configure(body: F.body, limits: F.limits)
+        try runtime.setDestination(binding: installation.binding, nodeID: "end", origin: .trustedInterface)
+        try await until { runtime.pendingWriteCount == 0 }
+        _ = try runtime.beginLocalization(in: installation.binding)
+        let router = NativeLocalizationRouter(journey: runtime, previewContext: { nil }, withholdPreview: { _, _ in XCTFail("no preview fallback") })
+        router.select(.connectedJourney)
+        let session = UUID(), mount = UUID()
+        let saved = try XCTUnwrap(installation.registry.map(for: installation.binding).savedWorldFrame)
+        var recovery = try authoredRecovery(saved, session: session, time: 10)
+        func offer(_ time: Double, _ receipt: SavedWorldFrameCameraAssociation?, sessionID: UUID? = nil) {
+            router.offer(arSession: sessionID ?? session, calibrationRevision: "NOT_MEASURED", mountRevision: mount,
+                capturedAt: time, cameraToWorld: identity, trackingNormal: true, association: receipt, now: time)
+        }
+        let first = try XCTUnwrap(recovery.cameraAssociation(sessionID: session, capturedAt: 10, now: 10))
+        offer(10, first)
+        XCTAssertEqual(router.candidate?.association, first)
+        XCTAssertEqual(router.reason, .missingCalibration)
+        XCTAssertThrowsError(try runtime.next(now: 10))
+        offer(10.1, first) // A fresh historical descriptor cannot bless a different capture.
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .descriptorMismatch)
+        offer(10, first, sessionID: UUID())
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .descriptorMismatch)
+        let otherInstallation = try fixtureInstallation()
+        let otherSaved = try XCTUnwrap(otherInstallation.registry.map(for: otherInstallation.binding).savedWorldFrame)
+        let wrongRoom = try authoredRecovery(otherSaved, session: session, time: 10.1)
+        offer(10.1, wrongRoom.cameraAssociation(sessionID: session, capturedAt: 10.1, now: 10.1))
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .descriptorMismatch)
+        _ = recovery.observe(sessionID: session, tracking: .normal, mappingAvailable: true,
+            originAnchorMatches: true, frameTime: 10.2, now: 10.2)
+        let latest = try XCTUnwrap(recovery.cameraAssociation(sessionID: session, capturedAt: 10.2, now: 10.2))
+        offer(10.2, latest)
+        XCTAssertNotNil(router.candidate)
+        // Reordered callback obtains no receipt even though current descriptor remains fresh.
+        XCTAssertNotNil(recovery.current(sessionID: session, now: 10.25))
+        offer(10.1, recovery.cameraAssociation(sessionID: session, capturedAt: 10.1, now: 10.25))
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .noRecoveredWorldFrame)
+        _ = recovery.observe(sessionID: session, tracking: .normal, mappingAvailable: true,
+            originAnchorMatches: false, frameTime: 10.3, now: 10.3)
+        offer(10.3, recovery.cameraAssociation(sessionID: session, capturedAt: 10.3, now: 10.3))
+        XCTAssertNil(router.candidate)
+        XCTAssertThrowsError(try runtime.next(now: 10.3))
+    }
+    func testRecoveryRestartExpiryAndSelectedOwnerChangesRetireCandidateWithoutFallback() async throws {
+        let installation = try fixtureInstallation()
+        let (navigator, runtime, directory) = try await installed(installation)
+        defer { _ = navigator; try? FileManager.default.removeItem(at: directory) }
+        try runtime.configure(body: F.body, limits: F.limits)
+        try runtime.setDestination(binding: installation.binding, nodeID: "end", origin: .trustedInterface)
+        try await until { runtime.pendingWriteCount == 0 }
+        _ = try runtime.beginLocalization(in: installation.binding)
+        let router = NativeLocalizationRouter(journey: runtime, previewContext: { nil }, withholdPreview: { _, _ in XCTFail() })
+        router.select(.connectedJourney)
+        let session = UUID(), mount = UUID()
+        let saved = try XCTUnwrap(installation.registry.map(for: installation.binding).savedWorldFrame)
+        let original = try authoredRecovery(saved, session: session, time: 10)
+        let receipt = try XCTUnwrap(original.cameraAssociation(sessionID: session, capturedAt: 10, now: 10))
+        router.offer(arSession: session, calibrationRevision: "NOT_MEASURED", mountRevision: mount,
+            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: receipt, now: 10)
+        let restarted = try authoredRecovery(saved, session: session, time: 10)
+        router.watchdog(arSession: session, calibrationRevision: "NOT_MEASURED", mountRevision: mount,
+            association: restarted.cameraAssociation(sessionID: session, capturedAt: 10, now: 10), now: 10)
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .noRecoveredWorldFrame)
+        router.offer(arSession: session, calibrationRevision: "NOT_MEASURED", mountRevision: mount,
+            capturedAt: 10.1, cameraToWorld: identity, trackingNormal: true,
+            association: receipt, now: 10.1)
+        XCTAssertNil(router.candidate) // retained pre-restart receipt cannot retime its capture
+        router.select(.none)
+        router.offer(arSession: session, calibrationRevision: "NOT_MEASURED", mountRevision: mount,
+            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: receipt, now: 10.6)
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .noSelectedOwner)
+        router.select(.connectedJourney)
+        router.offer(arSession: session, calibrationRevision: "NOT_MEASURED", mountRevision: mount,
+            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: receipt, now: 10.6)
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .staleCandidate)
+        XCTAssertThrowsError(try runtime.next(now: 10.6))
+    }
+
+    func testReferenceOnlyMapCannotEnterNavigationInstallersOrEndpointCatalog() async throws {
+        // Authored bytes test the adapter contract, not ARKit unarchiving or localization.
+        let world = Data("authored-world".utf8), room = Data("authored-room".utf8)
+        let frame = SavedWorldFrame(placeID: UUID().uuidString, revision: UUID().uuidString,
+            worldMapSHA256: try F.sha256(world), roomCaptureSHA256: try F.sha256(room),
+            originAnchorID: UUID().uuidString, capturedAt: Date(timeIntervalSince1970: 1))
+        let reference = try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: world, roomCaptureBytes: room, sha256: F.sha256)
+        let runtime = ConnectedJourneyRuntime(io: ConnectedBenchIO(), sha256: F.sha256)
+        runtime.restore(); try await until { !runtime.loading }
+        XCTAssertThrowsError(try runtime.install(reference))
+        XCTAssertNil(runtime.goal); XCTAssertNil(runtime.nativeLocalizationContext)
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let navigator = IndoorNavigator(storage: directory.appendingPathComponent("map.json"), sha256: F.sha256)
+        try await until { !navigator.mapIOPending }
+        for bytes in [try reference.encoded(), reference.envelope.mapBytes] {
+            var result: Result<Void, Error>?
+            navigator.loadRegisteredInstallation(bytes) { result = $0 }
+            try await until { result != nil }
+            XCTAssertThrowsError(try XCTUnwrap(result).get())
+            XCTAssertNil(navigator.registeredJourneyInstallation)
+            XCTAssertNil(navigator.nativePreviewLocalizationContext)
+        }
+    }
+
+    func testGoalFreeSavedReferenceUsesExactRecoveryWithoutCreatingNavigationOwner() async throws {
+        // Authored byte/callback fixtures exercise actual context/router/issuer.
+        // Device ARWorldMap unarchive and live tracking acceptance remain separate.
+        let world = Data("authored-reference-world".utf8), room = Data("authored-reference-room".utf8)
+        let frame = SavedWorldFrame(placeID: UUID().uuidString, revision: UUID().uuidString,
+            worldMapSHA256: try F.sha256(world), roomCaptureSHA256: try F.sha256(room),
+            originAnchorID: UUID().uuidString, capturedAt: Date(timeIntervalSince1970: 1))
+        let installation = try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: world, roomCaptureBytes: room, sha256: F.sha256)
+        let revision = try installation.registry.map(for: installation.binding)
+        let session = UUID(), mount = UUID()
+        var context: NativeLocalizationRouteContext? = .init(sessionID: session, artifact: installation.artifact,
+            revision: revision, goalRevision: nil, scope: .localSavedFrameReference)
+        let runtime = ConnectedJourneyRuntime(io: ConnectedBenchIO(), sha256: F.sha256)
+        runtime.restore(); try await until { !runtime.loading }
+        let router = NativeLocalizationRouter(journey: runtime, previewContext: { nil },
+            withholdPreview: { _, _ in XCTFail("reference must not retire preview") }, savedFrameContext: { context })
+        router.select(.localSavedFrameReference)
+        var recovery = try authoredRecovery(frame, session: session, time: 10)
+        let receipt = try XCTUnwrap(recovery.cameraAssociation(sessionID: session, capturedAt: 10, now: 10))
+        router.offer(arSession: session, calibrationRevision: "unconfigured", mountRevision: mount,
+            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: receipt, now: 10)
+        let candidate = try XCTUnwrap(router.candidate)
+        XCTAssertEqual(candidate.owner.selection.kind, .localSavedFrameReference)
+        XCTAssertNil(candidate.owner.selection.goalRevision)
+        XCTAssertEqual(router.reason, .localReferenceOnly)
+        XCTAssertNil(runtime.goal); XCTAssertNil(runtime.nativeLocalizationContext)
+        XCTAssertThrowsError(try runtime.next(now: 10))
+        XCTAssertThrowsError(try router.prepareForBench(measurements(candidate, x: 1), arSession: session,
+            calibrationRevision: "unconfigured", mountRevision: mount, validator: AuthoredBenchValidator(), now: 10)) {
+            XCTAssertEqual($0 as? NativeLocalizationNotReady, .physicalReleaseNotApproved)
+        }
+        _ = recovery.observe(sessionID: session, tracking: .normal, mappingAvailable: true,
+            originAnchorMatches: true, frameTime: 10.1, now: 10.1)
+        let next = try XCTUnwrap(recovery.cameraAssociation(sessionID: session, capturedAt: 10.1, now: 10.1))
+        router.offer(arSession: session, calibrationRevision: "unconfigured", mountRevision: mount,
+            capturedAt: 10.1, cameraToWorld: identity, trackingNormal: true, association: next, now: 10.1)
+        XCTAssertNotNil(router.candidate)
+        context = nil // Current source deletion/replacement retires context independently of callbacks.
+        router.watchdog(arSession: session, calibrationRevision: "unconfigured", mountRevision: mount,
+            association: next, now: 10.1)
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .ownerChanged)
+    }
+    func testSelectedJourneyNeverFallsBackToAvailableGoalFreeReference() async throws {
+        let world = Data("authored-reference-world".utf8), room = Data("authored-reference-room".utf8)
+        let frame = SavedWorldFrame(placeID: UUID().uuidString, revision: UUID().uuidString,
+            worldMapSHA256: try F.sha256(world), roomCaptureSHA256: try F.sha256(room),
+            originAnchorID: UUID().uuidString, capturedAt: Date(timeIntervalSince1970: 1))
+        let installation = try SpatialMapInstallation.localSavedFrameReference(frame: frame,
+            worldMapBytes: world, roomCaptureBytes: room, sha256: F.sha256)
+        let revision = try installation.registry.map(for: installation.binding)
+        let session = UUID(), mount = UUID()
+        var context = NativeLocalizationRouteContext(sessionID: session, artifact: installation.artifact,
+            revision: revision, goalRevision: nil, scope: .localSavedFrameReference)
+        let runtime = ConnectedJourneyRuntime(io: ConnectedBenchIO(), sha256: F.sha256)
+        runtime.restore(); try await until { !runtime.loading }
+        let router = NativeLocalizationRouter(journey: runtime, previewContext: { nil },
+            withholdPreview: { _, _ in XCTFail() }, savedFrameContext: { context })
+        let recovery = try authoredRecovery(frame, session: session, time: 10)
+        let receipt = recovery.cameraAssociation(sessionID: session, capturedAt: 10, now: 10)
+        for selected in [NativeLocalizationRouter.Selection.connectedJourney, .registeredPreview] {
+            router.select(selected)
+            router.offer(arSession: session, calibrationRevision: "unconfigured", mountRevision: mount,
+                capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: receipt, now: 10)
+            XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .noConfiguredSession)
+        }
+        context = .init(sessionID: session, artifact: installation.artifact, revision: revision, goalRevision: nil)
+        router.select(.localSavedFrameReference)
+        router.offer(arSession: session, calibrationRevision: "unconfigured", mountRevision: mount,
+            capturedAt: 10, cameraToWorld: identity, trackingNormal: true, association: receipt, now: 10)
+        XCTAssertNil(router.candidate); XCTAssertEqual(router.reason, .noConfiguredSession) // wrong typed scope
+        XCTAssertNil(runtime.goal)
+    }
+
 }

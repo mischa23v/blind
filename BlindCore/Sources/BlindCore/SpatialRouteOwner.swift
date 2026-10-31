@@ -113,6 +113,7 @@ public struct SpatialRouteOwner: Sendable {
     /// Throwing preserves the complete previous map/pose/route state in memory.
     public mutating func install(_ candidate: SpatialMapInstallation,
                                  persist: (Data) throws -> Void) throws {
+        guard candidate.map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
         if let installation { try candidate.validateReplacement(of: installation) }
         let bytes = try candidate.encoded()
         try persist(bytes)
@@ -132,6 +133,7 @@ public struct SpatialRouteOwner: Sendable {
     /// serial IO worker. No decode, encode, hashing or file IO on the control owner.
     /// This never restores live pose, a route, or a previous localization session.
     public mutating func restoreValidated(_ restored: SpatialMapInstallation) throws {
+        guard restored.map.permitsRoutePlanning else { throw SpatialInstallationError.invalidEnvelope }
         guard installation == nil else { throw SpatialInstallationError.historyRewrite }
         installation = restored
         blocked = Set(restored.currentRestrictions.blocked.map(\.connection)); obstacleZones = restored.currentRestrictions.zones

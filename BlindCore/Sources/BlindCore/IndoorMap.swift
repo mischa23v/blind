@@ -26,6 +26,11 @@ public struct MapEdge: Codable, Equatable, Sendable {
     }
 }
 public struct IndoorMap: Codable, Sendable {
+    /// Nil preserves the existing authored navigation-map wire contract. Explicit
+    /// reference-only maps contain no destinations, floor claims or route geometry.
+    public enum Purpose: String, Codable, Equatable, Sendable { case localizationReferenceOnly }
+    public var purpose: Purpose? = nil
+    public var permitsRoutePlanning: Bool { purpose == nil }
     public var name: String
     public var nodes: [MapNode]
     public var edges: [MapEdge]
@@ -42,6 +47,11 @@ public struct IndoorMap: Codable, Sendable {
         guard packageModified != true || packageID != nil else { throw MapError.invalid }
         guard (packageID == nil && packageRevision == nil) ||
             (packageID.map(PlacePackage.validID) == true && packageRevision.map(PlacePackage.validID) == true) else { throw MapError.invalid }
+        if purpose == .localizationReferenceOnly {
+            guard packageID != nil, packageModified != true, nodes.isEmpty, edges.isEmpty,
+                  surfaces == nil, keepOutZones == nil else { throw MapError.invalid }
+            return
+        }
         guard !nodes.isEmpty, nodes.count <= 2000, edges.count <= 10000, Set(nodes.map(\.id)).count == nodes.count,
               nodes.allSatisfy({ !$0.id.isEmpty && $0.position.isFinite }) else { throw MapError.invalid }
         let ids = Set(nodes.map(\.id))
@@ -60,6 +70,8 @@ public struct IndoorMap: Codable, Sendable {
     public mutating func markLocalEdit() { if packageID != nil { packageModified = true } }
     public func route(from start: String, to destination: String, accessibleOnly: Bool = true, blocked: Set<MapConnection> = [], body: BodyEnvelope = BodyEnvelope()) throws -> [MapNode] {
         try validate()
+        // Must precede start==destination and every graph/nearest-node shortcut.
+        guard permitsRoutePlanning else { throw MapError.invalid }
         guard body.valid else { throw MapError.invalid }
         let byID = Dictionary(uniqueKeysWithValues: nodes.map { ($0.id, $0) })
         guard byID[start] != nil, byID[destination] != nil else { throw MapError.unknownNode }

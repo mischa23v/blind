@@ -240,13 +240,13 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/ConnectedJourneyCatalog.swift",
-      "bytes": 10951,
-      "sha256": "f95db5992a208c0965a62329fd14160e7f228da88780c9c3ae7bdab3d2d9dd96"
+      "bytes": 10982,
+      "sha256": "c91884dd4a621ab999b2235abe9d834c1dc91daf060b978706c9e41d2df95234"
     },
     {
       "path": "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift",
-      "bytes": 30983,
-      "sha256": "60ccdb7df639026dd315d2c8e563ed64a219b1f40e4008b4d919bcbf8bce2944"
+      "bytes": 32587,
+      "sha256": "af5608eaa0e6204e595426b9af1a7d2916a4cb2fecf1cdbb92d072aabe498615"
     },
     {
       "path": "BlindCore/Sources/BlindCore/ContextWindowPolicy.swift",
@@ -380,8 +380,8 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/IndoorMap.swift",
-      "bytes": 7940,
-      "sha256": "143907bb8733793b91cdf17916002e5888943049c3ff2c7fc5ae725be4419529"
+      "bytes": 8712,
+      "sha256": "9729b6a738bd994bd8aedf76f862bf38a58a1a18a4363deb73fb9cc6879001f6"
     },
     {
       "path": "BlindCore/Sources/BlindCore/InterruptedObjectSearch.swift",
@@ -480,13 +480,13 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift",
-      "bytes": 13600,
-      "sha256": "c015f273cc415c42fa55bb775471492cd90de6b485b60b12c03db860424a2dce"
+      "bytes": 14540,
+      "sha256": "362ce43dbfd7b7821bf1e1a0d6cfc580cffefb28010921d60e8a5068cdcf5dc3"
     },
     {
       "path": "BlindCore/Sources/BlindCore/NativeLocalizationSelection.swift",
-      "bytes": 1256,
-      "sha256": "1db64be15df89cf8319096fe639f970f2b99ab495deaa6768c266a8cc3d5326f"
+      "bytes": 1444,
+      "sha256": "c2cb3aed99912a0199d70d8343ebeb0848e5e2395670636d4da9fd938798f696"
     },
     {
       "path": "BlindCore/Sources/BlindCore/NativeObservation.swift",
@@ -690,8 +690,8 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/SpatialFrameRegistry.swift",
-      "bytes": 16636,
-      "sha256": "856d97523516429b2e655bc1c3e36dd5331728f40e4d15a6f5817c925e545541"
+      "bytes": 16933,
+      "sha256": "071ef36c69b23f563886212fcdc72be91e6389c56dc8e22c05f85cf1490d0cc5"
     },
     {
       "path": "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift",
@@ -700,13 +700,13 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/SpatialMapInstallation.swift",
-      "bytes": 10031,
-      "sha256": "600fb45acdcf5d4b7dbb2b0e6f6a4e35b847479824147ba0bbbb3ffed2532b55"
+      "bytes": 12090,
+      "sha256": "ad5432bd759f9494e0df3ed12ef1153239e5df42502f80bfea0810ec682b4e42"
     },
     {
       "path": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
-      "bytes": 19740,
-      "sha256": "f496672e1b270e6ddc04cd6ca8aabd83240309257f4be531cd60c4fe49b1738b"
+      "bytes": 19949,
+      "sha256": "f08fa5a16b99a846aef261dde7d6344b60ef8b09912a77aaeeec0133fe4a90b6"
     },
     {
       "path": "BlindCore/Sources/BlindCore/SpeechDeliveryLedger.swift",
@@ -735,8 +735,8 @@
     },
     {
       "path": "BlindCore/Sources/BlindCore/VenueCatalog.swift",
-      "bytes": 2177,
-      "sha256": "5beb16e23a6f170aad588fd4e021edf52a09b062c723c303e8e338b3095fe932"
+      "bytes": 5607,
+      "sha256": "5f86363530c00b665a789d9216a941c12fd8452a17335509144af2cb3f53805f"
     },
     {
       "path": "BlindCore/Sources/BlindCore/VisualGrounding.swift",
@@ -824,9 +824,19 @@
       "sha256": "8f78d26a1dd1484c15e98c8afe9561a31f0067881d4268456ffc08470480267c"
     },
     {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeLocalizationEvidenceGateTests.swift",
+      "bytes": 13480,
+      "sha256": "ff19a650989b15806fc3369818a1d09225e260be33e450503d106b56be0f48ae"
+    },
+    {
       "path": "BlindCore/Tests/BlindCoreTests/SceneFrameProvenanceTests.swift",
       "bytes": 2519,
       "sha256": "4eba63c00c46159fc6ed35e8dc3849c64ac748931b638dc6dfe52d595d4f2286"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SpatialMapInstallationTests.swift",
+      "bytes": 9617,
+      "sha256": "31a12712af37a29332ae6fecce20518584f3eb88a2f458dc8b341c99678f522f"
     },
     {
       "path": "BlindCore/Tests/BlindCoreTests/VoiceCaptureRecoveryPolicyTests.swift",
@@ -839,9 +849,19 @@
       "sha256": "f6c5b86e2fdb5ae9a6ef10283c218cd4ac7fe9fe2b928178224dae0e4b872f1c"
     },
     {
+      "path": "ios/BlindAssist/CommunityLibrary.swift",
+      "bytes": 21714,
+      "sha256": "a561896bebb08489b861eab9275344bd51155d78949b5ffedc00afb28fb8ff91"
+    },
+    {
+      "path": "ios/BlindAssist/CommunityMapsView.swift",
+      "bytes": 23474,
+      "sha256": "3e432ce58a82e3e09984cf24d3646c97b29bcf866cb138e9622d146052aaf194"
+    },
+    {
       "path": "ios/BlindAssist/ConnectedJourneyRuntime.swift",
-      "bytes": 46304,
-      "sha256": "5abf0b68a79afafb5d08b5ee7b3f2e80764df3b35dcd60a8e95725bedf382fc6"
+      "bytes": 46882,
+      "sha256": "7b38fc5aa86fcfcdf845e61c181a20701a97a21b9a9472db1ca4d2ef34de0589"
     },
     {
       "path": "ios/BlindAssist/DashboardView.swift",
@@ -857,6 +877,11 @@
       "path": "ios/BlindAssist/FamiliarPeopleView.swift",
       "bytes": 19869,
       "sha256": "e519cb942998113af2f5fc4ee2923ce3df2d414366101379dd872c404185df4a"
+    },
+    {
+      "path": "ios/BlindAssist/IndoorNavigator.swift",
+      "bytes": 30153,
+      "sha256": "179ed9a372d175f439e33c5eddedf6320f951d610bc168159c1e2826aebbac2d"
     },
     {
       "path": "ios/BlindAssist/LocalEmailDraftView.swift",
@@ -884,14 +909,24 @@
       "sha256": "e806eec1da9d012b94159984e22e3a1014de51590ef3c5e9aaaad29f2afdff96"
     },
     {
+      "path": "ios/BlindAssist/NativeLocalizationIssuer.swift",
+      "bytes": 3607,
+      "sha256": "25fa457499cd263795a98c43ad210e90b601fdccf7ce48870261d5903f98aa29"
+    },
+    {
+      "path": "ios/BlindAssist/NativeLocalizationRouter.swift",
+      "bytes": 8524,
+      "sha256": "9c85e545ec717111850705c03f3db181e6f4b1ca49b4626efd013f833a7e8c28"
+    },
+    {
       "path": "ios/BlindAssist/NativeMapping.swift",
       "bytes": 12033,
       "sha256": "81bb9e3bb42ae3eede0f2f81db837ab6faa885b0fad1dbc394189890ce3d6bd2"
     },
     {
       "path": "ios/BlindAssist/NavigationModel.swift",
-      "bytes": 566231,
-      "sha256": "bfb23aa12c8b3738c3355dc3d0149d60ff0b2db3bb3de78b65c26c1c09bcdf24"
+      "bytes": 567216,
+      "sha256": "a1f0b9ce8084a47378ecdae5e65ae3e64bd18236fb1846fa76ec6a4c1cdebd7d"
     },
     {
       "path": "ios/BlindAssist/ObservedSceneRuntime.swift",
@@ -900,13 +935,23 @@
     },
     {
       "path": "ios/BlindAssist/PlaceStore.swift",
-      "bytes": 49125,
-      "sha256": "59299563db05cd04023845b42b994507ce70660cac032265d7c1fce7d1c64aa1"
+      "bytes": 55499,
+      "sha256": "f485e70fcfec2b075f61c524adad7e7bc9efa9a0a8439fc6f8199eb609a29880"
+    },
+    {
+      "path": "ios/BlindAssist/RegisteredIndoorNavigation.swift",
+      "bytes": 18416,
+      "sha256": "90fe9cf88127607f6bb89178a404113007c172005c2257438a084fa4faa25636"
     },
     {
       "path": "ios/BlindAssist/RoomDetailView.swift",
       "bytes": 34880,
       "sha256": "ca466753a07f7f03bd19e84d40377299974fba01d3bcc8ec44b2d70b03c4ed23"
+    },
+    {
+      "path": "ios/BlindAssist/SavedRoomDiagnosticGeometryProvider.swift",
+      "bytes": 10567,
+      "sha256": "09d25cb1b1056cd605c3bfda9375be23d70b179651d195c0ef7307df4f5a8bcc"
     },
     {
       "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
@@ -940,13 +985,18 @@
     },
     {
       "path": "ios/BlindAssistTests/CommunityTests.swift",
-      "bytes": 83297,
-      "sha256": "4cc525e3fc6cc4e350a704019284c396b6d058db9a409cba12e1894b04df868e"
+      "bytes": 97622,
+      "sha256": "7beb0dd62c6efde5097243529dccce76f1e55d9db2069f93697e07ab127c72db"
     },
     {
       "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
-      "bytes": 46428,
-      "sha256": "bc6d2d4dac8f961b998401b7c410149f5ad1d5045b0f04a7932b82f44c7e8dd5"
+      "bytes": 59265,
+      "sha256": "627ac370221c9003a83679a24893be64058d0572958283ada2587a89dbfbb1cc"
+    },
+    {
+      "path": "ios/BlindAssistTests/ConnectedNavigationBenchIntegrationTests.swift",
+      "bytes": 27813,
+      "sha256": "787524c250282db2e910d9541c372ff09238d4b274c6ac9cb26740e0569c938a"
     },
     {
       "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
@@ -972,6 +1022,11 @@
       "path": "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
       "bytes": 19507,
       "sha256": "468990293d238e35ac77bd65457af4113fc6f87636cf1019e44564b578d9ca3d"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomDiagnosticGeometryProviderTests.swift",
+      "bytes": 17195,
+      "sha256": "9799af698ac5ddcf36f2fb605315683d60cb84578f16f0cb5b7235595a45add5"
     },
     {
       "path": "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift",
@@ -1169,6 +1224,16 @@
       "sha256": "0ee0f21b0489e401010e3dabd0d00e4c94c6891663c5f88ecd00898791fcc245"
     },
     {
+      "path": "research/local-map-pipeline-20261030/README.md",
+      "bytes": 1905,
+      "sha256": "6ada2fa578ff926007e2fe9190665e97d5313f31b29017886c9d3964929f52c0"
+    },
+    {
+      "path": "research/local-map-pipeline-20261030/SWIFT_FIXTURE_IDENTITIES.json",
+      "bytes": 21307,
+      "sha256": "e5b9658b6aab58fe12472dc7e3889b58c3ac0568d1f9f363b3e55816a8247552"
+    },
+    {
       "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
       "bytes": 8707,
       "sha256": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76"
@@ -1212,6 +1277,16 @@
       "path": "research/mesh-candidate-ingress-83/tests/main.swift",
       "bytes": 23965,
       "sha256": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20"
+    },
+    {
+      "path": "research/n04-portal-recovery-20261030/README.md",
+      "bytes": 5948,
+      "sha256": "d8f5ecbe0352dcc8c23d4380d0484c1caf7c173800b03b86975ddb0fb32a0953"
+    },
+    {
+      "path": "research/n04-portal-recovery-20261030/VALIDATION.json",
+      "bytes": 3185,
+      "sha256": "f8e1ee663a249056c0767137c7fa9bba6e0bb84b01d69478aea5f67561283320"
     },
     {
       "path": "research/native-edt-historical-view-20261030/MANIFEST.json",
@@ -1824,6 +1899,11 @@
       "sha256": "b6bd20ac1b0c137535433b60dc6373fc8bdaa8d8b8db1ac3577bb1b753972c7f"
     },
     {
+      "path": "tools/test/connected-portal-recovery.test.py",
+      "bytes": 9279,
+      "sha256": "85eb098fe1d5ec316f02a3b336616f91331f8e1e7829a2b2535af86ceb633cd2"
+    },
+    {
       "path": "tools/test/conversation-failure-diagnostics.test.py",
       "bytes": 3170,
       "sha256": "ed471c01760b6e3016ef547c23e75b3521d851346332bfa7fc6616810048a8ad"
@@ -1844,14 +1924,19 @@
       "sha256": "fb59a9a0afa8df7d0bdf98473bda941853dd1b640c0dd7b8fc5885d99cc2e22b"
     },
     {
+      "path": "tools/test/local-map-pipeline-current.test.py",
+      "bytes": 9708,
+      "sha256": "9ff74171a98a3877b2ac9756ce173228167dcc5e9356e6d86730e371c34ae367"
+    },
+    {
       "path": "tools/test/local-recipe-companion.test.py",
       "bytes": 6621,
       "sha256": "c494130e36f0a71127a1a6c83b31a2c6fa8c34eb7b1a1282d9940e9f32488b8c"
     },
     {
       "path": "tools/test/navigation-integration-current.test.py",
-      "bytes": 16761,
-      "sha256": "caa32ec912f6b274a4a686e7caccecadb394ac822f2cdd97e593b7fd34990dae"
+      "bytes": 17511,
+      "sha256": "2b6c1c428481373e87e06961f18b13cefd71c04542999d9b57373eee079e36bf"
     },
     {
       "path": "tools/test/normal-owner-mesh-current.test.py",
@@ -1862,6 +1947,11 @@
       "path": "tools/test/room-photo-import-bounds.test.mjs",
       "bytes": 3881,
       "sha256": "4b6129f60da6e469aaaf7922e331bf87c6a9d4dc60f9066111f3183486362867"
+    },
+    {
+      "path": "tools/test/saved-frame-camera-association.test.mjs",
+      "bytes": 5525,
+      "sha256": "fe3abe1d5a295fbe27d1d02fdbed1157951f4e1057df7280bb29ba5aa1f4db12"
     },
     {
       "path": "tools/test/sc53-current-source.py",
@@ -2145,5 +2235,11 @@
     "scope": "exact reviewed Boolean fix carried into frozen NEXT40/J0117/THIRD45 source; original failed and repaired identities preserved",
     "newNativeExecutionClaim": false,
     "controllerOptionalBeaconPolicyChanged": false
+  },
+  "localMapPipelineContinuation": {
+    "scope": "Exact public venue selection, private paired reference-only normal-camera context, and interrupted portal source recovery; no fabricated walkable geometry",
+    "authoredSwiftMethodsAdded": 25,
+    "nativeExecuted": false,
+    "physicalAuthority": false
   }
 }
